@@ -1,0 +1,19 @@
+#DrewsList Podfile
+
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.4'
+
+link_with 'DrewsList', 'DrewsListTests'
+
+use_frameworks!
+
+#####################################
+
+#####################################
+# unit testing
+
+target 'DrewsListTests' do
+
+end
+
+#####################################
