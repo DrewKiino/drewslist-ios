@@ -9,6 +9,18 @@ use_frameworks!
 
 #####################################
 
+
+# socket libs
+pod 'Socket.IO-Client-Swift'
+
+# http libs
+pod 'Alamofire'
+
+# json libs
+pod 'SwiftyJSON'
+
+
+
 #####################################
 # unit testing
 

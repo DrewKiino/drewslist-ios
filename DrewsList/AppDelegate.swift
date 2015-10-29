@@ -8,14 +8,24 @@
 
 import UIKit
 
+let log = Atlantis.Logger()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
 
-
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
+    // PUSH NOTIFICATION
+    
+    
+    Atlantis.Configuration.hasColoredLogs = true
+    
+    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
+    application.registerUserNotificationSettings(settings)
+    application.registerForRemoteNotifications()
+    
     return true
   }
 
@@ -40,7 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func applicationWillTerminate(application: UIApplication) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
-
-
+  
+  func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    log.debug(deviceToken)
+  }
 }
 
