@@ -15,10 +15,18 @@ As a developer, we must ask ourselves this question. A prime example is Toucan's
 
 ####Our solutions for developer implmentations:
 
-| Our solutions | Frameworks |
+| Solutions | Frameworks |
 | --------------|:-----------|
 | Persistent iOS Data Storage | [Realm.io](https://realm.io/) |
 | Http Services | [Alamofire](https://github.com/Alamofire/Alamofire) |
-| JSON Parsing | [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) |
-| JSON Object Mapping | [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) |
-| | |
+| JSON Data Handling | [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON), [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) |
+| Unit Testing | [Quick](https://github.com/Quick/Quick) & [Nimble](https://github.com/Quick/Nimble) |
+| Image Processing | [Toucan](https://github.com/gavinbunney/Toucan) |
+| Image Http Services | [HanekeSwift](https://github.com/Haneke/HanekeSwift) |
+| Client-Side Pub/Sub | [Signals](https://github.com/artman/Signals) |
+| Async Event Handling | [PromiseKit](https://github.com/mxcl/PromiseKit) |
+| Async Syntactic Sugar | [Async](https://github.com/duemunk/Async) |
+| Timer Functions | [SwiftyTimer](https://github.com/radex/SwiftyTimer) |
+| Date Manipulation | [SwiftDate](https://github.com/malcommac/SwiftDate) |
+| Chat View | [JSQMessagesVC](https://github.com/jessesquires/JSQMessagesViewController) |
+
