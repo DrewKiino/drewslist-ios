@@ -69,7 +69,9 @@ public class ViewController: UIViewController {
     
     socket.on("connect") { [unowned self] data, socket in
       log.info("connected.")
-      self.socket.emit("subscribe", [ "room": "global" ])
+      self.socket.emit("subscribe", [
+        "room": "global"
+      ])
     }
     
     socket.on("cleanDisconnect") { [unowned self] data, socket in
