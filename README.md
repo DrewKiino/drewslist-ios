@@ -15,8 +15,12 @@ As a developer, we must ask ourselves this question. A prime example is Toucan's
 
 ####Our solutions for developer implmentations:
 
-1. Persistent iOS Data Storage - [Realm.io](https://realm.io/)
-2. Http Services - [Alamofire](https://github.com/Alamofire/Alamofire)
-3. JSON Handling
-  * Parsing - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
-  * Object Mapping - [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper)
+| Our solutions | Frameworks |
+| --------------|:-----------|
+| Persistent iOS Data Storage | [Realm.io](https://realm.io/) |
+| Http Services | [Alamofire](https://github.com/Alamofire/Alamofire) |
+| JSON Handling | 
+* Parsing - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
+* Object Mapping - [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) |
+
+
