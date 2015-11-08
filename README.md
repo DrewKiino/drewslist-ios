@@ -19,8 +19,6 @@ As a developer, we must ask ourselves this question. A prime example is Toucan's
 | --------------|:-----------|
 | Persistent iOS Data Storage | [Realm.io](https://realm.io/) |
 | Http Services | [Alamofire](https://github.com/Alamofire/Alamofire) |
-| JSON Handling | 
-* Parsing - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
-* Object Mapping - [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) |
-
-
+| JSON Parsing | [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) |
+| JSON Object Mapping | [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) |
+| | |
