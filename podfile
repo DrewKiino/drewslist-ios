@@ -19,6 +19,9 @@ pod 'Alamofire'
 # json libs
 pod 'SwiftyJSON'
 
+# service libs
+pod 'SwiftyTimer'
+
 
 
 #####################################

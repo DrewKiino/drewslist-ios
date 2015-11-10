@@ -10,6 +10,7 @@ import UIKit
 import Alamofire
 import Socket_IO_Client_Swift
 import SwiftyJSON
+import SwiftyTimer
 
 public class ViewController: UIViewController {
 
@@ -21,8 +22,58 @@ public class ViewController: UIViewController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
-    initButton()
+    
+    print("hello, world!")
+    socket.on("message") { data in
+      print(data)
+    }
+    socket.on("broadcastCallback") { data in
+      if let response = data.0.first?.valueForKey("response") {
+        print(response)
+      } else if let error = data.0.first?.valueForKey("error") {
+        print(error)
+      }
+    }
+    socket.on("checkForMessagesCallback") { data in
+      if let response = data.0.first?.valueForKey("response") {
+        print(response)
+      } else if let error = data.0.first?.valueForKey("error") {
+        print(error)
+      }
+    }
+    socket.connect()
+    
+    NSTimer.after(1.0) { [unowned self] in
+      self.socket.emit("subscribe", "56413a1512d4fb16616a8af0")
+      
+      let message: [String: AnyObject] = [
+        "user_id": "56413a1512d4fb16616a8af0",
+        "friend_id": "56413a2e12d4fb16616a8af3",
+        "message": "Hello, how are you?"
+      ]
+      
+      self.socket.emit("broadcast", message)
+    }
+    
+    NSTimer.after(3.0) { [unowned self] in
+      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3")
+      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
+    }
+    
+    NSTimer.after(4.0) { [unowned self] in
+      let message: [String: AnyObject] = [
+        "user_id": "56413a2e12d4fb16616a8af3",
+        "friend_id": "56413a1512d4fb16616a8af0",
+        "message": "I'm fine thank you :)"
+      ]
+      self.socket.emit("broadcast", message)
+    }
+    
+    NSTimer.after(10.0) { [unowned self] in
+      self.socket.disconnect()
+    }
   }
+  
   
   private func initButton() {
     let button1 = UIButton(frame: CGRectMake(64, 24, 100, 24))
