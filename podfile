@@ -22,6 +22,9 @@ pod 'SwiftyJSON'
 # service libs
 pod 'SwiftyTimer'
 
+# feature libs
+pod 'JSQMessagesViewController' 
+
 
 
 #####################################

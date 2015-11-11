@@ -17,6 +17,7 @@
 		EE07FE3E1BE11D1E00A10F05 /* DrewsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE3D1BE11D1E00A10F05 /* DrewsListTests.swift */; };
 		EE07FE491BE11D1E00A10F05 /* DrewsListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */; };
 		EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */; };
+		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Atlantis.swift; path = ../../../../DevOps/Atlantis/Atlantis/Atlantis.swift; sourceTree = "<group>"; };
+		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */,
 				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
+				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 			);
 			path = DrewsList;
 			sourceTree = "<group>";
@@ -393,6 +396,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */,
 				EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */,
 				EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */,
