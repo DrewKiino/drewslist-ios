@@ -23,10 +23,9 @@ public class ChatController {
   // MVC
   public let model = ChatModel()
   
-//  private var socket: SocketIOClient!
   private let socket = SocketIOClient(
-    //    socketURL: "http://localhost:1337",
-    socketURL: "https://drewslist.herokuapp.com",
+      socketURL: "http://localhost:1337",
+//    socketURL: "https://drewslist.herokuapp.com",
     options: [
       .Log(false),
       .ForcePolling(false),
@@ -74,18 +73,26 @@ public class ChatController {
       socket.emit("subscribe", _id)
     }
     
-    // message template sent by friend
-    let message = OutgoingMessage(
-      user_id: "56413a1512d4fb16616a8af0",
-      username: "Graves",
-      friend_id: "56413a2e12d4fb16616a8af3",
-      friend_username: "Jynx",
-      message: "Hello, how are you?"
-    )
     
+//    NSTimer.after(1.0) { [unowned self] in
+//      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3+56413a1512d4fb16616a8af0")
+//    }
+    
+    // message template sent by friend
     // begin chat simulation
+        let message = OutgoingMessage(
+          user_id: "56413a1512d4fb16616a8af0",
+          username: "Graves",
+          friend_id: "56413a2e12d4fb16616a8af3",
+          friend_username: "Jynx",
+          message: "Hello, how are you?"
+        )
+        
     NSTimer.after(1.0) { [unowned self] in
-      self.socket.emit("subscribe", "56413a1512d4fb16616a8af0")
+      self.socket.emit(
+        "subscribe",
+        "56413a2e12d4fb16616a8af3+56413a1512d4fb16616a8af0"
+      )
       guard let json = message.toJSON() else { return }
       self.socket.emit("broadcast", json)
     }
