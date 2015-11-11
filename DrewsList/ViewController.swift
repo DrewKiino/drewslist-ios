@@ -49,6 +49,7 @@ public class ViewController: UIViewController {
       let message: [String: AnyObject] = [
         "user_id": "56413a1512d4fb16616a8af0",
         "friend_id": "56413a2e12d4fb16616a8af3",
+        "friend_username": "Jynx",
         "message": "Hello, how are you?"
       ]
       
@@ -64,6 +65,7 @@ public class ViewController: UIViewController {
       let message: [String: AnyObject] = [
         "user_id": "56413a2e12d4fb16616a8af3",
         "friend_id": "56413a1512d4fb16616a8af0",
+        "friend_username": "Graves",
         "message": "I'm fine thank you :)"
       ]
       self.socket.emit("broadcast", message)
@@ -111,25 +113,6 @@ public class ViewController: UIViewController {
     view.addSubview(response)
     request.backgroundColor = UIColor.grayColor()
     view.addSubview(request)
-    
-    socket.on("message") { [unowned self] data, socket in
-      if let json = JSON(data).array, let message = json[0]["message"].string {
-        self.response.text = "server: " + message
-      }
-    }
-    
-    socket.on("connect") { [unowned self] data, socket in
-      log.info("connected.")
-      self.socket.emit("subscribe", [
-        "room": "global"
-      ])
-    }
-    
-    socket.on("cleanDisconnect") { [unowned self] data, socket in
-      log.info("disconnected.")
-      self.socket.disconnect()
-      self.response.text = ""
-    }
   }
   
   public func send() {

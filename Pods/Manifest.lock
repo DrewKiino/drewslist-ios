@@ -3,14 +3,20 @@ PODS:
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
+  - ObjectMapper (1.0.1)
+  - Signals (2.1.0)
   - Socket.IO-Client-Swift (4.0.4)
+  - SwiftDate (1.2)
   - SwiftyJSON (2.3.1)
   - SwiftyTimer (1.2.0)
 
 DEPENDENCIES:
   - Alamofire
   - JSQMessagesViewController
+  - ObjectMapper (~> 1.0)
+  - Signals
   - Socket.IO-Client-Swift
+  - SwiftDate
   - SwiftyJSON
   - SwiftyTimer
 
@@ -18,7 +24,10 @@ SPEC CHECKSUMS:
   Alamofire: 415bd7f56197722978759078486689f7ef913dce
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
+  ObjectMapper: 98524bac0dca46c6b3d5ee02cd410fc700ec6ce2
+  Signals: a6114179339fa648120f64bb3acd0472965d45d9
   Socket.IO-Client-Swift: e886946f1c356b673b0a73bf1633a0df8bff7a5b
+  SwiftDate: 49ebd4efb5f82336cfc2b1d8a6622f47d4b17370
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
   SwiftyTimer: 5453593e0aaacfb1611fb6986d257281140913bb
 

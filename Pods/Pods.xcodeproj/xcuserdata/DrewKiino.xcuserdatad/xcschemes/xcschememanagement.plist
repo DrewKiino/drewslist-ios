@@ -19,6 +19,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>ObjectMapper.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-DrewsListTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -29,7 +34,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Signals.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Socket.IO-Client-Swift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftDate.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -47,7 +62,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>14006CCA69594DFB5D70898B9396A7C1</key>
+		<key>16F41CC4CF1BADAF2AD5B43091265A24</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>23615430D815AF0698EDEBD7820849A0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -57,12 +77,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7A767C3B1185A444D8DB5093BD491B69</key>
+		<key>4C5C86663FBED6F14462CD671C2BC017</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>819A533F7CFC9152B925E065CE1540FB</key>
+		<key>5A5ACE04DCF4446B3E21165E66003772</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5C380F08CE8EBF5EB96199CBFB6E5C6B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>87F48C28FCF9700517530513CCE83B3A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,17 +102,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D6B6A725D4CDA56D3917861E58E94092</key>
+		<key>DAD001FDF2ABCCB203399C03C7B2EEA8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E82421CBEE4F9A6C8D5D9FEC459CE24A</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>EDA125ADA52355B7CA6DF7BA96918357</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F7DC546C8F076F7A7EB0C63EF399D266</key>
 		<dict>
 			<key>primary</key>
 			<true/>

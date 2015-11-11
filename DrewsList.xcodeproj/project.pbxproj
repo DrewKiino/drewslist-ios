@@ -16,6 +16,10 @@
 		EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */; };
 		EE07FE3E1BE11D1E00A10F05 /* DrewsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE3D1BE11D1E00A10F05 /* DrewsListTests.swift */; };
 		EE07FE491BE11D1E00A10F05 /* DrewsListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */; };
+		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
+		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
+		EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949A1BF30FCC00E228A9 /* UserModel.swift */; };
+		EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */; };
 		EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 /* End PBXBuildFile section */
@@ -54,7 +58,11 @@
 		EE07FE441BE11D1E00A10F05 /* DrewsListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrewsListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Atlantis.swift; path = ../../../../DevOps/Atlantis/Atlantis/Atlantis.swift; sourceTree = "<group>"; };
+		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
+		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
+		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
+		EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Atlantis.swift; path = ../../../../../DevOps/Atlantis/Atlantis/Atlantis.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,9 +99,9 @@
 				EE07FE271BE11D1E00A10F05 /* DrewsList */,
 				EE07FE3C1BE11D1E00A10F05 /* DrewsListTests */,
 				EE07FE471BE11D1E00A10F05 /* DrewsListUITests */,
-				EE07FE261BE11D1E00A10F05 /* Products */,
-				F058CF4AE176E74946518C59 /* Pods */,
 				FE0642FB75D7FCC6A3A6833B /* Frameworks */,
+				F058CF4AE176E74946518C59 /* Pods */,
+				EE07FE261BE11D1E00A10F05 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,14 +118,17 @@
 		EE07FE271BE11D1E00A10F05 /* DrewsList */ = {
 			isa = PBXGroup;
 			children = (
-				EE5E669C1BE1626600BCF1DE /* services */,
+				EE3C94941BF30F1A00E228A9 /* Controller */,
+				EE3C94991BF30FC500E228A9 /* Fixtures */,
+				EE3C94921BF30F1500E228A9 /* Model */,
+				EE5E669C1BE1626600BCF1DE /* Services */,
+				EE3C94931BF30F1700E228A9 /* View */,
 				EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */,
-				EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */,
-				EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */,
 				EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */,
-				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
-				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
+				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
+				EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */,
+				EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */,
 			);
 			path = DrewsList;
 			sourceTree = "<group>";
@@ -140,12 +151,45 @@
 			path = DrewsListUITests;
 			sourceTree = "<group>";
 		};
-		EE5E669C1BE1626600BCF1DE /* services */ = {
+		EE3C94921BF30F1500E228A9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EE3C94931BF30F1700E228A9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		EE3C94941BF30F1A00E228A9 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		EE3C94991BF30FC500E228A9 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		EE5E669C1BE1626600BCF1DE /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */,
+				EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */,
 			);
-			name = services;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		F058CF4AE176E74946518C59 /* Pods */ = {
@@ -396,10 +440,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
+				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */,
 				EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */,
+				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */,
+				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +489,7 @@
 				EE07FE2D1BE11D1E00A10F05 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */ = {
@@ -449,6 +498,7 @@
 				EE07FE321BE11D1E00A10F05 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

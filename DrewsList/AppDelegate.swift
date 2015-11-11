@@ -8,7 +8,7 @@
 
 import UIKit
 
-let log = Atlantis.Logger()
+public let log = Atlantis.Logger()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,9 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     Atlantis.Configuration.hasColoredLogs = true
     
-    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
-    application.registerUserNotificationSettings(settings)
-    application.registerForRemoteNotifications()
+//    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
+//    application.registerUserNotificationSettings(settings)
+//    application.registerForRemoteNotifications()
     
     return true
   }
