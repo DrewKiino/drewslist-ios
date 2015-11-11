@@ -141,7 +141,7 @@ public class ChatController {
     }
     
     // end simulation and disconnect from server
-    NSTimer.after(10.0) { [unowned self] in
+    NSTimer.after(15.0) { [unowned self] in
       self.socket.disconnect()
     }
   }
