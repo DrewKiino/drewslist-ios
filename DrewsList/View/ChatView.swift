@@ -19,11 +19,16 @@ public class ChatView: JSQMessagesViewController {
   private let incomingBubble = JSQMessagesBubbleImageFactory()
     .incomingMessagesBubbleImageWithColor(UIColor(red: 10/255, green: 180/255, blue: 230/255, alpha: 1.0))
   private let outgoingBubble = JSQMessagesBubbleImageFactory()
-    .outgoingMessagesBubbleImageWithColor(UIColor.lightGrayColor())
+    .outgoingMessagesBubbleImageWithColor(UIColor(red: 76/255, green: 175/255, blue: 80/255, alpha: 1.0))
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupDataBinding()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    let frame = collectionView?.frame
   }
   
   private func setupDataBinding() {
@@ -46,7 +51,8 @@ public class ChatView: JSQMessagesViewController {
     }
     // listen for changes in the 'didReceiveMessage'
     // if 'didReceive' is true, update the UI
-    controller.didReceiveMessage.listen(self) { isSent in
+    controller.didReceiveMessage.listen(self) { [weak self] didReceive in
+      if didReceive { self?.finishReceivingMessage() }
     }
     // listen for changes in the 'isSendingMessage'
     // if the controller is currently sending a message,

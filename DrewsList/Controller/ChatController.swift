@@ -32,18 +32,140 @@ public class ChatController {
   public let isSendingMessage = Signal<Bool>()
   
   public init() {
-    setup()
+    setupFixtures()
     setupSockets()
+    setupListeners()
   }
   
-  private func setup() {
+  private func setupFixtures() {
     // create user fixture
     let user = User()
-    user.firstName = "Hank"
-    user.lastName = "Hill"
-    user._id = "56413a1512d4fb16616a8af0"
+    user.username = "Jynx"
+    user._id = "56413a2e12d4fb16616a8af3"
+    model.user = user
     
-    model.user = User()
+    let friend = User()
+    friend.username = "Graves"
+    friend._id = "56413a1512d4fb16616a8af0"
+    model.friend = friend
+    
+    // subscribe to user's own room
+    if let user = model.user, let _id = user._id {
+      socket.emit("subscribe", _id)
+    }
+    
+    NSTimer.after(1.0) { [unowned self] in
+      self.socket.emit("subscribe", "56413a1512d4fb16616a8af0")
+      
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "Hello, how are you?"
+      )
+      
+      guard let json = message.toJSON() else { return }
+      
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(3.0) { [unowned self] in
+      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3")
+      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
+    }
+    
+    NSTimer.after(4.0) { [unowned self] in
+      self.didPressSendButton("I'm fine, thank you :)")
+    }
+    
+    NSTimer.after(6.0) { [unowned self] in
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "That's great to hear! This simulation is awesome huh?"
+      )
+      
+      guard let json = message.toJSON() else { return }
+      
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(7.0) { [unowned self] in
+      self.didPressSendButton("yeah it is!")
+    }
+
+    NSTimer.after(7.1) { [unowned self] in
+      self.didPressSendButton("get some sleep lol")
+    }
+    
+    NSTimer.after(8.0) { [unowned self] in
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "haha, I should huh."
+      )
+      
+      guard let json = message.toJSON() else { return }
+      
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(8.8) { [unowned self] in
+      self.didPressSendButton("haha, goodnight!")
+    }
+    
+    NSTimer.after(8.8) { [unowned self] in
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "wait! lets keep talking!!"
+      )
+      
+      guard let json = message.toJSON() else { return }
+      
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(9.1) { [unowned self] in
+      self.didPressSendButton("okay!")
+    }
+    
+    NSTimer.after(9.4) { [unowned self] in
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "just kidding :P, i just said that so we can write this really long message that will test the view's bubble box and make this view scrollable haha, but what's actually really crazy is how I'm able to type this in like 0.1 seconds, think about that for a second, just kidding my response is hardcoded lol."
+      )
+      
+      guard let json = message.toJSON() else { return }
+      
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(9.8) { [unowned self] in
+      self.didPressSendButton("haha good one!")
+    }
+    
+    NSTimer.after(10.0) { [unowned self] in
+      self.socket.disconnect()
+    }
+  }
+  
+  private func setupListeners() {
+    // have the controller listen for send message status
+    // if 'didSend' is true, then the server has ressed back an 'OK'
+    // else if it is false, then the server has ressed back an error
+    didSendMessage.listen(self) { didSend in
+    }
   }
   
   private func setupSockets() {
@@ -53,10 +175,11 @@ public class ChatController {
       for object in data {
         guard let newMessage = IncomingMessage(data: object).toJSQMessage()
           else { return }
+        log.verbose(newMessage.text)
+        // append the broadcast to the model's messages array
         self.model.messages.append(newMessage)
         // broadcast to all listeners that a message was received
         self.didReceiveMessage => true
-        log.verbose(newMessage.text)
       }
     }
     
@@ -84,75 +207,58 @@ public class ChatController {
       guard let jsonArray = JSON(data).array else { return }
       for json in jsonArray {
         
-        // broadcast to listeners that the message sent was successful
-        if let response = json["response"].string where response == "OK" {
-          self.didSendMessage => true
-          log.info(response)
-          
-          // broadcast to listenres that the message sent was unsuccessful
-        } else if let error = json["error"].string {
+        // broadcast to listenres that the message sent was unsuccessful
+        if let error = json["error"].string {
           self.didSendMessage => false
           log.error(error)
+          
+        // broadcast to listeners that the message sent was successful
+        } else {
+          
+          guard let newMessage = IncomingMessage(data: json["response"].object).toJSQMessage()
+                where newMessage.senderId == self.model.user?._id
+          else { return }
+          
+          if !self.model.pendingMessages.isEmpty {
+            self.model.pendingMessages.removeLast()
+            self.didSendMessage => true
+          }
         }
       }
     }
     
     // connect to server
     socket.connect()
-    
-    // subscribe to user's own room
-    if let user = model.user, let _id = user._id {
-      socket.emit("subscribe", _id)
-    }
-    
-    NSTimer.after(1.0) { [unowned self] in
-      self.socket.emit("subscribe", "56413a1512d4fb16616a8af0")
-      
-      let message: [String: AnyObject] = [
-        "user_id": "56413a1512d4fb16616a8af0",
-        "friend_id": "56413a2e12d4fb16616a8af3",
-        "friend_username": "Barcelona",
-        "message": "Hello, how are you?"
-      ]
-      
-      self.socket.emit("broadcast", message)
-    }
-    
-    NSTimer.after(3.0) { [unowned self] in
-      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3")
-      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
-    }
-    
-    NSTimer.after(4.0) { [unowned self] in
-      let message: [String: AnyObject] = [
-        "user_id": "56413a2e12d4fb16616a8af3",
-        "friend_id": "56413a1512d4fb16616a8af0",
-        "friend_username": "Jynx",
-        "message": "I'm fine thank you :)"
-      ]
-      self.socket.emit("broadcast", message)
-    }
-    
-    NSTimer.after(10.0) { [unowned self] in
-      self.socket.disconnect()
-    }
   }
   
   public func didPressSendButton(text: String) {
-    guard let message = createMessage(text) else { return }
-    self.socket.emit("broadcast", message)
+    guard let message = createOutgoingMessage(text),
+          let jsqMessage = message.toJSQMessage(),
+          let json = message.toJSON()
+          else { return }
+    
+    model.pendingMessages.append(jsqMessage)
+    
+    socket.emit("broadcast", json)
   }
   
-  private func createMessage(text: String) -> JSQMessage? {
+  private func createOutgoingMessage(text: String) -> OutgoingMessage? {
     guard let user = model.user,
           let _id = user._id,
-          let username = user.username
+          let username = user.username,
+          let friend = model.friend,
+          let friend_id = friend._id,
+          let friend_username = friend.username
           else { return nil }
+    
     let newOutgoingMessage = OutgoingMessage(
       user_id: _id,
       username: username,
+      friend_id: friend_id,
+      friend_username: friend_username,
       message: text
     )
-    return newOutgoingMessage.toJSQMessage()
+    
+    return newOutgoingMessage
   }
 }
