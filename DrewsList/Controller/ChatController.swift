@@ -18,7 +18,7 @@ public class ChatController {
   public let model = ChatModel()
   
   private let socket = SocketIOClient(
-    socketURL: "localhost:1337",
+    socketURL: "http://localhost:1337",
     options: [
       .Log(false),
       .ForcePolling(false)
@@ -42,11 +42,13 @@ public class ChatController {
     let user = User()
     user.username = "Jynx"
     user._id = "56413a2e12d4fb16616a8af3"
+//    user._id = "56413a1512d4fb16616a8af0"
     model.user = user
     
     let friend = User()
     friend.username = "Graves"
     friend._id = "56413a1512d4fb16616a8af0"
+//    friend._id = "56413a2e12d4fb16616a8af3"
     model.friend = friend
     
     // subscribe to user's own room
@@ -54,19 +56,19 @@ public class ChatController {
       socket.emit("subscribe", _id)
     }
     
+    // message template sent by friend
+    let message = OutgoingMessage(
+      user_id: "56413a1512d4fb16616a8af0",
+      username: "Graves",
+      friend_id: "56413a2e12d4fb16616a8af3",
+      friend_username: "Jynx",
+      message: "Hello, how are you?"
+    )
+    
+    // begin chat simulation
     NSTimer.after(1.0) { [unowned self] in
       self.socket.emit("subscribe", "56413a1512d4fb16616a8af0")
-      
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "Hello, how are you?"
-      )
-      
       guard let json = message.toJSON() else { return }
-      
       self.socket.emit("broadcast", json)
     }
     
@@ -80,16 +82,7 @@ public class ChatController {
     }
     
     NSTimer.after(6.0) { [unowned self] in
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "That's great to hear! This simulation is awesome huh?"
-      )
-      
-      guard let json = message.toJSON() else { return }
-      
+      guard let json = message.set( "That's great to hear! This simulation is awesome huh?").toJSON() else { return }
       self.socket.emit("broadcast", json)
     }
     
@@ -102,16 +95,7 @@ public class ChatController {
     }
     
     NSTimer.after(8.0) { [unowned self] in
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "haha, I should huh."
-      )
-      
-      guard let json = message.toJSON() else { return }
-      
+      guard let json = message.set("haha, I should huh.").toJSON() else { return }
       self.socket.emit("broadcast", json)
     }
     
@@ -120,16 +104,7 @@ public class ChatController {
     }
     
     NSTimer.after(8.8) { [unowned self] in
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "wait! lets keep talking!!"
-      )
-      
-      guard let json = message.toJSON() else { return }
-      
+      guard let json = message.set("wait! lets keep talking!!").toJSON() else { return }
       self.socket.emit("broadcast", json)
     }
     
@@ -138,15 +113,7 @@ public class ChatController {
     }
     
     NSTimer.after(9.4) { [unowned self] in
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "just kidding :P, i just said that so we can write this really long message that will test the view's bubble box and make this view scrollable haha, but what's actually really crazy is how I'm able to type this in like 0.1 seconds, think about that for a second, just kidding my response is hardcoded lol."
-      )
-      
-      guard let json = message.toJSON() else { return }
+      guard let json = message.set("just kidding :P, i just said that so I can write this really long message that will test the view's bubble box and make this view scrollable haha, but what's actually really crazy is how I'm able to type this in like 0.1 seconds, think about that for a second, just kidding my response is hardcoded lol.").toJSON() else { return }
       
       self.socket.emit("broadcast", json)
     }
@@ -155,6 +122,7 @@ public class ChatController {
       self.didPressSendButton("haha good one!")
     }
     
+    // end simulation and disconnect from server
     NSTimer.after(10.0) { [unowned self] in
       self.socket.disconnect()
     }
@@ -169,6 +137,11 @@ public class ChatController {
   }
   
   private func setupSockets() {
+    
+    // subscribe to any errors from the socket connection
+    socket.on("error") { data, socket in
+      log.error(data)
+    }
     
     // subscribe to broadcasts done by the server
     socket.on("message") { [unowned self] data, socket in

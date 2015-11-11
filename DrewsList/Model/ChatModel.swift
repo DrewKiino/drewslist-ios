@@ -118,4 +118,9 @@ public class OutgoingMessage {
     
     return json
   }
+  
+  public func set(text: String) -> Self {
+    message = text
+    return self
+  }
 }
