@@ -14,14 +14,32 @@ import SwiftyJSON
 
 public class ChatController {
   
+  // local url
+  // http://localhost:1337
+  
+  // server url
+  //  https://drewslist.herokuapp.com
+  
   // MVC
   public let model = ChatModel()
   
+//  private var socket: SocketIOClient!
   private let socket = SocketIOClient(
-    socketURL: "http://localhost:1337",
+    //    socketURL: "http://localhost:1337",
+    socketURL: "https://drewslist.herokuapp.com",
     options: [
       .Log(false),
-      .ForcePolling(false)
+      .ForcePolling(false),
+      .Cookies([
+        NSHTTPCookie(properties: [
+          NSHTTPCookieDomain: "http://localhost:1337",
+          NSHTTPCookiePath: "/",
+          NSHTTPCookieName: "key",
+          NSHTTPCookieValue: "value",
+          NSHTTPCookieSecure: true,
+          NSHTTPCookieExpires: NSDate(timeIntervalSinceNow: 60)
+        ])!
+      ])
     ]
   )
   
@@ -138,9 +156,21 @@ public class ChatController {
   
   private func setupSockets() {
     
-    // subscribe to any errors from the socket connection
+    // subscribe to default streams
     socket.on("error") { data, socket in
       log.error(data)
+    }
+    socket.on("connect") { data, socket in
+      log.debug(data)
+    }
+    socket.on("reconnect") { data, socket in
+      log.debug(data)
+    }
+    socket.on("reconnectAttempt") { data, socket in
+      log.debug(data)
+    }
+    socket.on("disconnect") { data, socket in
+      log.debug(data)
     }
     
     // subscribe to broadcasts done by the server
