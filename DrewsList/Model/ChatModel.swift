@@ -15,6 +15,9 @@ import SwiftDate
 
 public class ChatModel {
   
+  public let _session_id = Signal<String?>()
+  public var session_id: String? { didSet { _session_id => session_id } }
+  
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
   
@@ -26,6 +29,14 @@ public class ChatModel {
   
   public let _pendingMessages = Signal<[JSQMessage]>()
   public var pendingMessages = [JSQMessage]() { didSet { _pendingMessages => pendingMessages } }
+  
+  public var room_id: String? {
+    get {
+      guard let user_id = user?._id, let friend_id = friend?._id
+      else { return nil }
+      return user_id + "+" + friend_id
+    }
+  }
 }
 
 public class IncomingMessage: Mappable {
@@ -84,18 +95,34 @@ public class OutgoingMessage {
   public let _friend_username = Signal<String?>()
   public var friend_username: String? { didSet { _friend_username => friend_username } }
   
+  public let _room_id = Signal<String?>()
+  public var room_id: String? { didSet { _room_id => room_id } }
+  
+  public let _session_id = Signal<String?>()
+  public var session_id: String? { didSet { _session_id => session_id } }
+  
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
-  public init(user_id: String, username: String, friend_id: String, friend_username: String, message: String) {
+  
+  public init(
+    user_id: String,
+    username: String,
+    friend_id: String,
+    friend_username: String,
+    message: String,
+    session_id: String,
+    room_id: String
+  ) {
     self.user_id = user_id
     self.username = username
     self.friend_id = friend_id
     self.friend_username = friend_username
     self.message = message
+    self.session_id = session_id
+    self.room_id = room_id
     self.createdAt = NSDate().toISOString()
   }
-  
   
   public func toJSQMessage() -> JSQMessage? {
     guard let user_id = user_id, let username = username, let message = message else { return nil }
@@ -104,15 +131,21 @@ public class OutgoingMessage {
   
   public func toJSON() -> [String: AnyObject]? {
     guard let user_id = user_id,
+          let username = username,
           let friend_id = friend_id,
           let friend_username = friend_username,
+          let session_id = session_id,
+          let room_id = room_id,
           let message = message
           else { return nil }
     
     let json: [String: AnyObject] = [
       "user_id": user_id,
+      "username": username,
       "friend_id": friend_id,
       "friend_username": friend_username,
+      "session_id": session_id,
+      "room_id": room_id,
       "message": message
     ]
     

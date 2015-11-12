@@ -24,8 +24,8 @@ public class ChatController {
   public let model = ChatModel()
   
   private let socket = SocketIOClient(
-      socketURL: "http://localhost:1337",
-//    socketURL: "https://drewslist.herokuapp.com",
+//      socketURL: "http://localhost:1337",
+    socketURL: "https://drewslist.herokuapp.com",
     options: [
       .Log(false),
       .ForcePolling(false),
@@ -54,52 +54,239 @@ public class ChatController {
     setupListeners()
   }
   
+  private func setupListeners() {
+    // have the controller listen for send message status
+    // if 'didSend' is true, then the server has ressed back an 'OK'
+    // else if it is false, then the server has ressed back an error
+    didSendMessage.listen(self) { didSend in
+    }
+  }
+  
+  private func setupSockets() {
+    
+    // subscribe to default streams
+    socket.on("error") { data, socket in
+      log.error(data)
+    }
+    socket.on("connect") { data, socket in
+      log.info("connection established.")
+    }
+    socket.on("reconnect") { data, socket in
+      log.debug(data)
+    }
+    socket.on("reconnectAttempt") { data, socket in
+      log.debug(data)
+    }
+    socket.on("disconnect") { [unowned self] data, socket in
+      log.info("disconnected from server.")
+      // negate the session id in the model
+      self.model.session_id = nil
+    }
+    
+    // subscribe to broadcasts done by the server
+    socket.on("message") { [unowned self] data, socket in
+      for object in data {
+        guard let newMessage = IncomingMessage(data: object).toJSQMessage()
+          else { return }
+        log.verbose(newMessage.text)
+        // append the broadcast to the model's messages array
+        self.model.messages.append(newMessage)
+        // broadcast to all listeners that a message was received
+        self.didReceiveMessage => true
+      }
+    }
+    
+
+    // subscribe to the server chat framework's connect callback
+    socket.on("connectCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].string {
+          // set the session id of the model
+          self.model.session_id = response
+          if  let session_id = self.model.session_id {
+            log.info("session ID: \(session_id)")
+          }
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
+    }
+    
+    // subscribe to the server chat framework's messages callback
+    socket.on("subscribeCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].string {
+          log.info("successfully subscribed to: \(response)")
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
+    }
+    
+    socket.on("setOnlineStatusCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].bool {
+          log.info("successfully set online status to: \(response)")
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
+    }
+    
+    // subscribe to the server chat framework's messages callback
+    socket.on("checkForMessagesCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let messages = json["response"].arrayObject {
+          for object in messages {
+            guard let newMessage = IncomingMessage(data: object).toJSQMessage()
+              else { return }
+            self.model.messages.append(newMessage)
+            log.debug(newMessage.senderId)
+            // broadcast to all listeners that a message was received
+            self.didReceiveMessage => true
+            log.verbose(newMessage.text)
+          }
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
+    }
+    
+    // subscribe to the server chat framework's broadcast callback
+    socket.on("broadcastCallback") { [unowned self] data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        
+        // broadcast to listenres that the message sent was unsuccessful
+        if let error = json["error"].string {
+          self.didSendMessage => false
+          log.error(error)
+        // broadcast to listeners that the message sent was successful
+        } else if let response = json["response"].string {
+          if !self.model.pendingMessages.isEmpty {
+            self.model.pendingMessages.removeLast()
+            self.didSendMessage => true
+            log.info(response)
+          }
+        }
+      }
+    }
+    
+    // connect to server
+    socket.connect()
+  }
+  
+  public func didPressSendButton(text: String) {
+    guard let message = createOutgoingMessage(text),
+          let jsqMessage = message.toJSQMessage(),
+          let json = message.toJSON()
+          else { return }
+    
+    model.pendingMessages.append(jsqMessage)
+    
+    socket.emit("broadcast", json)
+  }
+  
   private func setupFixtures() {
     // create user fixture
     let user = User()
     user.username = "Jynx"
-    user._id = "56413a2e12d4fb16616a8af3"
-//    user._id = "56413a1512d4fb16616a8af0"
+//    user._id = "56413a2e12d4fb16616a8af3"
+        user._id = "56413a1512d4fb16616a8af0"
     model.user = user
     
     let friend = User()
     friend.username = "Graves"
-    friend._id = "56413a1512d4fb16616a8af0"
-//    friend._id = "56413a2e12d4fb16616a8af3"
+//    friend._id = "56413a1512d4fb16616a8af0"
+        friend._id = "56413a2e12d4fb16616a8af3"
     model.friend = friend
     
-    // subscribe to user's own room
-    if let user = model.user, let _id = user._id {
-      socket.emit("subscribe", _id)
+    model._session_id.listenOnce(self) { [unowned self] session_id in
+      
+      guard let session_id = session_id,
+        let room_id = self.model.room_id
+        else { return }
+      
+      // message template sent by friend
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "56413a2e12d4fb16616a8af3",
+        friend_username: "Jynx",
+        message: "Hello, how are you?",
+        session_id: session_id,
+        room_id: room_id
+      )
+      
+     self.goOnlineAndSubscribe()
+//      self.simulateChat(friendMessageTemplate: message)
+//      self.simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate: message)
     }
+  }
+  
+  private func createOutgoingMessage(text: String) -> OutgoingMessage? {
+    guard let user = model.user,
+          let _id = user._id,
+          let username = user.username,
+          let friend = model.friend,
+          let friend_id = friend._id,
+          let friend_username = friend.username,
+          let session_id = model.session_id,
+          let room_id = model.room_id
+          else { return nil }
     
+    let newOutgoingMessage = OutgoingMessage(
+      user_id: _id,
+      username: username,
+      friend_id: friend_id,
+      friend_username: friend_username,
+      message: text,
+      session_id: session_id,
+      room_id: room_id
+    )
     
-//    NSTimer.after(1.0) { [unowned self] in
-//      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3+56413a1512d4fb16616a8af0")
-//    }
-    
-    // message template sent by friend
+    return newOutgoingMessage
+  }
+  
+  private func simulateChat(friendMessageTemplate message: OutgoingMessage) {
+    model.user?._id = "56413a2e12d4fb16616a8af3"
+    model.friend?._id = "56413a1512d4fb16616a8af0"
     // begin chat simulation
-        let message = OutgoingMessage(
-          user_id: "56413a1512d4fb16616a8af0",
-          username: "Graves",
-          friend_id: "56413a2e12d4fb16616a8af3",
-          friend_username: "Jynx",
-          message: "Hello, how are you?"
-        )
-        
     NSTimer.after(1.0) { [unowned self] in
       self.socket.emit(
         "subscribe",
-        "56413a2e12d4fb16616a8af3+56413a1512d4fb16616a8af0"
+        [
+          "user_id": self.model.user!._id!,
+          "room_id": self.model.room_id!
+        ]
+      )
+      self.socket.emit(
+        "setOnlineStatus",
+        [
+          "online": true,
+          "user_id": self.model.user!._id!
+        ]
+      )
+      self.socket.emit(
+        "subscribe",
+        [
+          "user_id": self.model.friend!._id!,
+          "room_id": self.model.room_id!
+        ]
+      )
+      self.socket.emit(
+        "setOnlineStatus",
+        [
+          "online": true,
+          "user_id": self.model.friend!._id!
+        ]
       )
       guard let json = message.toJSON() else { return }
       self.socket.emit("broadcast", json)
-    }
-    
-    NSTimer.after(3.0) { [unowned self] in
-      self.socket.emit("subscribe", "56413a2e12d4fb16616a8af3")
-      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
     }
     
     NSTimer.after(4.0) { [unowned self] in
@@ -114,7 +301,7 @@ public class ChatController {
     NSTimer.after(7.0) { [unowned self] in
       self.didPressSendButton("yeah it is!")
     }
-
+    
     NSTimer.after(7.1) { [unowned self] in
       self.didPressSendButton("get some sleep lol")
     }
@@ -153,122 +340,71 @@ public class ChatController {
     }
   }
   
-  private func setupListeners() {
-    // have the controller listen for send message status
-    // if 'didSend' is true, then the server has ressed back an 'OK'
-    // else if it is false, then the server has ressed back an error
-    didSendMessage.listen(self) { didSend in
+  private func simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate message: OutgoingMessage) {
+    model.user?._id = "56413a2e12d4fb16616a8af3"
+    model.friend?._id = "56413a1512d4fb16616a8af0"
+    
+    NSTimer.after(1.0) { [unowned self] in
+      guard let json = message.set( "Hey are you home?").toJSON() else { return }
+      self.socket.emit(
+        "setOnlineStatus",
+        [
+          "online": true,
+          "user_id": "56413a1512d4fb16616a8af0"
+        ]
+      )
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(2.0) { [unowned self] in
+      guard let json = message.set( "Yo answer me!").toJSON() else { return }
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(4.0) { [unowned self] in
+      guard let json = message.set( "whatever, just wanted to let you know I stole the car and I'm going to havasu.").toJSON() else { return }
+      self.socket.emit("broadcast", json)
+    }
+    
+    NSTimer.after(5.0) { [unowned self] in
+      self.socket.emit(
+        "subscribe",
+        [
+          "user_id": self.model.user!._id!,
+          "room_id": self.model.room_id!
+        ]
+      )
+    }
+  
+    NSTimer.after(6.0) { [unowned self] in
+      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
+    }
+    
+    NSTimer.after(8.0) { [unowned self] in
+      self.didPressSendButton("wtf.")
+    }
+    
+    // end simulation and disconnect from server
+    NSTimer.after(15.0) { [unowned self] in
+      self.socket.disconnect()
     }
   }
   
-  private func setupSockets() {
-    
-    // subscribe to default streams
-    socket.on("error") { data, socket in
-      log.error(data)
-    }
-    socket.on("connect") { data, socket in
-      log.debug(data)
-    }
-    socket.on("reconnect") { data, socket in
-      log.debug(data)
-    }
-    socket.on("reconnectAttempt") { data, socket in
-      log.debug(data)
-    }
-    socket.on("disconnect") { data, socket in
-      log.debug(data)
-    }
-    
-    // subscribe to broadcasts done by the server
-    socket.on("message") { [unowned self] data, socket in
-      for object in data {
-        guard let newMessage = IncomingMessage(data: object).toJSQMessage()
-          else { return }
-        log.verbose(newMessage.text)
-        // append the broadcast to the model's messages array
-        self.model.messages.append(newMessage)
-        // broadcast to all listeners that a message was received
-        self.didReceiveMessage => true
-      }
-    }
-    
-    // subscribe to the server chat framework's messages callback
-    socket.on("checkForMessagesCallback") { data, socket in
-      guard let jsonArray = JSON(data).array else { return }
-      for json in jsonArray {
-        if let messages = json["response"]["messages"].arrayObject {
-          for object in messages {
-            guard let newMessage = IncomingMessage(data: object).toJSQMessage()
-              else { return }
-            self.model.messages.append(newMessage)
-            // broadcast to all listeners that a message was received
-            self.didReceiveMessage => true
-            log.verbose(newMessage.text)
-          }
-        } else if let error = json["error"].string {
-          log.debug(error)
-        }
-      }
-    }
-    
-    // subscribe to the server chat framework's broadcast callback
-    socket.on("broadcastCallback") { [unowned self] data, socket in
-      guard let jsonArray = JSON(data).array else { return }
-      for json in jsonArray {
-        
-        // broadcast to listenres that the message sent was unsuccessful
-        if let error = json["error"].string {
-          self.didSendMessage => false
-          log.error(error)
-          
-        // broadcast to listeners that the message sent was successful
-        } else {
-          
-          guard let newMessage = IncomingMessage(data: json["response"].object).toJSQMessage()
-                where newMessage.senderId == self.model.user?._id
-          else { return }
-          
-          if !self.model.pendingMessages.isEmpty {
-            self.model.pendingMessages.removeLast()
-            self.didSendMessage => true
-          }
-        }
-      }
-    }
-    
-    // connect to server
-    socket.connect()
-  }
-  
-  public func didPressSendButton(text: String) {
-    guard let message = createOutgoingMessage(text),
-          let jsqMessage = message.toJSQMessage(),
-          let json = message.toJSON()
-          else { return }
-    
-    model.pendingMessages.append(jsqMessage)
-    
-    socket.emit("broadcast", json)
-  }
-  
-  private func createOutgoingMessage(text: String) -> OutgoingMessage? {
-    guard let user = model.user,
-          let _id = user._id,
-          let username = user.username,
-          let friend = model.friend,
-          let friend_id = friend._id,
-          let friend_username = friend.username
-          else { return nil }
-    
-    let newOutgoingMessage = OutgoingMessage(
-      user_id: _id,
-      username: username,
-      friend_id: friend_id,
-      friend_username: friend_username,
-      message: text
+  private func goOnlineAndSubscribe() {
+    socket.emit(
+      "setOnlineStatus",
+      [
+        "online": true,
+        "user_id": self.model.user!._id!
+      ]
     )
-    
-    return newOutgoingMessage
+    socket.emit(
+      "subscribe",
+      [
+        "user_id": self.model.user!._id!,
+        "room_id": self.model.room_id!
+      ]
+    )
+    socket.emit("checkForMessages", self.model.user!._id!)
   }
 }
