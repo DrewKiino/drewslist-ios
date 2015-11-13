@@ -30,6 +30,8 @@ pod 'JSQMessagesViewController'
 # pub/sub libs
 pod 'Signals'
 
+# promises libs
+pod 'PromiseKit'
 
 
 #####################################

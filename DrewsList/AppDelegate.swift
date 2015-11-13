@@ -7,24 +7,35 @@
 //
 
 import UIKit
+import Signals
 
 public let log = Atlantis.Logger()
+public let remoteNotification = Signal<[NSObject: AnyObject]>()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
+  
+  private let socket = Sockets.sharedInstance()
+  
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
-    // PUSH NOTIFICATION
     
+    // create a WebSocket connection to the server
+    socket.connect()
     
+    // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
-//    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
-//    application.registerUserNotificationSettings(settings)
-//    application.registerForRemoteNotifications()
+    // PUSH NOTIFICATION
+    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
+    application.registerUserNotificationSettings(settings)
+    application.registerForRemoteNotifications()
+    
+    // on foreground, reset the badge number
+    UIApplication.sharedApplication().applicationIconBadgeNumber = 0
     
     return true
   }
@@ -41,6 +52,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func applicationWillEnterForeground(application: UIApplication) {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    // on foreground, reset the badge number
+    UIApplication.sharedApplication().applicationIconBadgeNumber = 0
   }
 
   func applicationDidBecomeActive(application: UIApplication) {
@@ -52,7 +66,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-    log.debug(deviceToken)
+    log.info("deviceToken: \(deviceToken)")
+  }
+  
+  func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    
+    // log the push message
+    if  let aps = userInfo["aps"] as? NSDictionary,
+        let alert = aps.valueForKey("alert"),
+        let payload = userInfo["payload"] as? NSDictionary,
+        let user_id = payload.valueForKey("user_id")
+    {
+      log.info("received remote notification from server: \(alert)")
+      // publish to server that the app received the push notification
+      socket.emit("didReceivePushNotification", ["user_id": user_id], forceConnection: true)
+    }
   }
 }
 

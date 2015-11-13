@@ -10,7 +10,6 @@
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		C7F93448B98F7A7B0B0069F7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */; };
-		EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */; };
 		EE07FE2E1BE11D1E00A10F05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */; };
 		EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */; };
 		EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */; };
@@ -22,6 +21,7 @@
 		EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */; };
 		EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
+		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +47,6 @@
 		94B265067F38D8EFF1135126 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EE07FE251BE11D1E00A10F05 /* DrewsList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrewsList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		EE07FE2D1BE11D1E00A10F05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE07FE321BE11D1E00A10F05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -64,6 +63,7 @@
 		EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Atlantis.swift; path = ../../../../../DevOps/Atlantis/Atlantis/Atlantis.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +128,6 @@
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
 				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
 				EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */,
-				EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */,
 			);
 			path = DrewsList;
 			sourceTree = "<group>";
@@ -188,6 +187,7 @@
 			children = (
 				EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */,
 				EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */,
+				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -441,9 +441,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */,
+				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
-				EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */,
 				EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */,

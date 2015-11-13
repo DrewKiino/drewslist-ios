@@ -4,6 +4,25 @@ PODS:
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - ObjectMapper (1.0.1)
+  - OMGHTTPURLRQ (3.0.2):
+    - OMGHTTPURLRQ/RQ (= 3.0.2)
+  - OMGHTTPURLRQ/FormURLEncode (3.0.2)
+  - OMGHTTPURLRQ/RQ (3.0.2):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.0.2)
+  - PromiseKit (3.0.0):
+    - PromiseKit/Foundation (= 3.0.0)
+    - PromiseKit/QuartzCore (= 3.0.0)
+    - PromiseKit/UIKit (= 3.0.0)
+  - PromiseKit/CorePromise (3.0.0)
+  - PromiseKit/Foundation (3.0.0):
+    - OMGHTTPURLRQ (~> 3.0.0)
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (3.0.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (3.0.0):
+    - PromiseKit/CorePromise
   - Signals (2.1.0)
   - Socket.IO-Client-Swift (4.0.4)
   - SwiftDate (1.2)
@@ -14,6 +33,7 @@ DEPENDENCIES:
   - Alamofire
   - JSQMessagesViewController
   - ObjectMapper (~> 1.0)
+  - PromiseKit
   - Signals
   - Socket.IO-Client-Swift
   - SwiftDate
@@ -25,6 +45,8 @@ SPEC CHECKSUMS:
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   ObjectMapper: 98524bac0dca46c6b3d5ee02cd410fc700ec6ce2
+  OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
+  PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
   Signals: a6114179339fa648120f64bb3acd0472965d45d9
   Socket.IO-Client-Swift: e886946f1c356b673b0a73bf1633a0df8bff7a5b
   SwiftDate: 49ebd4efb5f82336cfc2b1d8a6622f47d4b17370

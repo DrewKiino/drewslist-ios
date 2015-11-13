@@ -28,7 +28,6 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    let frame = collectionView?.frame
   }
   
   private func setupDataBinding() {
@@ -44,6 +43,11 @@ public class ChatView: JSQMessagesViewController {
       guard let _id = _id else { return }
       self?.senderId = _id
     }
+    // listen for changes in the 'isSendingMessage'
+    // if the controller is currently sending a message,
+    // update the UI
+    controller.isSendingMessage.listen(self) { isSending in
+    }
     // listen for changes in the 'didSendMessage'
     // if 'isSent' is true, update the UI
     controller.didSendMessage.listen(self) { [weak self] isSent in
@@ -53,11 +57,6 @@ public class ChatView: JSQMessagesViewController {
     // if 'didReceive' is true, update the UI
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
       if didReceive { self?.finishReceivingMessage() }
-    }
-    // listen for changes in the 'isSendingMessage'
-    // if the controller is currently sending a message,
-    // update the UI
-    controller.isSendingMessage.listen(self) { isSending in
     }
   }
   

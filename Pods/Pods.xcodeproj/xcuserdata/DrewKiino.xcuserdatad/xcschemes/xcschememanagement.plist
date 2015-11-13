@@ -19,6 +19,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>OMGHTTPURLRQ.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>ObjectMapper.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -30,6 +35,11 @@
 			<false/>
 		</dict>
 		<key>Pods.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PromiseKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -62,12 +72,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>16F41CC4CF1BADAF2AD5B43091265A24</key>
+		<key>190ACD3A51BC90B85EADB13E9CDD207B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>23615430D815AF0698EDEBD7820849A0</key>
+		<key>1C8384ED75F9E8DE059F51FAF2FCECA9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -77,22 +87,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4C5C86663FBED6F14462CD671C2BC017</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5A5ACE04DCF4446B3E21165E66003772</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>5C380F08CE8EBF5EB96199CBFB6E5C6B</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>87F48C28FCF9700517530513CCE83B3A</key>
+		<key>5C1EA2416C007B8F7AD00B85B2F52616</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -102,7 +97,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DAD001FDF2ABCCB203399C03C7B2EEA8</key>
+		<key>9E5561942FBA54D76A8D0C2BD4968FF9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AB400A19C51ECB5583F143A296B9A17F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B1E86FE0516B2B570B1C31A2019E1099</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DD4C52B1FEA58D46BAEA42CECA6840CC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DF4B173B9D351B56B26AC44701F53DFD</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -113,6 +128,11 @@
 			<true/>
 		</dict>
 		<key>EDA125ADA52355B7CA6DF7BA96918357</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FB39C5F98B506A14642DE6567C28C0E4</key>
 		<dict>
 			<key>primary</key>
 			<true/>

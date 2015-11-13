@@ -11,6 +11,7 @@ import Socket_IO_Client_Swift
 import Signals
 import JSQMessagesViewController
 import SwiftyJSON
+import SwiftyTimer
 
 public class ChatController {
   
@@ -23,25 +24,7 @@ public class ChatController {
   // MVC
   public let model = ChatModel()
   
-  private let socket = SocketIOClient(
-//      socketURL: "http://localhost:1337",
-    socketURL: "https://drewslist.herokuapp.com",
-    options: [
-      .Log(false),
-      .ForcePolling(false),
-      .Cookies([
-        NSHTTPCookie(properties: [
-          NSHTTPCookieDomain: "http://localhost:1337",
-          NSHTTPCookiePath: "/",
-          NSHTTPCookieName: "key",
-          NSHTTPCookieValue: "value",
-          NSHTTPCookieSecure: true,
-          NSHTTPCookieExpires: NSDate(timeIntervalSinceNow: 60)
-        ])!
-      ])
-    ]
-  )
-  
+  public let socket = Sockets.sharedInstance()
   
   // pub/sub
   public let didSendMessage = Signal<Bool>()
@@ -49,12 +32,15 @@ public class ChatController {
   public let isSendingMessage = Signal<Bool>()
   
   public init() {
-    setupFixtures()
     setupSockets()
-    setupListeners()
+    setupDataBinding()
+    setupFixtures()
+    remoteNotification.listen(self) { [unowned self] payload in
+      self.didPressSendButton(payload.description)
+    }
   }
   
-  private func setupListeners() {
+  private func setupDataBinding() {
     // have the controller listen for send message status
     // if 'didSend' is true, then the server has ressed back an 'OK'
     // else if it is false, then the server has ressed back an error
@@ -64,21 +50,30 @@ public class ChatController {
   
   private func setupSockets() {
     
-    // subscribe to default streams
-    socket.on("error") { data, socket in
-      log.error(data)
+    // subscribe to the server chat framework's connect callback
+    socket.on("subscribeCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].string {
+          log.info("joined room: \(response)")
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
     }
-    socket.on("connect") { data, socket in
-      log.info("connection established.")
+    
+    socket.on("setOnlineStatusCallback") { data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].bool {
+          log.info("online status set to: \(response)")
+        } else if let error = json["error"].string {
+          log.debug(error)
+        }
+      }
     }
-    socket.on("reconnect") { data, socket in
-      log.debug(data)
-    }
-    socket.on("reconnectAttempt") { data, socket in
-      log.debug(data)
-    }
+    
     socket.on("disconnect") { [unowned self] data, socket in
-      log.info("disconnected from server.")
       // negate the session id in the model
       self.model.session_id = nil
     }
@@ -96,46 +91,6 @@ public class ChatController {
       }
     }
     
-
-    // subscribe to the server chat framework's connect callback
-    socket.on("connectCallback") { data, socket in
-      guard let jsonArray = JSON(data).array else { return }
-      for json in jsonArray {
-        if let response = json["response"].string {
-          // set the session id of the model
-          self.model.session_id = response
-          if  let session_id = self.model.session_id {
-            log.info("session ID: \(session_id)")
-          }
-        } else if let error = json["error"].string {
-          log.debug(error)
-        }
-      }
-    }
-    
-    // subscribe to the server chat framework's messages callback
-    socket.on("subscribeCallback") { data, socket in
-      guard let jsonArray = JSON(data).array else { return }
-      for json in jsonArray {
-        if let response = json["response"].string {
-          log.info("successfully subscribed to: \(response)")
-        } else if let error = json["error"].string {
-          log.debug(error)
-        }
-      }
-    }
-    
-    socket.on("setOnlineStatusCallback") { data, socket in
-      guard let jsonArray = JSON(data).array else { return }
-      for json in jsonArray {
-        if let response = json["response"].bool {
-          log.info("successfully set online status to: \(response)")
-        } else if let error = json["error"].string {
-          log.debug(error)
-        }
-      }
-    }
-    
     // subscribe to the server chat framework's messages callback
     socket.on("checkForMessagesCallback") { data, socket in
       guard let jsonArray = JSON(data).array else { return }
@@ -145,7 +100,6 @@ public class ChatController {
             guard let newMessage = IncomingMessage(data: object).toJSQMessage()
               else { return }
             self.model.messages.append(newMessage)
-            log.debug(newMessage.senderId)
             // broadcast to all listeners that a message was received
             self.didReceiveMessage => true
             log.verbose(newMessage.text)
@@ -175,9 +129,6 @@ public class ChatController {
         }
       }
     }
-    
-    // connect to server
-    socket.connect()
   }
   
   public func didPressSendButton(text: String) {
@@ -190,44 +141,7 @@ public class ChatController {
     
     socket.emit("broadcast", json)
   }
-  
-  private func setupFixtures() {
-    // create user fixture
-    let user = User()
-    user.username = "Jynx"
-//    user._id = "56413a2e12d4fb16616a8af3"
-        user._id = "56413a1512d4fb16616a8af0"
-    model.user = user
-    
-    let friend = User()
-    friend.username = "Graves"
-//    friend._id = "56413a1512d4fb16616a8af0"
-        friend._id = "56413a2e12d4fb16616a8af3"
-    model.friend = friend
-    
-    model._session_id.listenOnce(self) { [unowned self] session_id in
-      
-      guard let session_id = session_id,
-        let room_id = self.model.room_id
-        else { return }
-      
-      // message template sent by friend
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "56413a2e12d4fb16616a8af3",
-        friend_username: "Jynx",
-        message: "Hello, how are you?",
-        session_id: session_id,
-        room_id: room_id
-      )
-      
-     self.goOnlineAndSubscribe()
-//      self.simulateChat(friendMessageTemplate: message)
-//      self.simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate: message)
-    }
-  }
-  
+
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
     guard let user = model.user,
           let _id = user._id,
@@ -252,8 +166,91 @@ public class ChatController {
     return newOutgoingMessage
   }
   
+  public func subscribe(room_id: String, user_id: String) {
+    socket.emit(
+      "subscribe",
+      [
+        "room_id": room_id,
+        "user_id": user_id
+      ]
+    )
+  }
+  
+  public func setOnlineStatus(user_id: String, online: Bool) {
+    socket.emit(
+      "setOnlineStatus",
+      [
+        "online": online,
+        "user_id": user_id
+      ]
+    )
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  private func setupFixtures() {
+    // create user fixture
+    let user = User()
+    user.username = "Jynx"
+    user._id = "564520436228ca1f00f49bb9"
+//            user._id = "56413a1512d4fb16616a8af0"
+    model.user = user
+    
+    let friend = User()
+    friend.username = "Graves"
+    friend._id = "56413a1512d4fb16616a8af0"
+//            friend._id = "564520436228ca1f00f49bb9"
+    model.friend = friend
+    
+    socket._session_id.listenOnce(self) { [unowned self] session_id in
+      
+      self.model.session_id = session_id
+      
+      guard
+        let session_id = session_id,
+        let room_id = self.model.room_id,
+        let user = self.model.user,
+        let user_id = user._id
+        else { return }
+      
+      
+      // message template sent by friend
+      let message = OutgoingMessage(
+        user_id: "56413a1512d4fb16616a8af0",
+        username: "Graves",
+        friend_id: "564520436228ca1f00f49bb9",
+        friend_username: "Jynx",
+        message: "Hello, how are you?",
+        session_id: session_id,
+        room_id: room_id
+      )
+      
+      self.subscribe(room_id, user_id: user_id)
+      self.setOnlineStatus(user_id, online: true)
+      self.socket.emit("checkForMessages", user_id)
+      //      self.simulateChat(friendMessageTemplate: message)
+      //      self.simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate: message)
+    }
+  }
+  
   private func simulateChat(friendMessageTemplate message: OutgoingMessage) {
-    model.user?._id = "56413a2e12d4fb16616a8af3"
+    model.user?._id = "564520436228ca1f00f49bb9"
     model.friend?._id = "56413a1512d4fb16616a8af0"
     // begin chat simulation
     NSTimer.after(1.0) { [unowned self] in
@@ -341,7 +338,7 @@ public class ChatController {
   }
   
   private func simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate message: OutgoingMessage) {
-    model.user?._id = "56413a2e12d4fb16616a8af3"
+    model.user?._id = "564520436228ca1f00f49bb9"
     model.friend?._id = "56413a1512d4fb16616a8af0"
     
     NSTimer.after(1.0) { [unowned self] in
@@ -377,7 +374,7 @@ public class ChatController {
     }
   
     NSTimer.after(6.0) { [unowned self] in
-      self.socket.emit("checkForMessages", "56413a2e12d4fb16616a8af3")
+      self.socket.emit("checkForMessages", "564520436228ca1f00f49bb9")
     }
     
     NSTimer.after(8.0) { [unowned self] in
@@ -388,23 +385,5 @@ public class ChatController {
     NSTimer.after(15.0) { [unowned self] in
       self.socket.disconnect()
     }
-  }
-  
-  private func goOnlineAndSubscribe() {
-    socket.emit(
-      "setOnlineStatus",
-      [
-        "online": true,
-        "user_id": self.model.user!._id!
-      ]
-    )
-    socket.emit(
-      "subscribe",
-      [
-        "user_id": self.model.user!._id!,
-        "room_id": self.model.room_id!
-      ]
-    )
-    socket.emit("checkForMessages", self.model.user!._id!)
   }
 }
