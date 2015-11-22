@@ -31,7 +31,7 @@ public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableView
   
   private func setupTableView() {
     tableView = UITableView(frame: view.frame)
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    tableView?.registerClass(ChatListViewCell.self, forCellReuseIdentifier: "cell")
     tableView?.delegate = self
     tableView?.dataSource = self
   }
@@ -59,4 +59,35 @@ public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableView
 
 public class ChatListViewCell: UITableViewCell {
   
+  public var profileImageView: UIImageView?
+  public var usernameLabel: UILabel?
+  public var bookTitleLabel: UILabel?
+  public var lastchatLabel: UILabel?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

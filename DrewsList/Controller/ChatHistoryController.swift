@@ -17,6 +17,9 @@ public class ChatHistoryController {
   
   public init() {
     setupDataBinding()
+    
+    let chatmodel = ChatModel()
+    chatmodel.user = User()
   }
   
   public func setupDataBinding() {

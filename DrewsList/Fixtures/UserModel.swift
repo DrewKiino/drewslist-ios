@@ -30,6 +30,13 @@ public class User: Mappable {
   
   public init() {}
   
+  public init(_id: String, firstName: String, lastName: String, username: String) {
+    self.username
+    self.firstName = firstName
+    self.lastName = lastName
+    self.username = username
+  }
+  
   public init(json: JSON) {
     if let json = json.dictionaryObject {
       mapping(Map(mappingType: .FromJSON, JSONDictionary: json))

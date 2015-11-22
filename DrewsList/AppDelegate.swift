@@ -30,10 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window!.makeKeyAndVisible()
     
     // create a WebSocket connection to the server
-//    socket.connect() {
-//      let userController = UserController.sharedInstance()
-//      userController.login()
-//    }
+    socket.connect() {
+      let userController = UserController.sharedInstance()
+      userController.login()
+    }
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
