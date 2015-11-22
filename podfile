@@ -17,21 +17,17 @@ pod 'Socket.IO-Client-Swift'
 pod 'Alamofire'
 
 # json libs
-pod 'ObjectMapper', '~> 1.0'
 pod 'SwiftyJSON'
 
 # service libs
 pod 'SwiftyTimer'
-pod 'SwiftDate'
 
 # feature libs
 pod 'JSQMessagesViewController'
 
-# pub/sub libs
-pod 'Signals'
+# UI libs
+pod 'Neon'
 
-# promises libs
-pod 'PromiseKit'
 
 # view libs
 pod 'Neon'
