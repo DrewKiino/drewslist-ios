@@ -4,3 +4,4 @@ Pods/**/*
 # ignore folder
 ignore/**/*
 .DS_Store
+stevo-mb.xcuserdatad
