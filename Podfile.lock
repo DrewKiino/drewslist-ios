@@ -13,6 +13,7 @@ PODS:
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
   - OMGHTTPURLRQ/UserAgent (3.0.2)
+  - Onboard (2.1.7)
   - PromiseKit (3.0.0):
     - PromiseKit/Foundation (= 3.0.0)
     - PromiseKit/QuartzCore (= 3.0.0)
@@ -42,7 +43,8 @@ DEPENDENCIES:
   - HanekeSwift
   - JSQMessagesViewController
   - Neon
-  - ObjectMapper (~> 1.0)
+  - ObjectMapper
+  - Onboard
   - PromiseKit
   - RealmSwift
   - Signals
@@ -60,6 +62,7 @@ SPEC CHECKSUMS:
   Neon: 589d3d217d326abe09726bf81add106cff685bf2
   ObjectMapper: 98524bac0dca46c6b3d5ee02cd410fc700ec6ce2
   OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
+  Onboard: 87648089e1b76d13b4f5bf8f7a1cdb144092f0af
   PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
   Realm: 3ce8448151c571e90b85002d984d7f93f54fc8a3
   RealmSwift: 485599fe54e35461c4a0daa7d01d8fbf11424873
