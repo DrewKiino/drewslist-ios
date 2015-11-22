@@ -25,11 +25,20 @@ pod 'SwiftyTimer'
 # feature libs
 pod 'JSQMessagesViewController'
 
+# promise libs
+pod 'PromiseKit'
+
 # UI libs
 pod 'Neon'
 
+# object mapping libs
+pod 'ObjectMapper'
+
 # pubsub libs
 pod 'Signals'
+
+# data libs
+pod 'SwiftDate'
 
 # view libs
 pod 'Neon'
