@@ -53,17 +53,13 @@ public class IncomingMessage: Mappable {
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
-  public init(data: AnyObject) {
-    if let json = JSON(data).dictionaryObject {
+  public init(json: JSON) {
+    if let json = json.dictionaryObject {
       mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
     }
   }
   
   public required init?(_ map: Map) {}
-
-  required public init?(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
-  }
   
   public func mapping(map: Map) {
     message         <- map["message"]

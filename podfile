@@ -33,6 +33,16 @@ pod 'Signals'
 # promises libs
 pod 'PromiseKit'
 
+# view libs
+pod 'Neon'
+
+# image libs
+pod 'HanekeSwift'
+pod 'Toucan'
+
+# data storage libs
+pod 'RealmSwift'
+
 
 #####################################
 # unit testing

@@ -20,6 +20,10 @@
 		EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949A1BF30FCC00E228A9 /* UserModel.swift */; };
 		EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */; };
 		EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */; };
+		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
+		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
+		EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */; };
+		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 /* End PBXBuildFile section */
@@ -62,6 +66,10 @@
 		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		EE3C949C1BF3202C00E228A9 /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EE5E669D1BE1627C00BCF1DE /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Atlantis.swift; path = ../../../../../DevOps/Atlantis/Atlantis/Atlantis.swift; sourceTree = "<group>"; };
+		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
+		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
+		EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
+		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +161,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 			);
 			path = Model;
@@ -161,6 +170,7 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 			);
 			path = View;
@@ -170,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
+				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -177,6 +188,7 @@
 		EE3C94991BF30FC500E228A9 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				EE79D3B21BFFDF0000F60EE1 /* UserController.swift */,
 				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
 			);
 			path = Fixtures;
@@ -442,8 +454,12 @@
 			files = (
 				EE3C949D1BF3202C00E228A9 /* NativeExtensions.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
+				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
+				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
+				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
+				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
 				EE5E669E1BE1627C00BCF1DE /* Atlantis.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */,

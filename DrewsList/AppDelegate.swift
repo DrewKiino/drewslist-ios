@@ -18,13 +18,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   
   private let socket = Sockets.sharedInstance()
-  
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     
+    // set the window
+    let chatHistoryView = ChatHistoryView()
+    chatHistoryView.view.frame = UIScreen.mainScreen().bounds
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    window!.rootViewController = chatHistoryView
+    window!.makeKeyAndVisible()
+    
     // create a WebSocket connection to the server
-    socket.connect()
+//    socket.connect() {
+//      let userController = UserController.sharedInstance()
+//      userController.login()
+//    }
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
