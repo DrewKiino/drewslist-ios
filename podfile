@@ -28,6 +28,8 @@ pod 'JSQMessagesViewController'
 # UI libs
 pod 'Neon'
 
+# pubsub libs
+pod 'Signals'
 
 # view libs
 pod 'Neon'
