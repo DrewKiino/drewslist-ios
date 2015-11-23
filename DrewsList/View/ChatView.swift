@@ -8,6 +8,7 @@
 
 import Foundation
 import JSQMessagesViewController
+import Toucan
 
 public class ChatView: JSQMessagesViewController {
   
@@ -67,6 +68,35 @@ public class ChatView: JSQMessagesViewController {
   
   public override func didPressAccessoryButton(sender: UIButton!) {}
   
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    if indexPath.row % 5 == 0 { return 24 }
+    else { return 0 }
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+    if indexPath.row % 5 == 0 { return NSAttributedString(string: NSDate().toLongTimeString()) }
+    else { return nil }
+  }
+  
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    return 24
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+    return model.messages[indexPath.row].senderId == senderId ?
+      NSAttributedString(string: model.user!.getFullName()!)  : NSAttributedString(string: model.friend!.getFullName()!)
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    return 0
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+    return nil
+  }
+  
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
     return model.messages[indexPath.row]
   }
@@ -77,7 +107,8 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-    return nil
+    return model.messages[indexPath.row].senderId == senderId ?
+      MessageAvatar(avatar: model.user!.avatar!) : MessageAvatar(avatar: model.friend!.avatar!)
   }
   
   public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

@@ -25,13 +25,20 @@ public class User: Mappable {
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
+  public let _avatar = Signal<String?>()
+  public var avatar: String? { didSet { _avatar => avatar } }
+  
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
+  
+  public func getFullName() -> String? {
+    guard let firstName = firstName, let lastName = lastName else { return nil }
+    return "\(firstName) \(lastName)"
+  }
   
   public init() {}
   
   public init(_id: String, firstName: String, lastName: String, username: String) {
-    self.username
     self.firstName = firstName
     self.lastName = lastName
     self.username = username
@@ -51,6 +58,7 @@ public class User: Mappable {
     username        <- map["username"]
     _id             <- map["_id"]
     deviceToken     <- map["deviceToken"]
+    avatar          <- map["avatar"]
   }
 }
 

@@ -12,6 +12,7 @@ import JSQMessagesViewController
 import ObjectMapper
 import SwiftyJSON
 import SwiftDate
+import Toucan
 
 public class ChatModel {
   
@@ -29,6 +30,9 @@ public class ChatModel {
   
   public let _pendingMessages = Signal<[JSQMessage]>()
   public var pendingMessages = [JSQMessage]() { didSet { _pendingMessages => pendingMessages } }
+  
+  public let _book = Signal<String?>()
+  public var book: String? { didSet { _book => book } }
   
   public var room_id: String? {
     get {
@@ -69,8 +73,8 @@ public class IncomingMessage: Mappable {
   }
   
   public func toJSQMessage() -> JSQMessage? {
-    guard let friend_id = friend_id, let friend_username = friend_username, let message = message else { return nil }
-    return JSQMessage(senderId: friend_id, displayName: friend_username, text: message)
+    guard let friend_id = friend_id, let friend_username = friend_username, let message = message, let createdAt = createdAt else { return nil }
+    return JSQMessage(senderId: friend_id, senderDisplayName: friend_username, date: createdAt.toDate(format: .ISO8601), text: message)
   }
 }
 
@@ -100,7 +104,6 @@ public class OutgoingMessage {
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
-  
   public init(
     user_id: String,
     username: String,
@@ -121,8 +124,8 @@ public class OutgoingMessage {
   }
   
   public func toJSQMessage() -> JSQMessage? {
-    guard let user_id = user_id, let username = username, let message = message else { return nil }
-    return JSQMessage(senderId: user_id, displayName: username, text: message)
+    guard let user_id = user_id, let username = username, let message = message, let createdAt = createdAt else { return nil }
+    return JSQMessage(senderId: user_id, senderDisplayName: username, date: createdAt.toDate(format: .ISO8601), text: message)
   }
   
   public func toJSON() -> [String: AnyObject]? {
@@ -153,3 +156,72 @@ public class OutgoingMessage {
     return self
   }
 }
+
+public class MessageAvatar: NSObject, JSQMessageAvatarImageDataSource {
+  
+  private let avatarSize: CGSize = CGSizeMake(48, 48)
+  public var avatar: String?
+  
+  public init(avatar: String) {
+    super.init()
+    self.avatar = avatar
+  }
+  
+  /**
+   *  @return The avatar image for a regular display state.
+   *
+   *  @discussion You may return `nil` from this method while the image is being downloaded.
+   */
+  @available(iOS 2.0, *)
+  public func avatarImage() -> UIImage! {
+    return Toucan(image: UIImage(named: avatar!)!)
+      .resizeByCropping(avatarSize)
+      .maskWithEllipse().image
+  }
+  
+  /**
+   *  @return The avatar image for a highlighted display state.
+   *
+   *  @discussion You may return `nil` from this method if this does not apply.
+   */
+  @objc
+  @available(iOS 2.0, *)
+  public func avatarHighlightedImage() -> UIImage! {
+    return Toucan(image: UIImage(named: avatar!)!)
+      .resizeByCropping(avatarSize)
+      .maskWithEllipse().image
+  }
+  
+  /**
+   *  @return A placeholder avatar image to be displayed if avatarImage is not yet available, or `nil`.
+   *  For example, if avatarImage needs to be downloaded, this placeholder image
+   *  will be used until avatarImage is not `nil`.
+   *
+   *  @discussion If you do not need support for a placeholder image, that is, your images
+   *  are stored locally on the device, then you may simply return the same value as avatarImage here.
+   *
+   *  @warning You must not return `nil` from this method.
+   */
+  @available(iOS 2.0, *)
+  public func avatarPlaceholderImage() -> UIImage! {
+    return Toucan(image: UIImage(named: avatar!)!)
+      .resizeByCropping(avatarSize)
+      .maskWithEllipse().image
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

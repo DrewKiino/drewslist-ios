@@ -37,6 +37,7 @@ public class ChatController {
     remoteNotification.listen(self) { [unowned self] payload in
       self.didPressSendButton(payload.description)
     }
+    setupFixtures()
   }
   
   private func setupDataBinding() {
@@ -186,52 +187,50 @@ public class ChatController {
   
   
   
-  
-  
   private func setupFixtures() {
     // create user fixture
     let user = User()
+    user.firstName = "Jessie"
+    user.lastName = "Lynch"
     user.username = "Jynx"
     user._id = "56413a1512d4fb16616a8af0"
+    user.avatar = "stockphoto1"
     model.user = user
     
     let friend = User()
+    friend.firstName = "Brandon"
+    friend.lastName = "Graves"
     friend.username = "Graves"
     friend._id = "564a518cebee7a1f00250e24"
+    friend.avatar = "stockphoto2"
     model.friend = friend
     
     socket._session_id.listen(self) { [unowned self] session_id in
-      
       self.model.session_id = session_id
-      
       guard
-        let session_id = session_id,
         let room_id = self.model.room_id,
         let user = self.model.user,
         let user_id = user._id
         else { return }
       
-      
-      // message template sent by friend
-      let message = OutgoingMessage(
-        user_id: "56413a1512d4fb16616a8af0",
-        username: "Graves",
-        friend_id: "564520436228ca1f00f49bb9",
-        friend_username: "Jynx",
-        message: "Hello, how are you?",
-        session_id: session_id,
-        room_id: room_id
-      )
-      
-      self.setOnlineStatus(user_id, online: true)
       self.subscribe(room_id, user_id: user_id)
       self.socket.emit("checkForMessages", user_id)
-      //      self.simulateChat(friendMessageTemplate: message)
-      //      self.simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate: message)
+      self.simulateChat()
     }
   }
   
-  private func simulateChat(friendMessageTemplate message: OutgoingMessage) {
+  private func simulateChat() {
+    // message template sent by friend
+    let message = OutgoingMessage(
+      user_id: "56413a1512d4fb16616a8af0",
+      username: "Graves",
+      friend_id: "564520436228ca1f00f49bb9",
+      friend_username: "Jynx",
+      message: "Hello, how are you?",
+      session_id: model.session_id!,
+      room_id: model.room_id!
+    )
+    
     model.user?._id = "564520436228ca1f00f49bb9"
     model.friend?._id = "56413a1512d4fb16616a8af0"
     // begin chat simulation
@@ -319,7 +318,19 @@ public class ChatController {
     }
   }
   
-  private func simulateFriendNoteOnlineButGoesOnlineLater(friendMessageTemplate message: OutgoingMessage) {
+  private func simulateFriendNoteOnlineButGoesOnlineLater() {
+    
+    // message template sent by friend
+    let message = OutgoingMessage(
+      user_id: "56413a1512d4fb16616a8af0",
+      username: "Graves",
+      friend_id: "564520436228ca1f00f49bb9",
+      friend_username: "Jynx",
+      message: "Hello, how are you?",
+      session_id: model.session_id!,
+      room_id: model.room_id!
+    )
+    
     model.user?._id = "564520436228ca1f00f49bb9"
     model.friend?._id = "56413a1512d4fb16616a8af0"
     

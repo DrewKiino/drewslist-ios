@@ -23,7 +23,7 @@ public class UserController {
   
   public func login() {
     // MARK: hardcoded login user
-    let user_id = "564fa61b77b7915420dc89b2"
+    let user_id = "564fab9d1690801f00d8f6bd"
     
     socket.on("/user/login(callback)") { [unowned self] json in
       self.model.user = User(json: json["response"])
@@ -32,7 +32,7 @@ public class UserController {
       }
     }
     
-    socket.emit("/user/login", "564fa61b77b7915420dc89b2")
+    socket.emit("/user/login", "564fab9d1690801f00d8f6bd")
   }
   
   public func getUser() -> User? {

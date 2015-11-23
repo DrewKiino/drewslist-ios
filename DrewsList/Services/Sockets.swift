@@ -16,8 +16,8 @@ import Alamofire
 public class Sockets {
   
   private struct Singleton {
-    static let serverURL = "http://localhost:1337"
-//    static let serverURL = "https://drewslist-staging.herokuapp.com"
+//    static let serverURL = "http://localhost:1337"
+    static let serverURL = "https://drewslist-staging.herokuapp.com"
     static let socket = Sockets()
     static var _sessionCount = 0
     static var sessionCount: Int { get { return _sessionCount++ } }

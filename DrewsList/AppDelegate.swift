@@ -23,10 +23,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Override point for customization after application launch.
     
     // set the window
-    let chatHistoryView = ChatHistoryView()
-    chatHistoryView.view.frame = UIScreen.mainScreen().bounds
+//    let rootView = UINavigationController(rootViewController: ChatView())
+    let rootView = UINavigationController(rootViewController: ChatHistoryView())
+    rootView.view.frame = UIScreen.mainScreen().bounds
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    window!.rootViewController = chatHistoryView
+    window!.rootViewController = rootView
     window!.makeKeyAndVisible()
     
     // create a WebSocket connection to the server
