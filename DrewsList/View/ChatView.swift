@@ -90,7 +90,7 @@ public class ChatView: JSQMessagesViewController {
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
     let name = model.messages[indexPath.row].senderId == senderId ?
-      NSAttributedString(string: model.user!.getFullName()!)  : NSAttributedString(string: model.friend!.getFullName()!)
+      NSAttributedString(string: model.user!.getFullName()!) : NSAttributedString(string: model.friend!.getFullName()!)
     return indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : name
   }
   
