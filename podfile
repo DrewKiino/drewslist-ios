@@ -21,13 +21,13 @@ pod 'SwiftyJSON'
 
 # service libs
 pod 'SwiftyTimer'
+pod 'SwiftDate'
 
 # feature libs
 pod 'JSQMessagesViewController'
 
 # UI libs
 pod 'Neon'
-
 
 # view libs
 pod 'Neon'

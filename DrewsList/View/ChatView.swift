@@ -9,12 +9,14 @@
 import Foundation
 import JSQMessagesViewController
 import Toucan
+import SwiftDate
 
 public class ChatView: JSQMessagesViewController {
   
   // MVC
   private let controller = ChatController()
   private unowned var model: ChatModel { get { return controller.model } }
+  private var recentSender: String?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -24,6 +26,7 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    collectionView?.showsVerticalScrollIndicator = false
     setupDataBinding()
   }
   
@@ -68,25 +71,27 @@ public class ChatView: JSQMessagesViewController {
   
   public override func didPressAccessoryButton(sender: UIButton!) {}
   
-  
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-    if indexPath.row % 5 == 0 { return 24 }
-    else { return 0 }
+//    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? 24 : 0
+    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? 24 : 0
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-    if indexPath.row % 5 == 0 { return NSAttributedString(string: NSDate().toLongTimeString()) }
-    else { return nil }
+    guard let dateString = model.messages[indexPath.row].date?.toShortTimeString() else { return nil }
+    let attrDateString = NSAttributedString(string: dateString)
+//    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? attrDateString : nil
+    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? attrDateString : nil
   }
   
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-    return 24
+    return indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 24
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-    return model.messages[indexPath.row].senderId == senderId ?
+    let name = model.messages[indexPath.row].senderId == senderId ?
       NSAttributedString(string: model.user!.getFullName()!)  : NSAttributedString(string: model.friend!.getFullName()!)
+    return indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : name
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellBottomLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {

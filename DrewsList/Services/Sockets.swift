@@ -132,6 +132,8 @@ public class Sockets {
     return socket.status.description == "Connected" ? true : false
   }
   
+  public func off(event: String) { socket.off(event) }
+  
   public func on(event: String, execute: (JSON -> Void)) {
     socket.on(event) { data, socket in
       if let json = JSON(data).array?.first { execute(json) }
@@ -153,4 +155,6 @@ public class Sockets {
       connect() { [unowned self] in self.socket.emit(event, object) }
     }
   }
+  
+  public func removeAllHandlers() { socket.removeAllHandlers() }
 }
