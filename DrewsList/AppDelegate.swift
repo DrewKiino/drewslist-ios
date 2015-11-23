@@ -8,19 +8,21 @@
 
 import UIKit
 
-let log = Atlantis.Logger()
+let screenSize: CGRect = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+  
+
+  
   var window: UIWindow?
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     // PUSH NOTIFICATION
     
-    
-    Atlantis.Configuration.hasColoredLogs = true
+    UIApplication.sharedApplication().statusBarStyle = .LightContent
     
     let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
     application.registerUserNotificationSettings(settings)
@@ -52,7 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-    log.debug(deviceToken)
   }
 }
 

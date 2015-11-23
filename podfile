@@ -19,7 +19,10 @@ pod 'Alamofire'
 # json libs
 pod 'SwiftyJSON'
 
-
+# ui libs
+pod 'Toucan'
+pod 'HanekeSwift'
+pod 'Neon'
 
 #####################################
 # unit testing

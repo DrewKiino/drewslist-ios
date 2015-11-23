@@ -68,12 +68,10 @@ public class ViewController: UIViewController {
     }
     
     socket.on("connect") { [unowned self] data, socket in
-      log.info("connected.")
       self.socket.emit("subscribe", [ "room": "global" ])
     }
     
     socket.on("cleanDisconnect") { [unowned self] data, socket in
-      log.info("disconnected.")
       self.socket.disconnect()
       self.response.text = ""
     }
@@ -86,12 +84,10 @@ public class ViewController: UIViewController {
   }
   
   public func connect() {
-    log.debug("connecting to server...")
     socket.connect()
   }
   
   public func disconnect() {
-    log.debug("disconnecting from server...")
     socket.emit("unsubscribe", [ "room": "global" ])
   }
 
