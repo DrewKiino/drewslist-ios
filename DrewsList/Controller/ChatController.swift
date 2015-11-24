@@ -34,37 +34,53 @@ public class ChatController {
   public init() {
     setupSockets()
     setupDataBinding()
-    remoteNotification.listen(self) { [weak self] payload in
-      self?.didPressSendButton(payload.description)
-    }
-    setupFixtures()
   }
   
   deinit {
-    socket.off("subscribeCallback")
-    socket.off("setOnlineStatusCallback")
-    socket.off("disconnect")
+    // save messagesx
+    model.save()
+    // remove socket subscriptions
     socket.off("message")
+    socket.off("subscribe.response")
+    socket.off("broadcast.response")
+    socket.off("setOnlineStatusCallback")
     socket.off("checkForMessagesCallback")
-    socket.off("broadcastCallback")
+    // remove signal subscriptions
+    remoteNotification.removeListener(self)
+  }
+  
+  public func viewWillAppear() {
+    // match the
+    // subscribe to room
+    subscribe(model.room_id, user_id: model.user?._id)
+  }
+  
+  public func viewDidAppear() {
+    // load any saved messages
+    model.load()
+  }
+  
+  public func viewDidDisappear() {
+    // unsubscribe from the room
+    unsubscribe(model.room_id, user_id: model.user?._id)
   }
   
   private func setupDataBinding() {
-    // have the controller listen for send message status
-    // if 'didSend' is true, then the server has ressed back an 'OK'
-    // else if it is false, then the server has ressed back an error
-    didSendMessage.listen(self) { didSend in
+    remoteNotification.listen(self) { [weak self] payload in
+      self?.didPressSendButton(payload.description)
     }
   }
   
   private func setupSockets() {
     
     // subscribe to the server chat framework's connect callback
-    socket.on("subscribeCallback") { json in
+    socket.on("subscribe.response") { json in
       if let response = json["response"].string {
         log.info("joined room: \(response)")
+      } else if let warning = json["warning"].string {
+        log.warning(warning)
       } else if let error = json["error"].string {
-        log.debug(error)
+        log.error(error)
       }
     }
     
@@ -72,18 +88,13 @@ public class ChatController {
       if let response = json["response"].bool {
         log.info("online status set to: \(response)")
       } else if let error = json["error"].string {
-        log.debug(error)
+        log.warning(error)
       }
-    }
-    
-    socket.on("disconnect") { [weak self] json in
-      // negate the session id in the model
-      self?.model.session_id = nil
     }
     
     // subscribe to broadcasts done by the server
     socket.on("message") { [weak self] json in
-      guard let newMessage = IncomingMessage(json: json).toJSQMessage() else { return }
+      guard let newMessage = IncomingMessage(json: json).toJSQMessage() where newMessage.senderId != self?.model.user?._id else { return }
       log.verbose(newMessage.text)
       // append the broadcast to the model's messages array
       self?.model.messages.append(newMessage)
@@ -108,17 +119,22 @@ public class ChatController {
     }
     
     // subscribe to the server chat framework's broadcast callback
-    socket.on("broadcastCallback") { [weak self] json in
+    socket.on("broadcast.response") { [weak self] json in
       // broadcast to listenres that the message sent was unsuccessful
       if let error = json["error"].string {
         self?.didSendMessage.fire(false)
         log.error(error)
       // broadcast to listeners that the message sent was successful
       } else if let response = json["response"].string {
+        log.verbose(response)
         if let model = self?.model where !model.pendingMessages.isEmpty {
+          guard let newMessage = IncomingMessage(json: json["message"]).toJSQMessage() where newMessage.senderId == self?.model.user?._id else { return }
+          
           self?.model.pendingMessages.removeLast()
+          
+          self?.model.messages.append(newMessage)
+          
           self?.didSendMessage.fire(true)
-          log.info(response)
         }
       }
     }
@@ -143,7 +159,6 @@ public class ChatController {
           let friend = model.friend,
           let friend_id = friend._id,
           let friend_username = friend.username,
-          let session_id = model.session_id,
           let room_id = model.room_id
           else { return nil }
     
@@ -153,16 +168,27 @@ public class ChatController {
       friend_id: friend_id,
       friend_username: friend_username,
       message: text,
-      session_id: session_id,
       room_id: room_id
     )
     
     return newOutgoingMessage
   }
   
-  public func subscribe(room_id: String, user_id: String) {
+  public func subscribe(room_id: String?, user_id: String?) {
+    guard let room_id = room_id, user_id = user_id else { return }
     socket.emit(
       "subscribe",
+      [
+        "room_id": room_id,
+        "user_id": user_id
+      ]
+    )
+  }
+  
+  public func unsubscribe(room_id: String?, user_id: String?) {
+    guard let room_id = room_id, user_id = user_id else { return }
+    socket.emit(
+      "unsubscribe",
       [
         "room_id": room_id,
         "user_id": user_id
@@ -214,18 +240,9 @@ public class ChatController {
     friend.avatar = "stockphoto2"
     model.friend = friend
     
-    socket._session_id.listen(self) { [weak self] session_id in
-      self?.model.session_id = session_id
-      guard
-        let room_id = self?.model.room_id,
-        let user = self?.model.user,
-        let user_id = user._id
-        else { return }
-      
-      self?.subscribe(room_id, user_id: user_id)
-      self?.socket.emit("checkForMessages", user_id)
-      self?.simulateChat()
-    }
+    subscribe(model.room_id!, user_id: user._id)
+    socket.emit("checkForMessages", user._id!)
+    simulateChat()
   }
   
   private func simulateChat() {
@@ -236,7 +253,6 @@ public class ChatController {
       friend_id: "564520436228ca1f00f49bb9",
       friend_username: "Jynx",
       message: "Hello, how are you?",
-      session_id: model.session_id!,
       room_id: model.room_id!
     )
     
@@ -336,7 +352,6 @@ public class ChatController {
       friend_id: "564520436228ca1f00f49bb9",
       friend_username: "Jynx",
       message: "Hello, how are you?",
-      session_id: model.session_id!,
       room_id: model.room_id!
     )
     

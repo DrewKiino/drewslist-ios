@@ -13,6 +13,13 @@ import SwiftDate
 
 public class ChatView: JSQMessagesViewController {
   
+  public class func setup(user: User, friend: User) -> ChatView {
+    let chatView = ChatView()
+    chatView.controller.model.user = user
+    chatView.controller.model.friend = friend
+    return chatView
+  }
+  
   // MVC
   private let controller = ChatController()
   private unowned var model: ChatModel { get { return controller.model } }
@@ -30,11 +37,25 @@ public class ChatView: JSQMessagesViewController {
     setupDataBinding()
   }
   
+  public override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    controller.viewWillAppear()
+  }
+  
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    controller.viewDidAppear()
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    super.viewDidDisappear(animated)
+    controller.viewDidDisappear()
   }
   
   private func setupDataBinding() {
+    model._messages.listen(self) { [weak self] messages in
+      self?.collectionView?.reloadData()
+    }
     // set and listen for changes in the user's username
     senderDisplayName = model.user?.username ?? ""
     model.user?._username.listen(self) { [weak self] username in
@@ -55,12 +76,12 @@ public class ChatView: JSQMessagesViewController {
     // listen for changes in the 'didSendMessage'
     // if 'isSent' is true, update the UI
     controller.didSendMessage.listen(self) { [weak self] isSent in
-      if isSent { self?.finishSendingMessage() }
+      if isSent == true { self?.finishSendingMessage() }
     }
     // listen for changes in the 'didReceiveMessage'
     // if 'didReceive' is true, update the UI
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
-      if didReceive { self?.finishReceivingMessage() }
+      if didReceive == true { self?.finishReceivingMessage() }
     }
   }
   
@@ -72,15 +93,15 @@ public class ChatView: JSQMessagesViewController {
   public override func didPressAccessoryButton(sender: UIButton!) {}
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-//    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? 24 : 0
-    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? 24 : 0
+    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? 24 : 0
+//    return indexPath.row == 0 ? 24 : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? 24 : 0
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
     guard let dateString = model.messages[indexPath.row].date?.toShortTimeString() else { return nil }
     let attrDateString = NSAttributedString(string: dateString)
-//    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? attrDateString : nil
-    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? attrDateString : nil
+    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(hours: 1) <= model.messages[indexPath.row].date ? attrDateString : nil
+//    return indexPath.row == 0 ? attrDateString : indexPath.row > 0 && model.messages[indexPath.row - 1].date.add(seconds: 3) <= model.messages[indexPath.row].date ? attrDateString : nil
   }
   
   

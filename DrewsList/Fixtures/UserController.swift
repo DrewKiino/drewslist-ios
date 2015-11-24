@@ -38,4 +38,25 @@ public class UserController {
   public func getUser() -> User? {
     return model.user
   }
+  
+  public class func userFixtures() -> User {
+    let user = User()
+    user._id = "5653ba1972c0370e0487b5f8"
+    user.firstName = "Bobby"
+    user.lastName = "Hill"
+    user.username = "XStyler"
+    user.avatar = "stockphoto2"
+    return user
+  }
+  
+  public class func friendFixtures() -> User {
+    let user2 = User()
+    user2._id = "5653c79300066fed237cb2c7"
+    user2.firstName = "Lisa"
+    user2.lastName = "Berthhart"
+    user2.username = "LisaXOXO"
+    user2.avatar = "stockphoto1"
+    return user2
+  }
+
 }

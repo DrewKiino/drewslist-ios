@@ -13,11 +13,9 @@ import ObjectMapper
 import SwiftyJSON
 import SwiftDate
 import Toucan
+import RealmSwift
 
 public class ChatModel {
-  
-  public let _session_id = Signal<String?>()
-  public var session_id: String? { didSet { _session_id => session_id } }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
@@ -36,10 +34,31 @@ public class ChatModel {
   
   public var room_id: String? {
     get {
-      guard let user_id = user?._id, let friend_id = friend?._id
-      else { return nil }
+      guard let user_id = user?._id, let friend_id = friend?._id else { return nil }
       return user_id + "+" + friend_id
     }
+  }
+  
+  public func save() {
+    do {
+      guard let room_id = room_id else { return }
+      let object = SavedMessages()
+      object._id = room_id
+      object.data = NSKeyedArchiver.archivedDataWithRootObject(messages)
+      let realm = try Realm()
+      realm.beginWrite()
+      realm.add(object, update: true)
+      try realm.commitWrite()
+    } catch { return }
+  }
+  
+  public func load() {
+    do {
+      guard let room_id = room_id,
+            let messages = try Realm().objectForPrimaryKey(SavedMessages.self, key: room_id)?.getMessages()
+      else { return }
+      self.messages = messages
+    } catch { return }
   }
 }
 
@@ -98,9 +117,6 @@ public class OutgoingMessage {
   public let _room_id = Signal<String?>()
   public var room_id: String? { didSet { _room_id => room_id } }
   
-  public let _session_id = Signal<String?>()
-  public var session_id: String? { didSet { _session_id => session_id } }
-  
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
@@ -110,7 +126,6 @@ public class OutgoingMessage {
     friend_id: String,
     friend_username: String,
     message: String,
-    session_id: String,
     room_id: String
   ) {
     self.user_id = user_id
@@ -118,7 +133,6 @@ public class OutgoingMessage {
     self.friend_id = friend_id
     self.friend_username = friend_username
     self.message = message
-    self.session_id = session_id
     self.room_id = room_id
     self.createdAt = NSDate().toISOString()
   }
@@ -133,7 +147,6 @@ public class OutgoingMessage {
           let username = username,
           let friend_id = friend_id,
           let friend_username = friend_username,
-          let session_id = session_id,
           let room_id = room_id,
           let message = message
           else { return nil }
@@ -143,7 +156,6 @@ public class OutgoingMessage {
       "username": username,
       "friend_id": friend_id,
       "friend_username": friend_username,
-      "session_id": session_id,
       "room_id": room_id,
       "message": message
     ]
@@ -211,7 +223,23 @@ public class MessageAvatar: NSObject, JSQMessageAvatarImageDataSource {
 }
 
 
-
+public class SavedMessages: Object {
+  
+  public dynamic var _id: String?
+  
+  public dynamic var data: NSData? = nil
+  
+  public func getMessages() -> [JSQMessage]? {
+    guard let data = data,
+          let messages = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [JSQMessage]
+    else { return nil }
+    return messages
+  }
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
+}
 
 
 

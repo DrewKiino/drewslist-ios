@@ -82,7 +82,8 @@ public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    navigationController?.pushViewController(ChatView(), animated: true)
+    // fixtures
+    navigationController?.pushViewController(ChatView.setup(UserController.userFixtures(), friend: UserController.friendFixtures()), animated: true)
   }
 }
 

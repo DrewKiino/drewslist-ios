@@ -31,11 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window!.makeKeyAndVisible()
     
     // create a WebSocket connection to the server
-    NSTimer.after(5.0) { [weak self] in
-      self?.socket.connect() {
-        let userController = UserController.sharedInstance()
-        userController.login()
-      }
+    socket.connect() {
+      let userController = UserController.sharedInstance()
+      userController.login()
     }
     
     // configure Atlantis Logger

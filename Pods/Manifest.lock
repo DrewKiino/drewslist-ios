@@ -5,11 +5,32 @@ PODS:
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
   - Neon (0.0.3)
+  - ObjectMapper (1.0.1)
+  - OMGHTTPURLRQ (3.0.2):
+    - OMGHTTPURLRQ/RQ (= 3.0.2)
+  - OMGHTTPURLRQ/FormURLEncode (3.0.2)
+  - OMGHTTPURLRQ/RQ (3.0.2):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.0.2)
+  - PromiseKit (3.0.0):
+    - PromiseKit/Foundation (= 3.0.0)
+    - PromiseKit/QuartzCore (= 3.0.0)
+    - PromiseKit/UIKit (= 3.0.0)
+  - PromiseKit/CorePromise (3.0.0)
+  - PromiseKit/Foundation (3.0.0):
+    - OMGHTTPURLRQ (~> 3.0.0)
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (3.0.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (3.0.0):
+    - PromiseKit/CorePromise
   - Realm (0.96.2):
     - Realm/Headers (= 0.96.2)
   - Realm/Headers (0.96.2)
   - RealmSwift (0.96.2):
     - Realm (= 0.96.2)
+  - Signals (2.1.0)
   - Socket.IO-Client-Swift (4.0.4)
   - SwiftDate (1.2)
   - SwiftyJSON (2.3.1)
@@ -21,7 +42,10 @@ DEPENDENCIES:
   - HanekeSwift
   - JSQMessagesViewController
   - Neon
+  - ObjectMapper
+  - PromiseKit
   - RealmSwift
+  - Signals
   - Socket.IO-Client-Swift
   - SwiftDate
   - SwiftyJSON
@@ -34,8 +58,12 @@ SPEC CHECKSUMS:
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
   Neon: 589d3d217d326abe09726bf81add106cff685bf2
+  ObjectMapper: 98524bac0dca46c6b3d5ee02cd410fc700ec6ce2
+  OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
+  PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
   Realm: 3ce8448151c571e90b85002d984d7f93f54fc8a3
   RealmSwift: 485599fe54e35461c4a0daa7d01d8fbf11424873
+  Signals: a6114179339fa648120f64bb3acd0472965d45d9
   Socket.IO-Client-Swift: e886946f1c356b673b0a73bf1633a0df8bff7a5b
   SwiftDate: 49ebd4efb5f82336cfc2b1d8a6622f47d4b17370
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3

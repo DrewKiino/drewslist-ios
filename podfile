@@ -15,6 +15,7 @@ pod 'Socket.IO-Client-Swift'
 
 # http libs
 pod 'Alamofire'
+pod 'ObjectMapper'
 
 # json libs
 pod 'SwiftyJSON'
@@ -26,10 +27,13 @@ pod 'SwiftDate'
 # feature libs
 pod 'JSQMessagesViewController'
 
-# UI libs
-pod 'Neon'
+# pubsub libs
+pod 'Signals'
 
-# view libs
+# promise libs
+pod 'PromiseKit'
+
+# UI libs
 pod 'Neon'
 
 # image libs

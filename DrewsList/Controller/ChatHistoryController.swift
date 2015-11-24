@@ -30,20 +30,9 @@ public class ChatHistoryController {
   
   public func setupFixtures() {
     let chatmodel = ChatModel()
-    let user = User()
-    user.firstName = "Bobby"
-    user.lastName = "Hill"
-    user.username = "XStyler"
-    user.avatar = "stockphoto2"
     
-    let user2 = User()
-    user2.firstName = "Lisa"
-    user2.lastName = "Berthhart"
-    user2.username = "LisaXOXO"
-    user2.avatar = "stockphoto1"
-    
-    chatmodel.user = user
-    chatmodel.friend = user2
+    chatmodel.user = UserController.userFixtures()
+    chatmodel.friend = UserController.friendFixtures()
     chatmodel.book = "Calculus 7th Edition"
     chatmodel.messages.append(JSQMessage(senderId: "1234", displayName: "Lisa", text: "Thanks for the sale! I'll rate you in a bit"))
     
@@ -51,8 +40,8 @@ public class ChatHistoryController {
     
     let chatmodel2 = ChatModel()
     
-    chatmodel2.user = user2
-    chatmodel2.friend = user
+    chatmodel2.user = UserController.friendFixtures()
+    chatmodel2.friend = UserController.userFixtures()
     chatmodel2.book = "Flowers for Algernon"
     chatmodel2.messages.append(JSQMessage(senderId: "1234", displayName: "Bobby", text: "Are you willing to sell the calculus book??? I brought a couple hundred dollars today if your willing to sell it to me."))
     
