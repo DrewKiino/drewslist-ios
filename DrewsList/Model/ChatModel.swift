@@ -52,12 +52,13 @@ public class ChatModel {
     } catch { return }
   }
   
-  public func load() {
+  public func load(callback: () -> Void) {
     do {
       guard let room_id = room_id,
             let messages = try Realm().objectForPrimaryKey(SavedMessages.self, key: room_id)?.getMessages()
       else { return }
       self.messages = messages
+      callback()
     } catch { return }
   }
 }

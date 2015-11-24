@@ -40,23 +40,25 @@ public class UserController {
   }
   
   public class func userFixtures() -> User {
+//  public class func friendFixtures() -> User {
     let user = User()
-    user._id = "5653ba1972c0370e0487b5f8"
+    user._id = "5653dd45e4a2811f00336b5e"
+    user.firstName = "Lisa"
+    user.lastName = "Berthhart"
+    user.username = "LisaXOXO"
+    user.avatar = "stockphoto1"
+    return user
+  }
+  
+  public class func friendFixtures() -> User {
+//  public class func userFixtures() -> User {
+    let user = User()
+    user._id = "564fab9d1690801f00d8f6bd"
     user.firstName = "Bobby"
     user.lastName = "Hill"
     user.username = "XStyler"
     user.avatar = "stockphoto2"
     return user
-  }
-  
-  public class func friendFixtures() -> User {
-    let user2 = User()
-    user2._id = "5653c79300066fed237cb2c7"
-    user2.firstName = "Lisa"
-    user2.lastName = "Berthhart"
-    user2.username = "LisaXOXO"
-    user2.avatar = "stockphoto1"
-    return user2
   }
 
 }

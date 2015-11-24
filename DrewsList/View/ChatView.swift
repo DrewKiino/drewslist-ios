@@ -53,9 +53,6 @@ public class ChatView: JSQMessagesViewController {
   }
   
   private func setupDataBinding() {
-    model._messages.listen(self) { [weak self] messages in
-      self?.collectionView?.reloadData()
-    }
     // set and listen for changes in the user's username
     senderDisplayName = model.user?.username ?? ""
     model.user?._username.listen(self) { [weak self] username in
@@ -72,6 +69,12 @@ public class ChatView: JSQMessagesViewController {
     // if the controller is currently sending a message,
     // update the UI
     controller.isSendingMessage.listen(self) { isSending in
+    }
+    controller.didReloadMessages.listen(self) { [weak self] didReload in
+      if didReload == true {
+        self?.collectionView?.reloadData()
+        self?.finishReceivingMessageAnimated(false)
+      }
     }
     // listen for changes in the 'didSendMessage'
     // if 'isSent' is true, update the UI

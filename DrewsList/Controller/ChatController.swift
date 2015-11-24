@@ -27,6 +27,7 @@ public class ChatController {
   public let socket = Sockets.sharedInstance()
   
   // pub/sub
+  public let didReloadMessages = Signal<Bool>()
   public let didSendMessage = Signal<Bool>()
   public let didReceiveMessage = Signal<Bool>()
   public let isSendingMessage = Signal<Bool>()
@@ -37,8 +38,6 @@ public class ChatController {
   }
   
   deinit {
-    // save messagesx
-    model.save()
     // remove socket subscriptions
     socket.off("message")
     socket.off("subscribe.response")
@@ -57,7 +56,9 @@ public class ChatController {
   
   public func viewDidAppear() {
     // load any saved messages
-    model.load()
+    model.load { [weak self] in self?.didReloadMessages.fire(true) }
+    guard let user = model.user, let _id = user._id else { return }
+    socket.emit("checkForMessages", _id)
   }
   
   public func viewDidDisappear() {
@@ -95,15 +96,16 @@ public class ChatController {
     // subscribe to broadcasts done by the server
     socket.on("message") { [weak self] json in
       guard let newMessage = IncomingMessage(json: json).toJSQMessage() where newMessage.senderId != self?.model.user?._id else { return }
-      log.verbose(newMessage.text)
       // append the broadcast to the model's messages array
       self?.model.messages.append(newMessage)
       // broadcast to all listeners that a message was received
       self?.didReceiveMessage.fire(true)
+      // save received messages
+      self?.model.save()
     }
     
     // subscribe to the server chat framework's messages callback
-    socket.on("checkForMessagesCallback") { [weak self] json in
+    socket.on("checkForMessages.response") { [weak self] json in
       if let messages = json["response"].array {
         for message in messages {
           guard let newMessage = IncomingMessage(json: message).toJSQMessage()
@@ -111,6 +113,8 @@ public class ChatController {
           self?.model.messages.append(newMessage)
           // broadcast to all listeners that a message was received
           self?.didReceiveMessage.fire(true)
+          // save received messages
+          self?.model.save()
           log.verbose(newMessage.text)
         }
       } else if let error = json["error"].string {
