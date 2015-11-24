@@ -139,6 +139,9 @@ public class ChatController {
           self?.model.messages.append(newMessage)
           
           self?.didSendMessage.fire(true)
+          
+          // save send message
+          self?.model.save()
         }
       }
     }

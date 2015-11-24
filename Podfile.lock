@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.1.0)
+  - AsyncSwift (1.6.4)
   - HanekeSwift (0.10.0)
   - JSQMessagesViewController (7.2.0):
     - JSQSystemSoundPlayer (~> 2.0.1)
@@ -39,6 +40,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - AsyncSwift
   - HanekeSwift
   - JSQMessagesViewController
   - Neon
@@ -54,6 +56,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: 415bd7f56197722978759078486689f7ef913dce
+  AsyncSwift: 3c90beed237324f1b57e1f1c414dc5501985d208
   HanekeSwift: d6f5bdf9dbdbbc09d59623b2c1d533e46463dd4d
   JSQMessagesViewController: 73cab48aa92fc2d512f3b6724f3425cc47a19eb5
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d

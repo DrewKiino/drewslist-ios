@@ -14,6 +14,7 @@ import SwiftyJSON
 import SwiftDate
 import Toucan
 import RealmSwift
+import Async
 
 public class ChatModel {
   
@@ -40,26 +41,37 @@ public class ChatModel {
   }
   
   public func save() {
-    do {
-      guard let room_id = room_id else { return }
-      let object = SavedMessages()
-      object._id = room_id
-      object.data = NSKeyedArchiver.archivedDataWithRootObject(messages)
-      let realm = try Realm()
-      realm.beginWrite()
-      realm.add(object, update: true)
-      try realm.commitWrite()
-    } catch { return }
+    Async.background { [weak self] in
+      do {
+        guard let room_id = self?.room_id,
+              let messages = self?.messages
+        else { return }
+        let object = SavedMessages()
+        object._id = room_id
+        object.data = NSKeyedArchiver.archivedDataWithRootObject(messages)
+        let realm = try Realm()
+        realm.beginWrite()
+        realm.add(object, update: true)
+        try realm.commitWrite()
+      } catch {
+        return
+      }
+    }
   }
   
   public func load(callback: () -> Void) {
-    do {
-      guard let room_id = room_id,
-            let messages = try Realm().objectForPrimaryKey(SavedMessages.self, key: room_id)?.getMessages()
-      else { return }
-      self.messages = messages
-      callback()
-    } catch { return }
+    Async.background { [weak self] in
+      do {
+        guard let room_id = self?.room_id,
+              let messages = try Realm().objectForPrimaryKey(SavedMessages.self, key: room_id)?.getMessages()
+          else { return }
+        // only load the last 20 messages
+        self?.messages = messages.suffix(20).map { $0 as JSQMessage }
+        Async.main {
+          callback()
+        }
+      } catch { return }
+    }
   }
 }
 
