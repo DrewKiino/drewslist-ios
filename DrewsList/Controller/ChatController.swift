@@ -42,8 +42,8 @@ public class ChatController {
     socket.off("message")
     socket.off("subscribe.response")
     socket.off("broadcast.response")
-    socket.off("setOnlineStatusCallback")
-    socket.off("checkForMessagesCallback")
+    socket.off("checkForMessages.response")
+    socket.off("setOnlineStatus.response")
     // remove signal subscriptions
     remoteNotification.removeListener(self)
   }
@@ -52,18 +52,21 @@ public class ChatController {
     // match the
     // subscribe to room
     subscribe(model.room_id, user_id: model.user?._id)
+    // set online status to true
+    setOnlineStatus(model.room_id, user_id: model.user?._id, online: true)
   }
   
   public func viewDidAppear() {
     // load any saved messages
     model.load { [weak self] in self?.didReloadMessages.fire(true) }
-    guard let user = model.user, let _id = user._id else { return }
-    socket.emit("checkForMessages", _id)
+    checkForMessages(model.room_id, user_id: model.user?._id)
   }
   
   public func viewDidDisappear() {
     // unsubscribe from the room
     unsubscribe(model.room_id, user_id: model.user?._id)
+    // set online status to false
+    setOnlineStatus(model.room_id, user_id: model.user?._id, online: false)
   }
   
   private func setupDataBinding() {
@@ -85,7 +88,7 @@ public class ChatController {
       }
     }
     
-    socket.on("setOnlineStatusCallback") { json in
+    socket.on("setOnlineStatus.response") { json in
       if let response = json["response"].bool {
         log.info("online status set to: \(response)")
       } else if let error = json["error"].string {
@@ -114,9 +117,9 @@ public class ChatController {
           // broadcast to all listeners that a message was received
           self?.didReceiveMessage.fire(true)
           // save received messages
-          self?.model.save()
           log.verbose(newMessage.text)
         }
+        self?.model.save()
       } else if let error = json["error"].string {
         log.debug(error)
       }
@@ -203,14 +206,21 @@ public class ChatController {
     )
   }
   
-  public func setOnlineStatus(user_id: String, online: Bool) {
+  public func setOnlineStatus(room_id: String?, user_id: String?, online: Bool) {
+    guard let room_id = room_id, let user_id = user_id else { return }
     socket.emit(
       "setOnlineStatus",
       [
         "online": online,
-        "user_id": user_id
+        "user_id": user_id,
+        "room_id": room_id
       ]
     )
+  }
+  
+  public func checkForMessages(room_id: String?, user_id: String?) {
+    guard let room_id = room_id, let user_id = user_id else { return }
+    socket.emit("checkForMessages", [ "room_id": room_id, "user_id": user_id])
   }
   
   
@@ -247,8 +257,8 @@ public class ChatController {
     friend.avatar = "stockphoto2"
     model.friend = friend
     
-    subscribe(model.room_id!, user_id: user._id)
-    socket.emit("checkForMessages", user._id!)
+    subscribe(model.room_id, user_id: user._id)
+    checkForMessages(model.room_id, user_id: user._id)
     simulateChat()
   }
   

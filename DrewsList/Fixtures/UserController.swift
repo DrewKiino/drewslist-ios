@@ -39,10 +39,11 @@ public class UserController {
     return model.user
   }
   
-  public class func userFixtures() -> User {
-//  public class func friendFixtures() -> User {
+//  public class func userFixtures() -> User {
+  public class func friendFixtures() -> User {
     let user = User()
     user._id = "5653dd45e4a2811f00336b5e"
+//    user._id = "5653c79300066fed237cb2c7"
     user.firstName = "Lisa"
     user.lastName = "Berthhart"
     user.username = "LisaXOXO"
@@ -50,10 +51,11 @@ public class UserController {
     return user
   }
   
-  public class func friendFixtures() -> User {
-//  public class func userFixtures() -> User {
+//  public class func friendFixtures() -> User {
+  public class func userFixtures() -> User {
     let user = User()
     user._id = "564fab9d1690801f00d8f6bd"
+//    user._id = "5653ba1972c0370e0487b5f8"
     user.firstName = "Bobby"
     user.lastName = "Hill"
     user.username = "XStyler"
