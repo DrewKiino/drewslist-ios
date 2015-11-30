@@ -18,27 +18,23 @@ pod 'Alamofire'
 
 # json libs
 pod 'SwiftyJSON'
+pod 'ObjectMapper'
 
 # service libs
 pod 'SwiftyTimer'
+pod 'SwiftDate'
 
 # feature libs
 pod 'JSQMessagesViewController'
 
-# promise libs
-pod 'PromiseKit'
-
 # UI libs
 pod 'Neon'
-
-# object mapping libs
-pod 'ObjectMapper'
 
 # pubsub libs
 pod 'Signals'
 
-# data libs
-pod 'SwiftDate'
+# event handling
+pod 'PromiseKit'
 
 # view libs
 pod 'Neon'
@@ -49,6 +45,9 @@ pod 'Toucan'
 
 # data storage libs
 pod 'RealmSwift'
+
+# onboarding libs
+pod 'Onboard'
 
 
 #####################################

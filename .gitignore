@@ -7,3 +7,7 @@ ignore/**/*
 stevo-mb.xcuserdatad
 Pods/Manifest.lock
 Podfile.lock
+UserInterfaceState.xcuserstate
+project.pbxproj
+DrewsList.xcscheme
+xcschememanagement.plist
