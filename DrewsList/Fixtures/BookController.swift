@@ -7,3 +7,15 @@
 //
 
 import Foundation
+import Signals
+
+public class BookController {
+    
+    let book = Book()
+    //let _id =
+    
+//    public func getBook() -> Book? {
+//
+//    }
+    
+}
