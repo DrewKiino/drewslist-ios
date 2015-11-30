@@ -22,9 +22,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   var profileUsername: UILabel?
   var settingsButton: UIButton?
   var tabView: UIView?
-  var tableView: UITableView?
-  var collectionView: UICollectionView?
-  var collectionView2: UICollectionView?
+  var bookShelf: UITableView?
+  var saleListView: UICollectionView?
+  var wishListView: UICollectionView?
   var arrow: UIImageView?
   
   private let controller = UserProfileController()
@@ -52,46 +52,49 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       scrollView?.addSubview(tabView)
     }
     
-    tableView = UITableView(frame: CGRectMake(0, screenSize.height / 2, screenSize.width, screenSize.height * (2/2.75)), style: .Plain)
-    if let tableView = tableView {
-      tableView.backgroundColor = UIColor.greenColor()
-      tableView.delegate = self
-      tableView.dataSource = self
-      tableView.rowHeight = view.frame.height / 4
-      tableView.scrollEnabled = false
-      scrollView!.addSubview(tableView)
+    bookShelf = UITableView(frame: CGRectMake(0, screenSize.height / 2, screenSize.width, screenSize.height * (2/2.75)), style: .Plain)
+    if let bookShelf = bookShelf {
+      bookShelf.backgroundColor = UIColor.greenColor()
+      bookShelf.delegate = self
+      bookShelf.dataSource = self
+      bookShelf.rowHeight = view.frame.height / 4
+      bookShelf.scrollEnabled = false
+      scrollView!.addSubview(bookShelf)
     }
     
     // Do any additional setup after loading the view, typically from a nib.
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .Horizontal
     
-    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: 
+    saleListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+    wishListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: 
     layout)
 
-    if let collectionView = collectionView {
-      collectionView.tag = 1
-      collectionView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-      collectionView.delegate = self
-      collectionView.dataSource = self
-      collectionView.pagingEnabled = true
-      collectionView.backgroundColor = UIColor.whiteColor()
-    }
-    if let collectionView2 = collectionView2 {
-      collectionView2.tag = 2
-      collectionView2.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-      collectionView2.delegate = self
-      collectionView2.dataSource = self
-      collectionView2.pagingEnabled = true
-      collectionView2.backgroundColor = UIColor.whiteColor()
+    // sale list
+    if let saleListView = saleListView {
+      saleListView.tag = 1
+      saleListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
+      saleListView.delegate = self
+      saleListView.dataSource = self
+      saleListView.pagingEnabled = true
+      saleListView.backgroundColor = UIColor.whiteColor()
     }
     
-    arrow = UIImageView(frame: CGRectMake( screenSize.width, (tableView?.height)!/4, screenSize.width/12, screenSize.width/12))
+    // wish list
+    if let wishListView = wishListView {
+      wishListView.tag = 2
+      wishListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
+      wishListView.delegate = self
+      wishListView.dataSource = self
+      wishListView.pagingEnabled = true
+      wishListView.backgroundColor = UIColor.whiteColor()
+    }
+    
+    arrow = UIImageView(frame: CGRectMake( screenSize.width, (bookShelf?.height)!/4, screenSize.width/12, screenSize.width/12))
     if let arrow = arrow {
       arrow.image = UIImage(named: "Icon-OrangeChevronButton") as UIImage?
       arrow.alpha = 0.0
-      tableView?.addSubview(arrow)
+      bookShelf?.addSubview(arrow)
     }
  
     arrangeViews()
@@ -108,10 +111,10 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
     
     model._saleList.listen(self) { [weak self] list in
-      self?.collectionView?.reloadData()
+      self?.saleListView?.reloadData()
     }
     model._wishList.listen(self) { [weak self] list in
-      self?.collectionView2?.reloadData()
+      self?.wishListView?.reloadData()
     }
   }
   
@@ -202,11 +205,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       shelfLabel.textColor = UIColor.lightGrayColor()
       shelfLabel.frame = CGRectMake(screenSize.width / 20, 0, screenSize.width, tableView.height * (1/10))
       
-      collectionView!.frame = CGRectMake(0, tableView.height * (1/12), screenSize.width, tableView.height * (7.5/20))
+      saleListView!.frame = CGRectMake(0, tableView.height * (1/12), screenSize.width, tableView.height * (7.5/20))
      
       cell.backgroundColor = UIColor.whiteColor()
       cell.addSubview(shelfLabel)
-      cell.addSubview(collectionView!)
+      cell.addSubview(saleListView!)
       
     } else {
       shelfLabel.text = "MY WISHLIST"
@@ -215,13 +218,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       shelfLabel.textColor = UIColor.lightGrayColor()
       shelfLabel.frame = CGRectMake(screenSize.width / 20, 0, screenSize.width, tableView.height * (1/10))
 
-      collectionView2!.frame = CGRectMake(0, tableView.height * (1/12), screenSize.width, tableView.height * (7.5/20) )
+      wishListView!.frame = CGRectMake(0, tableView.height * (1/12), screenSize.width, tableView.height * (7.5/20) )
       
       cell.backgroundColor = UIColor.whiteColor()
       cell.addSubview(shelfLabel)
-      cell.addSubview(collectionView2!)
+      cell.addSubview(wishListView!)
     }
-    //print(collectionView?.contentSize.width)
+    //print(saleListView?.contentSize.width)
     return  cell
   }
   
@@ -242,15 +245,18 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   
   public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    if(collectionView.tag == 1){
-     print("saleList count: \(model.saleList.count)")
-      return model.saleList.count
-    } else if(collectionView.tag == 2){
-      print("wishList count: \(model.wishList.count)")
-      return model.wishList.count
-    } else {
-      return 1
+    switch collectionView.tag {
+      case 1: return model.saleList.count
+      case 2: return model.wishList.count
+      default: return 0
     }
+//    if(collectionView.tag == 1){
+//     print("saleList count: \(model.saleList.count)")
+//    } else if(collectionView.tag == 2){
+//      print("wishList count: \(model.wishList.count)")
+//    } else {
+//      return 1
+//    }
     
   }
   
@@ -258,14 +264,22 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? Cell
     cell!.backgroundColor = UIColor.purpleColor()
     
-    if(collectionView.tag == 1){
-      print("Book title from saleList(should be 4 of these): \(model.saleList[indexPath.row].title)")
-      //cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
+    switch collectionView.tag {
+    case 1:
       cell?.setup()
-    } else if (collectionView.tag == 2){
-      //cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
+    case 2:
       cell?.setup()
+    default: break
     }
+    
+//    if(collectionView.tag == 1){
+//      print("Book title from saleList(should be 4 of these): \(model.saleList[indexPath.row].title)")
+      //cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
+//      cell?.setup()
+//    } else if (collectionView.tag == 2){
+      //cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
+//      cell?.setup()
+//    }
     return cell!
   }
   
@@ -283,13 +297,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     {
       // then we are at the left
       
-      arrow?.frame = CGRect( x: screenSize.width, y: (tableView?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
+      arrow?.frame = CGRect( x: screenSize.width, y: (bookShelf?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
       imageFadeIn(arrow!, rightSide: true)
     }
     else if (scrollOffset + scrollViewWidth == round(scrollContentSizeWidth))
     {
       // then we are at the end
-      arrow?.frame = CGRect( x: 0-(arrow?.width)!, y: (tableView?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
+      arrow?.frame = CGRect( x: 0-(arrow?.width)!, y: (bookShelf?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
       imageFadeIn(arrow!, rightSide: false)
       
     }
@@ -299,13 +313,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     if(rightSide){
       UIView.animateWithDuration(0.5, delay: 0.0, options: .CurveEaseOut, animations: {
         imageView.alpha = 1.0
-        imageView.frame = CGRect(x: screenSize.width-imageView.width*1.25, y: (self.tableView?.height)!/4, width: imageView.width, height: imageView.height)
+        imageView.frame = CGRect(x: screenSize.width-imageView.width*1.25, y: (self.bookShelf?.height)!/4, width: imageView.width, height: imageView.height)
         //imageView.constant += self.view.bounds.width
         }, completion: nil)
     } else {
       UIView.animateWithDuration(0.5, delay: 0.0, options: .CurveEaseOut, animations: {
         imageView.alpha = 1.0
-        imageView.frame = CGRect(x: imageView.width*0.25, y: (self.tableView?.height)!/4, width: imageView.width, height: imageView.height)
+        imageView.frame = CGRect(x: imageView.width*0.25, y: (self.bookShelf?.height)!/4, width: imageView.width, height: imageView.height)
         //imageView.constant += self.view.bounds.width
         }, completion: nil)
     }
@@ -320,7 +334,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func arrangeViews(){
-    scrollView!.contentSize = CGSizeMake(screenSize.width, bgView!.frame.height + (tableView?.frame.height)!)
+    scrollView!.contentSize = CGSizeMake(screenSize.width, bgView!.frame.height + (bookShelf?.frame.height)!)
     scrollView?.bringSubviewToFront(tabView!)
   }
   
