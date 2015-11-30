@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "0634A44027CA2BF0B6079DC3536558154238A245",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "0634A44027CA2BF0B6079DC3536558154238A245" : 0,
+    "5E1378953CB26EEB179F030EEB689ADDE18095D2" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9875CD97-C085-4283-A0D1-9C45C1CDFDEC",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "0634A44027CA2BF0B6079DC3536558154238A245" : "drewslist-ios\/",
+    "5E1378953CB26EEB179F030EEB689ADDE18095D2" : "..\/..\/DevOps\/Atlantis"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "DrewsList",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "DrewsList.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DrewKiino\/drewslist-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0634A44027CA2BF0B6079DC3536558154238A245"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/DrewKiino\/Atlantis.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E1378953CB26EEB179F030EEB689ADDE18095D2"
+    }
+  ]
+}
