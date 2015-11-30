@@ -8,8 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
+		3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */; };
+		3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */; };
+		3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */; };
+		3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */; };
+		3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */; };
+		3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */; };
+		3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */; };
 		3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA51C025BE500743C74 /* Atlantis.swift */; };
-		3FB40FA81C02613800743C74 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA71C02613800743C74 /* ISBNScannerView.swift */; };
 		C7F93448B98F7A7B0B0069F7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */; };
 		EE07FE2E1BE11D1E00A10F05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */; };
@@ -46,8 +52,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
+		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
+		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookController.swift; sourceTree = "<group>"; };
+		3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerController.swift; sourceTree = "<group>"; };
+		3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
+		3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerModel.swift; sourceTree = "<group>"; };
+		3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingController.swift; sourceTree = "<group>"; };
 		3FB40FA51C025BE500743C74 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
-		3FB40FA71C02613800743C74 /* ISBNScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerView.swift; sourceTree = "<group>"; };
 		4DE6F7F5C96749603F0D75BC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B265067F38D8EFF1135126 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -161,6 +173,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 			);
@@ -170,7 +183,8 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3FB40FA71C02613800743C74 /* ISBNScannerView.swift */,
+				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
+				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 			);
@@ -180,6 +194,8 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
+				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 			);
@@ -189,6 +205,8 @@
 		EE3C94991BF30FC500E228A9 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */,
+				3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */,
 				EE79D3B21BFFDF0000F60EE1 /* UserController.swift */,
 				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
 			);
@@ -451,16 +469,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */,
+				3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */,
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
-				3FB40FA81C02613800743C74 /* ISBNScannerView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
+				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
+				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
+				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
+				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
+				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 			);
