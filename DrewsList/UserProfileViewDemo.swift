@@ -45,7 +45,7 @@ public class UserProfileViewDemo:
   let button = UIButton()
   
   public func isPressed() {
-    controller.isPressed()
+    //controller.isPressed()
     //let toucan = Toucan(image: profileImage)
 //    let circledImage = toucan.maskWithEllipse().image
 //    circledImage

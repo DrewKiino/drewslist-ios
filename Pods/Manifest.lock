@@ -2,24 +2,30 @@ PODS:
   - Alamofire (3.1.0)
   - HanekeSwift (0.10.0)
   - Neon (0.0.2)
+  - Signals (2.1.0)
   - Socket.IO-Client-Swift (4.0.4)
   - SwiftyJSON (2.3.1)
+  - SwiftyTimer (1.2.0)
   - Toucan (0.4.3)
 
 DEPENDENCIES:
   - Alamofire
   - HanekeSwift
   - Neon
+  - Signals
   - Socket.IO-Client-Swift
   - SwiftyJSON
+  - SwiftyTimer
   - Toucan
 
 SPEC CHECKSUMS:
   Alamofire: 415bd7f56197722978759078486689f7ef913dce
   HanekeSwift: d6f5bdf9dbdbbc09d59623b2c1d533e46463dd4d
   Neon: 7fb6f3941bd21d8c76a90a30fac44b37f8cb3860
+  Signals: a6114179339fa648120f64bb3acd0472965d45d9
   Socket.IO-Client-Swift: e886946f1c356b673b0a73bf1633a0df8bff7a5b
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
+  SwiftyTimer: 5453593e0aaacfb1611fb6986d257281140913bb
   Toucan: 3e2319c8fb9c7a2fb9c30f6d4ecdc6b8a2f1c92b
 
 COCOAPODS: 0.39.0

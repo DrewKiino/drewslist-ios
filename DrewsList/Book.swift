@@ -7,8 +7,15 @@
 //
 
 import Foundation
+import UIKit
 
 
 public class Book {
- 
+  var title: String?
+  var bookImg: UIImage?
+  
+  init(){
+    self.title = "1234"
+    self.bookImg = UIImage(named: "DummyBook")
+  }
 }

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Neon
+import Toucan
 
 
 public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource{
@@ -24,55 +25,17 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   var tableView: UITableView?
   var collectionView: UICollectionView?
   var collectionView2: UICollectionView?
-  var arrowRight: UIImageView?
+  var arrow: UIImageView?
+  
+  private let controller = UserProfileController()
+  private var model: UserProfileModel { get { return controller.getModel() } }
   
   override public func viewDidLoad() {
     super.viewDidLoad()
-    
-    scrollView = UIScrollView(frame: CGRectMake(0, 0, screenSize.width, screenSize.height))
-    if let scrollView = scrollView {
-      scrollView.tag = 0
-      scrollView.delegate = self
-      scrollView.backgroundColor = UIColor.blackColor()
-      view.addSubview(scrollView)
-    }
-    
-    bgView = UIView(frame: CGRectMake(0, 0, screenSize.width, screenSize.height / 2))
-    if let bgView = bgView {
-      bgView.backgroundColor = UIColor.orangeColor()
-      scrollView?.addSubview(bgView)
-    }
-    
-    bgViewTop = UIView(frame: CGRectMake(0, 0, screenSize.width, (bgView?.frame.height)! / 2))
-    if let bgViewTop = bgViewTop {
-      bgViewTop.backgroundColor = UIColor.blueColor()
-      bgView?.addSubview(bgViewTop)
-    }
-    
-    bgViewBot = UIView(frame: CGRectMake(0, (bgView?.frame.height)! / 2, screenSize.width, (bgView?.frame.height)! / 2))
-    if let bgViewBot = bgViewBot {
-      bgViewBot.backgroundColor = UIColor.whiteColor()
-      bgView?.addSubview(bgViewBot)
-    }
-    
-    profileImg = UIImageView(frame: CGRectMake(screenSize.width / 2 - screenSize.width / 5, screenSize.height / 4 - screenSize.width / 5, screenSize.width / 2.5, screenSize.width / 2.5))
-    if let profileImg = profileImg {
-      profileImg.backgroundColor = UIColor.purpleColor()
-      profileImg.layer.cornerRadius = profileImg.frame.size.width / 2
-      profileImg.clipsToBounds = true
-      bgView?.addSubview(profileImg)
-    }
-    
-    profileUsername = UILabel(frame: CGRectMake(screenSize.width / 3 , screenSize.height / 2 -  screenSize.width / 5, screenSize.width / 3, screenSize.height / 30))
-    if let profileUsername = profileUsername {
-    
-      profileUsername.text = "User Name"
-      profileUsername.font = UIFont(name: "Avenir", size: 100)
-      profileUsername.font = UIFont.boldSystemFontOfSize(20.0)
-      profileUsername.textAlignment = .Center
-      profileUsername.textColor = UIColor.blackColor()
-      bgView?.addSubview(profileUsername)
-    }
+    setupScrollView()
+    setupBGView()
+    setupProfileImg()
+    setupUsernameLabel()
     
     settingsButton = UIButton(frame: CGRectMake(screenSize.width-screenSize.width/12, screenSize.width/12, screenSize.width / 20, screenSize.width / 20))
     if let settingsButton = settingsButton {
@@ -102,10 +65,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     // Do any additional setup after loading the view, typically from a nib.
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .Horizontal
-    layout.minimumLineSpacing = 20.0
+    //layout.minimumLineSpacing = 20.0
     
-    collectionView = UICollectionView(frame: CGRectMake(0, 0, 1, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 1, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+//    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+//    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: 
+//    layout)
+    
+    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, 300), collectionViewLayout: layout)
+    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, 300), collectionViewLayout: layout)
+
 
     if let collectionView = collectionView {
       collectionView.tag = 1
@@ -124,16 +92,95 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       collectionView2.backgroundColor = UIColor.whiteColor()
     }
     
-    arrowRight = UIImageView(frame: CGRectMake( 0, 0, screenSize.width / 15, screenSize.width / 15))
-    if let arrowRight = arrowRight {
-      arrowRight.backgroundColor = UIColor.orangeColor()
-      arrowRight.layer.cornerRadius = arrowRight.frame.size.width / 2
-      arrowRight.clipsToBounds = true
-      tabView?.addSubview(arrowRight)
+    arrow = UIImageView(frame: CGRectMake( screenSize.width, (tableView?.height)!/4, screenSize.width/12, screenSize.width/12))
+    if let arrow = arrow {
+      arrow.image = UIImage(named: "Icon-OrangeChevronButton") as UIImage?
+      arrow.alpha = 0.0
+      tableView?.addSubview(arrow)
     }
  
     arrangeViews()
+    setupDataBinding()
     
+  }
+  
+  
+  // Data Binding
+  
+  private func setupDataBinding() {
+    model._username.listen(self) { [weak self] _id in
+      self?.profileUsername?.text = _id
+    }
+    
+    model._saleList.listen(self) { [weak self] list in
+      self?.collectionView?.reloadData()
+    }
+    model._wishList.listen(self) { [weak self] list in
+      self?.collectionView2?.reloadData()
+    }
+  }
+  
+  
+  // Setup View
+  
+  public func setupScrollView(){
+    scrollView = UIScrollView(frame: CGRectMake(0, 0, screenSize.width, screenSize.height))
+    if let scrollView = scrollView {
+      scrollView.tag = 0
+      scrollView.delegate = self
+      scrollView.backgroundColor = UIColor.blackColor()
+      view.addSubview(scrollView)
+    }
+  }
+  
+  public func setupBGView(){
+    bgView = UIView(frame: CGRectMake(0, 0, screenSize.width, screenSize.height / 2))
+    if let bgView = bgView {
+      bgView.backgroundColor = UIColor.orangeColor()
+      scrollView?.addSubview(bgView)
+    }
+    
+    bgViewTop = UIView(frame: CGRectMake(0, 0, screenSize.width, (bgView?.frame.height)! / 2))
+    if let bgViewTop = bgViewTop {
+      bgViewTop.backgroundColor = UIColor.blueColor()
+      bgView?.addSubview(bgViewTop)
+    }
+    
+    bgViewBot = UIView(frame: CGRectMake(0, (bgView?.frame.height)! / 2, screenSize.width, (bgView?.frame.height)! / 2))
+    if let bgViewBot = bgViewBot {
+      bgViewBot.backgroundColor = UIColor.whiteColor()
+      bgView?.addSubview(bgViewBot)
+    }
+  }
+  
+  public func setupProfileImg(){
+    profileImg = UIImageView(frame: CGRectMake(screenSize.width / 2 - screenSize.width / 5, screenSize.height / 4 - screenSize.width / 5, screenSize.width / 2.5, screenSize.width / 2.5))
+    if let profileImg = profileImg {
+      profileImg.backgroundColor = UIColor.purpleColor()
+      profileImg.layer.cornerRadius = profileImg.frame.size.width / 2
+      profileImg.clipsToBounds = true
+      bgView?.addSubview(profileImg)
+    }
+  }
+  
+  public func setupUsernameLabel(){
+    profileUsername = UILabel(frame: CGRectMake(screenSize.width / 3 , screenSize.height / 2 -  screenSize.width / 5, screenSize.width / 3, screenSize.height / 30))
+    if let profileUsername = profileUsername {
+      profileUsername.text = model.username
+      profileUsername.font = UIFont(name: "Avenir", size: 100)
+      profileUsername.font = UIFont.boldSystemFontOfSize(20.0)
+      profileUsername.textAlignment = .Center
+      profileUsername.textColor = UIColor.blackColor()
+      bgView?.addSubview(profileUsername)
+    }
+  }
+  
+  public override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    controller.userViewWillAppear()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
   }
   
   //Table View Functions
@@ -179,81 +226,106 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       cell.addSubview(shelfLabel)
       cell.addSubview(collectionView2!)
     }
-    print(collectionView?.contentSize.width)
+    //print(collectionView?.contentSize.width)
     return  cell
   }
   
   // Collection View Functions
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-    return CGSizeMake( screenSize.width / 3.5, collectionView.frame.height - collectionView.frame.height / 10)
+    print("mooo2")
+    //return CGSizeMake( screenSize.width / 3.5, collectionView.frame.height - collectionView.frame.height / 10)
+    return CGSizeMake( 1000, 1000)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
     let leftRightInset = screenSize.width / 25.0
+    print("mooo")
     return UIEdgeInsetsMake(0, leftRightInset, 0, leftRightInset)
   }
   
   public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    print("mark")
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? Cell
     cell!.backgroundColor = UIColor.purpleColor()
-    //cell?.setup()
-    cell?.setup()
+    print("mark \(collectionView.tag)")
+    if(collectionView.tag == 1){
+      
+      cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
+      cell?.setup()
+    } else if (collectionView.tag == 2){
+      cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
+      cell?.setup()
+    }
     return cell!
   }
   
   public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 20
+    if(collectionView.tag == 1){
+     print(model.saleList.count)
+      return model.saleList.count
+    } else if(collectionView.tag == 2){
+      return model.wishList.count
+    } else {
+      return 0
+    }
   }
   
-//  public func scrollViewDidEndDecelerating(scrollView: UIScrollView){
-//    let scrollViewWidth = scrollView.frame.size.width
-//    let scrollContentSizeWidth = scrollView.contentSize.width
-//    let scrollOffset = scrollView.contentOffset.x
-//    
-//    if (scrollOffset == 0)
-//    {
-//      // then we are at the left
-//      print("LEFT")
-//      moveImage(arrowRight!)
-//    }
-//    else if (scrollOffset + scrollViewWidth == round(scrollContentSizeWidth))
-//    {
-//      // then we are at the end
-//      
-//      print("RIGHT")
-//    }
-//  }
+  public func scrollViewDidScroll(scrollView: UIScrollView){
+    arrow?.alpha = 0.0
+  
+  }
+  
+  public func scrollViewDidEndDecelerating(scrollView: UIScrollView){
+    let scrollViewWidth = scrollView.frame.size.width
+    let scrollContentSizeWidth = scrollView.contentSize.width
+    let scrollOffset = scrollView.contentOffset.x
+    
+    if (scrollOffset == 0)
+    {
+      // then we are at the left
+      
+      arrow?.frame = CGRect( x: screenSize.width, y: (tableView?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
+      imageFadeIn(arrow!, rightSide: true)
+    }
+    else if (scrollOffset + scrollViewWidth == round(scrollContentSizeWidth))
+    {
+      // then we are at the end
+      arrow?.frame = CGRect( x: 0-(arrow?.width)!, y: (tableView?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
+      imageFadeIn(arrow!, rightSide: false)
+      
+    }
+  }
+  
+  func imageFadeIn(imageView: UIImageView, rightSide: Bool) {
+    if(rightSide){
+      UIView.animateWithDuration(0.5, delay: 0.0, options: .CurveEaseOut, animations: {
+        imageView.alpha = 1.0
+        imageView.frame = CGRect(x: screenSize.width-imageView.width*1.25, y: (self.tableView?.height)!/4, width: imageView.width, height: imageView.height)
+        //imageView.constant += self.view.bounds.width
+        }, completion: nil)
+    } else {
+      UIView.animateWithDuration(0.5, delay: 0.0, options: .CurveEaseOut, animations: {
+        imageView.alpha = 1.0
+        imageView.frame = CGRect(x: imageView.width*0.25, y: (self.tableView?.height)!/4, width: imageView.width, height: imageView.height)
+        //imageView.constant += self.view.bounds.width
+        }, completion: nil)
+    }
+  }
   
   func applyPlainShadow(view: UIView) {
     let layer = view.layer
-    
     layer.shadowColor = UIColor.blackColor().CGColor
     layer.shadowOffset = CGSize(width: 0, height: 0)
     layer.shadowOpacity = 0.4
     layer.shadowRadius = 3
   }
   
-//  public func moveImage(view: UIImageView){
-//    let toPoint: CGPoint = CGPointMake(screenSize.width - screenSize.width / 4, screenSize.height / 2)
-//    let fromPoint : CGPoint = CGPointMake(30, 0)
-//    print("moo")
-//    let movement = CABasicAnimation(keyPath: "movement")
-//    movement.additive = true
-//    movement.fromValue =  NSValue(CGPoint: fromPoint)
-//    movement.toValue =  NSValue(CGPoint: toPoint)
-//    movement.duration = 2.0
-//    
-//    view.layer.addAnimation(movement, forKey: "move")
-//  }
-  
   public func arrangeViews(){
     scrollView!.contentSize = CGSizeMake(screenSize.width, bgView!.frame.height + (tableView?.frame.height)!)
     scrollView?.bringSubviewToFront(tabView!)
   }
   
-  public override func viewDidAppear(animated: Bool) {
-  }
   
   override public func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
@@ -273,39 +345,45 @@ public class Cell: UICollectionViewCell {
     var bookImageView: UIImageView!
     var infoView: UIView!
     var infoLabel: UILabel!
+    private var doOnce = true
   
   public func setup(){
-    bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
-    bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
-    bookImageView.backgroundColor = UIColor.blueColor()
     
-    contentView.addSubview(bookImageView!)
-    
-    
-    
-    let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
-    infoView = UILabel(frame: viewFrame)
-    
-    infoView.backgroundColor = UIColor.whiteColor()
-    
-    infoView.layer.shadowColor = UIColor.blackColor().CGColor
-    infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
-    infoView.layer.shadowOpacity = 0.1
-    infoView.layer.shadowRadius = 5
-    contentView.addSubview(infoView!)
-    
-    let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
-    infoLabel = UILabel(frame: textFrame)
-    
-    infoLabel.backgroundColor = UIColor.clearColor()
-    
-    infoLabel.text = "More Info"
-    infoLabel.font = UIFont(name: "Avenir", size: 8)
-    infoLabel.textColor = UIColor.lightGrayColor()
-    //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-    infoLabel.textAlignment = .Center
-    contentView.addSubview(infoLabel!)
-    
+    if doOnce {
+      bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
+      bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
+      bookImageView.backgroundColor = UIColor.blueColor()
+      
+      contentView.addSubview(bookImageView!)
+      
+      
+      
+      let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
+      infoView = UILabel(frame: viewFrame)
+      
+      infoView.backgroundColor = UIColor.whiteColor()
+      
+      infoView.layer.shadowColor = UIColor.blackColor().CGColor
+      infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
+      infoView.layer.shadowOpacity = 0.1
+      infoView.layer.shadowRadius = 5
+      contentView.addSubview(infoView!)
+      
+      let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
+      infoLabel = UILabel(frame: textFrame)
+      
+      infoLabel.backgroundColor = UIColor.clearColor()
+      
+      infoLabel.text = "More Info"
+      infoLabel.font = UIFont(name: "Avenir", size: 8)
+      infoLabel.textColor = UIColor.lightGrayColor()
+      //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
+      infoLabel.textAlignment = .Center
+      contentView.addSubview(infoLabel!)
+      doOnce = false
+    }
   }
+  
+  
   
 }

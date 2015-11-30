@@ -7,24 +7,45 @@
 //
 
 import Foundation
+import SwiftyTimer
 
 public class UserProfileController {
   
   private let model = UserProfileModel()
-  public var view: UserProfileView?
+  private var view: UserProfileView?
   
-  public func isPressed() {
-   
+  public func userViewWillAppear() {
+    //getUserFromServer(model.user_id!)
+    loadView()
+    loadUserImage()
+    loadUsername()
     
-    //view?.changeUIBGToRed()
+    NSTimer.after(3.0) { [weak self] in
+      self?.model.username = "NewUser"
+    }
+  }
+  
+//  private func getUserFromServer(user_id: String) {
+//    server.getUser(user_id)
+//    .then { user in
+//      self.view?.profileImg = UIimage user.profileUrl
+//      
+//    }
+//    .catch { error in
+//      print(error)
+//    }
+//  }
+  
+  
+  public func getModel() -> UserProfileModel { return model }
+  
+  public func loadView(){
   }
   
   public func loadUserImage(){
-    
   }
   
   public func loadUsername(){
-  
   }
   
   public func populateSalesList(){

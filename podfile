@@ -9,6 +9,8 @@ use_frameworks!
 
 #####################################
 
+# date libs
+pod 'SwiftyTimer'
 
 # socket libs
 pod 'Socket.IO-Client-Swift'
@@ -23,6 +25,7 @@ pod 'SwiftyJSON'
 pod 'Toucan'
 pod 'HanekeSwift'
 pod 'Neon'
+pod 'Signals'
 
 #####################################
 # unit testing
