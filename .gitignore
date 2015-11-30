@@ -5,3 +5,4 @@ Pods/**/*
 ignore/**/*
 .DS_Store
 stevo-mb.xcuserdatad
+Pods/Manifest.lock
