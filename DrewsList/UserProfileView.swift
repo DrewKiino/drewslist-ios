@@ -65,15 +65,10 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     // Do any additional setup after loading the view, typically from a nib.
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .Horizontal
-    //layout.minimumLineSpacing = 20.0
     
-//    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-//    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: 
-//    layout)
-    
-    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, 300), collectionViewLayout: layout)
-    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, 300), collectionViewLayout: layout)
-
+    collectionView = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+    collectionView2 = UICollectionView(frame: CGRectMake(0, 0, 300, (tableView?.frame.height)! * (7.5/20)), collectionViewLayout: 
+    layout)
 
     if let collectionView = collectionView {
       collectionView.tag = 1
@@ -233,42 +228,45 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   // Collection View Functions
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-    print("mooo2")
-    //return CGSizeMake( screenSize.width / 3.5, collectionView.frame.height - collectionView.frame.height / 10)
-    return CGSizeMake( 1000, 1000)
+    
+    return CGSizeMake( screenSize.width / 3.5, collectionView.frame.height - collectionView.frame.height / 10)
+    
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
     let leftRightInset = screenSize.width / 25.0
-    print("mooo")
+    
     return UIEdgeInsetsMake(0, leftRightInset, 0, leftRightInset)
   }
   
-  public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    print("mark")
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? Cell
-    cell!.backgroundColor = UIColor.purpleColor()
-    print("mark \(collectionView.tag)")
-    if(collectionView.tag == 1){
-      
-      cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
-      cell?.setup()
-    } else if (collectionView.tag == 2){
-      cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
-      cell?.setup()
-    }
-    return cell!
-  }
+  
   
   public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     if(collectionView.tag == 1){
-     print(model.saleList.count)
+     print("saleList count: \(model.saleList.count)")
       return model.saleList.count
     } else if(collectionView.tag == 2){
+      print("wishList count: \(model.wishList.count)")
       return model.wishList.count
     } else {
-      return 0
+      return 1
     }
+    
+  }
+  
+  public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? Cell
+    cell!.backgroundColor = UIColor.purpleColor()
+    
+    if(collectionView.tag == 1){
+      print("Book title from saleList(should be 4 of these): \(model.saleList[indexPath.row].title)")
+      //cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
+      cell?.setup()
+    } else if (collectionView.tag == 2){
+      //cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
+      cell?.setup()
+    }
+    return cell!
   }
   
   public func scrollViewDidScroll(scrollView: UIScrollView){
@@ -355,9 +353,7 @@ public class Cell: UICollectionViewCell {
       bookImageView.backgroundColor = UIColor.blueColor()
       
       contentView.addSubview(bookImageView!)
-      
-      
-      
+    
       let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
       infoView = UILabel(frame: viewFrame)
       

@@ -40,7 +40,10 @@ public class UserProfileModel {
     firstName = dummyUser.firstName
     lastName = dummyUser.lastName
     username = dummyUser.username
-    let dummyBooks = [Book(), Book(), Book(), Book()]
-    saleList = dummyBooks
+    let dummyBooks1 = [Book(), Book(), Book(), Book()]
+    let dummyBooks2 = [Book(), Book(), Book()]
+    saleList = dummyBooks1
+    wishList = dummyBooks2
+    //print(saleList[0].title)
   }
 }
