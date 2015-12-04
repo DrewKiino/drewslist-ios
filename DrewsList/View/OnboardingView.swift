@@ -1,23 +1,21 @@
 //
-//  ViewController.swift
-//  RMParallax
+//  ResetController.swift
+// //RMprallax 
 //
-///  Created by Starflyer on 11/29/15.
+//  Created by Starflyer on 11/29/15.
 //  Copyright © 2015 abearablecode. All rights reserved.
 ///
 
-
 import UIKit
 
-class ViewController: UIViewController {
+class OnboardingView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let item1 = RMParallaxItem(image: UIImage(named: "item1")!, text: "")
-      
-        let item2 = RMParallaxItem(image: UIImage(named: "item2")!, text: "Buy, Sell, Trade your books with ease!")
-        let item3 = RMParallaxItem(image: UIImage(named: "item3")!, text: "Communicate with your friends with our Real-Time Chat")
+        let item2 = RMParallaxItem(image: UIImage(named: "book7")!, text: "Sell, Trade, and Buy your Books")
+        let item3 = RMParallaxItem(image: UIImage(named: "book7")!, text: "Chat with your friends with our instant chat!")
         
         let rmParallaxViewController = RMParallax(items: [item1, item2, item3], motion: false)
         rmParallaxViewController.completionHandler = {

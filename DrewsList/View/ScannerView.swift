@@ -11,7 +11,7 @@ import AVFoundation
 import Toucan
 import Neon
 
-public class ViewController: UIViewController {
+public class ScannerView: UIViewController {
   
   private var session: AVCaptureSession?
   private var previewLayer: AVCaptureVideoPreviewLayer?

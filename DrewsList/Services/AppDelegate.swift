@@ -22,23 +22,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     
-    // set the window
-    let chatHistoryView = ChatHistoryView()
-    chatHistoryView.view.frame = UIScreen.mainScreen().bounds
-    window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    window!.rootViewController = chatHistoryView
-    window!.makeKeyAndVisible()
-    
-    // create a WebSocket connection to the server
-//    socket.connect() {
-//      let userController = UserController.sharedInstance()
-//      userController.login()
-//    }
-    
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
-    // PUSH NOTIFICATION
+    // init the root view
+    let chatHistoryView = UserProfileView()
+    
+    /*
+    * Use this code to get the bounds of the screen
+    *
+    *         UIScreen.mainScreen().bounds
+    *
+    */
+    chatHistoryView.view.frame = UIScreen.mainScreen().bounds
+    
+    // set the window to match the screen's bounds
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    
+    // set the root view as the window's root view
+    window!.rootViewController = chatHistoryView
+    
+    // commit change
+    window!.makeKeyAndVisible()
+    
+    // PUSH NOTIFIC
     let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
     application.registerUserNotificationSettings(settings)
     application.registerForRemoteNotifications()
