@@ -33,17 +33,4 @@ public class UserProfileModel {
  
   public let _wishList = Signal<[Book]>()
   public var wishList: [Book] = [] { didSet { _wishList => wishList } }
-  
-  init (){
-    let dummyUser = User()
-    user_id = dummyUser.user_id
-    firstName = dummyUser.firstName
-    lastName = dummyUser.lastName
-    username = dummyUser.username
-    let dummyBooks1 = [Book(), Book(), Book(), Book()]
-    let dummyBooks2 = [Book(), Book(), Book()]
-    saleList = dummyBooks1
-    wishList = dummyBooks2
-    //print(saleList[0].title)
-  }
 }

@@ -9,12 +9,27 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>HanekeSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Neon.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-DrewsListTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>Pods.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Signals.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -29,30 +44,65 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftyTimer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Toucan.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>00803A68511BD836675728DE65A3213C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2584DAFBD22EF9B6D822B4D77811CC40</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>2620F12C1176436B3B3784520F311BC7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3E3F2AF1B2FB4930864052AA1B144838</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7985FA91DAF900C388372541B134468E</key>
+		<key>64DE3E4A3FECBD60E120ABE29985FD20</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8C6D98DC81E1AA0206EA429436C3C81A</key>
+		<key>70207EA69FED51719AFD7A8E32372473</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D6C9B26DAE948056BC8AE84FDB27094D</key>
+		<key>A0B0E3235846286DCC29509B2A66EBB0</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DEC19DBC9B256E830DEC2A414452A52C</key>
+		<key>D76E773ED7E322823DA2A8EDC6F794DD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DFA210CD24F2674774BEDAEAEAE7BA72</key>
 		<dict>
 			<key>primary</key>
 			<true/>

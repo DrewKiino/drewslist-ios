@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
-		4F1C753B1BF9474A00458735 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1C753A1BF9474A00458735 /* UserProfileView.swift */; settings = {ASSET_TAGS = (); }; };
-		4F47C7941BEEDBBE00F95CD0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F47C7931BEEDBBE00F95CD0 /* User.swift */; settings = {ASSET_TAGS = (); }; };
-		4F47C7971BEEE17200F95CD0 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F47C7961BEEE17200F95CD0 /* Book.swift */; settings = {ASSET_TAGS = (); }; };
-		4F50187D1BEEC74600295260 /* UserProfileViewDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50187C1BEEC74600295260 /* UserProfileViewDemo.swift */; settings = {ASSET_TAGS = (); }; };
-		4F50187F1BEEC74C00295260 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50187E1BEEC74C00295260 /* UserProfileModel.swift */; settings = {ASSET_TAGS = (); }; };
-		4F5018811BEEC75300295260 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5018801BEEC75300295260 /* UserProfileController.swift */; settings = {ASSET_TAGS = (); }; };
+		4F1C753B1BF9474A00458735 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1C753A1BF9474A00458735 /* UserProfileView.swift */; };
+		4F47C7941BEEDBBE00F95CD0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F47C7931BEEDBBE00F95CD0 /* User.swift */; };
+		4F47C7971BEEE17200F95CD0 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F47C7961BEEE17200F95CD0 /* Book.swift */; };
+		4F50187D1BEEC74600295260 /* UserProfileViewDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50187C1BEEC74600295260 /* UserProfileViewDemo.swift */; };
+		4F50187F1BEEC74C00295260 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F50187E1BEEC74C00295260 /* UserProfileModel.swift */; };
+		4F5018811BEEC75300295260 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5018801BEEC75300295260 /* UserProfileController.swift */; };
 		C7F93448B98F7A7B0B0069F7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE07FE291BE11D1E00A10F05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */; };
 		EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */; };
@@ -22,6 +22,7 @@
 		EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */; };
 		EE07FE3E1BE11D1E00A10F05 /* DrewsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE3D1BE11D1E00A10F05 /* DrewsListTests.swift */; };
 		EE07FE491BE11D1E00A10F05 /* DrewsListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */; };
+		EE8918AC1C11634B00FCF031 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AB1C11634B00FCF031 /* Atlantis.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		EE07FE441BE11D1E00A10F05 /* DrewsListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrewsListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EE8918AB1C11634B00FCF031 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,10 +98,10 @@
 		4F47C7951BEEDBC200F95CD0 /* DummyData */ = {
 			isa = PBXGroup;
 			children = (
-				4F47C7931BEEDBBE00F95CD0 /* User.swift */,
 				4F47C7961BEEE17200F95CD0 /* Book.swift */,
+				4F47C7931BEEDBBE00F95CD0 /* User.swift */,
 			);
-			name = DummyData;
+			path = DummyData;
 			sourceTree = "<group>";
 		};
 		4F5018791BEEC72E00295260 /* Controllers */ = {
@@ -107,7 +109,7 @@
 			children = (
 				4F5018801BEEC75300295260 /* UserProfileController.swift */,
 			);
-			name = Controllers;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		4F50187A1BEEC73100295260 /* Models */ = {
@@ -115,16 +117,16 @@
 			children = (
 				4F50187E1BEEC74C00295260 /* UserProfileModel.swift */,
 			);
-			name = Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		4F50187B1BEEC73300295260 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4F50187C1BEEC74600295260 /* UserProfileViewDemo.swift */,
 				4F1C753A1BF9474A00458735 /* UserProfileView.swift */,
+				4F50187C1BEEC74600295260 /* UserProfileViewDemo.swift */,
 			);
-			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		EE07FE1C1BE11D1E00A10F05 = {
@@ -133,9 +135,9 @@
 				EE07FE271BE11D1E00A10F05 /* DrewsList */,
 				EE07FE3C1BE11D1E00A10F05 /* DrewsListTests */,
 				EE07FE471BE11D1E00A10F05 /* DrewsListUITests */,
-				EE07FE261BE11D1E00A10F05 /* Products */,
-				F058CF4AE176E74946518C59 /* Pods */,
 				FE0642FB75D7FCC6A3A6833B /* Frameworks */,
+				F058CF4AE176E74946518C59 /* Pods */,
+				EE07FE261BE11D1E00A10F05 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -152,17 +154,17 @@
 		EE07FE271BE11D1E00A10F05 /* DrewsList */ = {
 			isa = PBXGroup;
 			children = (
-				4F47C7951BEEDBC200F95CD0 /* DummyData */,
-				4F50187B1BEEC73300295260 /* Views */,
-				4F50187A1BEEC73100295260 /* Models */,
 				4F5018791BEEC72E00295260 /* Controllers */,
+				4F47C7951BEEDBC200F95CD0 /* DummyData */,
+				4F50187A1BEEC73100295260 /* Models */,
+				4F50187B1BEEC73300295260 /* Views */,
 				EE5E669C1BE1626600BCF1DE /* services */,
 				EE07FE281BE11D1E00A10F05 /* AppDelegate.swift */,
-				EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */,
-				EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */,
 				EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */,
-				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
+				EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */,
+				EE07FE2C1BE11D1E00A10F05 /* Main.storyboard */,
+				EE07FE2A1BE11D1E00A10F05 /* ViewController.swift */,
 			);
 			path = DrewsList;
 			sourceTree = "<group>";
@@ -188,8 +190,9 @@
 		EE5E669C1BE1626600BCF1DE /* services */ = {
 			isa = PBXGroup;
 			children = (
+				EE8918AB1C11634B00FCF031 /* Atlantis.swift */,
 			);
-			name = services;
+			path = services;
 			sourceTree = "<group>";
 		};
 		F058CF4AE176E74946518C59 /* Pods */ = {
@@ -441,6 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE07FE2B1BE11D1E00A10F05 /* ViewController.swift in Sources */,
+				EE8918AC1C11634B00FCF031 /* Atlantis.swift in Sources */,
 				4F5018811BEEC75300295260 /* UserProfileController.swift in Sources */,
 				4F47C7971BEEE17200F95CD0 /* Book.swift in Sources */,
 				4F1C753B1BF9474A00458735 /* UserProfileView.swift in Sources */,
@@ -489,6 +493,7 @@
 				EE07FE2D1BE11D1E00A10F05 /* Base */,
 			);
 			name = Main.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 		EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */ = {
@@ -497,6 +502,7 @@
 				EE07FE321BE11D1E00A10F05 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = .;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

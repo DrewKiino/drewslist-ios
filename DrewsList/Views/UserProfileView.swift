@@ -32,6 +32,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   override public func viewDidLoad() {
     super.viewDidLoad()
+    setupDataBinding()
     setupScrollView()
     setupBGView()
     setupProfileImg()
@@ -67,8 +68,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     layout.scrollDirection = .Horizontal
     
     saleListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-    wishListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: 
-    layout)
+    wishListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
 
     // sale list
     if let saleListView = saleListView {
@@ -98,7 +98,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
  
     arrangeViews()
-    setupDataBinding()
     
   }
   
@@ -109,7 +108,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     model._username.listen(self) { [weak self] _id in
       self?.profileUsername?.text = _id
     }
-    
     model._saleList.listen(self) { [weak self] list in
       self?.saleListView?.reloadData()
     }
@@ -245,19 +243,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   
   public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    switch collectionView.tag {
-      case 1: return model.saleList.count
-      case 2: return model.wishList.count
-      default: return 0
-    }
-//    if(collectionView.tag == 1){
-//     print("saleList count: \(model.saleList.count)")
-//    } else if(collectionView.tag == 2){
-//      print("wishList count: \(model.wishList.count)")
-//    } else {
-//      return 1
-//    }
-    
+    return collectionView.tag == 1 ? model.saleList.count : model.wishList.count
   }
   
   public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {

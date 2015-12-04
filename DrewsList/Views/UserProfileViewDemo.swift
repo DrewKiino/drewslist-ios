@@ -142,11 +142,6 @@ public class UserProfileViewDemo:
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    controller.loadUserImage()
-    controller.loadUsername()
-    controller.populateSalesList()
-    controller.populateWishList()
-    
     profileImage.hnk_setImageFromURL(NSURL(string: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")!)
   }
   
