@@ -21,21 +21,5 @@ public class UserController {
   
   public let model = UserModel()
   
-  public func login() {
-    // MARK: hardcoded login user
-    let user_id = "564fa61b77b7915420dc89b2"
-    
-    socket.on("/user/login(callback)") { [unowned self] json in
-      self.model.user = User(json: json["response"])
-      if let user = self.model.user, _id = user._id {
-        log.info("logged in: \(_id)")
-      }
-    }
-    
-    socket.emit("/user/login", "564fa61b77b7915420dc89b2")
-  }
-  
-  public func getUser() -> User? {
-    return model.user
-  }
+  public func getUser() -> User? { return model.user }
 }

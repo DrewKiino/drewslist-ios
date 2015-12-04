@@ -15,22 +15,22 @@ import QuartzCore
 
 
 public class ViewController: UIViewController, UITextFieldDelegate {
-    
-    //MARK: Outlets for UI Elements.
-    @IBOutlet weak var usernameField:   UITextField!
-    @IBOutlet weak var imageView:       UIImageView!
-    @IBOutlet weak var passwordField:   UITextField!
-    @IBOutlet weak var loginButton:     UIButton!
-    @IBOutlet weak var emailField: UITextField!
   
-
-
+  // good job specifying all the function and variable class scopes!
   
-
-    //MARK: Global Variables for Changing Image Functionality.
-    private var idx: Int = 0
-    private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
+  // remember, where not using storyboards anymore
   
+  //MARK: Outlets for UI Elements.
+  @IBOutlet weak var usernameField:   UITextField!
+  @IBOutlet weak var imageView:       UIImageView!
+  @IBOutlet weak var passwordField:   UITextField!
+  @IBOutlet weak var loginButton:     UIButton!
+  @IBOutlet weak var emailField: UITextField!
+
+  //MARK: Global Variables for Changing Image Functionality.
+  private var idx: Int = 0
+  private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
+
 
 
   public func setupUsernameLabel() {
@@ -51,14 +51,27 @@ public class ViewController: UIViewController, UITextFieldDelegate {
 //    emailField.delegate = self
   }
   
+  // the mark tag's syntax looks like this:
+  // 
+  //    '// MARK: .....'
+  //
+  // and that they should be placed in its own space because if 
+  // tags are places right on top of variables and functions they would
+  // get attached to those things instead
+  // Steven's 'marking' of different class features is a great example
+  // Check out his ISBNScannerView
 
-    //MARK: View Controller LifeCycle
+  // MARK: View Controller LifeCycle
+  
   public override func viewDidLoad() {
       super.viewDidLoad()
+    
     
     setupUsernameLabel()
     setupPasswordLabel()
     setupEmailLabel()
+    
+    // remember to modularize each setup function to it's distinct functionality
     
       loginButton.alpha   = 0;
     
@@ -176,6 +189,8 @@ public class ViewController: UIViewController, UITextFieldDelegate {
 
 //Extension for Color to take Hex Values
 extension UIColor{
+  
+  // this is nice.
     
     class func colorWithHex(hex: String, alpha: CGFloat = 1.0) -> UIColor {
     var rgb: CUnsignedInt = 0;

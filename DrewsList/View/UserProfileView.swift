@@ -14,27 +14,46 @@ import Toucan
 
 public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource{
   
-  var scrollView: UIScrollView?
-  var bgView: UIView?
-  var bgViewTop: UIView?
-  var bgViewBot: UIView?
-  var profileImg: UIImageView?
-  var profileUsername: UILabel?
-  var settingsButton: UIButton?
-  var tabView: UIView?
-  var bookShelf: UITableView?
-  var saleListView: UICollectionView?
-  var wishListView: UICollectionView?
-  var arrow: UIImageView?
+  // NOTE:
+  // Steven's ISBNScannerView has a great example of correct naming of 'marks'
   
+  // MARK: Properties 
+  
+  // make sure to specify the scope of the variables
+  // especially when we start unit testing, the test suite wont
+  // be able to recognize the default internal variables so either
+  // make variables private or public
+  public var scrollView: UIScrollView?
+  public var bgView: UIView?
+  public var bgViewTop: UIView?
+  public var bgViewBot: UIView?
+  public var profileImg: UIImageView?
+  public var profileUsername: UILabel?
+  public var settingsButton: UIButton?
+  public var tabView: UIView?
+  public var bookShelf: UITableView?
+  public var saleListView: UICollectionView?
+  public var wishListView: UICollectionView?
+  public var arrow: UIImageView?
+  
+  // if you know there are variables that classes outside of this class
+  // aren't going to be used, or that unit tests dont need to know about it
+  // set them as private
   private let screenSize = UIScreen.mainScreen().bounds
   
+  // references to the view's own controller and model are good candidates for 
+  // private scoping
   private let controller = UserProfileController()
   private var model: UserProfileModel { get { return controller.getModel() } }
+  
+  // MARK: Lifecycle 
   
   override public func viewDidLoad() {
     super.viewDidLoad()
     
+    // its good to keep all every UI specific initialization 
+    // in its own function to keep it modularized
+    // especially for debugging purposes
     setupDataBinding()
     setupScrollView()
     setupBGView()
@@ -49,8 +68,21 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     arrangeViews()
   }
   
+  public override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    controller.userViewWillAppear()
+  }
   
-  // Data Binding
+  public override func viewDidAppear(animated: Bool) {
+  }
+  
+  override public func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+    
+  }
+  
+  // MARK: Data Binding
   
   private func setupDataBinding() {
     model._username.listen(self) { [weak self] _id in
@@ -65,7 +97,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   
-  // Setup View
+  // MARK: UI Setup
   
   public func setupScrollView(){
     scrollView = UIScrollView(frame: CGRectMake(0, 0, screenSize.width, screenSize.height))
@@ -197,15 +229,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
   }
   
-  public override func viewWillAppear(animated: Bool) {
-    super.viewWillAppear(animated)
-    controller.userViewWillAppear()
-  }
+  // for delegates, its best to do the official 'MARK' tag
+  // the tag syntax is specific, note that these headings become apparanet
+  // in the function finder right after the filename above ^^^
   
-  public override func viewDidAppear(animated: Bool) {
-  }
-  
-  //Table View Functions
+  // MARK: Table View Delegates
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return 2
@@ -252,7 +280,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     return  cell
   }
   
-  // Collection View Functions
+  // MARK: Collection View Delegates
+  
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
     
@@ -293,6 +322,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     return cell!
   }
   
+  // MARK: Scroll View Delegates
+  
   public func scrollViewDidScroll(scrollView: UIScrollView){
     arrow?.alpha = 0.0
   
@@ -318,6 +349,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
     }
   }
+  
+  // MARK: View Functions
   
   func imageFadeIn(imageView: UIImageView, rightSide: Bool) {
     if(rightSide){
@@ -347,16 +380,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     scrollView!.contentSize = CGSizeMake(screenSize.width, bgView!.frame.height + (bookShelf?.frame.height)!)
     scrollView?.bringSubviewToFront(tabView!)
   }
-  
-  
-  override public func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-    
-  }
-  
-  
 }
+
+// good job putting these cells in their correct abstraction aka the 'View'
+
+// MARK: Cell Classes
 
 public class HorizontalCell: UITableViewCell {
   public func setup() {

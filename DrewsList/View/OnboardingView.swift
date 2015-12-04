@@ -8,9 +8,9 @@
 
 import UIKit
 
-class OnboardingView: UIViewController {
+public class OnboardingView: UIViewController {
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         let item1 = RMParallaxItem(image: UIImage(named: "item1")!, text: "")
@@ -30,7 +30,7 @@ class OnboardingView: UIViewController {
         rmParallaxViewController.didMoveToParentViewController(self)
     }
 
-    override func prefersStatusBarHidden() -> Bool {
+    public override func prefersStatusBarHidden() -> Bool {
         return true
     }
 
