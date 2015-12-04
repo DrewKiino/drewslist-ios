@@ -117,7 +117,7 @@ public class OutgoingMessage {
     self.message = message
     self.session_id = session_id
     self.room_id = room_id
-    self.createdAt = NSDate().toISOString()
+    self.createdAt = NSDate().toString(.ISO8601)
   }
   
   public func toJSQMessage() -> JSQMessage? {
