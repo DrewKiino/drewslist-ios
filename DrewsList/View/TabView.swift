@@ -8,32 +8,70 @@
 
 import Foundation
 import UIKit
+import Toucan
 
 public class TabView: RAMAnimatedTabBarController {
+  
+  let feedView = UIViewController()
+  let chatView = ChatHistoryView()
+  let scannerView = ISBNScannerView()
+  let activityView = UIViewController()
+  let userProfileView = UserProfileView()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    
+    setupViewControllers()
+    setupFeedView()
+    setupChatView()
+    setupISBNScannerView()
+    setupActivityView()
+    setupUserProfileView()
+  }
+  
+  private func setupViewControllers() {
+    viewControllers = [feedView, chatView, scannerView, activityView, userProfileView]
   }
   
   private func setupFeedView() {
-    let item = RAMAnimatedTabBarItem(tabBarSystemItem: .TopRated, tag: 1)
-  }
-  
-  private func setupActivityView() {
-    let item = RAMAnimatedTabBarItem(tabBarSystemItem: .Recents, tag: 2)
-  }
-  
-  private func setupISBNScannerView() {
-    let item = RAMAnimatedTabBarItem(tabBarSystemItem: .Search, tag: 3)
+    feedView.view.backgroundColor = UIColor.whiteColor()
+    
+    let image = Toucan(image: UIImage(named: "Icon-Book")!).resize(CGSize(width: 24, height: 24)).image
+    
+    let item = RAMAnimatedTabBarItem(title: "Feed", image: image, selectedImage: image)
+    feedView.tabBarItem = item
   }
   
   private func setupChatView() {
-    let item = RAMAnimatedTabBarItem(tabBarSystemItem: .Contacts, tag: 4)
+    
+    let image = Toucan(image: UIImage(named: "Icon-Message-1")!).resize(CGSize(width: 24, height: 24)).image
+    
+    let item = RAMAnimatedTabBarItem(title: "Chat", image: image, selectedImage: image)
+    
+    chatView.tabBarItem = item
+  }
+  
+  private func setupISBNScannerView() {
+    
+    let image = Toucan(image: UIImage(named: "Icon-Camera")!).resize(CGSize(width: 24, height: 24)).image
+    
+    let item = RAMAnimatedTabBarItem(title: "ISBN", image: image, selectedImage: image)
+    scannerView.tabBarItem = item
+  }
+  
+  private func setupActivityView() {
+    
+    let image = Toucan(image: UIImage(named: "Icon-CameraSnap")!).resize(CGSize(width: 24, height: 24)).image
+    
+    let item = RAMAnimatedTabBarItem(title: "Activity", image: image, selectedImage: image)
+    activityView.tabBarItem = item
   }
   
   private func setupUserProfileView() {
-    let item = RAMAnimatedTabBarItem(tabBarSystemItem: .Featured, tag: 5)
+    
+    let image = Toucan(image: UIImage(named: "Icon-GreyStarEmpty")!).resize(CGSize(width: 24, height: 24)).image
+    
+    let item = RAMAnimatedTabBarItem(title: "Profile", image: image, selectedImage: image)
+    userProfileView.tabBarItem = item
   }
 }
