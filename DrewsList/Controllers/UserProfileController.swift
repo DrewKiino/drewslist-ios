@@ -31,8 +31,8 @@ public class UserProfileController {
     model.lastName = dummyUser.lastName
     model.username = dummyUser.username
     
-    let dummyBooks1 = [Book(), Book(), Book(), Book()]
-    let dummyBooks2 = [Book(), Book(), Book()]
+    let dummyBooks1 = [Book(), Book(), Book(), Book(), Book(), Book()]
+    let dummyBooks2 = [Book(), Book(), Book(), Book(), Book()]
     model.saleList = dummyBooks1
     model.wishList = dummyBooks2
   }

@@ -32,11 +32,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   override public func viewDidLoad() {
     super.viewDidLoad()
+    
     setupDataBinding()
     setupScrollView()
     setupBGView()
     setupProfileImg()
     setupUsernameLabel()
+    setupBookshelf()
+    setupSalesList()
+    setupWishList()
     
     settingsButton = UIButton(frame: CGRectMake(screenSize.width-screenSize.width/12, screenSize.width/12, screenSize.width / 20, screenSize.width / 20))
     if let settingsButton = settingsButton {
@@ -53,43 +57,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       scrollView?.addSubview(tabView)
     }
     
-    bookShelf = UITableView(frame: CGRectMake(0, screenSize.height / 2, screenSize.width, screenSize.height * (2/2.75)), style: .Plain)
-    if let bookShelf = bookShelf {
-      bookShelf.backgroundColor = UIColor.greenColor()
-      bookShelf.delegate = self
-      bookShelf.dataSource = self
-      bookShelf.rowHeight = view.frame.height / 4
-      bookShelf.scrollEnabled = false
-      scrollView!.addSubview(bookShelf)
-    }
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
-    
-    saleListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-    wishListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
-
-    // sale list
-    if let saleListView = saleListView {
-      saleListView.tag = 1
-      saleListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-      saleListView.delegate = self
-      saleListView.dataSource = self
-      saleListView.pagingEnabled = true
-      saleListView.backgroundColor = UIColor.whiteColor()
-    }
-    
-    // wish list
-    if let wishListView = wishListView {
-      wishListView.tag = 2
-      wishListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-      wishListView.delegate = self
-      wishListView.dataSource = self
-      wishListView.pagingEnabled = true
-      wishListView.backgroundColor = UIColor.whiteColor()
-    }
-    
     arrow = UIImageView(frame: CGRectMake( screenSize.width, (bookShelf?.height)!/4, screenSize.width/12, screenSize.width/12))
     if let arrow = arrow {
       arrow.image = UIImage(named: "Icon-OrangeChevronButton") as UIImage?
@@ -98,7 +65,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
  
     arrangeViews()
-    
   }
   
   
@@ -168,6 +134,56 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       profileUsername.textAlignment = .Center
       profileUsername.textColor = UIColor.blackColor()
       bgView?.addSubview(profileUsername)
+    }
+  }
+  
+  private func setupBookshelf() {
+    bookShelf = UITableView(frame: CGRectMake(0, screenSize.height / 2, screenSize.width, screenSize.height * (2/2.75)), style: .Plain)
+    if let bookShelf = bookShelf {
+      bookShelf.backgroundColor = UIColor.greenColor()
+      bookShelf.delegate = self
+      bookShelf.dataSource = self
+      bookShelf.rowHeight = view.frame.height / 4
+      bookShelf.scrollEnabled = false
+      scrollView!.addSubview(bookShelf)
+    }
+  }
+  
+  private func setupSalesList() {
+    
+    // Do any additional setup after loading the view, typically from a nib.
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .Horizontal
+    
+    saleListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+    
+    // sale list
+    if let saleListView = saleListView {
+      saleListView.tag = 1
+      saleListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
+      saleListView.delegate = self
+      saleListView.dataSource = self
+      saleListView.pagingEnabled = true
+      saleListView.backgroundColor = UIColor.whiteColor()
+    }
+  }
+  
+  private func setupWishList() {
+    
+    // Do any additional setup after loading the view, typically from a nib.
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .Horizontal
+    
+    wishListView = UICollectionView(frame: CGRectMake(0, 0, 300, (bookShelf?.frame.height)! * (7.5/20)), collectionViewLayout: layout)
+    
+    // wish list
+    if let wishListView = wishListView {
+      wishListView.tag = 2
+      wishListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
+      wishListView.delegate = self
+      wishListView.dataSource = self
+      wishListView.pagingEnabled = true
+      wishListView.backgroundColor = UIColor.whiteColor()
     }
   }
   
