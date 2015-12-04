@@ -20,7 +20,7 @@ public class ISBNScannerView: UIViewController, AVCaptureMetadataOutputObjectsDe
   // try to be specific on specifying each function and variables class scope
   // because once unit test suites can only see public variables
   // as well as making sure other classes are at a 'need to know' basis
-
+  
   public var previewView: UIView!
   public var session: AVCaptureSession?
   public var previewLayer: AVCaptureVideoPreviewLayer?

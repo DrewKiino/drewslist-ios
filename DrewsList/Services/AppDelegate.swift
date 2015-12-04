@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Atlantis.Configuration.hasColoredLogs = true
     
     // init the root view
-    let chatHistoryView = UserProfileView()
+    let tabView = TabView()
     
     /*
     * Use this code to get the bounds of the screen
@@ -34,13 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     *         UIScreen.mainScreen().bounds
     *
     */
-    chatHistoryView.view.frame = UIScreen.mainScreen().bounds
+    tabView.view.frame = UIScreen.mainScreen().bounds
     
     // set the window to match the screen's bounds
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
     
     // set the root view as the window's root view
-    window!.rootViewController = chatHistoryView
+    window!.rootViewController = tabView
     
     // commit change
     window!.makeKeyAndVisible()
