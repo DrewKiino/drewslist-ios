@@ -49,6 +49,7 @@
 		EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */; };
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
+		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 /* End PBXBuildFile section */
 
@@ -119,6 +120,7 @@
 		EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -324,6 +326,7 @@
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
 				3FB40FA51C025BE500743C74 /* Atlantis.swift */,
 				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
+				EEA80B231C1287C70058ED0C /* NativeExtensions.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -616,6 +619,7 @@
 				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
+				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
