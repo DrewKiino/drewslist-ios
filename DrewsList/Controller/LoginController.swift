@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+public class LoginController {
+  
+  public let model = LoginModel()
+  
+}

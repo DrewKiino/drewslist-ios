@@ -18,7 +18,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   
   // good job specifying all the function and variable class scopes!
   
-  // remember, where not using storyboards anymore
+  private let controller = LoginController()
+  private var model: LoginModel { get { return controller.model } }
   
   //MARK: Outlets for UI Elements.
   private let backgroundImage = UIImageView()
