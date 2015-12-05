@@ -173,17 +173,18 @@ public class ScannerView: UIViewController {
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    
     guard let helpButton = helpButton,
           let searchButton = searchButton,
           let topView = topView,
           let helpImage = UIImage(named: "help-button"),
           let searchImage = UIImage(named: "search-button")
     else { return }
+    
     topView.groupInCorner(group: .Horizontal, views: [helpButton], inCorner: .TopLeft, padding: 10, width: 48, height: 48)
     topView.groupInCorner(group: .Horizontal, views: [searchButton], inCorner: .TopRight, padding: 10, width: 48, height: 48)
     helpButton.setImage(Toucan(image: helpImage).resize(helpButton.frame.size).image, forState: .Normal)
     searchButton.setImage(Toucan(image: searchImage).resize(searchButton.frame.size).image, forState: .Normal)
-    
   }
 }
 
