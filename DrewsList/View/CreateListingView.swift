@@ -10,6 +10,7 @@ import Foundation
 import Neon
 import UIKit
 import TextFieldEffects
+import Signals
 
 enum ForToggle {
     case Wishlist
@@ -40,7 +41,7 @@ enum CoverToggle {
 public class CreateListingView : UIViewController {
     
     private let listingController = CreateListingController()
-    private var book: Book { get { return listingController.book } }
+    private var book: Book { get { return listingController.model } }
     
     let screenSize: CGRect = UIScreen.mainScreen().bounds
     let navbar: UINavigationBar = UINavigationBar()
@@ -67,6 +68,7 @@ public class CreateListingView : UIViewController {
         listingController.getBook()
         
         // Setup UI elements
+        setupBookListener()
         createNavbar()
         createPriceField()
         createNotesField()
@@ -81,6 +83,15 @@ public class CreateListingView : UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
         print("View loaded on the screen")
         
+    }
+   
+    // MARK: Listeners
+    
+    public func setupBookListener() {
+        
+        listingController.get_Title().listen(self) { (title) in
+            print("The book listener is working: title is \(title)")
+        }
     }
     
     // MARK: Navbar
