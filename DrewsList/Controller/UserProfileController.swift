@@ -25,16 +25,23 @@ public class UserProfileController {
     dummyUser.firstName = "Harry"
     dummyUser.lastName = "Potter"
     dummyUser.username = "GriffindorLover"
-      
-    model.user_id = dummyUser._id
-    model.firstName = dummyUser.firstName
-    model.lastName = dummyUser.lastName
-    model.username = dummyUser.username
+    dummyUser.image = "http://orig06.deviantart.net/b682/f/2013/135/4/3/profile_picture_by_mellodydoll_stock-d65fbf8.jpg"
+    dummyUser.bgImage = "http://www.mybulkleylakesnow.com/wp-content/uploads/2015/11/books-stock.jpg"
+    
+//    model.user_id = dummyUser._id
+//    model.firstName = dummyUser.firstName
+//    model.lastName = dummyUser.lastName
+//    model.username = dummyUser.username
     
     let dummyBooks1 = [Book(), Book(), Book(), Book(), Book(), Book()]
     let dummyBooks2 = [Book(), Book(), Book(), Book(), Book()]
-    model.saleList = dummyBooks1
-    model.wishList = dummyBooks2
+//    model.saleList = dummyBooks1
+//    model.wishList = dummyBooks2
+    
+    dummyUser.saleList = dummyBooks1
+    dummyUser.wishList = dummyBooks2
+    
+    model.user = dummyUser
   }
   
   public func getModel() -> UserProfileModel { return model }

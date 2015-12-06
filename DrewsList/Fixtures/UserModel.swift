@@ -13,6 +13,9 @@ import SwiftyJSON
 
 public class User: Mappable {
   
+  public let __id = Signal<String?>()
+  public var _id: String? { didSet { __id => _id } }
+  
   public let _firstName = Signal<String?>()
   public var firstName: String? { didSet { _firstName => firstName } }
   
@@ -22,11 +25,20 @@ public class User: Mappable {
   public let _username = Signal<String?>()
   public var username: String? { didSet { _username => username } }
   
-  public let __id = Signal<String?>()
-  public var _id: String? { didSet { __id => _id } }
+  public let _image = Signal<String?>()
+  public var image: String? { didSet { _image => image } }
   
+  public let _bgImage = Signal<String?>()
+  public var bgImage : String? { didSet { _bgImage => bgImage } }
+
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
+  
+  public let _saleList = Signal<[Book]>()
+  public var saleList: [Book] = [] { didSet { _saleList => saleList } }
+  
+  public let _wishList = Signal<[Book]>()
+  public var wishList: [Book] = [] { didSet { _wishList => wishList } }
   
   public init() {}
   
