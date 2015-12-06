@@ -15,23 +15,23 @@ public class CreateListingController {
     
     // MARK: Properties
     private let isbn: String?
+    private let model = Book()
+    private let scannerController = ScannerController()
     
-    public let model = Book()
-    
-    public let scannerController = ScannerController()
-    
+    // MARK: Initializers
     public init() {
         
         isbn = scannerController.getISBN()
-        print(isbn)
     }
-    
+   
+    // MARK: Server
+    // Populates the book model with data from the server
     public func getBook() {
         // using Alamofire, we create a request
         // and pass in the url and parameters
         // the parameter type is a [String: AnyObject], they represent JSON objects
         // that you can pass to the server
-        Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=flowers+for+algernon")
+        Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=" + isbn!)
             // then using the builder pattern, chain a response call after
             .response { [weak self] req, res, data, error in
                 
@@ -69,39 +69,4 @@ public class CreateListingController {
                 }
         }
     }
-    
-    
-    // MARK: Server
-    // Make the server call to populate the book model
-
-    
-    // MARK: Book Listing
-    // Book Image
-    
-    // 1. GET: smallImage
-    
-    // 2. Populate CLView with image
-    
-    // Book Title
-    
-    // Author
-    
-    // ISBN
-    
-    // Edition
-    
-    // Book Details
-    
-    // MARK: For
-    // Toggle
-    
-    // MARK: Condition
-    
-    // MARK: Cover
-    // Toggle Button
-    
-    // MARK: Price
-    
-    // MARK: Notes
-    
 }
