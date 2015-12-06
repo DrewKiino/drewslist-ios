@@ -9,13 +9,21 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import Signals
 
 public class CreateListingController {
     
-    public let book = Book()
+    // MARK: Properties
+    private let isbn: String?
+    
+    public let model = Book()
+    
+    public let scannerController = ScannerController()
     
     public init() {
         
+        isbn = scannerController.getISBN()
+        print(isbn)
     }
     
     public func getBook() {
@@ -37,13 +45,34 @@ public class CreateListingController {
                 } else if let data = data, let jsonArray = JSON(data: data).array {
                     for json in jsonArray {
                         
-                        self?.book.title = json["title"].description
+                        self?.model._id = json["google_id"].description
+                        self?.model.title = json["title"].description
+                        self?.model.subtitle = json["subtitle"].description
+                        self?.model.authors = json["authors"].description
+                        self?.model.publisher = json["publisher"].description
+                        self?.model.publishedDate = json["publishedDate"].description
+                        self?.model.description = json["description"].description
+                        self?.model.ISBN10 = json["ISBN10"].description
+                        self?.model.ISBN13 = json["ISBN13"].description
+                        self?.model.pageCount = json["pageCount"].description
+                        self?.model.categories = json["categories"].description
+                        self?.model.averageRating = json["averageRating"].description
+                        self?.model.maturityRating = json["maturityRating"].description
+                        self?.model.language = json["language"].description
+                        self?.model.listPrice = json["listPrice"].description
+                        self?.model.retailPrice = json["retailPrice"].description
+                        self?.model.smallImage = json["smallImage"].description
+                        self?.model.largeImage = json["largeImage"].description
                         
                         print(json)
                     }
                 }
         }
     }
+    
+    
+    // MARK: Server
+    // Make the server call to populate the book model
 
     
     // MARK: Book Listing
