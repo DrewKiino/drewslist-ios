@@ -7,35 +7,82 @@
 ///
 
 import UIKit
+import Onboard
+import Toucan
 
-public class OnboardingView: UIViewController {
-
+public class OnboardingView : UIPageViewController, UIPageViewControllerDataSource {
   
-  private var rmParallaxViewController: RMParallax?
-
+  private var myViewControllers = Array(count: 2, repeatedValue:UIViewController())
+  private var skipButton: UIButton?
+  
   public override func viewDidLoad() {
-      super.viewDidLoad()
-      
-    let item1 = RMParallaxItem(image: UIImage(named: "BackgroundImage_Books-33")!, text: "Drew's List")
-    let item2 = RMParallaxItem(image: UIImage(named: "BackgroundImage_Orange-23")!, text: "Sell, Trade, and Buy your Books")
-    let item3 = RMParallaxItem(image: UIImage(named: "BackgroundImage_Orange-23")!, text: "Chat with your friends with our instant chat!")
-  
-    rmParallaxViewController = RMParallax(items: [item1, item2, item3], motion: false)
-    rmParallaxViewController?.completionHandler = { [weak self] in
-      UIView.animateWithDuration(0.4, animations: {
-        self?.rmParallaxViewController?.view.alpha = 0.0
-      })
-    }
+    super.viewDidLoad()
     
-    // Adding parallax view controller.
-    addChildViewController(rmParallaxViewController!)
-    view.addSubview(rmParallaxViewController!.view)
-    rmParallaxViewController?.didMoveToParentViewController(self)
+    setupOnboardingView()
   }
-
-  public override func prefersStatusBarHidden() -> Bool {
-      return true
+  
+  private func setupOnboardingView() {
+    
+    skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
+    skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
+    
+    let firstPage = UIViewController()
+    let secondPage = UIViewController()
+    let thirdPage = UIViewController()
+    let fourthPage = UIViewController()
+    let fifthPage = UIViewController()
+    
+    let firstPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding1")!).resize(firstPage.view.frame.size, fitMode: .Clip).image)
+    firstPageBG.frame = firstPage.view.frame
+    firstPage.view.addSubview(firstPageBG)
+    firstPage.view.addSubview(skipButton!)
+    
+    let secondPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding2")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    secondPageBG.frame = firstPage.view.frame
+    secondPage.view.addSubview(secondPageBG)
+    
+    let thirdPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding3")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    thirdPageBG.frame = thirdPage.view.frame
+    thirdPage.view.addSubview(thirdPageBG)
+    
+    let fourthPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding4")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    fourthPageBG.frame = fourthPage.view.frame
+    fourthPage.view.addSubview(fourthPageBG)
+    
+    let fifthPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding5")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    fifthPageBG.frame = fifthPage.view.frame
+    fifthPage.view.addSubview(fifthPageBG)
+    
+    self.myViewControllers = [firstPage, secondPage, thirdPage, fourthPage, fifthPage]
+    
+    dataSource = self
+    
+    setViewControllers([firstPage], direction:.Forward, animated:false, completion:nil)
   }
-
+  
+  public func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+    let currentIndex =  self.myViewControllers.indexOf(viewController)! + 1
+    if currentIndex >= self.myViewControllers.count { return nil }
+    
+    let currentView = self.myViewControllers[currentIndex]
+    
+    currentView.view.addSubview(skipButton!)
+    
+    return currentView
+  }
+  
+  public func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+    let currentIndex =  self.myViewControllers.indexOf(viewController)! - 1
+    if currentIndex < 0 { return nil }
+    
+    let currentView = self.myViewControllers[currentIndex]
+    
+    currentView.view.addSubview(skipButton!)
+    
+    return currentView
+  }
+  
+  public func skipOnboarding() {
+    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+  }
 }
-

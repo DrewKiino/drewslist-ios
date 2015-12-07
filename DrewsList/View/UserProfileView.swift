@@ -183,9 +183,9 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     if let bookShelf = bookShelf {
       bookShelf.delegate = self
       bookShelf.dataSource = self
-      bookShelf.rowHeight = view.frame.height / 4
       bookShelf.scrollEnabled = false
       bookShelf.separatorStyle = .None
+      bookShelf.multipleTouchEnabled = true
       bookShelf.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
       scrollView!.addSubview(bookShelf)
     }
@@ -325,6 +325,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     collectionView?.dataSource = self
     collectionView?.backgroundColor = UIColor.whiteColor()
     collectionView?.showsHorizontalScrollIndicator = false
+    collectionView?.multipleTouchEnabled = true
     addSubview(collectionView!)
   }
   
