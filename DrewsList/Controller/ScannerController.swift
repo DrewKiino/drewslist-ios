@@ -70,10 +70,12 @@ public class ScannerController: NSObject, AVCaptureMetadataOutputObjectsDelegate
       guard let isbn = first?.stringValue else { return }
       
       model.isbn = isbn
-      print(isbn)
-    
+      //print(isbn)
+
     }
   }
+    
+  // MARK: Getter
   
   public func getISBN() -> String? { return model.isbn }
   public func get_ISBN() -> Signal<String?> { return model._isbn }

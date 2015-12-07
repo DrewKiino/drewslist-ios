@@ -41,7 +41,7 @@ enum CoverToggle {
 public class CreateListingView : UIViewController {
     
     private let listingController = CreateListingController()
-    private var book: Book { get { return listingController.model } }
+    private let bookController = BookController()
     
     let screenSize: CGRect = UIScreen.mainScreen().bounds
     let navbar: UINavigationBar = UINavigationBar()
@@ -62,12 +62,21 @@ public class CreateListingView : UIViewController {
     var book_Edition: UILabel = UILabel()
     var book_Image: UIImage = UIImage()
     
+    // UIViews
+    let navbarPadding: UIView = UIView()
+    let bookDetailsView: UIView = UIView()
+    let bookDetailsPadding: UIView = UIView()
+    let bookInfoView: UIView = UIView()
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        listingController.getBook()
+        self.view.backgroundColor = UIColor.whiteColor()
         
-        // Setup UI elements
+        listingController.getBook()
+       
+        // Create UI elements
+        setupUITexts()
         setupBookListener()
         createNavbar()
         createPriceField()
@@ -78,6 +87,8 @@ public class CreateListingView : UIViewController {
         createHardCoverButton()
         createSlider()
         
+
+        
         // Setup keyboard functions -- move keyboard
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
@@ -85,13 +96,33 @@ public class CreateListingView : UIViewController {
         
     }
    
+    public override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        // Setup UIViews
+        setupNavbarPadding()
+        setupBookDetailsView()
+        setupBookDetailsPadding()
+        setupBookInfoView()
+    }
     // MARK: Listeners
     
     public func setupBookListener() {
         
-        listingController.get_Title().listen(self) { (title) in
+        bookController.get_Title().listen(self) { (title) in
             print("The book listener is working: title is \(title)")
+            self.book_Title.text = title
         }
+        
+        bookController.get_Authors().listen(self) { (author) in
+            self.book_Author.text = author
+        }
+        
+        bookController.get_SmallImage().listen(self) { (image) in
+            print("Image received from the server")
+        }
+        
+
     }
     
     // MARK: Navbar
@@ -99,13 +130,23 @@ public class CreateListingView : UIViewController {
     func createNavbar() {
         print("Creating the navbar")
         navbar.frame = CGRectMake(0, 0, screenSize.width, screenSize.height * 0.1)
-        navbar.barTintColor = UIColor(red: 59/255.0, green: 92/255.0, blue: 156/225.0, alpha: 1.0)
+        navbar.barTintColor = UIColor.bareBlue()
         self.view.addSubview(navbar)
     }
     
     // MARK: Texts
     
     func setupUITexts() {
+        
+//        book_ISBN.text = listingController.getISBN()
+        book_Edition.text = "N/A"
+       
+        book_Title.anchorInCenter(width: screenSize.width, height: screenSize.height)
+        
+        self.view.addSubview(book_Title)
+        self.view.addSubview(book_Author)
+        self.view.addSubview(book_ISBN)
+        self.view.addSubview(book_Edition)
         
     }
     
@@ -132,8 +173,8 @@ public class CreateListingView : UIViewController {
         wishlist.layer.zPosition = 2
         label.layer.zPosition = 3
         
-        self.view.addSubview(wishlist)
-        self.view.addSubview(label)
+        bookInfoView.addSubview(wishlist)
+        bookInfoView.addSubview(label)
         
     }
     
@@ -164,8 +205,8 @@ public class CreateListingView : UIViewController {
         selling.layer.zPosition = 2
         label.layer.zPosition = 3
         
-        self.view.addSubview(selling)
-        self.view.addSubview(label)
+        bookInfoView.addSubview(selling)
+        bookInfoView.addSubview(label)
         
     }
     
@@ -215,8 +256,8 @@ public class CreateListingView : UIViewController {
         paperback.layer.zPosition = 2
         label.layer.zPosition = 3
         
-        self.view.addSubview(paperback)
-        self.view.addSubview(label)
+        bookInfoView.addSubview(paperback)
+        bookInfoView.addSubview(label)
         
     }
     
@@ -247,8 +288,8 @@ public class CreateListingView : UIViewController {
         hardcover.layer.zPosition = 2
         label.layer.zPosition = 3
         
-        self.view.addSubview(hardcover)
-        self.view.addSubview(label)
+        bookInfoView.addSubview(hardcover)
+        bookInfoView.addSubview(label)
     
     }
     
@@ -279,13 +320,15 @@ public class CreateListingView : UIViewController {
     
     func createSlider() {
         
-        let slider = UISlider(frame: CGRectMake(10,screenSize.height * 0.6,screenSize.height * 0.6,screenSize.height * 0.05))
+//        let slider = UISlider(frame: CGRectMake(10,screenSize.height * 0.6,screenSize.height * 0.6,screenSize.height * 0.05))
+        let slider = UISlider()
+        slider.anchorInCorner(.TopLeft, xPad: 10, yPad: 5, width: 50, height: 10)
         slider.minimumValue = 1
         slider.maximumValue = 3
         slider.value = 2
         slider.tintColor = UIColor.blueColor()
         slider.addTarget(self, action: "sliderDidChange:", forControlEvents: .ValueChanged)
-        self.view.addSubview(slider)
+        bookInfoView.addSubview(slider)
     }
     
     func sliderDidChange(sender: UISlider!) {
@@ -305,7 +348,7 @@ public class CreateListingView : UIViewController {
         textField.placeholder = "Price"
         textField.placeholderFontScale = 1
         textField.animateViewsForTextDisplay()
-        self.view.addSubview(textField)
+        bookInfoView.addSubview(textField)
     }
     
     func createNotesField() {
@@ -318,7 +361,7 @@ public class CreateListingView : UIViewController {
         textField.placeholder = "Notes"
         textField.placeholderFontScale = 1
         textField.animateViewsForTextDisplay()
-        self.view.addSubview(textField)
+        bookInfoView.addSubview(textField)
     }
     
     // MARK: Keyboard
@@ -334,6 +377,37 @@ public class CreateListingView : UIViewController {
     // MARK: Server
     public func saveButtonPressed() {
         print("The save button has been pressed")
+    }
+    
+    // MARK: Views Setup
+    private func setupNavbarPadding() {
+       navbarPadding.anchorAndFillEdge(.Top, xPad: 0, yPad:80, otherSize: 20)
+       navbarPadding.backgroundColor = UIColor.sexyGray()
+        
+        self.view.addSubview(navbarPadding)
+    }
+    
+    private func setupBookDetailsView() {
+        bookDetailsView.alignAndFillWidth(align: .UnderCentered, relativeTo: navbarPadding, padding: 0, height: 80)
+        bookDetailsView.backgroundColor = UIColor.bareBlue()
+        
+        self.view.addSubview(bookDetailsView)
+    }
+    
+    private func setupBookDetailsPadding() {
+        bookDetailsPadding.alignAndFillWidth(align: .UnderCentered, relativeTo: bookDetailsView, padding: 0, height: 20)
+        bookDetailsView.backgroundColor = UIColor.sexyGray()
+        
+        self.view.addSubview(bookDetailsPadding)
+    }
+    
+    private func setupBookInfoView() {
+        bookInfoView.alignAndFillWidth(align: .UnderCentered, relativeTo: bookDetailsPadding, padding: 0, height: 500)
+        bookInfoView.backgroundColor = UIColor.soothingBlue()
+        
+        bookInfoView.groupAndFill(group: .Vertical, views: [wishlist, selling, hardcover, paperback], padding: 10)
+        
+        self.view.addSubview(bookInfoView)
     }
     
 }

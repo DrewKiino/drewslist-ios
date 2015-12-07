@@ -14,7 +14,7 @@ import Signals
 public class CreateListingController {
     
     // MARK: Properties
-    private let isbn: String?
+    private let isbn: String!
     private let model = Book()
     private let scannerController = ScannerController()
     
@@ -31,7 +31,7 @@ public class CreateListingController {
         // and pass in the url and parameters
         // the parameter type is a [String: AnyObject], they represent JSON objects
         // that you can pass to the server
-        Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=" + isbn!)
+        Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=rousey")
             // then using the builder pattern, chain a response call after
             .response { [weak self] req, res, data, error in
                 
@@ -68,5 +68,11 @@ public class CreateListingController {
                     }
                 }
         }
+    }
+    
+    // MARK: Getters
+    public func getISBN() -> String? {
+        
+        return isbn
     }
 }
