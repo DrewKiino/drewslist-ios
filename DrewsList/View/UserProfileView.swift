@@ -11,6 +11,7 @@ import UIKit
 import Neon
 import Toucan
 import Haneke
+import Signals
 
 
 public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -19,6 +20,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
   
   // MARK: Properties 
+  
+  private var originalBGViewFrame: CGRect? = CGRectZero
   
   // make sure to specify the scope of the variables
   // especially when we start unit testing, the test suite wont
@@ -53,32 +56,19 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   override public func viewDidLoad() {
     super.viewDidLoad()
     
-//    Shared.imageCache.removeAll()
-//    Shared.dataCache.removeAll()
-//    Shared.JSONCache.removeAll()
-//    Shared.stringCache.removeAll()
+    controller.viewDidLoad()
     
-    // its good to keep all every UI specific initialization 
-    // in its own function to keep it modularized
-    // especially for debugging purposes
     setupDataBinding()
     setRootView()
     setupScrollView()
     setupBGView()
     setupProfileImg()
     setupBookshelf()
-//    setupSalesList()
-//    setupWishList()
-//    setupTabView()
-//    setupButtons()
-//    setupExtraViews()
-//    arrangeViews()
-//    setupUsernameLabel()
+    setupUsernameLabel()
   }
   
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    controller.userViewWillAppear()
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -104,8 +94,10 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     profileImg?.anchorInCenter(width: 64, height: 64)
     fetchProfileImage()
     
+    profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
+    
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 0, height: 400)
-    scrollView?.contentSize = view.frame.size
+    scrollView?.contentSize = CGSizeMake(view.frame.size.width, view.frame.size.height + 200)
     
     // record the background view's original height
     originalBGViewFrame = bgViewTop?.frame
@@ -152,6 +144,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       scrollView.tag = 0
       scrollView.delegate = self
       scrollView.backgroundColor = UIColor.whiteColor()
+      scrollView.showsVerticalScrollIndicator = false
       rootView?.view.addSubview(scrollView)
     }
   }
@@ -176,7 +169,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   public func setupUsernameLabel(){
     profileUsername = UILabel()
     if let profileUsername = profileUsername {
-      profileUsername.text = model.username
+      profileUsername.text = model.user?.username
       profileUsername.font = UIFont(name: "Avenir", size: 100)
       profileUsername.font = UIFont.boldSystemFontOfSize(20.0)
       profileUsername.textAlignment = .Center
@@ -188,62 +181,13 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   private func setupBookshelf() {
     bookShelf = UITableView()
     if let bookShelf = bookShelf {
-      bookShelf.backgroundColor = UIColor.greenColor()
       bookShelf.delegate = self
       bookShelf.dataSource = self
       bookShelf.rowHeight = view.frame.height / 4
       bookShelf.scrollEnabled = false
+      bookShelf.separatorStyle = .None
       bookShelf.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
       scrollView!.addSubview(bookShelf)
-    }
-  }
-  
-  private func setupSalesList() {
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
-    
-    saleListView = UICollectionView()
-    
-    // sale list
-    if let saleListView = saleListView {
-//      saleListView.tag = 1
-//      saleListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-//      saleListView.delegate = self
-//      saleListView.dataSource = self
-//      saleListView.pagingEnabled = true
-//      saleListView.backgroundColor = UIColor.whiteColor()
-    }
-  }
-  
-  private func setupWishList() {
-    
-    // Do any additional setup after loading the view, typically from a nib.
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
-    
-    wishListView = UICollectionView()
-    
-    // wish list
-    if let wishListView = wishListView {
-//      wishListView.tag = 2
-//      wishListView.registerClass(Cell.self, forCellWithReuseIdentifier: "cell")
-//      wishListView.delegate = self
-//      wishListView.dataSource = self
-//      wishListView.pagingEnabled = true
-//      wishListView.backgroundColor = UIColor.whiteColor()
-    }
-  }
-  
-  private func setupTabView() {
-    tabView = UIView()
-    if let tabView = tabView {
-      
-      tabView.backgroundColor = UIColor.brownColor()
-      applyPlainShadow(tabView)
-      
-      scrollView?.addSubview(tabView)
     }
   }
   
@@ -264,10 +208,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     }
   }
   
-  // for delegates, its best to do the official 'MARK' tag
-  // the tag syntax is specific, note that these headings become apparanet
-  // in the function finder right after the filename above ^^^
-  
   // MARK: Table View Delegates
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -275,97 +215,33 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 150
+    return 200
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     guard let cell = tableView.dequeueReusableCellWithIdentifier("cell") as? BookListView else { return UITableViewCell() }
     
+    switch indexPath.row {
+    case 0:
+      cell.tag = 0
+      cell.label.text = "I'm Selling"
+      guard let user = model.user else { break }
+      cell.controller.model.bookList = user.saleList
+      break
+    case 1:
+      cell.tag = 1
+      cell.label.text = "I'm Buying"
+      guard let user = model.user else { break }
+      cell.controller.model.bookList = user.wishList
+      break
+    default: break
+    }
+    
     return cell
-
-//    let cell = UITableViewCell()
-//    cell.backgroundColor = UIColor.redColor()
-//    cell.selectionStyle = .None
-//    
-//    let shelfLabel = UILabel()
-    
-//    if(indexPath.row == 0) {
-//      shelfLabel.text = "I'M SELLING"
-//      shelfLabel.font = UIFont(name: "Avenir", size: 12)
-//      shelfLabel.font = UIFont.boldSystemFontOfSize(10.0)
-//      shelfLabel.textColor = UIColor.lightGrayColor()
-//      shelfLabel.frame = CGRectMake()
-//      
-//      saleListView!.frame = CGRectMake()
-     
-//      cell.backgroundColor = UIColor.whiteColor()
-//      cell.addSubview(shelfLabel)
-//      cell.addSubview(saleListView!)
-//      
-//    } else {
-//      shelfLabel.text = "MY WISHLIST"
-//      shelfLabel.font = UIFont(name: "Avenir", size: 12)
-//      shelfLabel.font = UIFont.boldSystemFontOfSize(10.0)
-//      shelfLabel.textColor = UIColor.lightGrayColor()
-//      shelfLabel.frame =
-
-//      wishListView!.frame = CGRectMake()
-      
-//      cell.backgroundColor = UIColor.whiteColor()
-//      cell.addSubview(shelfLabel)
-//      cell.addSubview(wishListView!)
-//    }
-    //print(saleListView?.contentSize.width)
-//    return  cell
-  }
-  
-  // MARK: Collection View Delegates
-  
-  
-//  public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//    
-//    return CGSizeMake( screenSize.width / 3.5, collectionView.frame.height - collectionView.frame.height / 10)
-//    
-//  }
-  
-//  public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
-//    let leftRightInset = screenSize.width / 25.0
-//    
-//    return UIEdgeInsetsMake(0, leftRightInset, 0, leftRightInset)
-//  }
-  
-  public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return collectionView.tag == 1 ? model.saleList.count : model.wishList.count
-  }
-  
-  public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-//    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? Cell
-//    cell!.backgroundColor = UIColor.purpleColor()
-//    
-//    switch collectionView.tag {
-//    case 1:
-//      cell?.setup()
-//    case 2:
-//      cell?.setup()
-//    default: break
-//    }
-    
-//    if(collectionView.tag == 1){
-//      print("Book title from saleList(should be 4 of these): \(model.saleList[indexPath.row].title)")
-      //cell?.bookImageView.image = model.saleList[indexPath.row].bookImg
-//      cell?.setup()
-//    } else if (collectionView.tag == 2){
-      //cell?.bookImageView.image = model.wishList[indexPath.row].bookImg
-//      cell?.setup()
-//    }
-//    return cell!
-    return UICollectionViewCell()
   }
   
   // MARK: Scroll View Delegates
-  
-  private var originalBGViewFrame: CGRect? = CGRectZero
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
     if let offset: CGFloat? = -64 - scrollView.contentOffset.y where offset > 0 {
@@ -373,28 +249,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
     }
   }
-  
-  
-//  public func scrollViewDidEndDecelerating(scrollView: UIScrollView){
-//    let scrollViewWidth = scrollView.frame.size.width
-//    let scrollContentSizeWidth = scrollView.contentSize.width
-//    let scrollOffset = scrollView.contentOffset.x
-//    
-//    if (scrollOffset == 0)
-//    {
-      // then we are at the left
-      
-//      arrow?.frame = CGRect( x: screenSize.width, y: (bookShelf?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
-//      imageFadeIn(arrow!, rightSide: true)
-//    }
-//    else if (scrollOffset + scrollViewWidth == round(scrollContentSizeWidth))
-//    {
-      // then we are at the end
-//      arrow?.frame = CGRect( x: 0-(arrow?.width)!, y: (bookShelf?.height)!/4, width: screenSize.width/12, height: screenSize.width/12)
-//      imageFadeIn(arrow!, rightSide: false)
-//      
-//    }
-//  }
   
   // MARK: View Functions
   
@@ -428,92 +282,181 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
 }
 
-// good job putting these cells in their correct abstraction aka the 'View'
-
 // MARK: Cell Classes
 
 public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
+  public let label = UILabel()
   public var collectionView: UICollectionView?
+  
+  public let controller = BookListController()
+  public var model: BookListModel { get { return controller.model } }
 
+  public let _collectionViewFrame = Signal<CGRect>()
+  public var collectionViewFrame: CGRect = CGRectZero { didSet { _collectionViewFrame => collectionViewFrame } }
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupCollectionView()
+    setupLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  private func setupDataBinding() {
+    model._bookList.listen(self) { [weak self] list in
+      self?.collectionView?.reloadData()
+    }
   }
   
   private func setupCollectionView() {
     let layout = UICollectionViewFlowLayout()
     layout.scrollDirection = .Horizontal
-    layout.itemSize = CGSizeMake(100, frame.height)
+    
+    _collectionViewFrame.listen(self) { [weak layout] frame in
+      layout?.itemSize = CGSizeMake(100, frame.height)
+    }
     
     collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
     collectionView?.registerClass(BookCell.self, forCellWithReuseIdentifier: "cell")
     collectionView?.delegate = self
     collectionView?.dataSource = self
+    collectionView?.backgroundColor = UIColor.whiteColor()
+    collectionView?.showsHorizontalScrollIndicator = false
     addSubview(collectionView!)
   }
-
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  
+  private func setupLabel() {
+    label.font = UIFont.systemFontOfSize(12)
+    label.textColor = UIColor.lightGrayColor()
+    addSubview(label)
   }
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    collectionView?.fillSuperview()
+    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
+    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
+    collectionViewFrame = collectionView!.frame
   }
   
+    public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
+      return UIEdgeInsetsMake(0, 8, 0, 8)
+    }
+  
   public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 3
+    return model.bookList.count
   }
   
   public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? BookCell else { return UICollectionViewCell() }
     cell.backgroundColor = UIColor.whiteColor()
+    
+    if let url = model.bookList[indexPath.row].smallImage, let nsurl = NSURL(string: url) {
+      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookListViewImageView", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+        return Toucan(image: image).resize(cell.imageView.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5).image
+      })
+    }
+    
+    if let url = tag == 0 ? model.bookList[indexPath.row].bestBuyer?.image : model.bookList[indexPath.row].bestSeller?.image, let nsurl = NSURL(string: url) {
+      cell.infoImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookListViewInfoImageView", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+        return Toucan(image: image).resize(cell.infoImageView.frame.size, fitMode: .Crop).maskWithEllipse().image
+      })
+    }
+    
+    if let text = tag == 0 ? model.bookList[indexPath.row].bestBuyerListing : model.bookList[indexPath.row].bestSellerListing {
+      cell.infoLabel.text = "Best \(tag == 0 ? "Buyer" : "Seller") $\(text)"
+    }
+    
     return cell
   }
 }
 
 public class BookCell: UICollectionViewCell {
-    var bookImageView: UIImageView!
-    var infoView: UIView!
-    var infoLabel: UILabel!
-    private var doOnce = true
+  
+  public var imageView: UIImageView!
+  public var infoView: UIView!
+  public var infoImageView: UIImageView!
+  public var infoLabel: UILabel!
+  
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
+    setupImageView()
+    setupInfoView()
+    setupInfoImageView()
+    setupInfoLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  private func setupImageView() {
+    imageView = UIImageView()
+    addSubview(imageView)
+  }
+  
+  private func setupInfoView() {
+    infoView = UIView()
+    addSubview(infoView)
+  }
+  
+  private func setupInfoImageView() {
+    infoImageView = UIImageView()
+    infoView.addSubview(infoImageView)
+  }
+  
+  private func setupInfoLabel() {
+    infoLabel = UILabel()
+    infoLabel.textColor = UIColor.juicyOrange()
+    infoLabel.adjustsFontSizeToFitWidth = true
+    infoLabel.minimumScaleFactor = 0.1
+    infoView.addSubview(infoLabel)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    imageView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
+    infoView.alignAndFill(align: .UnderCentered, relativeTo: imageView, padding: 0)
+    infoImageView.anchorAndFillEdge(.Left, xPad: 2, yPad: 2, otherSize: 20)
+    infoLabel.alignAndFill(align: .ToTheRightCentered, relativeTo: infoImageView, padding: 4)
+  }
   
   public func setup(){
     
-    if doOnce {
-      bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
-      bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
-      bookImageView.backgroundColor = UIColor.blueColor()
-      
-      contentView.addSubview(bookImageView!)
-    
-      let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
-      infoView = UILabel(frame: viewFrame)
-      
-      infoView.backgroundColor = UIColor.whiteColor()
-      
-      infoView.layer.shadowColor = UIColor.blackColor().CGColor
-      infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
-      infoView.layer.shadowOpacity = 0.1
-      infoView.layer.shadowRadius = 5
-      contentView.addSubview(infoView!)
-      
-      let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
-      infoLabel = UILabel(frame: textFrame)
-      
-      infoLabel.backgroundColor = UIColor.clearColor()
-      
-      infoLabel.text = "More Info"
-      infoLabel.font = UIFont(name: "Avenir", size: 8)
-      infoLabel.textColor = UIColor.lightGrayColor()
-      //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-      infoLabel.textAlignment = .Center
-      contentView.addSubview(infoLabel!)
-      doOnce = false
-    }
+//    if doOnce {
+//      bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
+//      bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
+//      bookImageView.backgroundColor = UIColor.blueColor()
+//      
+//      contentView.addSubview(bookImageView!)
+//    
+//      let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
+//      infoView = UILabel(frame: viewFrame)
+//      
+//      infoView.backgroundColor = UIColor.whiteColor()
+//      
+//      infoView.layer.shadowColor = UIColor.blackColor().CGColor
+//      infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
+//      infoView.layer.shadowOpacity = 0.1
+//      infoView.layer.shadowRadius = 5
+//      contentView.addSubview(infoView!)
+//      
+//      let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
+//      infoLabel = UILabel(frame: textFrame)
+//      
+//      infoLabel.backgroundColor = UIColor.clearColor()
+//      
+//      infoLabel.text = "More Info"
+//      infoLabel.font = UIFont(name: "Avenir", size: 8)
+//      infoLabel.textColor = UIColor.lightTextColor()
+//      //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
+//      infoLabel.textAlignment = .Center
+//      contentView.addSubview(infoLabel!)
+//      doOnce = false
+//    }
   }
-  
-  
   
 }

@@ -51,6 +51,8 @@
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
+		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
+		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,6 +124,8 @@
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
+		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
+		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +215,7 @@
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
+				EED779E41C151DF800D172BE /* BookListModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -241,6 +246,7 @@
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
+				EED779E21C151DF200D172BE /* BookListController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -612,6 +618,7 @@
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
+				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
@@ -635,6 +642,7 @@
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
+				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
