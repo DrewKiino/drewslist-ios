@@ -64,6 +64,9 @@ public class Book: Mappable {
     public let _smallImage = Signal<String?>()
     public var smallImage: String? { didSet { _smallImage => smallImage } }
     
+    public let _largeImage = Signal<String?>()
+    public var largeImage: String? { didSet { _largeImage => largeImage } }
+    
     public init() {
         
     }
@@ -96,6 +99,7 @@ public class Book: Mappable {
         listPrice       <- map["listPrice.amount"]
         retailPrice     <- map["retailPrice.amount"]
         smallImage      <- map["smallImage"]
+        largeImage      <- map["largeImage"]
         
     }
     

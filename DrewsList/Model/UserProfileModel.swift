@@ -25,8 +25,8 @@ public class UserProfileModel {
   public let _username = Signal<String?>()
   public var username: String? { didSet { _username => username } }
   
-  public let _image = Signal<UIImage?>()
-  public var image: UIImage? { didSet { _image => image } }
+  public let _image = Signal<String?>()
+  public var image: String? { didSet { _image => image } }
   
   public let _saleList = Signal<[Book]>()
   public var saleList: [Book] = [] { didSet { _saleList => saleList } }

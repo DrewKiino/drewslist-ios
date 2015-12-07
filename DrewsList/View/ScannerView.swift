@@ -12,6 +12,8 @@ import Toucan
 import Neon
 
 public class ScannerView: UIViewController {
+    
+  // MARK: Properties
   
   private var session: AVCaptureSession?
   private var previewLayer: AVCaptureVideoPreviewLayer?
@@ -24,7 +26,7 @@ public class ScannerView: UIViewController {
   
   private let controller = ScannerController()
   
-  
+ // MARK: Lifecycle
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupScanner()
@@ -45,7 +47,8 @@ public class ScannerView: UIViewController {
     super.viewWillDisappear(animated)
     session?.stopRunning()
   }
-  
+ 
+    // MARK: Setup
   private func setupTopView() {
     topView = UIView(frame: CGRectMake(0, 16, view.frame.width, 100))
     view.addSubview(topView!)
@@ -67,6 +70,7 @@ public class ScannerView: UIViewController {
           let topView = topView
     else { return }
     searchButton.layer.zPosition = 1.0
+    searchButton.addTarget(self, action: "searchButtonSelected", forControlEvents:  .TouchUpInside)
     topView.addSubview(searchButton)
   }
   
@@ -124,6 +128,14 @@ public class ScannerView: UIViewController {
       )
     }
   }
+    
+  public func searchButtonSelected() {
+        print("Search Button selected!")
+  }
+    
+    public func switchViewToCreateListing() {
+         self.presentViewController(CreateListingView(), animated: true, completion: nil)
+    }
   
   private func setupScanner() {
     do {
@@ -142,6 +154,14 @@ public class ScannerView: UIViewController {
       controller.get_ShouldHideBorder().listen(self) { [weak self] bool in
         self?.identifiedBorder?.hidden = bool
       }
+        
+      controller.get_ISBN().listen(self) { (isbn) in
+            print("The isbn number is \(isbn)")
+            // Stop the scanning session
+            self.session?.stopRunning()
+            // Switch the view
+            self.switchViewToCreateListing()
+        }
       
       view.addSubview(identifiedBorder)
       
