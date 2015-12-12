@@ -37,8 +37,7 @@
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918B41C11686C00FCF031 /* RMParallax.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B21C11686C00FCF031 /* RMParallax.swift */; };
 		EE8918B51C11686C00FCF031 /* RMParallaxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B31C11686C00FCF031 /* RMParallaxItem.swift */; };
-		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; };
-		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
+		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; }; EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
 		EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B91C1169A800FCF031 /* OnboardingView.swift */; };
 		EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BA1C1169A800FCF031 /* UserProfileView.swift */; };
 		EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */; };
@@ -448,7 +447,6 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = 2NC533SE3E;
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
