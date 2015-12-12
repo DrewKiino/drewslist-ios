@@ -175,22 +175,3 @@ public class UserProfileViewDemo:
 }
 
 
-public class BookCell: UICollectionViewCell {
-  
-//  var textLabel: UILabel!
-//  var imageView: UIImageView!
-  
-//  public func setup() {
-//    imageView = UIImageView(frame: CGRect(x: 0, y: 16, width: frame.size.width, height: frame.size.height*2/3))
-//    imageView.contentMode = UIViewContentMode.ScaleAspectFit
-//    contentView.addSubview(imageView)
-//    
-//    let textFrame = CGRect(x: 0, y: 32, width: frame.size.width, height: frame.size.height/3)
-//    textLabel = UILabel(frame: textFrame)
-//    
-//    textLabel.text = "Moo"
-//    textLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-//    textLabel.textAlignment = .Center
-//    contentView.addSubview(textLabel)
-//  }
-}

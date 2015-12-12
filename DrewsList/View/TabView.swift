@@ -30,7 +30,8 @@ public class TabView: RAMAnimatedTabBarController {
   }
   
   private func setupViewControllers() {
-    viewControllers = [feedView, chatView, scannerView, activityView, userProfileView]
+//    viewControllers = [feedView, chatView, scannerView, activityView, userProfileView]
+    viewControllers = [userProfileView, chatView, scannerView, activityView]
   }
   
   private func setupFeedView() {

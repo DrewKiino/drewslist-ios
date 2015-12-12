@@ -13,6 +13,9 @@ import Signals
 
 public class UserProfileModel {
   
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
   public let _user_id = Signal<String?>()
   public var user_id: String?
   
@@ -27,6 +30,9 @@ public class UserProfileModel {
   
   public let _image = Signal<String?>()
   public var image: String? { didSet { _image => image } }
+  
+  public let _bgImage = Signal<String?>()
+  public var bgImage : String? { didSet { _bgImage => bgImage } }
   
   public let _saleList = Signal<[Book]>()
   public var saleList: [Book] = [] { didSet { _saleList => saleList } }
