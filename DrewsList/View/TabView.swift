@@ -14,7 +14,7 @@ public class TabView: RAMAnimatedTabBarController {
   
   let feedView = UIViewController()
   let chatView = ChatHistoryView()
-  let scannerView = ISBNScannerView()
+  let scannerView = ScannerView()
   let activityView = UIViewController()
   let userProfileView = UserProfileView()
   
