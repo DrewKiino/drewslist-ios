@@ -9,9 +9,11 @@
 import Foundation
 import UIKit
 import Toucan
+import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
+  private var doOnce = true
   let feedView = UIViewController()
   let chatView = ChatHistoryView()
   let scannerView = ISBNScannerView()
@@ -27,6 +29,16 @@ public class TabView: RAMAnimatedTabBarController {
     setupISBNScannerView()
     setupActivityView()
     setupUserProfileView()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    
+    if doOnce {
+      presentViewController( OnboardingView(), animated: true, completion: nil)
+      doOnce = false
+    }
   }
   
   private func setupViewControllers() {

@@ -65,8 +65,12 @@ public class Book: Mappable {
   public var smallImage: String? { didSet { _smallImage => smallImage } }
   
   public let _largeImage = Signal<String?>()
+<<<<<<< HEAD
   public var largeImage: String? { didSet { _smallImage => smallImage } }
 
+=======
+  public var largeImage: String? { didSet { _largeImage => largeImage } }
+>>>>>>> integrate-onboarding-2
 
   // buyer
   public let _bestBuyer = Signal<User?>()
