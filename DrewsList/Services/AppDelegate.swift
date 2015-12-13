@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Atlantis.Configuration.hasColoredLogs = true
     
     // init the root view
-    let tabView = TabView()
+    let tabView = OnboardingView()
     
     /*
     * Use this code to get the bounds of the screen
@@ -44,11 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // commit change
     window!.makeKeyAndVisible()
-    
-    // PUSH NOTIFIC
-    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
-    application.registerUserNotificationSettings(settings)
-    application.registerForRemoteNotifications()
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
