@@ -174,21 +174,9 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   
-  public func SignupButton(enabled: Bool) -> () {
-    
-    //      func enable(){
-    //        UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-    //            self.loginButton.backgroundColor = UIColor.colorWithHex("#F9C676", alpha: 1)
-    //            }, completion: nil)
-    //        loginButton.enabled = true
-    //      }
-    //      func disable(){
-    //        loginButton.enabled = false
-    //        UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-    //            self.loginButton.backgroundColor = UIColor.colorWithHex("#F08B23",alpha :1)
-    //            }, completion: nil)
-    //      }
-    //      return enabled ? enable() : disable()
+  public func next(enabled: Bool) -> () {
+   
+
   }
   
   
