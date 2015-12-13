@@ -13,7 +13,6 @@ import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
-  private var doOnce = true
   let feedView = UIViewController()
   let chatView = ChatHistoryView()
   let scannerView = ISBNScannerView()
@@ -34,15 +33,11 @@ public class TabView: RAMAnimatedTabBarController {
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    
-    if doOnce {
-      presentViewController( OnboardingView(), animated: true, completion: nil)
-      doOnce = false
-    }
+    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
+//    presentViewController(OnboardingView(), animated: true, completion: nil)
   }
   
   private func setupViewControllers() {
-//    viewControllers = [feedView, chatView, scannerView, activityView, userProfileView]
     viewControllers = [userProfileView, chatView, scannerView, activityView]
   }
   

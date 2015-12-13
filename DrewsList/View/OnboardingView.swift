@@ -20,6 +20,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   private var skipButton: UIButton?
   private var pushPermissionsLaterButton: SwiftyButton?
   private var pushPermissionsAcceptButton: SwiftyButton?
+  private var getStartedButton: SwiftyButton?
   
   
   private let firstPage = UIViewController()
@@ -40,6 +41,9 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   }
   
   private func setupOnboardingView() {
+    
+    // persist app state and say that the onboarding view has been seen
+//    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "OnboardingSeen")
     
     skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
     skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
@@ -81,7 +85,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   private func setupPushPermissions(view: UIView) {
     pushPermissionsLaterButton = SwiftyButton()
     pushPermissionsLaterButton?.buttonColor  = .sexyGray()
-    pushPermissionsLaterButton?.shadowColor  = .soothingBlue()
+    pushPermissionsLaterButton?.shadowColor  = .juicyOrange()
     pushPermissionsLaterButton?.shadowHeight = 3
     pushPermissionsLaterButton?.cornerRadius = 3
     pushPermissionsLaterButton?.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
@@ -93,7 +97,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     
     pushPermissionsAcceptButton = SwiftyButton()
     pushPermissionsAcceptButton?.buttonColor  = .sexyGray()
-    pushPermissionsAcceptButton?.shadowColor  = .soothingBlue()
+    pushPermissionsAcceptButton?.shadowColor  = .juicyOrange()
     pushPermissionsAcceptButton?.shadowHeight = 3
     pushPermissionsAcceptButton?.cornerRadius = 3
     pushPermissionsAcceptButton?.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 16)
@@ -102,6 +106,22 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     pushPermissionsAcceptButton?.addTarget(self, action: "acceptPushPermNow", forControlEvents: .TouchUpInside)
     
     view.addSubview(pushPermissionsAcceptButton!)
+  }
+  
+  private func setupGetStartedButton(view: UIView) {
+    
+    getStartedButton = SwiftyButton()
+    getStartedButton?.buttonColor  = .whiteColor()
+    getStartedButton?.shadowColor  = .sweetBeige()
+    getStartedButton?.shadowHeight = 3
+    getStartedButton?.cornerRadius = 3
+    getStartedButton?.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 18)
+    getStartedButton?.setTitleColor(UIColor.sexyGray(), forState: .Normal)
+    getStartedButton?.setTitle("Lets get started!", forState: .Normal)
+    getStartedButton?.frame = CGRectMake(screen.width / 2 - 100, screen.height - 48 - 48, 200, 48)
+    getStartedButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
+    
+    view.addSubview(getStartedButton!)
   }
   
   public func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
@@ -114,14 +134,14 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     cleanSubviews(currentView.view)
     
     // add needed subviews
-    
-    currentView.view.addSubview(skipButton!)
-    
     switch currentView.title! {
     case "PermissionsForPushScreen":
       setupPushPermissions(currentView.view)
       break
-    default: break;
+    case "CloseTheDealScreen":
+      setupGetStartedButton(currentView.view)
+      break
+    default: currentView.view.addSubview(skipButton!)
     }
     
     return currentView
@@ -137,20 +157,21 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     cleanSubviews(currentView.view)
     
     // add needed subviews
-    
-    currentView.view.addSubview(skipButton!)
-    
     switch currentView.title! {
     case "PermissionsForPushScreen":
       setupPushPermissions(currentView.view)
       break
-    default: break;
+    case "CloseTheDealScreen":
+      setupGetStartedButton(currentView.view)
+      break
+    default: currentView.view.addSubview(skipButton!)
     }
     
     return currentView
   }
   
   public func skipOnboarding() {
+    // dismiss the onboarding view
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
   
@@ -158,12 +179,12 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     for view in view.subviews {
       if view == pushPermissionsLaterButton { view.removeFromSuperview() }
       else if view == pushPermissionsAcceptButton { view.removeFromSuperview() }
+      else if view == getStartedButton { view.removeFromSuperview() }
       else if view == skipButton { view.removeFromSuperview() }
     }
   }
   
   public func askPushPermLater() {
-    
     setViewControllers([fifthPage], direction:.Forward, animated: true, completion:nil)
   }
   
