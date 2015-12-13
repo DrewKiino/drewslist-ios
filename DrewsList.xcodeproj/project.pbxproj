@@ -35,14 +35,11 @@
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
-<<<<<<< HEAD
 		EE8918B41C11686C00FCF031 /* RMParallax.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B21C11686C00FCF031 /* RMParallax.swift */; };
 		EE8918B51C11686C00FCF031 /* RMParallaxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B31C11686C00FCF031 /* RMParallaxItem.swift */; };
 		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; }; EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
-=======
 		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
->>>>>>> integrate-onboarding-2
 		EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B91C1169A800FCF031 /* OnboardingView.swift */; };
 		EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BA1C1169A800FCF031 /* UserProfileView.swift */; };
 		EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */; };
