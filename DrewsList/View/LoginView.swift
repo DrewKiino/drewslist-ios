@@ -145,6 +145,9 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   
 
   
+  
+  //9261 299999 2562 5479 5314
+  
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
@@ -152,30 +155,46 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     backgroundImage.image = Toucan(image: UIImage(named: "DrewsList_WireFrames_iOS-21")!).resize(backgroundImage.frame.size).image
 
     containerView.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
+  
     
+
     
-    usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 30, otherSize: 48)
+    usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: usernameField!, padding: 0, height: 48)
     //loginButton!.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 50)
   
     
     
-    //login//Button
+    //loginButton
     loginButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-    loginButton!.layer.cornerRadius = 0.0
-    loginButton!.layer.borderWidth = 3.0
-    loginButton!.backgroundColor = UIColor.whiteColor()
+    loginButton!.layer.cornerRadius = 3.0
+    loginButton!.layer.borderWidth = 2.0
+    loginButton!.center = CGPoint(x: 85, y: 480)
+    loginButton!.backgroundColor = UIColor.juicyOrange()
     loginButton!.layer.borderColor = UIColor.juicyOrange().CGColor
     loginButton!.setTitle("Log In", forState: UIControlState.Normal)
-    loginButton!.setTitleColor(UIColor.sexyGray(), forState: UIControlState.Normal)
+    loginButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
 
   
 
     self.view.addSubview(loginButton!)
     
+    //SignUpButton
+    signupButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8),
+    self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
+    signupButton!.layer.cornerRadius = 3.0
+    signupButton!.layer.borderWidth = 2.0
+    signupButton!.center = CGPoint(x: 230 , y: 480)
+    signupButton!.backgroundColor = UIColor.bareBlue()
+    signupButton!.layer.backgroundColor = UIColor.bareBlue().CGColor
+    signupButton!.setTitle("Sign Up", forState: UIControlState.Normal)
+    signupButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    
+    self.view.addSubview(signupButton!)
   
     
     
+  
     
   }
   
@@ -183,25 +202,14 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   public func loginButton(enabled: Bool) -> () {
     
     
+  }
+  
+  
+  public func signupButton(enabled: Bool) -> () {
     
-    
-    //      func enable(){
-    //        UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-    //            self.loginButton.backgroundColor = UIColor.colorWithHex("#F9C676", alpha: 1)
-    //            }, completion: nil)
-    //        loginButton.enabled = true
-    //      }
-    //      func disable(){
-    //        loginButton.enabled = false
-    //        UIView.animateWithDuration(0.3, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations: {
-    //            self.loginButton.backgroundColor = UIColor.colorWithHex("#F08B23",alpha :1)
-    //            }, completion: nil)
-    //      }
-    //      return enabled ? enable() : disable()
     
     
   }
-  
     public func changeImage(){
       if idx == backGroundArray.count-1{
         

@@ -151,7 +151,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     containerView.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
     
-    usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 30, otherSize: 48)
+    usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: usernameField!, padding: 0, height: 48)
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 48)
     
@@ -159,8 +159,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     //NextButton
     
       next = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-    
-      next!.layer.cornerRadius = 0.0
+      next!.layer.cornerRadius = 3.0
       next!.layer.borderWidth = 2.0
       next!.backgroundColor = UIColor.juicyOrange()
       next!.layer.borderColor = UIColor.juicyOrange().CGColor
@@ -168,6 +167,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       next!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
   
        self.view.addSubview(next!)
+    
   
 
     
