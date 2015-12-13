@@ -26,7 +26,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Atlantis.Configuration.hasColoredLogs = true
     
     // init the root view
+<<<<<<< HEAD
     let tabView = SignUpView()
+=======
+    let tabView = TabView()
+    
+>>>>>>> 74a6ebadf9bac3f373ad2c8237fac0de901e7278
     /*
     * Use this code to get the bounds of the screen
     *

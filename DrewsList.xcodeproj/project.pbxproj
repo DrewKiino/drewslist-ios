@@ -41,6 +41,7 @@
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918B41C11686C00FCF031 /* RMParallax.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B21C11686C00FCF031 /* RMParallax.swift */; };
 		EE8918B51C11686C00FCF031 /* RMParallaxItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B31C11686C00FCF031 /* RMParallaxItem.swift */; };
+		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; }; EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
 		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
 		EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B91C1169A800FCF031 /* OnboardingView.swift */; };
@@ -55,6 +56,9 @@
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
+		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
+		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
+		EED779E71C15406600D172BE /* BookFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E61C15406600D172BE /* BookFeedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,8 +118,6 @@
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EE8918B21C11686C00FCF031 /* RMParallax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMParallax.swift; sourceTree = "<group>"; };
-		EE8918B31C11686C00FCF031 /* RMParallaxItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RMParallaxItem.swift; sourceTree = "<group>"; };
 		EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerView.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EE8918B91C1169A800FCF031 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -130,6 +132,9 @@
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
+		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
+		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
+		EED779E61C15406600D172BE /* BookFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookFeedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,6 +226,7 @@
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
+				EED779E41C151DF800D172BE /* BookListModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -239,6 +245,7 @@
 				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
 				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
+				EED779E61C15406600D172BE /* BookFeedView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -253,6 +260,7 @@
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
+				EED779E21C151DF200D172BE /* BookListController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -334,22 +342,12 @@
 			isa = PBXGroup;
 			children = (
 				EE4B9D921C11F37700637458 /* RAMTabBar */,
-				EE8918B11C11686300FCF031 /* RMParallax */,
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
 				3FB40FA51C025BE500743C74 /* Atlantis.swift */,
 				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 				EEA80B231C1287C70058ED0C /* NativeExtensions.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		EE8918B11C11686300FCF031 /* RMParallax */ = {
-			isa = PBXGroup;
-			children = (
-				EE8918B21C11686C00FCF031 /* RMParallax.swift */,
-				EE8918B31C11686C00FCF031 /* RMParallaxItem.swift */,
-			);
-			path = RMParallax;
 			sourceTree = "<group>";
 		};
 		EE8918B61C11689100FCF031 /* Assets */ = {
@@ -616,14 +614,13 @@
 				EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */,
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
-				EE8918B41C11686C00FCF031 /* RMParallax.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
-				EE8918B51C11686C00FCF031 /* RMParallaxItem.swift in Sources */,
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
+				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
@@ -637,7 +634,11 @@
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
+<<<<<<< HEAD
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
+=======
+				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
+>>>>>>> 74a6ebadf9bac3f373ad2c8237fac0de901e7278
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
@@ -650,6 +651,7 @@
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
+				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -787,11 +789,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.totem.drewslist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -801,11 +805,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.totem.drewslist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
