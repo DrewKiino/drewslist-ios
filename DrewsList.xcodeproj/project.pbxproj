@@ -642,11 +642,8 @@
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
-<<<<<<< HEAD
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
-=======
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
->>>>>>> 74a6ebadf9bac3f373ad2c8237fac0de901e7278
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
