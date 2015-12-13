@@ -30,6 +30,7 @@ pod 'JSQMessagesViewController'
 # UI libs
 pod 'Neon'
 pod 'TextFieldEffects'
+pod 'SwiftyButton'
 
 # pubsub libs
 pod 'Signals'
@@ -49,6 +50,9 @@ pod 'RealmSwift'
 
 # onboarding libs
 pod 'Onboard'
+
+# permissions
+pod 'PermissionScope'
 
 
 

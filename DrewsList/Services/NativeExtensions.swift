@@ -23,8 +23,8 @@ extension UIColor {
     return UIColor(red: 49/255, green: 77/255, blue: 122/255, alpha: 1.0)
   }
   
-  public class func flashyYellow() -> UIColor {
-    return UIColor(red: 73/255, green: 198/255, blue: 118/255, alpha: 1.0)
+  public class func sweetBeige() -> UIColor {
+    return UIColor(red: 249/255, green: 198/255, blue: 118/255, alpha: 1.0)
   }
   
   public class func juicyOrange() -> UIColor {

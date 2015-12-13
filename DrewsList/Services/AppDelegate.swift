@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /*
     * Use this code to get the bounds of the screen
     *
-    *         UIScreen.mainScreen().bounds
+    *       UIScreen.mainScreen().bounds
     *
     */
     tabView.view.frame = UIScreen.mainScreen().bounds
@@ -48,11 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // commit change
     window!.makeKeyAndVisible()
-    
-    // PUSH NOTIFIC
-    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
-    application.registerUserNotificationSettings(settings)
-    application.registerForRemoteNotifications()
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
