@@ -53,7 +53,7 @@ public class BookController {
     
     public func getMaturityRating() -> String? { return model.maturityRating }
     public func get_MaturityRating() -> Signal<String?> { return model._maturityRating }
-    
+  
     public func getLanguage() -> String? { return model.language }
     public func get_Language() -> Signal<String?> { return model._language }
     
