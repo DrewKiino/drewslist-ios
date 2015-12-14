@@ -123,8 +123,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     model._user.listen(self) { [weak self] user in
       
       self?.profileUsername?.text = user?.username
-      self?.saleListView?.reloadData()
-      self?.wishListView?.reloadData()
+      self?.bookShelf?.reloadData()
       
       self?.fetchProfileImage()
     }
@@ -226,13 +225,30 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       cell.tag = 0
       cell.label.text = "I'm Selling"
       guard let user = model.user else { break }
+      
+      // set data
       cell.controller.model.bookList = user.saleList
+      
+      // data bind
+      user._saleList.listen(self) { [weak cell] list in
+        cell?.controller.model.bookList = list
+      }
+      
       break
     case 1:
       cell.tag = 1
       cell.label.text = "I'm Buying"
       guard let user = model.user else { break }
+      
+      // set data
       cell.controller.model.bookList = user.wishList
+      
+      
+      // data bind
+      user._wishList.listen(self) { [weak cell] list in
+        cell?.controller.model.bookList = list
+      }
+
       break
     default: break
     }
@@ -296,6 +312,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupDataBinding()
     setupCollectionView()
     setupLabel()
   }
