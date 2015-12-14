@@ -21,7 +21,7 @@ public class UserProfileController {
   
   public func viewDidLoad() {
     
-    getUserFromServer("566e0a18b9ac4f05d56b130c")
+//    getUserFromServer("566e0a18b9ac4f05d56b130c")
     
     // init fixtures
     setupFixtures()

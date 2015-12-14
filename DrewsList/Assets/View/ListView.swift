@@ -29,13 +29,14 @@ public class ListView: UIViewController {
     super.viewDidAppear(animated)
     
     // fixtures
-    controller.getBookFromServer("566e6fb9c2f704de12b77255")
+    controller.getBookFromServer("566e89dac2f704de12b7742e")
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    bookView?.anchorAndFillEdge(.Top, xPad: 16, yPad: 16, otherSize: 200)
+//    bookView?.anchorAndFillEdge(.Top, xPad: 16, yPad: 16, otherSize: 150)
+    bookView?.anchorInCenter(width: 250, height: 150)
   }
   
   private func setupBookView() {

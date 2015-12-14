@@ -61,7 +61,7 @@ extension UIFont {
 extension String {
   
   public func convertToOrdinal() -> String {
-    if let last = characters.last {
+    if  let last = characters.last where Int(String(last)) != nil && self.lowercaseString.rangeOfString("edition") == nil {
       if last == "1" {
         return "\(self)st"
       } else if last == "2" {

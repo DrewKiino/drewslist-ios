@@ -43,14 +43,14 @@ public class BookView: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    imageView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 128)
+    imageView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 100)
     
     attributesContainer?.alignAndFill(align: .ToTheRightCentered, relativeTo: imageView!, padding: 8)
     
     title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  48)
     author?.alignAndFillWidth(align: .UnderCentered, relativeTo: title!, padding: 0, height: 24)
-    edition?.alignAndFillWidth(align: .UnderCentered, relativeTo: author!, padding: 0, height: 24)
-    isbn?.alignAndFillWidth(align: .UnderCentered, relativeTo: edition!, padding: 0, height: 24)
+    edition?.alignAndFillWidth(align: .UnderCentered, relativeTo: author!, padding: 0, height: 16)
+    isbn?.alignAndFillWidth(align: .UnderCentered, relativeTo: edition!, padding: 0, height: 16)
     
     
     layer.shadowColor = UIColor.darkGrayColor().CGColor
@@ -88,16 +88,17 @@ public class BookView: UIView {
   
   private func setupAuthorLabel() {
     author = UILabel()
-    author?.font = UIFont.asapRegular(12)
+    author?.font = UIFont.asapRegular(10)
     author?.adjustsFontSizeToFitWidth = true
-    author?.numberOfLines = 2
+    author?.numberOfLines = 3
     
     attributesContainer?.addSubview(author!)
   }
   
   private func setupEditionLabel() {
     edition = UILabel()
-    edition?.font = UIFont.asapRegular(12)
+    edition?.font = UIFont.asapRegular(10)
+    edition?.textColor = UIColor.sexyGray()
     
     attributesContainer?.addSubview(edition!)
   }
@@ -105,7 +106,8 @@ public class BookView: UIView {
   private func setupIsbnLabel() {
     
     isbn = UILabel()
-    isbn?.font = UIFont.asapRegular(12)
+    isbn?.font = UIFont.asapRegular(10)
+    isbn?.textColor = UIColor.sexyGray()
     
     attributesContainer?.addSubview(isbn!)
   }
@@ -123,13 +125,13 @@ public class BookView: UIView {
       
       title?.text = book.title
       
-      author?.text = book.authors.first?.name
+      author?.text = (book.authors.map { $0.name != nil ? $0.name! : "" } as NSArray).componentsJoinedByString(", ")
       
-      edition?.text = book.edition != nil ? "Edition: \(book.edition!.convertToOrdinal())" : ""
+      edition?.text = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""
       
-      isbn?.text = book.ISBN13 != nil ? "ISBN 13: \(book.ISBN13!)" : book.ISBN10 != nil ? "ISBN 10: \(book.ISBN10)" : ""
+      isbn?.text = book.ISBN13 != nil ? "ISBN:\t\t\(book.ISBN13!)" : book.ISBN10 != nil ? "ISBN:\t\t\(book.ISBN10)" : ""
       
-      if let imageView = imageView, url = book.largeImage, let nsurl = NSURL(string: url) {
+      if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) {
         imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookViewImageView", diskCapacity: 10 * 1024 * 1024) { image in
           //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
           return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image

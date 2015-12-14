@@ -128,6 +128,8 @@ public class Author: Mappable {
   public let _name = Signal<String?>()
   public var name: String? { didSet { _name => name } }
   
+  public init(name: String) { self.name = name }
+  
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
