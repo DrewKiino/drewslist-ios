@@ -55,6 +55,9 @@ public class Book: Mappable {
   public let _language = Signal<String?>()
   public var language: String? { didSet { _language => language } }
   
+  public let _edition = Signal<String?>()
+  public var edition: String? { didSet { _edition => edition } }
+  
   public let _listPrice = Signal<String?>()
   public var listPrice: String? { didSet { _listPrice => listPrice } }
   
@@ -104,6 +107,7 @@ public class Book: Mappable {
     publisher       <- map["publisher"]
     publishedDate   <- map["publishedDate"]
     description     <- map["description"]
+    edition         <- map["edition"]
     ISBN10          <- map["ISBN10"]
     ISBN13          <- map["ISBN_13"]
     pageCount       <- map["pageCount"]

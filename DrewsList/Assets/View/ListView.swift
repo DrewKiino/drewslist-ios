@@ -14,26 +14,37 @@ public class ListView: UIViewController {
   
   private let controller = ListController()
   
-  private var bookView: BookView?
+  private var bookView: BookView? = BookView()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     setupDataBinding()
+    setupBookView()
     
     view.backgroundColor = UIColor.whiteColor()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    // fixtures
+    controller.getBookFromServer("566e6fb9c2f704de12b77255")
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    bookView?.anchorInCenter(width: screen.width, height: 200)
+    bookView?.anchorAndFillEdge(.Top, xPad: 16, yPad: 16, otherSize: 200)
+  }
+  
+  private func setupBookView() {
+    view.addSubview(bookView!)
   }
   
   private func setupDataBinding() {
     controller.get_Book().listen(self) { [weak self] book in
-      guard let book = book else { return }
-      self?.bookView = BookView(book: book)
+      self?.bookView?.setBook(book)
     }
   }
 }

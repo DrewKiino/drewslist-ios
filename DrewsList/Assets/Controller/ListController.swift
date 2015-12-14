@@ -17,21 +17,20 @@ public class ListController {
 //  private let serverUrl = "http://drewslist-staging.herokuapp.com/book"
   private let serverUrl = "http://localhost:1337/book"
   
+  public init() {}
+  
   public func get_Book() -> Signal<Book?> { return model._book }
   
   public func getBook() -> Book? { return model.book }
   
-  public init() {
-    getBookFromServer("566e4e0595fef95c3c21a431")
-  }
-  
   public func getBookFromServer(book_id: String) {
     Alamofire.request(.GET, serverUrl, parameters: [ "_id": book_id ], encoding: .URL)
-    .response { req, res, data, error in
+    .response { [weak self] req, res, data, error in
       if let data = data, let json: JSON! = JSON(data: data) {
         let book = Book(json: json)
-        log.debug(book.authors.first?.name)
-      }
+        
+        self?.model.book = book
+     }
     }
   }
 }
