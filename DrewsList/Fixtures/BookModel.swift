@@ -85,6 +85,9 @@ public class Book: Mappable {
   public init() {}
   
   public init(json: JSON) {
+    
+    log.debug(json)
+    
       if let json = json.dictionaryObject {
           mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
       }
@@ -103,7 +106,7 @@ public class Book: Mappable {
       publishedDate   <- map["publishedDate"]
       description     <- map["description"]
       ISBN10          <- map["ISBN10"]
-      ISBN13          <- map["ISBN13"]
+      ISBN13          <- map["ISBN_13"]
       pageCount       <- map["pageCount"]
       categories      <- map["categories"]
       averageRating   <- map["averageRating"]
@@ -112,7 +115,9 @@ public class Book: Mappable {
       listPrice       <- map["listPrice.amount"]
       retailPrice     <- map["retailPrice.amount"]
       smallImage      <- map["smallImage"]
-      
+      //mediumImage     <- map["mediumImage"]
+      largeImage      <- map["largeImage"]
+    
   }
   
 }
