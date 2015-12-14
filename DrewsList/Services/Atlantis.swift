@@ -503,7 +503,9 @@ public struct Atlantis {
       default: break
       }
       
-      for i = 0; i < maxCharCount - charCount; i++ { whitespace += " " }
+      for var j = i; j < maxCharCount - charCount; j++ {
+        whitespace += " "
+      }
       
       
       let string: String = startString + whitespace + endString

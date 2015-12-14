@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Toucan
+import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
@@ -29,8 +30,14 @@ public class TabView: RAMAnimatedTabBarController {
     setupUserProfileView()
   }
   
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    
+//    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
+//    presentViewController(OnboardingView(), animated: true, completion: nil)
+  }
+  
   private func setupViewControllers() {
-//    viewControllers = [feedView, chatView, scannerView, activityView, userProfileView]
     viewControllers = [userProfileView, chatView, scannerView, activityView]
   }
   
