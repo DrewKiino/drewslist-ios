@@ -56,6 +56,7 @@ public class User: Mappable {
     username        <- map["username"]
     _id             <- map["_id"]
     deviceToken     <- map["deviceToken"]
+    image           <- map["image"]
   }
 }
 

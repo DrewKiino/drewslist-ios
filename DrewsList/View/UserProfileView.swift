@@ -120,14 +120,13 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   // MARK: Data Binding
   
   private func setupDataBinding() {
-    model._username.listen(self) { [weak self] _id in
-      self?.profileUsername?.text = _id
-    }
-    model._saleList.listen(self) { [weak self] list in
+    model._user.listen(self) { [weak self] user in
+      
+      self?.profileUsername?.text = user?.username
       self?.saleListView?.reloadData()
-    }
-    model._wishList.listen(self) { [weak self] list in
       self?.wishListView?.reloadData()
+      
+      self?.fetchProfileImage()
     }
   }
   
@@ -424,40 +423,4 @@ public class BookCell: UICollectionViewCell {
     infoImageView.anchorAndFillEdge(.Left, xPad: 2, yPad: 2, otherSize: 20)
     infoLabel.alignAndFill(align: .ToTheRightCentered, relativeTo: infoImageView, padding: 4)
   }
-  
-  public func setup(){
-    
-//    if doOnce {
-//      bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
-//      bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
-//      bookImageView.backgroundColor = UIColor.blueColor()
-//      
-//      contentView.addSubview(bookImageView!)
-//    
-//      let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
-//      infoView = UILabel(frame: viewFrame)
-//      
-//      infoView.backgroundColor = UIColor.whiteColor()
-//      
-//      infoView.layer.shadowColor = UIColor.blackColor().CGColor
-//      infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
-//      infoView.layer.shadowOpacity = 0.1
-//      infoView.layer.shadowRadius = 5
-//      contentView.addSubview(infoView!)
-//      
-//      let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
-//      infoLabel = UILabel(frame: textFrame)
-//      
-//      infoLabel.backgroundColor = UIColor.clearColor()
-//      
-//      infoLabel.text = "More Info"
-//      infoLabel.font = UIFont(name: "Avenir", size: 8)
-//      infoLabel.textColor = UIColor.lightTextColor()
-//      //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-//      infoLabel.textAlignment = .Center
-//      contentView.addSubview(infoLabel!)
-//      doOnce = false
-//    }
-  }
-  
 }
