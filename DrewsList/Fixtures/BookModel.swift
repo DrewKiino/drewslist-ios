@@ -22,8 +22,8 @@ public class Book: Mappable {
   public let _subtitle = Signal<String?>()
   public var subtitle: String? { didSet { _subtitle => subtitle } }
   
-  public let _authors = Signal<[String]?>()
-  public var authors: [String]? { didSet { _authors => authors } }
+  public let _authors = Signal<String?>()
+  public var authors: String? { didSet { _authors => authors } }
   
   public let _publisher = Signal<String?>()
   public var publisher: String? { didSet { _publisher => publisher } }
@@ -43,8 +43,8 @@ public class Book: Mappable {
   public let _pageCount = Signal<String?>()
   public var pageCount: String? { didSet { _pageCount => pageCount } }
   
-  public let _categories = Signal<[String]?>()
-  public var categories: [String]? { didSet { _categories => categories } }
+  public let _categories = Signal<String?>()
+  public var categories: String? { didSet { _categories => categories } }
   
   public let _averageRating = Signal<String?>()
   public var averageRating: String? { didSet { _averageRating => averageRating } }
@@ -115,7 +115,7 @@ public class Book: Mappable {
       listPrice       <- map["listPrice.amount"]
       retailPrice     <- map["retailPrice.amount"]
       smallImage      <- map["smallImage"]
-      mediumImage     <- map["mediumImage"]
+      //mediumImage     <- map["mediumImage"]
       largeImage      <- map["largeImage"]
     
   }
