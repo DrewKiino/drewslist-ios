@@ -108,20 +108,20 @@ public class CreateListingView : UIViewController {
     // MARK: Listeners
     
     public func setupBookListener() {
-        
-        bookController.get_Title().listen(self) { (title) in
-            print("The book listener is working: title is \(title)")
-            self.book_Title.text = title
-        }
-        
-        bookController.get_Authors().listen(self) { (author) in
-            self.book_Author.text = author
-        }
-        
-        bookController.get_SmallImage().listen(self) { (image) in
-            print("Image received from the server")
-        }
-        
+      
+      bookController.get_Title().listen(self) { [weak self] title in
+        print("The book listener is working: title is \(title)")
+        self?.book_Title.text = title
+      }
+      
+      bookController.get_Authors().listen(self) { [weak self] authors in
+        self?.book_Author.text = authors.first?.name ?? ""
+      }
+      
+      bookController.get_SmallImage().listen(self) { [weak self] image in
+        print("Image received from the server")
+      }
+      
 
     }
     

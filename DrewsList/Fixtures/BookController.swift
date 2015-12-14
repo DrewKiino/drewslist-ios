@@ -24,8 +24,8 @@ public class BookController {
     public func getSubtitle() -> String? { return model.book.subtitle }
     public func get_Subtitle() -> Signal<String?> { return model.book._subtitle }
     
-    public func getAuthors() -> String? { return model.book.authors }
-    public func get_Authors() -> Signal<String?> { return model.book._authors }
+    public func getAuthors() -> [Author] { return model.book.authors }
+    public func get_Authors() -> Signal<[Author]> { return model.book._authors }
     
     public func getPublisher() -> String? { return model.book.publisher }
     public func get_Publisher() -> Signal<String?> { return model.book._publisher }

@@ -22,7 +22,7 @@ public class BookView: UIView {
   public var isbn_10: UILabel?
   public var isbn_13: UILabel?
   
-  public init(book_id: String) {
+  public init(book: Book) {
     super.init(frame: CGRectZero)
     
     backgroundColor = UIColor.redColor()
@@ -35,9 +35,6 @@ public class BookView: UIView {
     setupEditionLabel()
     setupISBN_10Label()
     setupISBN_13Label()
-    
-    // fixtures
-    setupFixtures()
   }
   
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
@@ -129,8 +126,5 @@ public class BookView: UIView {
     isbn_13?.backgroundColor = UIColor.magentaColor()
     
     attributesContainer?.addSubview(isbn_13!)
-  }
-  
-  private func setupFixtures() {
   }
 }
