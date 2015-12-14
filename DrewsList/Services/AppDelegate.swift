@@ -11,6 +11,7 @@ import Signals
 
 public let log = Atlantis.Logger()
 public let remoteNotification = Signal<[NSObject: AnyObject]>()
+public let screen = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -26,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Atlantis.Configuration.hasColoredLogs = true
     
     // init the root view
-    let tabView = TabView()
+    let tabView = ListView()
     
     /*
     * Use this code to get the bounds of the screen
