@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Neon
+import Gifu
 
 public class ListView: UIViewController {
   
@@ -23,13 +24,14 @@ public class ListView: UIViewController {
     setupBookView()
     
     view.backgroundColor = UIColor.whiteColor()
+    
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
     // fixtures
-    controller.getBookFromServer("566e89dac2f704de12b7742e")
+    controller.getBookFromServer("566f92d2492d6413f185533e")
   }
   
   public override func viewWillLayoutSubviews() {

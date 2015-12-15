@@ -26,7 +26,11 @@ public class ListController {
   public func getBookFromServer(book_id: String) {
     Alamofire.request(.GET, serverUrl, parameters: [ "_id": book_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
-      if let data = data, let json: JSON! = JSON(data: data) {
+      if let error = error {
+        
+        log.error(error)
+        
+      } else if let data = data, let json: JSON! = JSON(data: data) {
         let book = Book(json: json)
         
         self?.model.book = book

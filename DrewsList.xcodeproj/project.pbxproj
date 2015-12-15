@@ -44,6 +44,7 @@
 		EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */; };
 		EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */; };
 		EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */; };
+		EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */; };
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
@@ -110,11 +111,11 @@
 		EE07FE441BE11D1E00A10F05 /* DrewsListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrewsListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Asap-Bold.otf"; path = "Font/Asap-Bold.otf"; sourceTree = "<group>"; };
-		EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Asap-BoldItalic.otf"; path = "Font/Asap-BoldItalic.otf"; sourceTree = "<group>"; };
-		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Asap-Italic.otf"; path = "Font/Asap-Italic.otf"; sourceTree = "<group>"; };
-		EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Asap-Regular.otf"; path = "Font/Asap-Regular.otf"; sourceTree = "<group>"; };
-		EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "SIL Open Font License.txt"; path = "Font/SIL Open Font License.txt"; sourceTree = "<group>"; };
+		EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Bold.otf"; sourceTree = "<group>"; };
+		EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-BoldItalic.otf"; sourceTree = "<group>"; };
+		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Italic.otf"; sourceTree = "<group>"; };
+		EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Regular.otf"; sourceTree = "<group>"; };
+		EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SIL Open Font License.txt"; sourceTree = "<group>"; };
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
@@ -128,6 +129,7 @@
 		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFumeAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -202,8 +204,9 @@
 		EE07FE271BE11D1E00A10F05 /* DrewsList */ = {
 			isa = PBXGroup;
 			children = (
-				EE19D1EC1C1EAC0400BF2738 /* Fonts */,
 				EE8918B61C11689100FCF031 /* Assets */,
+				EE19D1EC1C1EAC0400BF2738 /* Fonts */,
+				EE6AC5FA1C1FC4AC00001F37 /* Media */,
 				EE5E669C1BE1626600BCF1DE /* Services */,
 				EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */,
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
@@ -239,7 +242,7 @@
 				EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */,
 				EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */,
 			);
-			name = Fonts;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		EE3C94921BF30F1500E228A9 /* Model */ = {
@@ -377,6 +380,14 @@
 				EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		EE6AC5FA1C1FC4AC00001F37 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */,
+			);
+			path = Media;
 			sourceTree = "<group>";
 		};
 		EE8918B61C11689100FCF031 /* Assets */ = {
@@ -522,6 +533,7 @@
 				EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */,
 				EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */,
 				EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */,
+				EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */,
 				EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */,
 				EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */,
 			);
