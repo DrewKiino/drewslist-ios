@@ -22,6 +22,7 @@ public class BookView: UIView {
   public var edition: UILabel?
   public var isbn: UILabel?
   public var desc: UILabel?
+  private var activityView: UIActivityIndicatorView?
   
   public init() {
     super.init(frame: CGRectZero)
@@ -36,6 +37,7 @@ public class BookView: UIView {
     setupEditionLabel()
     setupIsbnLabel()
     setupDescriptionLabel()
+    setupActivityView()
   }
   
   public func setBook(book: Book?) { controller.model.book = book ?? Book() }
@@ -46,6 +48,8 @@ public class BookView: UIView {
     super.layoutSubviews()
     
     imageView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 100)
+    
+    activityView?.center = CGPointMake(imageView!.center.x + 16, imageView!.center.y)
     
     attributesContainer?.alignAndFill(align: .ToTheRightCentered, relativeTo: imageView!, padding: 8)
     
@@ -63,6 +67,11 @@ public class BookView: UIView {
     layer.shadowRadius = 2
     layer.masksToBounds = true
     clipsToBounds = false
+    
+    
+    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
+      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
+    }
   }
   
   private func setupImageView() {
@@ -130,6 +139,15 @@ public class BookView: UIView {
     attributesContainer?.addSubview(desc!)
   }
   
+  private func setupActivityView() {
+    
+    activityView = UIActivityIndicatorView()
+    activityView?.frame.size = CGSizeMake(48, 48)
+    activityView?.color = UIColor.sexyGray()
+    
+    imageView?.addSubview(activityView!)
+  }
+  
   private func setupDataBinding() {
     
     controller.get_Book().listen(self) { [weak self] book in
@@ -140,6 +158,8 @@ public class BookView: UIView {
   private func _setBook(book: Book?) {
     
     if let book = book {
+      
+      activityView?.startAnimating()
       
       // fixtures
 //      book.title = "The Crazy and Adventurous Voyage of Samson and his Trusty Dog Jayce the Lowrider Part 4"
@@ -156,10 +176,16 @@ public class BookView: UIView {
       desc?.text = book.description?.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: nil)
       
       if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) {
-        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookViewImageView", diskCapacity: 10 * 1024 * 1024) { image in
+        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: url, diskCapacity: 10 * 1024 * 1024) { image in
+          
           //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
           return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
         })
+        
+        Shared.imageCache.fetch(URL: nsurl, formatName: url).onSuccess { [weak self] image in
+          // stop the loading if image already exists in cache
+          self?.activityView?.stopAnimating()
+        }
       }
     }
   }

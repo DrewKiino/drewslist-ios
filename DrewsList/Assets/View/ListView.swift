@@ -31,7 +31,7 @@ public class ListView: UIViewController {
     super.viewDidAppear(animated)
     
     // fixtures
-    controller.getBookFromServer("566f92d2492d6413f185533e")
+    controller.getBookFromServer("566f933f492d6413f18553b4")
   }
   
   public override func viewWillLayoutSubviews() {
