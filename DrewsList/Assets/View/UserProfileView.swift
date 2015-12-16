@@ -106,7 +106,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   private func fetchBackgroundImage() {
-    guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) else { return }
+    guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
     bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
       return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
     })
@@ -226,7 +226,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     case 0:
       cell.tag = 0
       
-      guard let user = model.user else { break }
+      guard let user = model.user where user._id != nil else { break }
       cell.label.text =  "I'm Selling"
       
       // set data
@@ -241,7 +241,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     case 1:
       cell.tag = 1
       
-      guard let user = model.user else { break }
+      guard let user = model.user where user._id != nil else { break }
       cell.label.text = "I'm Buying"
       
       // set data

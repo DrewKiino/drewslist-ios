@@ -177,7 +177,6 @@ public class BookView: UIView {
       
       if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) {
         imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookImages", diskCapacity: 10 * 1024 * 1024) { image in
-          
           //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
           return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
         })
