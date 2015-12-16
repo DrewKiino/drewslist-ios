@@ -83,6 +83,7 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     tableView?.registerClass(ListerAttributesViewCell.self, forCellReuseIdentifier: "ListerAttributesViewCell")
     tableView?.dataSource = self
     tableView?.delegate = self
+    tableView?.allowsSelection = false
     view.addSubview(tableView!)
   }
   
@@ -166,6 +167,7 @@ public class ListerProfileViewCell: UITableViewCell {
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    
     setupUserImage()
     setupNameLabel()
     setupListDateLabel()
@@ -214,7 +216,26 @@ public class ListerProfileViewCell: UITableViewCell {
     }
     
     nameLabel?.text = lister.username ?? lister.getName()
+  }
+  
+  public override func setSelected(selected: Bool, animated: Bool) {
+    super.setSelected(selected, animated: animated)
     
+    if(selected) {
+      userImageView?.backgroundColor = UIColor.whiteColor()
+      nameLabel?.backgroundColor = UIColor.whiteColor()
+      listDateLabel?.backgroundColor = UIColor.whiteColor()
+    }
+  }
+  
+  public override func setHighlighted(highlighted: Bool, animated: Bool) {
+    super.setHighlighted(highlighted, animated: false)
+    
+    if(highlighted) {
+      userImageView?.backgroundColor = UIColor.whiteColor()
+      nameLabel?.backgroundColor = UIColor.whiteColor()
+      listDateLabel?.backgroundColor = UIColor.whiteColor()
+    }
   }
 }
 

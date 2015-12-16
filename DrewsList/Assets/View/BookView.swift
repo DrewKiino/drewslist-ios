@@ -167,7 +167,7 @@ public class BookView: UIView {
       
       title?.text = book.title
       
-      author?.text = (book.authors.map { $0.name != nil ? $0.name! : "" } as NSArray).componentsJoinedByString(", ")
+      author?.text = (book.authors.map { $0.name != nil ? ($0.name!.componentsSeparatedByString(",") as NSArray).componentsJoinedByString(", ") : "" } as NSArray).componentsJoinedByString(", ")
       
       edition?.text = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""
       

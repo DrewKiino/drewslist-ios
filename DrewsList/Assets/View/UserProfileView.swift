@@ -98,7 +98,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     
     profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
     
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 0, height: 400)
+    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 0, height: 600)
     scrollView?.contentSize = CGSizeMake(view.frame.size.width, view.frame.size.height + 200)
     
     // record the background view's original height
@@ -247,7 +247,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       // set data
       cell.controller.model.bookList = user.wishList
       
-      
       // data bind
       user._wishList.listen(self) { [weak cell] list in
         cell?.controller.model.bookList = list
@@ -268,8 +267,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       
       let listView = ListView()
       listView.setBookFromServer(book?._id)
-      listView.setLister(user)
-      self?.pushViewController(listView, animated: true)
+      if listView.setLister(user) { self?.pushViewController(listView, animated: true) }
     }
     
     return cell
@@ -432,8 +430,6 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     cell.didSelectLister.listen(self) { [weak self] bool in
       if (bool == true) { self?.controller.get_selectedLister().fire((lister, book)) }
     }
-    
-    
     
     return cell
   }
