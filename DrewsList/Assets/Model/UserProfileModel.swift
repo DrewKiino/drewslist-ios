@@ -34,9 +34,9 @@ public class UserProfileModel {
   public let _bgImage = Signal<String?>()
   public var bgImage : String? { didSet { _bgImage => bgImage } }
   
-  public let _saleList = Signal<[Book]>()
-  public var saleList: [Book] = [] { didSet { _saleList => saleList } }
+  public let _saleList = Signal<[Listing]>()
+  public var saleList: [Listing] = [] { didSet { _saleList => saleList } }
  
-  public let _wishList = Signal<[Book]>()
-  public var wishList: [Book] = [] { didSet { _wishList => wishList } }
+  public let _wishList = Signal<[Listing]>()
+  public var wishList: [Listing] = [] { didSet { _wishList => wishList } }
 }

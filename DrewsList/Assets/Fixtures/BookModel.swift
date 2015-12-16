@@ -16,6 +16,9 @@ public class Book: Mappable {
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
+  public let _google_id = Signal<String?>()
+  public var google_id: String? { didSet { _google_id => google_id } }
+  
   public let _title = Signal<String?>()
   public var title: String? { didSet { _title => title } }
   
@@ -100,7 +103,8 @@ public class Book: Mappable {
   }
   
   public func mapping(map: Map) {
-    _id             <- map["google_id"]
+    _id             <- map["_id"]
+    google_id       <- map["google_id"]
     title           <- map["title"]
     subtitle        <- map["subtitle"]
     authors         <- map["authors"]
@@ -108,7 +112,7 @@ public class Book: Mappable {
     publishedDate   <- map["publishedDate"]
     description     <- map["description"]
     edition         <- map["edition"]
-    ISBN10          <- map["ISBN10"]
+    ISBN10          <- map["ISBN_10"]
     ISBN13          <- map["ISBN_13"]
     pageCount       <- map["pageCount"]
     categories      <- map["categories"]

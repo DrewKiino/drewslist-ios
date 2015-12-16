@@ -30,6 +30,10 @@ extension UIColor {
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
   }
+  
+  public class func moneyGreen() -> UIColor {
+    return UIColor(red: 32/255, green: 108/255, blue: 42/255, alpha: 1.0)
+  }
 }
 
 extension UIFont {

@@ -47,7 +47,7 @@ public class BookView: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    imageView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 100)
+    imageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 100, height: 150)
     
     activityView?.center = CGPointMake(imageView!.center.x + 16, imageView!.center.y)
     
@@ -176,13 +176,13 @@ public class BookView: UIView {
       desc?.text = book.description?.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: nil)
       
       if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) {
-        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: url, diskCapacity: 10 * 1024 * 1024) { image in
+        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookImages", diskCapacity: 10 * 1024 * 1024) { image in
           
           //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
           return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
         })
         
-        Shared.imageCache.fetch(URL: nsurl, formatName: url).onSuccess { [weak self] image in
+        Shared.imageCache.fetch(URL: nsurl, formatName: "BookImages").onSuccess { [weak self] image in
           // stop the loading if image already exists in cache
           self?.activityView?.stopAnimating()
         }

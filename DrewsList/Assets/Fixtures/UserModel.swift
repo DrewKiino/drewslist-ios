@@ -34,11 +34,11 @@ public class User: Mappable {
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
   
-  public let _saleList = Signal<[Book]>()
-  public var saleList: [Book] = [] { didSet { _saleList => saleList } }
+  public let _saleList = Signal<[Listing]>()
+  public var saleList: [Listing] = [] { didSet { _saleList => saleList } }
   
-  public let _wishList = Signal<[Book]>()
-  public var wishList: [Book] = [] { didSet { _wishList => wishList } }
+  public let _wishList = Signal<[Listing]>()
+  public var wishList: [Listing] = [] { didSet { _wishList => wishList } }
   
   public init() {}
   
@@ -57,8 +57,13 @@ public class User: Mappable {
     _id             <- map["_id"]
     deviceToken     <- map["deviceToken"]
     image           <- map["image"]
-    saleList        <- map["saleList._id"]
-    wishList        <- map["wishList._id"]
+    saleList        <- map["saleList"]
+    wishList        <- map["wishList"]
+  }
+  
+  public func getName() -> String? {
+    guard let firstName = firstName, let lastName = lastName else { return nil }
+    return "\(firstName) \(lastName)"
   }
 }
 
@@ -66,4 +71,38 @@ public class UserModel {
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
+}
+
+public class Listing: Mappable {
+  
+  public let _book = Signal<Book?>()
+  public var book: Book? { didSet { _book => book } }
+  
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
+  public let _listing = Signal<Listing?>()
+  public var listing: Listing? { didSet { _listing => listing } }
+  
+  public let _price = Signal<String?>()
+  public var price: String? { didSet { _price => price } }
+  
+  public init() {}
+  
+  public init(json: JSON) {
+    if let json = json.dictionaryObject {
+      mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
+    }
+  }
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    // in this case, _id is a book from the server
+    // after being populated by mongoose
+    book          <- map["_id"]
+    user          <- map["user"]
+    listing       <- map["listing"]
+    price         <- map["price"]
+  }
 }

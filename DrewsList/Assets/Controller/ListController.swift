@@ -19,8 +19,9 @@ public class ListController {
   
   public init() {}
   
-  public func get_Book() -> Signal<Book?> { return model._book }
+  // MARK: Book Get/Set
   
+  public func get_Book() -> Signal<Book?> { return model._book }
   public func getBook() -> Book? { return model.book }
   
   public func getBookFromServer(book_id: String) {
@@ -37,4 +38,14 @@ public class ListController {
      }
     }
   }
+  
+  public func setBook(book: Book) { self.model.book = book }
+  
+  // MARK: Lister Get/Set
+  
+  public func get_Lister() -> Signal<User?> { return model._lister }
+  public func getLister() -> User? { return model.lister }
+  
+  public func setLister(lister: User) { self.model.lister = lister }
+
 }

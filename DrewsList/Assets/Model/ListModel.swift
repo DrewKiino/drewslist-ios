@@ -11,7 +11,9 @@ import Signals
 
 public class ListModel {
   
-  
   public let _book = Signal<Book?>()
   public var book: Book? { didSet { _book => book } }
+  
+  public let _lister = Signal<User?>()
+  public var lister: User? { didSet { _lister => lister } }
 }

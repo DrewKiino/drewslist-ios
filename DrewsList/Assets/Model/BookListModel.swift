@@ -12,8 +12,12 @@ import Signals
 
 public class BookListModel {
   
+  public let _bookList = Signal<[Listing]>()
+  public var bookList: [Listing] = [] { didSet { _bookList => bookList } }
   
-  public let _bookList = Signal<[Book]>()
-  public var bookList: [Book] = [] { didSet { _bookList => bookList } }
+  public let _selectedBook = Signal<Book?>()
+  public var selectedBook: Book? { didSet { _selectedBook => selectedBook } }
   
+  public let _selectedLister = Signal<(User?, Book?)>()
+  public var selectedLister: (User?, Book?) { didSet { _selectedBook => selectedBook } }
 }
