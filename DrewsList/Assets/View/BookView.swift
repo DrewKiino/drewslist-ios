@@ -95,16 +95,14 @@ public class BookView: UIView {
     title?.font = UIFont.asapBold(16)
     title?.adjustsFontSizeToFitWidth = true
     title?.minimumScaleFactor = 0.5
-    title?.numberOfLines = 4
+    title?.numberOfLines = 3
     
     attributesContainer?.addSubview(title!)
   }
   
   private func setupAuthorLabel() {
     author = UILabel()
-    author?.font = UIFont.asapRegular(10)
-    author?.adjustsFontSizeToFitWidth = true
-    author?.minimumScaleFactor = 0.8
+    author?.font = UIFont.asapRegular(12)
     author?.numberOfLines = 2
     
     attributesContainer?.addSubview(author!)
@@ -112,7 +110,7 @@ public class BookView: UIView {
   
   private func setupEditionLabel() {
     edition = UILabel()
-    edition?.font = UIFont.asapRegular(10)
+    edition?.font = UIFont.asapRegular(12)
     edition?.textColor = UIColor.sexyGray()
     
     attributesContainer?.addSubview(edition!)
@@ -121,7 +119,7 @@ public class BookView: UIView {
   private func setupIsbnLabel() {
     
     isbn = UILabel()
-    isbn?.font = UIFont.asapRegular(10)
+    isbn?.font = UIFont.asapRegular(12)
     isbn?.textColor = UIColor.sexyGray()
     
     attributesContainer?.addSubview(isbn!)
@@ -130,10 +128,7 @@ public class BookView: UIView {
   private func setupDescriptionLabel() {
     
     desc = UILabel()
-    desc?.font = UIFont.asapRegular(10)
-//    desc?.textColor = UIColor.sexyGray()
-    desc?.adjustsFontSizeToFitWidth = true
-    desc?.minimumScaleFactor = 0.8
+    desc?.font = UIFont.asapRegular(12)
     desc?.numberOfLines = 4
     
     
@@ -159,6 +154,7 @@ public class BookView: UIView {
     
     if let book = book {
       
+      activityView?.hidden = false
       activityView?.startAnimating()
       
       // fixtures
@@ -175,18 +171,37 @@ public class BookView: UIView {
       
       desc?.text = book.description?.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: nil)
       
-      if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) {
-        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookImages", diskCapacity: 10 * 1024 * 1024) { image in
+      title?.hidden = true
+      author?.hidden = true
+      edition?.hidden = true
+      isbn?.hidden = true
+      desc?.hidden = true
+      
+      if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) where !url.isEmpty {
+        
+        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookImages", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
+          self?.stopLoading()
           //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
           return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
         })
         
         Shared.imageCache.fetch(URL: nsurl, formatName: "BookImages").onSuccess { [weak self] image in
-          // stop the loading if image already exists in cache
-          self?.activityView?.stopAnimating()
+          self?.stopLoading()
         }
-      }
+      } else { stopLoading() }
     }
+  }
+  
+  private func stopLoading() {
+    
+    activityView?.stopAnimating()
+    activityView?.hidden = true
+    
+    title?.hidden = false
+    author?.hidden = false
+    edition?.hidden = false
+    isbn?.hidden = false
+    desc?.hidden = false
   }
 }
 

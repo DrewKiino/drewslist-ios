@@ -16,12 +16,15 @@ public class UserProfileController {
   
   private let model = UserProfileModel()
   private var view: UserProfileView?
-//  private let serverUrl = "http://drewslist-staging.herokuapp.com"
-  private let serverUrl = "http://localhost:1337/user"
+  private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
+//  private let serverUrl = "http://localhost:1337/user"
   
   public func viewDidLoad() {
     
-    getUserFromServer("5672243dce7e7a49fc299832")
+    // local
+//    getUserFromServer("5672243dce7e7a49fc299832")
+    // server
+    getUserFromServer("5673198d8844191f0076af1a")
   }
   
   public func userViewWillAppear() {

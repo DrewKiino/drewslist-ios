@@ -65,10 +65,11 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   // MARK: UITableView Delegates 
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    let hasMatch = controller.getListing()?.highestLister != nil
     switch indexPath.row {
     case 0: return 158
-    case 1: return 40
-    case 2: return 200
+    case 1: return 48
+    case 2: return hasMatch ? 200 : 48
     default: return 0
     }
   }
@@ -97,7 +98,9 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
       }
       return cell
     case 1:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
+          where listing?.highestLister != nil
+      {
         
         cell.setListing(listing?.highestLister)
         controller.get_Listing().removeListener(self)
@@ -105,9 +108,12 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
           cell?.setListing(listing?.highestLister)
         }
       }
+      
       return cell
     case 2:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell
+          where listing?.highestLister != nil
+      {
         
         cell.setListing(listing?.highestLister)
         controller.get_Listing().removeListener(self)
@@ -164,12 +170,12 @@ public class ListerProfileViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 24, height: 24)
+    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 36, height: 36)
 
-    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 180)
+    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 160)
 
-    listDateTitle?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 12)
-    listDateLabel?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 100, height: 12)
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 16)
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 100, height: 16)
   }
   
   private func setupUserImage() {
@@ -179,7 +185,7 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private func setupNameLabel() {
     nameLabel = UILabel()
-    nameLabel?.font = UIFont.asapRegular(16)
+    nameLabel?.font = UIFont.asapRegular(24)
     nameLabel?.adjustsFontSizeToFitWidth = true
     nameLabel?.minimumScaleFactor = 0.8
     addSubview(nameLabel!)
@@ -187,7 +193,7 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private func setupListDateTitle() {
     listDateTitle = UILabel()
-    listDateTitle?.font = UIFont.asapBold(10)
+    listDateTitle?.font = UIFont.asapBold(12)
     listDateTitle?.textAlignment = .Right
     addSubview(listDateTitle!)
   }
@@ -195,17 +201,18 @@ public class ListerProfileViewCell: UITableViewCell {
   private func setupListDateLabel() {
     
     listDateLabel = UILabel()
-    listDateLabel?.font = UIFont.asapRegular(10)
+    listDateLabel?.font = UIFont.asapRegular(12)
     listDateLabel?.textAlignment = .Right
     addSubview(listDateLabel!)
   }
   
   public func setListing(listing: Listing?) {
-    guard let listing = listing, let user = listing.user else { return }
+    guard let listing = listing, let user = listing.user where user._id != nil else { return }
     
     if let url = user.image, let nsurl = NSURL(string: url) {
-      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-        return Toucan(image: image).resize(self.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
+      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_User_Images", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
+        if let this = self { return Toucan(image: image).resize(this.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image }
+        else { return image }
       })
     }
     
@@ -217,7 +224,7 @@ public class ListerProfileViewCell: UITableViewCell {
         let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
     {
       let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
-      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(10), range: NSRange(location: 0,length: 10))
+      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
 
       listDateTitle?.attributedText = coloredString
       listDateLabel?.text = "\(relativeString) ago"
@@ -259,18 +266,6 @@ public class ListerAttributesViewCell: UITableViewCell {
     
     callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
     
-    if let image = UIImage(named: "Icon-CallButton") {
-      let toucan = Toucan(image: image).resize(callButton!.frame.size)
-      callButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
-    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
-    
-    if let image = UIImage(named: "Icon-MessageButton") {
-      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
-      chatButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
 //    conditionImageView?.align(.ToTheRightCentered, relativeTo: conditionLabel!, padding: 8, width: 16, height: 16)
@@ -311,7 +306,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private func setupNotesTitle() {
     notesTitle = UILabel()
-    notesTitle?.text = "Notes:"
     notesTitle?.font = UIFont.asapBold(12)
     addSubview(notesTitle!)
   }
@@ -323,7 +317,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private func setupNotesTextView() {
     notesTextView = UITextView()
-    notesTextView?.font = UIFont.asapRegular(10)
     notesTextView?.showsVerticalScrollIndicator = false
     notesTextView?.editable = false
     notesTextViewContainer?.addSubview(notesTextView!)
@@ -345,6 +338,17 @@ public class ListerAttributesViewCell: UITableViewCell {
 //      let toucan = Toucan(image: image).resize(conditionImageView!.frame.size)
 //      conditionImageView?.image = toucan.image
 //    }
+    if let image = UIImage(named: "Icon-CallButton") {
+      let toucan = Toucan(image: image).resize(callButton!.frame.size)
+      callButton?.setImage(toucan.image, forState: .Normal)
+    }
+    
+    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    
+    if let image = UIImage(named: "Icon-MessageButton") {
+      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
+      chatButton?.setImage(toucan.image, forState: .Normal)
+    }
     
     if let text = listing.getConditionText() {
       let string = "Condition: \(text)"
@@ -354,6 +358,8 @@ public class ListerAttributesViewCell: UITableViewCell {
       conditionLabel?.attributedText = coloredString
     }
     
+    notesTitle?.text = "Notes:"
+    
     if let notes = listing.notes {
       
       let paragraphStyle = NSMutableParagraphStyle()
@@ -362,7 +368,8 @@ public class ListerAttributesViewCell: UITableViewCell {
       let attributedString = NSAttributedString(string: notes, attributes: [
         NSParagraphStyleAttributeName: paragraphStyle,
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
-        NSForegroundColorAttributeName: UIColor.sexyGray()
+        NSForegroundColorAttributeName: UIColor.sexyGray(),
+        NSFontAttributeName: UIFont.asapRegular(12)
       ])
       
       notesTextView?.attributedText = attributedString

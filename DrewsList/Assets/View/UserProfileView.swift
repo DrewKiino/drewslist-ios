@@ -69,6 +69,13 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
+    
+    navigationBar.barTintColor = UIColor.soothingBlue()
+    navigationBar.tintColor = UIColor.whiteColor()
+    navigationBar.titleTextAttributes = [
+      NSFontAttributeName: UIFont.asapBold(24),
+      NSForegroundColorAttributeName: UIColor.whiteColor()
+    ]
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -121,9 +128,15 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   private func fetchBackgroundImage() {
     guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
+    
     bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
+      self.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
       return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
     })
+    
+    Shared.imageCache.fetch(URL: nsurl, formatName: "BGImage").onSuccess { [weak self] image in
+      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    }
   }
   
   private func fetchProfileImage() {
@@ -137,14 +150,13 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   private func setupDataBinding() {
     model._user.listen(self) { [weak self] user in
+      guard let user = user where user._id != nil else { return }
       
-      self?.profileUsername?.text = user?.username ?? user?.getName()
+      self?.profileUsername?.text = user.username ?? user.getName()
       self?.bookShelf?.reloadData()
       
       self?.fetchBackgroundImage()
       self?.fetchProfileImage()
-      
-      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
     }
   }
   
@@ -152,6 +164,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   public func setRootView() {
     rootView = UIViewController()
+    rootView?.title = "Drew's List"
     setViewControllers([rootView!], animated: false)
   }
   
@@ -171,6 +184,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     scrollView?.addSubview(bgView!)
     
     bgViewTop = UIImageView()
+    bgViewTop?.backgroundColor = UIColor.whiteColor()
     bgView?.addSubview(bgViewTop!)
     
     bgViewBot = UIView()
@@ -192,8 +206,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     profileUsername = UILabel()
     if let profileUsername = profileUsername {
       profileUsername.text = model.user?.username
-      profileUsername.font = UIFont(name: "Avenir", size: 100)
-      profileUsername.font = UIFont.boldSystemFontOfSize(20.0)
+      profileUsername.font = UIFont.asapBold(24)
       profileUsername.textAlignment = .Center
       profileUsername.textColor = UIColor.blackColor()
       bgView?.addSubview(profileUsername)
@@ -386,7 +399,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
   }
   
   private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(12)
+    label.font = UIFont.systemFontOfSize(16)
     label.textColor = UIColor.sexyGray()
     addSubview(label)
   }
