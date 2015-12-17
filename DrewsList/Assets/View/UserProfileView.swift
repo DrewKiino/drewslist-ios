@@ -92,7 +92,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
     
-    bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    bgView?.layer.shadowColor = UIColor.clearColor().CGColor
     bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
     bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
     bgView?.layer.shadowOpacity = 1.0
@@ -143,6 +143,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       
       self?.fetchBackgroundImage()
       self?.fetchProfileImage()
+      
+      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
     }
   }
   
