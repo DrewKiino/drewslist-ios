@@ -48,7 +48,7 @@ public class CreateListingController {
                         self?.model._id = json["google_id"].description
                         self?.model.title = json["title"].description
                         self?.model.subtitle = json["subtitle"].description
-                        self?.model.authors = json["authors"].description
+//                        self?.model.authors = json["authors"].description
                         self?.model.publisher = json["publisher"].description
                         self?.model.publishedDate = json["publishedDate"].description
                         self?.model.description = json["description"].description

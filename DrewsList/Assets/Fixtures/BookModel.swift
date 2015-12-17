@@ -16,14 +16,17 @@ public class Book: Mappable {
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
+  public let _google_id = Signal<String?>()
+  public var google_id: String? { didSet { _google_id => google_id } }
+  
   public let _title = Signal<String?>()
   public var title: String? { didSet { _title => title } }
   
   public let _subtitle = Signal<String?>()
   public var subtitle: String? { didSet { _subtitle => subtitle } }
   
-  public let _authors = Signal<String?>()
-  public var authors: String? { didSet { _authors => authors } }
+  public let _authors = Signal<[Author]>()
+  public var authors: [Author] = [] { didSet { _authors => authors } }
   
   public let _publisher = Signal<String?>()
   public var publisher: String? { didSet { _publisher => publisher } }
@@ -55,6 +58,9 @@ public class Book: Mappable {
   public let _language = Signal<String?>()
   public var language: String? { didSet { _language => language } }
   
+  public let _edition = Signal<String?>()
+  public var edition: String? { didSet { _edition => edition } }
+  
   public let _listPrice = Signal<String?>()
   public var listPrice: String? { didSet { _listPrice => listPrice } }
   
@@ -64,6 +70,8 @@ public class Book: Mappable {
   public let _smallImage = Signal<String?>()
   public var smallImage: String? { didSet { _smallImage => smallImage } }
   
+  public let _mediumImage = Signal<String?>()
+  public var mediumImage: String? { didSet { _mediumImage => mediumImage } }
   
   public let _largeImage = Signal<String?>()
   public var largeImage: String? { didSet { _largeImage => largeImage } }
@@ -85,9 +93,9 @@ public class Book: Mappable {
   public init() {}
   
   public init(json: JSON) {
-      if let json = json.dictionaryObject {
-          mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
-      }
+    if let json = json.dictionaryObject {
+      mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
+    }
   }
   
   public required init?(_ map: Map) {
@@ -95,26 +103,42 @@ public class Book: Mappable {
   }
   
   public func mapping(map: Map) {
-      _id             <- map["google_id"]
-      title           <- map["title"]
-      subtitle        <- map["subtitle"]
-      authors         <- map["authors"]
-      publisher       <- map["publisher"]
-      publishedDate   <- map["publishedDate"]
-      description     <- map["description"]
-      ISBN10          <- map["ISBN10"]
-      ISBN13          <- map["ISBN13"]
-      pageCount       <- map["pageCount"]
-      categories      <- map["categories"]
-      averageRating   <- map["averageRating"]
-      maturityRating  <- map["maturityRating"]
-      language        <- map["language"]
-      listPrice       <- map["listPrice.amount"]
-      retailPrice     <- map["retailPrice.amount"]
-      smallImage      <- map["smallImage"]
-      
+    _id             <- map["_id"]
+    google_id       <- map["google_id"]
+    title           <- map["title"]
+    subtitle        <- map["subtitle"]
+    authors         <- map["authors"]
+    publisher       <- map["publisher"]
+    publishedDate   <- map["publishedDate"]
+    description     <- map["description"]
+    edition         <- map["edition"]
+    ISBN10          <- map["ISBN_10"]
+    ISBN13          <- map["ISBN_13"]
+    pageCount       <- map["pageCount"]
+    categories      <- map["categories"]
+    averageRating   <- map["averageRating"]
+    maturityRating  <- map["maturityRating"]
+    language        <- map["language"]
+    listPrice       <- map["listPrice.amount"]
+    retailPrice     <- map["retailPrice.amount"]
+    smallImage      <- map["smallImage"]
+    mediumImage     <- map["mediumImage"]
+    largeImage      <- map["largeImage"]
   }
+}
+
+public class Author: Mappable {
   
+  public let _name = Signal<String?>()
+  public var name: String? { didSet { _name => name } }
+  
+  public init(name: String) { self.name = name }
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    name            <- map["name"]
+  }
 }
 
 public class BookModel {

@@ -30,4 +30,60 @@ extension UIColor {
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
   }
+  
+  public class func moneyGreen() -> UIColor {
+    return UIColor(red: 32/255, green: 108/255, blue: 42/255, alpha: 1.0)
+  }
 }
+
+extension UIFont {
+  
+  /**
+   * Asap-Bold
+   * Asap-Italic
+   * Asap-Regular
+   * Asap-BoldItalic
+   */
+  
+  public class func asapBold(size: CGFloat) -> UIFont {
+    return UIFont(name: "Asap-Bold", size: size)!
+  }
+  
+  public class func asapItalic(size: CGFloat) -> UIFont {
+    return UIFont(name: "Asap-Italic", size: size)!
+  }
+  
+  public class func asapRegular(size: CGFloat) -> UIFont {
+    return UIFont(name: "Asap-Regular", size: size)!
+  }
+
+  public class func asapBoldItalic(size: CGFloat) -> UIFont {
+    return UIFont(name: "Asap-BoldItalic", size: size)!
+  }
+}
+
+extension String {
+  
+  public func convertToOrdinal() -> String {
+    if  let last = characters.last where Int(String(last)) != nil && self.lowercaseString.rangeOfString("edition") == nil {
+      if last == "1" {
+        return "\(self)st"
+      } else if last == "2" {
+        return "\(self)nd"
+      } else if last == "3" {
+        return "\(self)rd"
+      } else {
+        return "\(self)th"
+      }
+    }
+    return self
+  }
+}
+
+
+
+
+
+
+
+

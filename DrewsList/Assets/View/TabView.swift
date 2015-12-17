@@ -15,7 +15,7 @@ public class TabView: RAMAnimatedTabBarController {
   
   let feedView = UIViewController()
   let chatView = ChatHistoryView()
-  let scannerView = ISBNScannerView()
+  let scannerView = ScannerView()
   let activityView = UIViewController()
   let userProfileView = UserProfileView()
   
@@ -33,7 +33,7 @@ public class TabView: RAMAnimatedTabBarController {
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
+//    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
 //    presentViewController(OnboardingView(), animated: true, completion: nil)
   }
   

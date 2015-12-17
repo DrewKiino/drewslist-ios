@@ -23,6 +23,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   private var originalBGViewFrame: CGRect? = CGRectZero
   
+  private let defaultBGURL: String! = "http://www.mybulkleylakesnow.com/wp-content/uploads/2015/11/books-stock.jpg"
+  
   // make sure to specify the scope of the variables
   // especially when we start unit testing, the test suite wont
   // be able to recognize the default internal variables so either
@@ -32,6 +34,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   public var bgView: UIView?
   public var bgViewTop: UIImageView?
   public var bgViewBot: UIView?
+  public var paddingView: UIView?
   public var profileImg: UIImageView?
   public var profileUsername: UILabel?
   public var settingsButton: UIButton?
@@ -62,6 +65,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     setRootView()
     setupScrollView()
     setupBGView()
+    setupPaddingView()
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
@@ -84,8 +88,19 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     super.viewWillLayoutSubviews()
     
     scrollView?.fillSuperview()
+    
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
+    
+    bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
+    bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+    bgView?.layer.shadowOpacity = 1.0
+    bgView?.layer.shadowRadius = 2
+    bgView?.layer.masksToBounds = true
+    bgView?.clipsToBounds = false
+    
+    paddingView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 8, height: 2)
     
     // fetch the background image since we now have the image view's frame
     fetchBackgroundImage()
@@ -96,7 +111,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     
     profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
     
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 0, height: 400)
+    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: paddingView!, padding: 0, height: 600)
+    
     scrollView?.contentSize = CGSizeMake(view.frame.size.width, view.frame.size.height + 200)
     
     // record the background view's original height
@@ -104,7 +120,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   private func fetchBackgroundImage() {
-    guard let url = model.user?.bgImage, let nsurl = NSURL(string: url) else { return }
+    guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
     bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
       return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
     })
@@ -120,14 +136,13 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   // MARK: Data Binding
   
   private func setupDataBinding() {
-    model._username.listen(self) { [weak self] _id in
-      self?.profileUsername?.text = _id
-    }
-    model._saleList.listen(self) { [weak self] list in
-      self?.saleListView?.reloadData()
-    }
-    model._wishList.listen(self) { [weak self] list in
-      self?.wishListView?.reloadData()
+    model._user.listen(self) { [weak self] user in
+      
+      self?.profileUsername?.text = user?.username ?? user?.getName()
+      self?.bookShelf?.reloadData()
+      
+      self?.fetchBackgroundImage()
+      self?.fetchProfileImage()
     }
   }
   
@@ -161,6 +176,11 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     bgView?.addSubview(bgViewBot!)
   }
   
+  public func setupPaddingView() {
+    paddingView = UIView()
+    view.addSubview(paddingView!)
+  }
+  
   public func setupProfileImg(){
     profileImg = UIImageView()
     bgView?.addSubview(profileImg!)
@@ -186,6 +206,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       bookShelf.scrollEnabled = false
       bookShelf.separatorStyle = .None
       bookShelf.multipleTouchEnabled = true
+      bookShelf.allowsSelection = false
       bookShelf.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
       scrollView!.addSubview(bookShelf)
     }
@@ -215,7 +236,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 200
+    return 225
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -225,17 +246,49 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     switch indexPath.row {
     case 0:
       cell.tag = 0
-      cell.label.text = "I'm Selling"
-      guard let user = model.user else { break }
-      cell.controller.model.bookList = user.saleList
+      
+      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
+      
+      cell.label.text =  "I'm Selling"
+      
+      // set data
+      cell.controller.model.bookList = user.listings.filter { $0.listType == "selling" }
+      
+      // data bind
+      user._saleList.listen(self) { [weak cell] list in
+        cell?.controller.model.bookList = list
+      }
+      
       break
     case 1:
       cell.tag = 1
+      
+      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
       cell.label.text = "I'm Buying"
-      guard let user = model.user else { break }
-      cell.controller.model.bookList = user.wishList
+      
+      // set data
+      cell.controller.model.bookList = user.listings.filter { $0.listType == "buying" }
+      
+      // data bind
+      user._wishList.listen(self) { [weak cell] list in
+        cell?.controller.model.bookList = list
+      }
+
       break
     default: break
+    }
+    
+    // add databinding to cells
+    cell.controller.get_selectedBook().removeListener(self)
+    cell.controller.get_selectedBook().listen(self) { [weak self] book in
+      log.debug(book?._id)
+    }
+    
+    cell.controller.get_selectedListing().removeListener(self)
+    cell.controller.get_selectedListing().listen(self) { [weak self] listing in
+      
+      let listView = ListView()
+      if listView.setListing(listing) { self?.pushViewController(listView, animated: true) }
     }
     
     return cell
@@ -297,6 +350,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupDataBinding()
     setupCollectionView()
     setupLabel()
   }
@@ -331,7 +385,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
   
   private func setupLabel() {
     label.font = UIFont.systemFontOfSize(12)
-    label.textColor = UIColor.lightGrayColor()
+    label.textColor = UIColor.sexyGray()
     addSubview(label)
   }
   
@@ -354,20 +408,50 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? BookCell else { return UICollectionViewCell() }
     cell.backgroundColor = UIColor.whiteColor()
     
-    if let url = model.bookList[indexPath.row].smallImage, let nsurl = NSURL(string: url) {
-      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookListViewImageView", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.imageView.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5).image
+    let listing = model.bookList[indexPath.row]
+    
+    let book = listing.book
+    let userPrice = listing.price
+    let lister = listing.highestLister?.user
+    let listerPrice = listing.highestLister?.price
+    
+    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
+      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+        return Toucan(image: image).resize(cell.imageView!.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor()).image
       })
     }
     
-    if let url = tag == 0 ? model.bookList[indexPath.row].bestBuyer?.image : model.bookList[indexPath.row].bestSeller?.image, let nsurl = NSURL(string: url) {
-      cell.infoImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookListViewInfoImageView", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.infoImageView.frame.size, fitMode: .Crop).maskWithEllipse().image
+    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
+      cell.listerImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+        return Toucan(image: image).resize(cell.listerImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
       })
     }
     
-    if let text = tag == 0 ? model.bookList[indexPath.row].bestBuyerListing : model.bookList[indexPath.row].bestSellerListing {
-      cell.infoLabel.text = "Best \(tag == 0 ? "Buyer" : "Seller") $\(text)"
+    if let text = listerPrice {
+      let string = "Best Offer $\(text)"
+      let coloredString = NSMutableAttributedString(string: string)
+      coloredString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 11))
+
+      cell.listerPriceLabel?.attributedText = coloredString
+    }
+    
+    if let text = userPrice {
+      let string = "Your Price $\(text)"
+      let coloredString = NSMutableAttributedString(string: string)
+      coloredString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 11))
+      
+      cell.userPriceLabel?.attributedText = coloredString
+    }
+    
+    // databind the cells
+    cell.didSelectBook.removeListener(self)
+    cell.didSelectBook.listen(self) { [weak self] bool in
+      if (bool == true) { self?.controller.get_selectedBook().fire(book) }
+    }
+    
+    cell.didSelectLister.removeListener(self)
+    cell.didSelectLister.listen(self) { [weak self, weak listing] bool in
+      if (bool == true) { self?.controller.get_selectedListing().fire(listing) }
     }
     
     return cell
@@ -376,88 +460,90 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
 
 public class BookCell: UICollectionViewCell {
   
-  public var imageView: UIImageView!
-  public var infoView: UIView!
-  public var infoImageView: UIImageView!
-  public var infoLabel: UILabel!
+  public var imageView: UIImageView?
+  public var infoView: UIView?
+  public var listerImageView: UIImageView?
+  public var infoPriceView: UIView?
+  public var listerPriceLabel: UILabel?
+  public var userPriceLabel: UILabel?
+  
+  public let didSelectBook = Signal<Bool>()
+  public let didSelectLister = Signal<Bool>()
   
   public override init(frame: CGRect) {
     super.init(frame: frame)
     setupImageView()
     setupInfoView()
-    setupInfoImageView()
-    setupInfoLabel()
+    setupListerImageView()
+    setupPriceView()
+    setupListerPriceLabel()
+    setupPriceLabel()
   }
   
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    imageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
+    infoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: imageView!, padding: 0, height: 36)
+    listerImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 4, width: 24, height: 24)
+    infoPriceView?.alignAndFill(align: .ToTheRightCentered, relativeTo: listerImageView!, padding: 4)
+    infoPriceView?.groupAndFill(group: .Vertical, views: [userPriceLabel!, listerPriceLabel!], padding: 0)
+    
+    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
+      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
+    }
+  }
+  
   private func setupImageView() {
     imageView = UIImageView()
-    addSubview(imageView)
+    imageView?.userInteractionEnabled = true
+    imageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedBook"))
+    addSubview(imageView!)
   }
   
   private func setupInfoView() {
     infoView = UIView()
-    addSubview(infoView)
+    infoView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedLister"))
+    addSubview(infoView!)
   }
   
-  private func setupInfoImageView() {
-    infoImageView = UIImageView()
-    infoView.addSubview(infoImageView)
+  private func setupListerImageView() {
+    listerImageView = UIImageView()
+    infoView?.addSubview(listerImageView!)
   }
   
-  private func setupInfoLabel() {
-    infoLabel = UILabel()
-    infoLabel.textColor = UIColor.juicyOrange()
-    infoLabel.adjustsFontSizeToFitWidth = true
-    infoLabel.minimumScaleFactor = 0.1
-    infoView.addSubview(infoLabel)
+  private func setupPriceView() {
+    infoPriceView = UIView()
+    infoView?.addSubview(infoPriceView!)
   }
   
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    imageView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
-    infoView.alignAndFill(align: .UnderCentered, relativeTo: imageView, padding: 0)
-    infoImageView.anchorAndFillEdge(.Left, xPad: 2, yPad: 2, otherSize: 20)
-    infoLabel.alignAndFill(align: .ToTheRightCentered, relativeTo: infoImageView, padding: 4)
+  private func setupListerPriceLabel() {
+    listerPriceLabel = UILabel()
+    listerPriceLabel?.textColor = UIColor.moneyGreen()
+    listerPriceLabel?.font = UIFont.asapRegular(10)
+    listerPriceLabel?.adjustsFontSizeToFitWidth = true
+    listerPriceLabel?.minimumScaleFactor = 0.1
+    infoPriceView?.addSubview(listerPriceLabel!)
   }
   
-  public func setup(){
-    
-//    if doOnce {
-//      bookImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height*6/7))
-//      bookImageView.contentMode = UIViewContentMode.ScaleAspectFit
-//      bookImageView.backgroundColor = UIColor.blueColor()
-//      
-//      contentView.addSubview(bookImageView!)
-//    
-//      let viewFrame = CGRect(x: 0, y: frame.size.height*6/7, width: frame.size.width, height: frame.size.height/7)
-//      infoView = UILabel(frame: viewFrame)
-//      
-//      infoView.backgroundColor = UIColor.whiteColor()
-//      
-//      infoView.layer.shadowColor = UIColor.blackColor().CGColor
-//      infoView.layer.shadowOffset = CGSize(width: 2, height: 3)
-//      infoView.layer.shadowOpacity = 0.1
-//      infoView.layer.shadowRadius = 5
-//      contentView.addSubview(infoView!)
-//      
-//      let textFrame = CGRect(x: frame.size.width/2, y: frame.size.height*6/7, width: frame.size.width/2, height: frame.size.height/7)
-//      infoLabel = UILabel(frame: textFrame)
-//      
-//      infoLabel.backgroundColor = UIColor.clearColor()
-//      
-//      infoLabel.text = "More Info"
-//      infoLabel.font = UIFont(name: "Avenir", size: 8)
-//      infoLabel.textColor = UIColor.lightTextColor()
-//      //infoLabel.font = UIFont.systemFontOfSize(UIFont.smallSystemFontSize())
-//      infoLabel.textAlignment = .Center
-//      contentView.addSubview(infoLabel!)
-//      doOnce = false
-//    }
+  private func setupPriceLabel() {
+    userPriceLabel = UILabel()
+    userPriceLabel?.textColor = UIColor.moneyGreen()
+    userPriceLabel?.font = UIFont.asapRegular(10)
+    userPriceLabel?.adjustsFontSizeToFitWidth = true
+    userPriceLabel?.minimumScaleFactor = 0.1
+    infoPriceView?.addSubview(userPriceLabel!)
   }
   
+  public func selectedBook() {
+    didSelectBook => true
+  }
+  
+  public func selectedLister() {
+    didSelectLister => true
+  }
 }

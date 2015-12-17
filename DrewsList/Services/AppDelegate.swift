@@ -11,6 +11,7 @@ import Signals
 
 public let log = Atlantis.Logger()
 public let remoteNotification = Signal<[NSObject: AnyObject]>()
+public let screen = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
