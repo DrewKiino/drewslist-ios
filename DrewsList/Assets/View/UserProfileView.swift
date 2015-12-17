@@ -230,7 +230,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       cell.label.text =  "I'm Selling"
       
       // set data
-      cell.controller.model.bookList = user.saleList
+      cell.controller.model.bookList = user.listings.filter { $0.listType == "selling" }
       
       // data bind
       user._saleList.listen(self) { [weak cell] list in
@@ -245,7 +245,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       cell.label.text = "I'm Buying"
       
       // set data
-      cell.controller.model.bookList = user.wishList
+      cell.controller.model.bookList = user.listings.filter { $0.listType == "buying" }
       
       // data bind
       user._wishList.listen(self) { [weak cell] list in
@@ -389,8 +389,8 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     
     let book = model.bookList[indexPath.row].book
     let userPrice = model.bookList[indexPath.row].price
-    let lister = model.bookList[indexPath.row].listing?.user
-    let listerPrice = model.bookList[indexPath.row].listing?.price
+    let lister = model.bookList[indexPath.row].highestLister?.user
+    let listerPrice = model.bookList[indexPath.row].highestLister?.price
     
     if let url = book?.smallImage ??  book?.mediumImage ?? book?.largeImage, let nsurl = NSURL(string: url) {
       cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "UserProfileView_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in

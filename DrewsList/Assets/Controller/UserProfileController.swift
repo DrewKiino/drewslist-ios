@@ -21,7 +21,7 @@ public class UserProfileController {
   
   public func viewDidLoad() {
     
-    getUserFromServer("5671d110f79f7b6137a7e14a")
+    getUserFromServer("5671e1044b9937c742ba109a")
   }
   
   public func userViewWillAppear() {
