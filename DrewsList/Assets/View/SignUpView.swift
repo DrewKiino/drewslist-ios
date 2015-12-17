@@ -185,7 +185,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   
   
   public func signupButtonPressed () {
-    controller.signupButtonPressed()
 
   }
   

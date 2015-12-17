@@ -32,6 +32,7 @@ pod 'Neon'
 pod 'TextFieldEffects'
 pod 'SwiftyButton'
 pod 'Gifu'
+pod 'Former'
 
 # pubsub libs
 pod 'Signals'

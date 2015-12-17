@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
-		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; settings = {ASSET_TAGS = (); }; };
-		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; settings = {ASSET_TAGS = (); }; };
-		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; settings = {ASSET_TAGS = (); }; };
-		39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */; settings = {ASSET_TAGS = (); }; };
+		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; };
+		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
+		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; };
+		39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */; };
 		3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */; };
 		3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */; };
 		3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */; };
@@ -65,6 +65,11 @@
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
+		EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */; };
+		EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */; };
+		EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */; };
+		EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */; };
+		EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
 		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
@@ -154,6 +159,11 @@
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
+		EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingController.swift; sourceTree = "<group>"; };
+		EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingModel.swift; sourceTree = "<group>"; };
+		EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingModel.swift; sourceTree = "<group>"; };
+		EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingView.swift; sourceTree = "<group>"; };
+		EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingView.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
@@ -257,9 +267,9 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
+				EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */,
+				EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
-				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EED779E41C151DF800D172BE /* BookListModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
@@ -275,12 +285,9 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */,
-				EE8918B81C1169A800FCF031 /* LoginView.swift */,
+				EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */,
+				EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */,
 				399971D91C14CF0A008C30FC /* SignUpView.swift */,
-				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
-				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
-				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
 				EE007AFB1C1E4F460088ACBF /* BookView.swift */,
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
@@ -301,9 +308,8 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
+				EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
-				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
 				EED779E21C151DF200D172BE /* BookListController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
@@ -699,6 +705,7 @@
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
 				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
+				EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */,
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
@@ -708,6 +715,7 @@
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
+				EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
@@ -716,10 +724,13 @@
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
+				EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */,
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
+				EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
+				EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,

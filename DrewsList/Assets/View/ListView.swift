@@ -190,7 +190,9 @@ public class ListerProfileViewCell: UITableViewCell {
     
     nameLabel?.text = user.username ?? user.getName()
     
-    log.debug(listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2))
+//    log.debug(listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2))
+    listDateLabel?.text = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
+    
   }
   
   public override func setSelected(selected: Bool, animated: Bool) {

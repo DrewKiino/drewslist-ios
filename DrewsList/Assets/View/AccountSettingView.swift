@@ -13,9 +13,9 @@ import TextFieldEffects
 import Neon
 import Toucan
 import SwiftyButton
-import QuickTableViewController
-import MaterialDesignSymbol
 import Former
+
+/*
 
 public class AccountSettingView: QuickTableViewController
 
@@ -130,8 +130,8 @@ public class AccountSettingView: QuickTableViewController
     }
   }
 
-  
-  
+
+*/
   
   
   
