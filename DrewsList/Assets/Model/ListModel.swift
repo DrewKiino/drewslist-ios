@@ -13,11 +13,9 @@ import SwiftyJSON
 
 public class ListModel {
   
-  public let _book = Signal<Book?>()
-  public var book: Book? { didSet { _book => book } }
+  public let _listing = Signal<Listing?>()
+  public var listing: Listing? { didSet { _listing => listing } }
   
-  public let _lister = Signal<User?>()
-  public var lister: User? { didSet { _lister => lister } }
 }
 
 public class Listing: Mappable {
@@ -36,6 +34,15 @@ public class Listing: Mappable {
   
   public let _price = Signal<String?>()
   public var price: String? { didSet { _price => price } }
+  
+  public let _notes = Signal<String?>()
+  public var notes: String? { didSet { _notes => notes } }
+  
+  public let _cover = Signal<String?>()
+  public var cover: String? { didSet { _cover => cover } }
+  
+  public let _condition = Signal<String?>()
+  public var condition: String? { didSet { _condition => condition } }
   
   public let _highestLister = Signal<Listing?>()
   public var highestLister: Listing? { didSet { _highestLister => highestLister } }
@@ -59,14 +66,25 @@ public class Listing: Mappable {
   public func mapping(map: Map) {
     // in this case, _id is a book from the server
     // after being populated by mongoose
+    _id           <- map["_id._id"]
     book          <- map["_id.book"]
     user          <- map["_id.user"]
     listType      <- map["_id.listType"]
     price         <- map["_id.price"]
+    notes         <- map["_id.notes"]
+    cover         <- map["_id.cover"]
+    condition     <- map["_id.condition"]
     createdAt     <- map["_id.createdAt"]
     updatedAt     <- map["_id.updatedAt"]
-    user          <- map["user"]
-    price         <- map["price"]
+    
+    if (user      == nil) { user      <- map["user"] }
+    if (price     == _id) { price     <- map["price"] }
+    if (notes     == _id) { notes     <- map["notes"] }
+    if (cover     == _id) { cover     <- map["cover"] }
+    if (condition == _id) { condition <- map["condition"] }
+    if (createdAt == _id) { createdAt <- map["createdAt"] }
+    if (updatedAt == _id) { updatedAt <- map["updatedAt"] }
+    
     highestLister <- map["highestLister"]
   }
 }

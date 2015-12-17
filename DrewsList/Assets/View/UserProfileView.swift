@@ -247,7 +247,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     case 0:
       cell.tag = 0
       
-      guard let user = model.user where user._id != nil else { break }
+      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
+      
       cell.label.text =  "I'm Selling"
       
       // set data
@@ -262,7 +263,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     case 1:
       cell.tag = 1
       
-      guard let user = model.user where user._id != nil else { break }
+      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
       cell.label.text = "I'm Buying"
       
       // set data
@@ -283,12 +284,11 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       log.debug(book?._id)
     }
     
-    cell.controller.get_selectedLister().removeListener(self)
-    cell.controller.get_selectedLister().listen(self) { [weak self] (user, book) in
+    cell.controller.get_selectedListing().removeListener(self)
+    cell.controller.get_selectedListing().listen(self) { [weak self] listing in
       
       let listView = ListView()
-      listView.setBookFromServer(book?._id)
-      if listView.setLister(user) { self?.pushViewController(listView, animated: true) }
+      if listView.setListing(listing) { self?.pushViewController(listView, animated: true) }
     }
     
     return cell
@@ -408,25 +408,21 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as? BookCell else { return UICollectionViewCell() }
     cell.backgroundColor = UIColor.whiteColor()
     
-    let book = model.bookList[indexPath.row].book
-    let userPrice = model.bookList[indexPath.row].price
-    let lister = model.bookList[indexPath.row].highestLister?.user
-    let listerPrice = model.bookList[indexPath.row].highestLister?.price
+    let listing = model.bookList[indexPath.row]
+    
+    let book = listing.book
+    let userPrice = listing.price
+    let lister = listing.highestLister?.user
+    let listerPrice = listing.highestLister?.price
     
     if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
-      cell.activityView?.startAnimating()
-      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "UserProfileView_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
         return Toucan(image: image).resize(cell.imageView!.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor()).image
       })
-      
-      Shared.imageCache.fetch(URL: nsurl, formatName: "UserProfileView_Book_Images").onSuccess { [weak cell] image in
-        // stop the loading if image already exists in cache
-        cell?.activityView?.stopAnimating()
-      }
     }
     
     if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
-      cell.listerImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "UserProfileView_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
+      cell.listerImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
         return Toucan(image: image).resize(cell.listerImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
       })
     }
@@ -454,8 +450,8 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     }
     
     cell.didSelectLister.removeListener(self)
-    cell.didSelectLister.listen(self) { [weak self] bool in
-      if (bool == true) { self?.controller.get_selectedLister().fire((lister, book)) }
+    cell.didSelectLister.listen(self) { [weak self, weak listing] bool in
+      if (bool == true) { self?.controller.get_selectedListing().fire(listing) }
     }
     
     return cell
@@ -465,7 +461,6 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
 public class BookCell: UICollectionViewCell {
   
   public var imageView: UIImageView?
-  public var activityView: UIActivityIndicatorView?
   public var infoView: UIView?
   public var listerImageView: UIImageView?
   public var infoPriceView: UIView?
@@ -478,7 +473,6 @@ public class BookCell: UICollectionViewCell {
   public override init(frame: CGRect) {
     super.init(frame: frame)
     setupImageView()
-    setupActivityView()
     setupInfoView()
     setupListerImageView()
     setupPriceView()
@@ -494,7 +488,6 @@ public class BookCell: UICollectionViewCell {
     super.layoutSubviews()
     
     imageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
-    activityView?.center = CGPointMake(imageView!.center.x + 16, imageView!.center.y)
     infoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: imageView!, padding: 0, height: 36)
     listerImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 4, width: 24, height: 24)
     infoPriceView?.alignAndFill(align: .ToTheRightCentered, relativeTo: listerImageView!, padding: 4)
@@ -510,15 +503,6 @@ public class BookCell: UICollectionViewCell {
     imageView?.userInteractionEnabled = true
     imageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedBook"))
     addSubview(imageView!)
-  }
-  
-  private func setupActivityView() {
-    
-    activityView = UIActivityIndicatorView()
-    activityView?.frame.size = CGSizeMake(48, 48)
-    activityView?.color = UIColor.sexyGray()
-    
-    imageView?.addSubview(activityView!)
   }
   
   private func setupInfoView() {

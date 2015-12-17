@@ -15,28 +15,4 @@ public class UserProfileModel {
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
-  
-  public let _user_id = Signal<String?>()
-  public var user_id: String?
-  
-  public let _firstName = Signal<String?>()
-  public var firstName: String?
-  
-  public let _lastName = Signal<String?>()
-  public var lastName: String?
-  
-  public let _username = Signal<String?>()
-  public var username: String? { didSet { _username => username } }
-  
-  public let _image = Signal<String?>()
-  public var image: String? { didSet { _image => image } }
-  
-  public let _bgImage = Signal<String?>()
-  public var bgImage : String? { didSet { _bgImage => bgImage } }
-  
-  public let _saleList = Signal<[Listing]>()
-  public var saleList: [Listing] = [] { didSet { _saleList => saleList } }
- 
-  public let _wishList = Signal<[Listing]>()
-  public var wishList: [Listing] = [] { didSet { _wishList => wishList } }
 }

@@ -143,7 +143,7 @@ public class Author: Mappable {
 
 public class BookModel {
     
-  public let _book = Signal<Book>()
-  public var book: Book = Book() { didSet { _book => book } }
+  public let _book = Signal<Book?>()
+  public var book: Book? { didSet { _book => book } }
   
 }

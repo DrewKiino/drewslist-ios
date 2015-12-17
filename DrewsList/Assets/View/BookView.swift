@@ -49,9 +49,10 @@ public class BookView: UIView {
     
     imageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 100, height: 150)
     
-    activityView?.center = CGPointMake(imageView!.center.x + 16, imageView!.center.y)
     
     attributesContainer?.alignAndFill(align: .ToTheRightCentered, relativeTo: imageView!, padding: 8)
+    
+    activityView?.anchorInCenter(width: 24, height: 24)
     
     title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  48)
     author?.alignAndFillWidth(align: .UnderCentered, relativeTo: title!, padding: 0, height: 24)
@@ -142,10 +143,9 @@ public class BookView: UIView {
   private func setupActivityView() {
     
     activityView = UIActivityIndicatorView()
-    activityView?.frame.size = CGSizeMake(48, 48)
     activityView?.color = UIColor.sexyGray()
     
-    imageView?.addSubview(activityView!)
+    attributesContainer?.addSubview(activityView!)
   }
   
   private func setupDataBinding() {

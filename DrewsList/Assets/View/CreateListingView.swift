@@ -110,8 +110,8 @@ public class CreateListingView : UIViewController {
     public func setupBookListener() {
       
       bookController.get_Book().listen(self) { [weak self] book in
-        self?.book_Title.text = book.title
-        self?.book_Author.text = book.authors.first?.name ?? ""
+        self?.book_Title.text = book?.title
+        self?.book_Author.text = book?.authors.first?.name ?? ""
       }
     }
     

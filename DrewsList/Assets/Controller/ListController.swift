@@ -19,11 +19,6 @@ public class ListController {
   
   public init() {}
   
-  // MARK: Book Get/Set
-  
-  public func get_Book() -> Signal<Book?> { return model._book }
-  public func getBook() -> Book? { return model.book }
-  
   public func getBookFromServer(book_id: String) {
     Alamofire.request(.GET, serverUrl, parameters: [ "_id": book_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
@@ -34,18 +29,13 @@ public class ListController {
       } else if let data = data, let json: JSON! = JSON(data: data) {
         let book = Book(json: json)
         
-        self?.model.book = book
+//        self?.model.book = book
      }
     }
   }
   
-  public func setBook(book: Book) { self.model.book = book }
+  public func get_Listing() -> Signal<Listing?> { return model._listing }
+  public func getListing() -> Listing? { return model.listing }
   
-  // MARK: Lister Get/Set
-  
-  public func get_Lister() -> Signal<User?> { return model._lister }
-  public func getLister() -> User? { return model.lister }
-  
-  public func setLister(lister: User) { self.model.lister = lister }
-
+  public func setListing(listing: Listing) { model.listing = listing }
 }

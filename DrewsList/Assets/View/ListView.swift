@@ -12,6 +12,7 @@ import Neon
 import Gifu
 import Toucan
 import Haneke
+import SwiftDate
 
 public class ListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
   
@@ -38,40 +39,11 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     tableView?.fillSuperview()
   }
   
-  public func setLister(lister: User?) -> Bool {
-    guard let lister = lister else { return false }
+  public func setListing(listing: Listing?) -> Bool {
+    guard let listing = listing else { return false }
     
-    // fixtures
-    //    controller.getBookFromServer("567073b150b85819778201e6")
+    controller.setListing(listing)
     
-    controller.setLister(lister)
-    
-    return true
-  }
-  
-  public func setUserFromServer(user_id: String?) -> Bool {
-    guard let user_id = user_id else { return false }
-    
-    // fixtures
-    //    controller.getBookFromServer("567073b150b85819778201e6")
-    return true
-  }
-  
-  public func setBook(book: Book?) -> Bool {
-    guard let book = book else { return false }
-    
-    controller.setBook(book)
-  
-    return true
-  }
-  
-  public func setBookFromServer(book_id: String?) -> Bool {
-    guard let book_id = book_id else { return false }
-    
-    controller.getBookFromServer(book_id)
-    
-    // fixtures
-    //    controller.getBookFromServer("567073b150b85819778201e6")
     return true
   }
   
@@ -95,7 +67,7 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
     case 0: return 158
-    case 1: return 64
+    case 1: return 40
     case 2: return 200
     default: return 0
     }
@@ -106,29 +78,31 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-  
+    
     // get cell
     let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+    let listing = controller.getListing()
+    
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
         // clear seperator lines
         cell.subviews.forEach { if let _ = $0 as? BookView { return } else { $0.removeFromSuperview() } }
-        cell.bookView?.setBook(controller.getBook())
-        // databind cell
-        controller.get_Book().removeListener(self)
-        controller.get_Book().listen(self) { [weak cell] book in
-          cell?.bookView?.setBook(book)
+        
+        cell.bookView?.setBook(listing?.book)
+        controller.get_Listing().removeListener(self)
+        controller.get_Listing().listen(self) { [weak cell] listing in
+          cell?.bookView?.setBook(listing?.book)
         }
       }
       return cell
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
-        cell.setLister(controller.getLister())
-        // databind cell
-        controller.get_Lister().removeListener(self)
-        controller.get_Lister().listen(self) { [weak cell] lister in
-          cell?.setLister(lister)
+        
+        cell.setListing(listing?.highestLister)
+        controller.get_Listing().removeListener(self)
+        controller.get_Listing().listen(self) { [weak cell] listing in
+          cell?.setListing(listing?.highestLister)
         }
       }
       return cell
@@ -180,11 +154,11 @@ public class ListerProfileViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    userImageView?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 32, height: 32)
+    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 24, height: 24)
 
     nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 100)
 
-    listDateLabel?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 48)
+    listDateLabel?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 24)
   }
   
   private func setupUserImage() {
@@ -195,7 +169,6 @@ public class ListerProfileViewCell: UITableViewCell {
   private func setupNameLabel() {
     nameLabel = UILabel()
     nameLabel?.font = UIFont.asapRegular(16)
-    nameLabel?.textColor = UIColor.juicyOrange()
     nameLabel?.adjustsFontSizeToFitWidth = true
     nameLabel?.minimumScaleFactor = 0.8
     addSubview(nameLabel!)
@@ -206,16 +179,18 @@ public class ListerProfileViewCell: UITableViewCell {
     addSubview(listDateLabel!)
   }
   
-  public func setLister(lister: User?) {
-    guard let lister = lister else { return }
+  public func setListing(listing: Listing?) {
+    guard let listing = listing, let user = listing.user else { return }
     
-    if let url = lister.image, let nsurl = NSURL(string: url) {
-      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "ListView_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
+    if let url = user.image, let nsurl = NSURL(string: url) {
+      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
         return Toucan(image: image).resize(self.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
       })
     }
     
-    nameLabel?.text = lister.username ?? lister.getName()
+    nameLabel?.text = user.username ?? user.getName()
+    
+    listDateLabel?.text = listing.createdAt
   }
   
   public override func setSelected(selected: Bool, animated: Bool) {

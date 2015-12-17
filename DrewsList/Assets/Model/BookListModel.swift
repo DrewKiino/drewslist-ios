@@ -18,6 +18,6 @@ public class BookListModel {
   public let _selectedBook = Signal<Book?>()
   public var selectedBook: Book? { didSet { _selectedBook => selectedBook } }
   
-  public let _selectedLister = Signal<(User?, Book?)>()
-  public var selectedLister: (User?, Book?) { didSet { _selectedBook => selectedBook } }
+  public let _selectedListing = Signal<Listing?>()
+  public var selectedListing: Listing? { didSet { _selectedListing => selectedListing } }
 }

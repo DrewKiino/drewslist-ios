@@ -13,9 +13,9 @@ public class BookController {
     
     public let model = BookModel()
   
-  public func get_Book() -> Signal<Book> { return model._book }
+  public func get_Book() -> Signal<Book?> { return model._book }
   
-  public func getBook() -> Book { return model.book }
+  public func getBook() -> Book? { return model.book }
   
     // MARK: Getters -> Model
     

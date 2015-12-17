@@ -15,5 +15,5 @@ public class BookListController {
   public let model = BookListModel()
   
   public func get_selectedBook() -> Signal<Book?> { return model._selectedBook }
-  public func get_selectedLister() -> Signal<(User?, Book?)> { return model._selectedLister }
+  public func get_selectedListing() -> Signal<Listing?> { return model._selectedListing }
 }
