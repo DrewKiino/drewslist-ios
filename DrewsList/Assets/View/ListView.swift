@@ -261,7 +261,6 @@ public class ListerAttributesViewCell: UITableViewCell {
     
     priceLabel?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 100, height: 24)
     priceLabel?.backgroundColor = UIColor.redColor()
-
   }
   
   private func setupPriceLabel() {

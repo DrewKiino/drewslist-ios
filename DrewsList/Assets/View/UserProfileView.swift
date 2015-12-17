@@ -34,6 +34,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   public var bgView: UIView?
   public var bgViewTop: UIImageView?
   public var bgViewBot: UIView?
+  public var paddingView: UIView?
   public var profileImg: UIImageView?
   public var profileUsername: UILabel?
   public var settingsButton: UIButton?
@@ -64,6 +65,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     setRootView()
     setupScrollView()
     setupBGView()
+    setupPaddingView()
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
@@ -86,8 +88,19 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     super.viewWillLayoutSubviews()
     
     scrollView?.fillSuperview()
+    
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
+    
+    bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
+    bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+    bgView?.layer.shadowOpacity = 1.0
+    bgView?.layer.shadowRadius = 2
+    bgView?.layer.masksToBounds = true
+    bgView?.clipsToBounds = false
+    
+    paddingView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 8, height: 2)
     
     // fetch the background image since we now have the image view's frame
     fetchBackgroundImage()
@@ -98,7 +111,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     
     profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
     
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 0, height: 600)
+    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: paddingView!, padding: 0, height: 600)
+    
     scrollView?.contentSize = CGSizeMake(view.frame.size.width, view.frame.size.height + 200)
     
     // record the background view's original height
@@ -127,6 +141,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       self?.profileUsername?.text = user?.username ?? user?.getName()
       self?.bookShelf?.reloadData()
       
+      self?.fetchBackgroundImage()
       self?.fetchProfileImage()
     }
   }
@@ -161,6 +176,11 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     bgView?.addSubview(bgViewBot!)
   }
   
+  public func setupPaddingView() {
+    paddingView = UIView()
+    view.addSubview(paddingView!)
+  }
+  
   public func setupProfileImg(){
     profileImg = UIImageView()
     bgView?.addSubview(profileImg!)
@@ -186,6 +206,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       bookShelf.scrollEnabled = false
       bookShelf.separatorStyle = .None
       bookShelf.multipleTouchEnabled = true
+      bookShelf.allowsSelection = false
       bookShelf.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
       scrollView!.addSubview(bookShelf)
     }
@@ -392,10 +413,16 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     let lister = model.bookList[indexPath.row].highestLister?.user
     let listerPrice = model.bookList[indexPath.row].highestLister?.price
     
-    if let url = book?.smallImage ??  book?.mediumImage ?? book?.largeImage, let nsurl = NSURL(string: url) {
+    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
+      cell.activityView?.startAnimating()
       cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "UserProfileView_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
         return Toucan(image: image).resize(cell.imageView!.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor()).image
       })
+      
+      Shared.imageCache.fetch(URL: nsurl, formatName: "UserProfileView_Book_Images").onSuccess { [weak cell] image in
+        // stop the loading if image already exists in cache
+        cell?.activityView?.stopAnimating()
+      }
     }
     
     if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
@@ -438,6 +465,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
 public class BookCell: UICollectionViewCell {
   
   public var imageView: UIImageView?
+  public var activityView: UIActivityIndicatorView?
   public var infoView: UIView?
   public var listerImageView: UIImageView?
   public var infoPriceView: UIView?
@@ -450,6 +478,7 @@ public class BookCell: UICollectionViewCell {
   public override init(frame: CGRect) {
     super.init(frame: frame)
     setupImageView()
+    setupActivityView()
     setupInfoView()
     setupListerImageView()
     setupPriceView()
@@ -465,10 +494,15 @@ public class BookCell: UICollectionViewCell {
     super.layoutSubviews()
     
     imageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
+    activityView?.center = CGPointMake(imageView!.center.x + 16, imageView!.center.y)
     infoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: imageView!, padding: 0, height: 36)
     listerImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 4, width: 24, height: 24)
     infoPriceView?.alignAndFill(align: .ToTheRightCentered, relativeTo: listerImageView!, padding: 4)
     infoPriceView?.groupAndFill(group: .Vertical, views: [userPriceLabel!, listerPriceLabel!], padding: 0)
+    
+    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
+      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
+    }
   }
   
   private func setupImageView() {
@@ -476,6 +510,15 @@ public class BookCell: UICollectionViewCell {
     imageView?.userInteractionEnabled = true
     imageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedBook"))
     addSubview(imageView!)
+  }
+  
+  private func setupActivityView() {
+    
+    activityView = UIActivityIndicatorView()
+    activityView?.frame.size = CGSizeMake(48, 48)
+    activityView?.color = UIColor.sexyGray()
+    
+    imageView?.addSubview(activityView!)
   }
   
   private func setupInfoView() {
