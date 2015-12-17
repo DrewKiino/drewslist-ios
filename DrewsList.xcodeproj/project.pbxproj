@@ -257,13 +257,10 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
-=======
 				EED779E41C151DF800D172BE /* BookListModel.swift */,
->>>>>>> 0217fad5d304783edda887a0a9847e4889320832
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 				EE007AF71C1E4DCC0088ACBF /* ListModel.swift */,
@@ -278,17 +275,14 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */,
 				EE8918B81C1169A800FCF031 /* LoginView.swift */,
 				399971D91C14CF0A008C30FC /* SignUpView.swift */,
 				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
-=======
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
 				EE007AFB1C1E4F460088ACBF /* BookView.swift */,
->>>>>>> 0217fad5d304783edda887a0a9847e4889320832
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
@@ -307,13 +301,10 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
-=======
 				EED779E21C151DF200D172BE /* BookListController.swift */,
->>>>>>> 0217fad5d304783edda887a0a9847e4889320832
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
@@ -562,14 +553,11 @@
 				EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */,
 				EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */,
 				EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */,
-<<<<<<< HEAD
 				39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */,
-=======
 				EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */,
 				EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */,
 				EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */,
 				EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */,
->>>>>>> 0217fad5d304783edda887a0a9847e4889320832
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
