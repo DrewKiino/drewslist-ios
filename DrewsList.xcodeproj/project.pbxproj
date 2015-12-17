@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
+		3910C79F1C225AEC000D0FD4 /* AcctSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */; settings = {ASSET_TAGS = (); }; };
+		3910C7A11C225AFE000D0FD4 /* AcctSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */; settings = {ASSET_TAGS = (); }; };
+		3910C7A31C225B17000D0FD4 /* AcctSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */; settings = {ASSET_TAGS = (); }; };
+		396402061C1E5D1200B70B78 /* AccountSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402051C1E5D1200B70B78 /* AccountSettingView.swift */; settings = {ASSET_TAGS = (); }; };
+		396402081C1E5D2B00B70B78 /* AccountSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */; settings = {ASSET_TAGS = (); }; };
+		3964020A1C1E5D4700B70B78 /* AccountSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402091C1E5D4700B70B78 /* AccountSettingController.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -79,6 +85,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingView.swift; sourceTree = "<group>"; };
+		3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingModel.swift; sourceTree = "<group>"; };
+		3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AcctSettingController.swift; path = ../Services/AcctSettingController.swift; sourceTree = "<group>"; };
+		396402051C1E5D1200B70B78 /* AccountSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingView.swift; sourceTree = "<group>"; };
+		396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingModel.swift; sourceTree = "<group>"; };
+		396402091C1E5D4700B70B78 /* AccountSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingController.swift; sourceTree = "<group>"; };
 		399971D91C14CF0A008C30FC /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		399971DD1C14D1FF008C30FC /* SignUpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
@@ -231,6 +243,8 @@
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				EED779E41C151DF800D172BE /* BookListModel.swift */,
 				EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */,
+				396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */,
+				3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -250,6 +264,8 @@
 				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
+				396402051C1E5D1200B70B78 /* AccountSettingView.swift */,
+				3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -266,6 +282,8 @@
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EED779E21C151DF200D172BE /* BookListController.swift */,
 				EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */,
+				396402091C1E5D4700B70B78 /* AccountSettingController.swift */,
+				3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -625,12 +643,16 @@
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
+				396402061C1E5D1200B70B78 /* AccountSettingView.swift in Sources */,
+				3910C7A31C225B17000D0FD4 /* AcctSettingController.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
+				3910C7A11C225AFE000D0FD4 /* AcctSettingModel.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
 				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
+				396402081C1E5D2B00B70B78 /* AccountSettingModel.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
@@ -638,6 +660,7 @@
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
+				3964020A1C1E5D4700B70B78 /* AccountSettingController.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
@@ -654,6 +677,7 @@
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
+				3910C79F1C225AEC000D0FD4 /* AcctSettingView.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,

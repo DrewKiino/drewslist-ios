@@ -366,9 +366,9 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
       })
     }
     
-    if let text = tag == 0 ? model.bookList[indexPath.row].bestBuyerListing : model.bookList[indexPath.row].bestSellerListing {
-      cell.infoLabel.text = "Best \(tag == 0 ? "Buyer" : "Seller") $\(text)"
-    }
+//    if let text = tag == 0 ? model.bookList[indexPath.row].bestBuyerListing : model.bookList[indexPath.row].bestSellerListing {
+//      cell.infoLabel.text = "Best \(tag == 0  "Buyer" : "Seller") $\(text)"
+//    }
     
     return cell
   }
