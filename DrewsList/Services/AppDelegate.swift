@@ -14,7 +14,7 @@ public let remoteNotification = Signal<[NSObject: AnyObject]>()
 public let screen = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate{
 
   var window: UIWindow?
   
@@ -27,12 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Atlantis.Configuration.hasColoredLogs = true
     
     // init the root view
-<<<<<<< HEAD
-    let tabView = SignUpView()
-=======
-    let tabView = TabView()
-    
->>>>>>> 74a6ebadf9bac3f373ad2c8237fac0de901e7278
+    let tabView = AcctSettingView()
+  
+  
     /*
     * Use this code to get the bounds of the screen
     *
@@ -86,6 +83,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    
+    //NavigationBar
+    UINavigationBar.appearance().barTintColor = UIColor.bareBlue()
+    
     
     // log the push message
     if  let aps = userInfo["aps"] as? NSDictionary,
