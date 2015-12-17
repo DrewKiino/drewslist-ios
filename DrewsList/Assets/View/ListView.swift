@@ -190,8 +190,7 @@ public class ListerProfileViewCell: UITableViewCell {
     
     nameLabel?.text = user.username ?? user.getName()
     
-    listDateLabel?.text = listing.createdAt
-    
+    log.debug(listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2))
   }
   
   public override func setSelected(selected: Bool, animated: Bool) {
@@ -214,20 +213,6 @@ public class ListerProfileViewCell: UITableViewCell {
     }
   }
 }
-
-extension NSDate {
-  struct Date {
-    static let formatter = NSDateFormatter()
-  }
-  var formatted: String {
-    Date.formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
-    Date.formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-    Date.formatter.calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierISO8601)!
-    Date.formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    return Date.formatter.stringFromDate(self)
-  }
-}
-
 
 public class ListerAttributesViewCell: UITableViewCell {
   
