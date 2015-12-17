@@ -22,21 +22,16 @@ pod 'ObjectMapper'
 
 # service libs
 pod 'SwiftyTimer'
-pod 'SwiftDate'
+pod 'SwiftDate', '~> 2.0'
 
 # feature libs
 pod 'JSQMessagesViewController'
-
-
 
 # UI libs
 pod 'Neon'
 pod 'TextFieldEffects'
 pod 'SwiftyButton'
-platform :ios, '8.0'
-pod 'QuickTableViewController', git: 'https://github.com/bcylin/QuickTableViewController.git'
-pod 'MaterialDesignSymbol'
-pod 'Former'
+pod 'Gifu'
 
 # pubsub libs
 pod 'Signals'
@@ -59,8 +54,6 @@ pod 'Onboard'
 
 # permissions
 pod 'PermissionScope'
-
-
 
 
 

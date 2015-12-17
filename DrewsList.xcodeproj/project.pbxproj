@@ -8,12 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
-		3910C79F1C225AEC000D0FD4 /* AcctSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */; settings = {ASSET_TAGS = (); }; };
-		3910C7A11C225AFE000D0FD4 /* AcctSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */; settings = {ASSET_TAGS = (); }; };
-		3910C7A31C225B17000D0FD4 /* AcctSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */; settings = {ASSET_TAGS = (); }; };
-		396402061C1E5D1200B70B78 /* AccountSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402051C1E5D1200B70B78 /* AccountSettingView.swift */; settings = {ASSET_TAGS = (); }; };
-		396402081C1E5D2B00B70B78 /* AccountSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */; settings = {ASSET_TAGS = (); }; };
-		3964020A1C1E5D4700B70B78 /* AccountSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396402091C1E5D4700B70B78 /* AccountSettingController.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; settings = {ASSET_TAGS = (); }; };
 		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -28,10 +22,19 @@
 		3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA51C025BE500743C74 /* Atlantis.swift */; };
 		C7F93448B98F7A7B0B0069F7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */; };
+		EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF51C1E4DC80088ACBF /* ListView.swift */; };
+		EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF71C1E4DCC0088ACBF /* ListModel.swift */; };
+		EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF91C1E4DD30088ACBF /* ListController.swift */; };
+		EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AFB1C1E4F460088ACBF /* BookView.swift */; };
 		EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */; };
 		EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */; };
 		EE07FE3E1BE11D1E00A10F05 /* DrewsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE3D1BE11D1E00A10F05 /* DrewsListTests.swift */; };
 		EE07FE491BE11D1E00A10F05 /* DrewsListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */; };
+		EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */; };
+		EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */; };
+		EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */; };
+		EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */; };
+		EE19D1F61C1EAC1000BF2738 /* SIL Open Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */; };
 		EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */; };
 		EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */; };
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
@@ -45,6 +48,7 @@
 		EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */; };
 		EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */; };
 		EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */; };
+		EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */; };
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
@@ -85,12 +89,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingView.swift; sourceTree = "<group>"; };
-		3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingModel.swift; sourceTree = "<group>"; };
-		3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AcctSettingController.swift; path = ../Services/AcctSettingController.swift; sourceTree = "<group>"; };
-		396402051C1E5D1200B70B78 /* AccountSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingView.swift; sourceTree = "<group>"; };
-		396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingModel.swift; sourceTree = "<group>"; };
-		396402091C1E5D4700B70B78 /* AccountSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingController.swift; sourceTree = "<group>"; };
 		399971D91C14CF0A008C30FC /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		399971DD1C14D1FF008C30FC /* SignUpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
@@ -107,6 +105,10 @@
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B265067F38D8EFF1135126 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetAlert.swift; sourceTree = "<group>"; };
+		EE007AF51C1E4DC80088ACBF /* ListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
+		EE007AF71C1E4DCC0088ACBF /* ListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListModel.swift; sourceTree = "<group>"; };
+		EE007AF91C1E4DD30088ACBF /* ListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListController.swift; sourceTree = "<group>"; };
+		EE007AFB1C1E4F460088ACBF /* BookView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookView.swift; sourceTree = "<group>"; };
 		EE07FE251BE11D1E00A10F05 /* DrewsList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrewsList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE07FE321BE11D1E00A10F05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -117,19 +119,25 @@
 		EE07FE441BE11D1E00A10F05 /* DrewsListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrewsListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Bold.otf"; sourceTree = "<group>"; };
+		EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-BoldItalic.otf"; sourceTree = "<group>"; };
+		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Italic.otf"; sourceTree = "<group>"; };
+		EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Regular.otf"; sourceTree = "<group>"; };
+		EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SIL Open Font License.txt"; sourceTree = "<group>"; };
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		EE4B9D8E1C11F1DF00637458 /* TabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
-		EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMAnimatedTabBarController.swift; path = RAMAnimatedTabBarController/RAMAnimatedTabBarController.swift; sourceTree = "<group>"; };
-		EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMItemAnimationProtocol.swift; path = RAMAnimatedTabBarController/RAMItemAnimationProtocol.swift; sourceTree = "<group>"; };
-		EE4B9D9E1C11F3BE00637458 /* RAMTransitionItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMTransitionItemAnimation.swift; path = RAMAnimatedTabBarController/Animations/TransitionAniamtions/RAMTransitionItemAnimation.swift; sourceTree = "<group>"; };
-		EE4B9DA01C11F3D700637458 /* RAMRotationAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMRotationAnimation.swift; path = RAMAnimatedTabBarController/Animations/RotationAnimation/RAMRotationAnimation.swift; sourceTree = "<group>"; };
-		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMFrameItemAnimation.swift; path = RAMAnimatedTabBarController/Animations/FrameAnimation/RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
-		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMFumeAnimation.swift; path = RAMAnimatedTabBarController/Animations/FumeAnimation/RAMFumeAnimation.swift; sourceTree = "<group>"; };
-		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RAMBounceAnimation.swift; path = RAMAnimatedTabBarController/Animations/BounceAnimation/RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMAnimatedTabBarController.swift; sourceTree = "<group>"; };
+		EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMItemAnimationProtocol.swift; sourceTree = "<group>"; };
+		EE4B9D9E1C11F3BE00637458 /* RAMTransitionItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMTransitionItemAnimation.swift; sourceTree = "<group>"; };
+		EE4B9DA01C11F3D700637458 /* RAMRotationAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMRotationAnimation.swift; sourceTree = "<group>"; };
+		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
+		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFumeAnimation.swift; sourceTree = "<group>"; };
+		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -206,6 +214,8 @@
 			isa = PBXGroup;
 			children = (
 				EE8918B61C11689100FCF031 /* Assets */,
+				EE19D1EC1C1EAC0400BF2738 /* Fonts */,
+				EE6AC5FA1C1FC4AC00001F37 /* Media */,
 				EE5E669C1BE1626600BCF1DE /* Services */,
 				EE07FE2F1BE11D1E00A10F05 /* Assets.xcassets */,
 				EE07FE341BE11D1E00A10F05 /* Info.plist */,
@@ -232,19 +242,32 @@
 			path = DrewsListUITests;
 			sourceTree = "<group>";
 		};
+		EE19D1EC1C1EAC0400BF2738 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */,
+				EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */,
+				EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */,
+				EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */,
+				EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
+				EED779E41C151DF800D172BE /* BookListModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
-				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
-				EED779E41C151DF800D172BE /* BookListModel.swift */,
+				EE007AF71C1E4DCC0088ACBF /* ListModel.swift */,
+				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
 				EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */,
-				396402071C1E5D2B00B70B78 /* AccountSettingModel.swift */,
-				3910C7A01C225AFE000D0FD4 /* AcctSettingModel.swift */,
+				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
+				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -258,14 +281,19 @@
 				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
+				EED779E61C15406600D172BE /* BookFeedView.swift */,
+				EE007AFB1C1E4F460088ACBF /* BookView.swift */,
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
+				EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */,
+				EE007AF51C1E4DC80088ACBF /* ListView.swift */,
+				EE8918B81C1169A800FCF031 /* LoginView.swift */,
+				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
 				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
-				EED779E61C15406600D172BE /* BookFeedView.swift */,
-				396402051C1E5D1200B70B78 /* AccountSettingView.swift */,
-				3910C79E1C225AEC000D0FD4 /* AcctSettingView.swift */,
+				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
+				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -276,14 +304,15 @@
 				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
+				EED779E21C151DF200D172BE /* BookListController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
 				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
-				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
-				EED779E21C151DF200D172BE /* BookListController.swift */,
+				EE007AF91C1E4DD30088ACBF /* ListController.swift */,
+				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
 				EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */,
-				396402091C1E5D4700B70B78 /* AccountSettingController.swift */,
-				3910C7A21C225B17000D0FD4 /* AcctSettingController.swift */,
+				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
+				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -306,19 +335,19 @@
 				EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */,
 				EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */,
 			);
-			name = RAMTabBar;
+			path = RAMTabBar;
 			sourceTree = "<group>";
 		};
 		EE4B9D981C11F38C00637458 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
-				EE4B9D9D1C11F3B300637458 /* Transition */,
-				EE4B9D9C1C11F3B100637458 /* Rotation */,
-				EE4B9D9B1C11F3AF00637458 /* Fume */,
-				EE4B9D9A1C11F3AC00637458 /* Frame */,
 				EE4B9D991C11F3A000637458 /* Bounce */,
+				EE4B9D9A1C11F3AC00637458 /* Frame */,
+				EE4B9D9B1C11F3AF00637458 /* Fume */,
+				EE4B9D9C1C11F3B100637458 /* Rotation */,
+				EE4B9D9D1C11F3B300637458 /* Transition */,
 			);
-			name = Animations;
+			path = Animations;
 			sourceTree = "<group>";
 		};
 		EE4B9D991C11F3A000637458 /* Bounce */ = {
@@ -326,7 +355,7 @@
 			children = (
 				EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */,
 			);
-			name = Bounce;
+			path = Bounce;
 			sourceTree = "<group>";
 		};
 		EE4B9D9A1C11F3AC00637458 /* Frame */ = {
@@ -334,7 +363,7 @@
 			children = (
 				EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */,
 			);
-			name = Frame;
+			path = Frame;
 			sourceTree = "<group>";
 		};
 		EE4B9D9B1C11F3AF00637458 /* Fume */ = {
@@ -342,7 +371,7 @@
 			children = (
 				EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */,
 			);
-			name = Fume;
+			path = Fume;
 			sourceTree = "<group>";
 		};
 		EE4B9D9C1C11F3B100637458 /* Rotation */ = {
@@ -350,7 +379,7 @@
 			children = (
 				EE4B9DA01C11F3D700637458 /* RAMRotationAnimation.swift */,
 			);
-			name = Rotation;
+			path = Rotation;
 			sourceTree = "<group>";
 		};
 		EE4B9D9D1C11F3B300637458 /* Transition */ = {
@@ -358,7 +387,7 @@
 			children = (
 				EE4B9D9E1C11F3BE00637458 /* RAMTransitionItemAnimation.swift */,
 			);
-			name = Transition;
+			path = Transition;
 			sourceTree = "<group>";
 		};
 		EE5E669C1BE1626600BCF1DE /* Services */ = {
@@ -367,22 +396,30 @@
 				EE4B9D921C11F37700637458 /* RAMTabBar */,
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
 				3FB40FA51C025BE500743C74 /* Atlantis.swift */,
-				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 				EEA80B231C1287C70058ED0C /* NativeExtensions.swift */,
+				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 				EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
+		EE6AC5FA1C1FC4AC00001F37 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
 		EE8918B61C11689100FCF031 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				EE3C94991BF30FC500E228A9 /* Fixtures */,
-				EE3C94931BF30F1700E228A9 /* View */,
-				EE3C94921BF30F1500E228A9 /* Model */,
 				EE3C94941BF30F1A00E228A9 /* Controller */,
+				EE3C94991BF30FC500E228A9 /* Fixtures */,
+				EE3C94921BF30F1500E228A9 /* Model */,
+				EE3C94931BF30F1700E228A9 /* View */,
 			);
-			name = Assets;
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		F058CF4AE176E74946518C59 /* Pods */ = {
@@ -512,9 +549,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE19D1F61C1EAC1000BF2738 /* SIL Open Font License.txt in Resources */,
 				EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */,
+				EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */,
 				EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */,
 				39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */,
+				EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */,
+				EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */,
+				EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */,
+				EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,20 +682,19 @@
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
+				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
+				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
-				396402061C1E5D1200B70B78 /* AccountSettingView.swift in Sources */,
-				3910C7A31C225B17000D0FD4 /* AcctSettingController.swift in Sources */,
+				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
-				3910C7A11C225AFE000D0FD4 /* AcctSettingModel.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
 				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
-				396402081C1E5D2B00B70B78 /* AccountSettingModel.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
@@ -660,7 +702,6 @@
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
-				3964020A1C1E5D4700B70B78 /* AccountSettingController.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
@@ -668,6 +709,7 @@
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
+				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
@@ -677,7 +719,6 @@
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
-				3910C79F1C225AEC000D0FD4 /* AcctSettingView.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,

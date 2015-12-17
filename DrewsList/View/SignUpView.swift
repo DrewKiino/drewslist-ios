@@ -11,7 +11,6 @@ import QuartzCore
 import TextFieldEffects
 import Neon
 import Toucan
-import SwiftyButton
 
 
 public class SignUpView: UIViewController, UITextFieldDelegate {
@@ -25,15 +24,11 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   //MARK: Outlets for UI Elements.
   private let backgroundImage = UIImageView()
   private let containerView = UIView()
-  private var SignedUpButton: SwiftyButton?
-  var firstname:   HoshiTextField?
-  var emailField:  HoshiTextField?
-  var lastname:   HoshiTextField?
-  var password: HoshiTextField?
+  var usernameField:   HoshiTextField?
+  var emailField:      HoshiTextField?
+  var passwordField:   HoshiTextField?
   var next:     UIButton?
-
   
-
   
   // the mark tag's syntax looks like this:
   //
@@ -52,16 +47,40 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     setupBackgroundImage()
     setupContainerView()
-    setupfirstnameLabel()
-    setuplastnameLabel()
+    setupUsernameLabel()
+    setupPasswordLabel()
     setupEmailLabel()
-    setupPasswordlabel()
     
     
     // remember to modularize each setup function to it's distinct functionality
     
-  
-
+    //      loginButton.alpha   = 0;
+    
+    //      UIView.animateWithDuration(0.7, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
+    //        self.usernameField.alpha = 1.0
+    //        self.emailField.alpha = 1.0
+    //        self.passwordField.alpha = 1.0
+    //        self.loginButton.alpha   = 0.9
+    //      }, completion: nil)
+    
+    // Notifiying for Changes in the textFields
+    //        usernameField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+    //        passwordField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+    //        emailField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
+    
+    
+    
+    
+    // Visual Effect View for background
+    //      let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark)) as UIVisualEffectView
+    //      visualEffectView.frame = self.view.frame
+    //      visualEffectView.alpha = 0.5
+    //      imageView.image = UIImage(named: "img1-1.png")
+    //      imageView.addSubview(visualEffectView)
+    //
+    //
+    //      NSTimer.scheduledTimerWithTimeInterval(6, target: self, selector: "changeImage", userInfo: nil, repeats: true)
+    //      self.loginButton(false)
   }
   
   private func setupBackgroundImage() {
@@ -74,28 +93,41 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   public func dismissKeyboard() {
-    firstname?.resignFirstResponder()
+    usernameField?.resignFirstResponder()
+    passwordField?.resignFirstResponder()
     emailField?.resignFirstResponder()
-    lastname?.resignFirstResponder()
-    password?.resignFirstResponder()
   }
   
   //MARK: Global Variables for Changing Image Functionality.
   private var idx: Int = 0
   private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
   
-  public func setupfirstnameLabel() {
+  public func setupUsernameLabel() {
     //    usernameField.alpha = 0;
     //    usernameField.tag = 1
     //    usernameField.delegate = self
-    firstname = HoshiTextField()
-    firstname?.borderInactiveColor = UIColor.bareBlue()
-    firstname?.borderActiveColor = UIColor.juicyOrange()
-    firstname?.placeholderColor = UIColor.sexyGray()
-    firstname?.placeholder = "Enter your first name"
-    firstname?.delegate = self
+    usernameField = HoshiTextField()
+    usernameField?.borderInactiveColor = UIColor.bareBlue()
+    usernameField?.borderActiveColor = UIColor.juicyOrange()
+    usernameField?.placeholderColor = UIColor.sexyGray()
+    usernameField?.placeholder = "Enter a Username"
+    usernameField?.delegate = self
     
-    containerView.addSubview(firstname!)
+    containerView.addSubview(usernameField!)
+  }
+  
+  public func setupPasswordLabel() {
+    //    passwordField.alpha = 0;
+    //    passwordField.tag = 2
+    //    passwordField.delegate = self
+    passwordField = HoshiTextField()
+    passwordField?.borderInactiveColor = UIColor.bareBlue()
+    passwordField?.borderActiveColor = UIColor.juicyOrange()
+    passwordField?.placeholderColor = UIColor.sexyGray()
+    passwordField?.placeholder = "Create a Password"
+    passwordField?.delegate = self
+    
+    containerView.addSubview(passwordField!)
   }
   
   public func setupEmailLabel() {
@@ -110,48 +142,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
   }
   
-  public func setuplastnameLabel() {
-    //    passwordField.alpha = 0;
-    //    passwordField.tag = 2
-    //    passwordField.delegate = self
-    lastname = HoshiTextField()
-    lastname?.borderInactiveColor = UIColor.bareBlue()
-    lastname?.borderActiveColor = UIColor.juicyOrange()
-    lastname?.placeholderColor = UIColor.sexyGray()
-    lastname?.placeholder = "Enter your last name"
-    lastname?.delegate = self
-    
-    containerView.addSubview(lastname!)
-  }
-  
-  public func setupPasswordlabel() {
-    password = HoshiTextField()
-    password?.borderInactiveColor = UIColor.bareBlue()
-    password?.borderActiveColor = UIColor.juicyOrange()
-    password?.placeholderColor = UIColor.sexyGray()
-    password?.placeholder = "Enter a Password"
-    password?.delegate = self
-    
-    containerView.addSubview(password!)
-    
-    
-    
-  }
-  
-  
-//  //SignedUpButton???
-//  private func SignedUpButton(view: UIView) {
-//    SignedUpButton = SwiftyButton()
-//    SignedUpButton?.buttonColor = .sexyGray()
-//    SignedUpButton?.shadowColor = .juicyOrange()
-//    SignedUpButton?.shadowHeight = 3
-//    SignedUpButton?.cornerRadius = 3
-//    SignedUpButton?.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
-//    SignedUpButton?.setTitle("Next", forState: .Normal)
-//    SignedUpButton?.frame = CGRectMake(48, screen.height - 124, 100, 24)
-//    
-//  }
-  
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
@@ -161,31 +151,31 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     containerView.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
     
-    firstname?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
-    lastname?.alignAndFillWidth(align: .UnderCentered, relativeTo: firstname!, padding: 0, height: 48)
-    emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: lastname!, padding: 0, height: 48)
-    password?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
+    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: usernameField!, padding: 0, height: 48)
+    emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 48)
     
     
-  
-    //NextButton//SignUpButton
+    //NextButton
+    
       next = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-      next?.layer.cornerRadius = 3.0
-      next?.layer.borderWidth = 2.0
-      next?.backgroundColor = UIColor.juicyOrange()
-      next?.layer.borderColor = UIColor.juicyOrange().CGColor
-      next?.setTitle("Next", forState: UIControlState.Normal)
-      next?.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-     //add target on this button//
-    
+      next!.layer.cornerRadius = 3.0
+      next!.layer.borderWidth = 2.0
+      next!.backgroundColor = UIColor.juicyOrange()
+      next!.layer.borderColor = UIColor.juicyOrange().CGColor
+      next!.setTitle("Next", forState: UIControlState.Normal)
+      next!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
   
        self.view.addSubview(next!)
+    
+  
+
     
   }
   
   
-  public func signupButtonPressed () {
-    controller.signupButtonPressed()
+  public func next(enabled: Bool) -> () {
+   
 
   }
   
@@ -252,17 +242,13 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   
   
   func backgroundPressed(sender: AnyObject) {
-    firstname?.resignFirstResponder()
-    lastname?.resignFirstResponder()
+    usernameField?.resignFirstResponder()
+    passwordField?.resignFirstResponder()
     emailField?.resignFirstResponder()
-    password?.resignFirstResponder()
   }
   
   
 }
-
-
-
 //
 ////Extension for Color to take Hex Values
 //extension UIColor{
