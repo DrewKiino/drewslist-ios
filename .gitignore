@@ -3,3 +3,5 @@ Pods/**/*
 
 # ignore folder
 ignore/**/*
+
+.DS_Store
