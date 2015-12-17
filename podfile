@@ -22,7 +22,7 @@ pod 'ObjectMapper'
 
 # service libs
 pod 'SwiftyTimer'
-pod 'SwiftDate'
+pod 'SwiftDate', '~> 2.0'
 
 # feature libs
 pod 'JSQMessagesViewController'
