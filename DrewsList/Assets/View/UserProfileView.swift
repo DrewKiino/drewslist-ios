@@ -428,7 +428,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     }
     
     if let text = listerPrice {
-      let string = "Best Offer $\(text)"
+      let string = "Best Match $\(text)"
       let coloredString = NSMutableAttributedString(string: string)
       coloredString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 11))
 
@@ -524,7 +524,7 @@ public class BookCell: UICollectionViewCell {
   private func setupListerPriceLabel() {
     listerPriceLabel = UILabel()
     listerPriceLabel?.textColor = UIColor.moneyGreen()
-    listerPriceLabel?.font = UIFont.asapRegular(10)
+    listerPriceLabel?.font = UIFont.asapBold(10)
     listerPriceLabel?.adjustsFontSizeToFitWidth = true
     listerPriceLabel?.minimumScaleFactor = 0.1
     infoPriceView?.addSubview(listerPriceLabel!)

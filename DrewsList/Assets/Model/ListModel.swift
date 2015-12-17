@@ -53,6 +53,27 @@ public class Listing: Mappable {
   public let _updatedAt = Signal<String?>()
   public var updatedAt: String? { didSet { _updatedAt => updatedAt } }
   
+  public func getConditionImage() -> UIImage? {
+    guard let condition = condition else { return nil }
+    switch condition {
+      case "1": return UIImage(named: "Icon-Condition1")
+      case "2": return UIImage(named: "Icon-Condition2")
+      case "3": return UIImage(named: "Icon-Condition3")
+    default: return nil
+    }
+  }
+  
+  public func getConditionText() -> String? {
+    guard let condition = condition else { return nil }
+    switch condition {
+    case "1": return "\'Beat\'"
+    case "2": return "\'Used\'"
+    case "3": return "\'Like New\'"
+    default: return nil
+    }
+  }
+  
+  
   public init() {}
   
   public init(json: JSON) {

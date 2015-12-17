@@ -184,7 +184,8 @@ public class CreateListingView : UIViewController {
         selling.frame = CGRectMake(screenSize.height * 0.3, screenSize.height * 0.4, screenSize.height * 0.2, screenSize.height * 0.1)
         selling.addTarget(self, action: "sellingButtonPressed", forControlEvents: .TouchUpInside)
         selling.backgroundColor = UIColor.grayColor()
-        
+      
+    
         // Label
         label.text = "Selling"
         label.textColor = UIColor.whiteColor()

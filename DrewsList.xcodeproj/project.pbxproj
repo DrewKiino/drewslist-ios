@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
+		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; };
+		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
+		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; };
+		39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */; };
 		3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */; };
 		3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */; };
 		3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */; };
@@ -61,6 +65,11 @@
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
+		EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */; };
+		EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */; };
+		EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */; };
+		EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */; };
+		EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
 		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
@@ -85,6 +94,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		399971D91C14CF0A008C30FC /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		399971DD1C14D1FF008C30FC /* SignUpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
+		39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LoginScrollImage-01.png"; sourceTree = "<group>"; };
 		3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookController.swift; sourceTree = "<group>"; };
@@ -146,6 +159,11 @@
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
+		EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingController.swift; sourceTree = "<group>"; };
+		EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingModel.swift; sourceTree = "<group>"; };
+		EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingModel.swift; sourceTree = "<group>"; };
+		EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingView.swift; sourceTree = "<group>"; };
+		EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingView.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
@@ -188,6 +206,7 @@
 				FE0642FB75D7FCC6A3A6833B /* Frameworks */,
 				F058CF4AE176E74946518C59 /* Pods */,
 				EE07FE261BE11D1E00A10F05 /* Products */,
+				39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -248,6 +267,9 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */,
+				EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */,
+				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EED779E41C151DF800D172BE /* BookListModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
@@ -263,6 +285,9 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				EEB0E2761C22851A0007DE13 /* AccountSettingView.swift */,
+				EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */,
+				399971D91C14CF0A008C30FC /* SignUpView.swift */,
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
 				EE007AFB1C1E4F460088ACBF /* BookView.swift */,
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
@@ -283,6 +308,8 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */,
+				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EED779E21C151DF200D172BE /* BookListController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
@@ -532,6 +559,7 @@
 				EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */,
 				EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */,
 				EE07FE301BE11D1E00A10F05 /* Assets.xcassets in Resources */,
+				39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */,
 				EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */,
 				EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */,
 				EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */,
@@ -677,6 +705,7 @@
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
 				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
+				EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */,
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
@@ -684,7 +713,9 @@
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
+				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
+				EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
@@ -693,8 +724,13 @@
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
+				EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */,
+				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
+				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
+				EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
+				EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
@@ -891,6 +927,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = DrewsListUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Totem.DrewsListUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -903,6 +940,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = DrewsListUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Totem.DrewsListUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

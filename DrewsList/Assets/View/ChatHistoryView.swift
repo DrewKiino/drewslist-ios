@@ -50,8 +50,8 @@ public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableView
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCellWithIdentifier("cell"),
-          let user = model.chat[indexPath.row].user,
-          let friend = model.chat[indexPath.row].friend
+          let _ = model.chat[indexPath.row].user,
+          let _ = model.chat[indexPath.row].friend
           else { return UITableViewCell() }
     return cell
   }
