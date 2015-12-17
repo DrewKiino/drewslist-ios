@@ -34,12 +34,15 @@ public class User: Mappable {
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
   
-  public let _saleList = Signal<[Book]>()
-  public var saleList: [Book] = [] { didSet { _saleList => saleList } }
+  public let _saleList = Signal<[Listing]>()
+  public var saleList: [Listing] = [] { didSet { _saleList => saleList } }
   
-  public let _wishList = Signal<[Book]>()
-  public var wishList: [Book] = [] { didSet { _wishList => wishList } }
+  public let _wishList = Signal<[Listing]>()
+  public var wishList: [Listing] = [] { didSet { _wishList => wishList } }
   
+  public let _listings = Signal<[Listing]>()
+  public var listings: [Listing] = [] { didSet { _wishList => wishList } }
+ 
   public init() {}
   
   public init(json: JSON) {
@@ -56,6 +59,13 @@ public class User: Mappable {
     username        <- map["username"]
     _id             <- map["_id"]
     deviceToken     <- map["deviceToken"]
+    image           <- map["image"]
+    listings        <- map["listings"]
+  }
+  
+  public func getName() -> String? {
+    guard let firstName = firstName, let lastName = lastName else { return nil }
+    return "\(firstName) \(lastName)"
   }
 }
 
@@ -64,3 +74,4 @@ public class UserModel {
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
 }
+
