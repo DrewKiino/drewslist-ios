@@ -14,28 +14,63 @@ import Toucan
 import Haneke
 import SwiftDate
 
-public class ListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public class ListViewContainer: UIViewController {
   
-  private let controller = ListController()
-  
-  private var tableView: UITableView?
+  public var listView: ListView?
+  public var listing: Listing?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupDataBinding()
-    setupTableView()
-    
-    view.backgroundColor = UIColor.whiteColor()
-  }
-  
-  public override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
+    setupListView()
+    setupSelf()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    listView?.fillSuperview()
+  }
+  
+  private func setupListView() {
+    listView = ListView()
+    listView?.setListing(listing)
+    view.addSubview(listView!)
+  }
+  
+  private func setupSelf() {
     
+    view.backgroundColor = .whiteColor()
+    
+    title = "Best Match"
+  }
+  
+  public func setListing(listing: Listing?) -> Bool {
+    guard let listing = listing else { return false }
+    
+    self.listing = listing
+    
+    return true
+  }
+}
+
+public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
+  
+  private let controller = ListController()
+  private var tableView: UITableView?
+  private var defaultSeperatorColor: UIColor?
+  
+  public init() {
+    super.init(frame: CGRectZero)
+    setupDataBinding()
+    setupTableView()
+    
+    backgroundColor = UIColor.whiteColor()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
     tableView?.fillSuperview()
   }
   
@@ -56,7 +91,9 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     tableView?.dataSource = self
     tableView?.delegate = self
     tableView?.allowsSelection = false
-    view.addSubview(tableView!)
+    defaultSeperatorColor = tableView?.separatorColor
+    tableView?.separatorColor = .clearColor()
+    addSubview(tableView!)
   }
   
   private func setupDataBinding() {
@@ -65,11 +102,10 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   // MARK: UITableView Delegates 
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    let hasMatch = controller.getListing()?.highestLister != nil
     switch indexPath.row {
     case 0: return 158
-    case 1: return 48
-    case 2: return hasMatch ? 200 : 48
+    case 1: return 56
+    case 2: return 200
     default: return 0
     }
   }
@@ -83,6 +119,8 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     // get cell
     let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
     let listing = controller.getListing()
+    let hasMatch = controller.getListing()?.highestLister != nil
+    if (hasMatch) { tableView.separatorColor = defaultSeperatorColor }
     
     switch indexPath.row {
     case 0:
@@ -170,12 +208,13 @@ public class ListerProfileViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 36, height: 36)
+    userImageView?.anchorToEdge(.Left, padding: 16, width: 36, height: 36)
 
     nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 160)
 
-    listDateTitle?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 16)
-    listDateLabel?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 100, height: 16)
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
+    
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 12, width: 100, height: 16)
   }
   
   private func setupUserImage() {
@@ -185,9 +224,7 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private func setupNameLabel() {
     nameLabel = UILabel()
-    nameLabel?.font = UIFont.asapRegular(24)
-    nameLabel?.adjustsFontSizeToFitWidth = true
-    nameLabel?.minimumScaleFactor = 0.8
+    nameLabel?.font = UIFont.asapRegular(12)
     addSubview(nameLabel!)
   }
   

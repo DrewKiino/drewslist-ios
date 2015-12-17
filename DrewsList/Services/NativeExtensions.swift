@@ -80,7 +80,82 @@ extension String {
   }
 }
 
+import NVActivityIndicatorView
+import LTMorphingLabel
+import SwiftyTimer
 
+extension UIView {
+  
+  public func showLoadingScreen() {
+  
+    subviews.forEach {
+      if let view: UIView? = $0 where $0.tag == 1337 { view?.removeFromSuperview() }
+      else if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
+      else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
+    }
+    
+    let backgroundView = UIView(frame: CGRectMake(0, 64, screen.width, screen.height))
+    backgroundView.tag = 1337
+    backgroundView.backgroundColor = .whiteColor()
+    addSubview(backgroundView)
+    
+    let activityView = NVActivityIndicatorView(
+      frame: screen,
+      type: .Pacman,
+      color: UIColor.sweetBeige(),
+      size: CGSizeMake(48, 48)
+    )
+    activityView.backgroundColor = .clearColor()
+    activityView.startAnimation()
+    addSubview(activityView)
+    
+    let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8, 100, 48))
+    loadingLabel.text = "Loading"
+    loadingLabel.textAlignment = .Center
+    loadingLabel.font = UIFont.asapBold(16)
+    loadingLabel.textColor = .blackColor()
+    loadingLabel.morphingEffect = .Evaporate
+    addSubview(loadingLabel)
+    
+    NSTimer.every(0.5) { [weak loadingLabel] in
+      switch loadingLabel?.text {
+      case .Some("Loading"): loadingLabel?.text = "Loading ."
+      case .Some("Loading ."): loadingLabel?.text = "Loading . ."
+      case .Some("Loading . ."): loadingLabel?.text = "Loading . . ."
+      case .Some("Loading . . ."): loadingLabel?.text = "Loading"
+      default: break
+      }
+    }
+    
+    NSTimer.after(10.0) { [weak self] in self?.hideLoadingScreen() }
+//    let randomInt = arc4random_uniform(10) + 0
+  }
+  
+  public func hideLoadingScreen() {
+    subviews.forEach {
+      if let view: UIView? = $0 where $0.tag == 1337 {
+        UIView.animateWithDuration(0.5, delay: 0.7, options: .CurveEaseInOut, animations: { [weak view] in
+          view?.alpha = 0.0
+        }, completion: { [weak view] bool in
+          view?.removeFromSuperview()
+        })
+      } else if let view = $0 as? NVActivityIndicatorView {
+        UIView.animateWithDuration(1.0, delay: 0, options: .CurveEaseInOut, animations: { [weak view] in
+          view?.alpha = 0.0
+        }, completion: { [weak view] bool in
+          view?.removeFromSuperview()
+        })
+      }
+      else if let view = $0 as? LTMorphingLabel {
+        UIView.animateWithDuration(1.0, delay: 0.2, options: .CurveEaseInOut, animations: { [weak view] in
+          view?.alpha = 0.0
+        }, completion: { [weak view] bool in
+          view?.removeFromSuperview()
+        })
+      }
+    }
+  }
+}
 
 
 

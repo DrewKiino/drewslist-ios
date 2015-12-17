@@ -13,7 +13,6 @@ import Toucan
 import Haneke
 import Signals
 
-
 public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // NOTE:
@@ -72,8 +71,9 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     
     navigationBar.barTintColor = UIColor.soothingBlue()
     navigationBar.tintColor = UIColor.whiteColor()
+    
     navigationBar.titleTextAttributes = [
-      NSFontAttributeName: UIFont.asapBold(24),
+      NSFontAttributeName: UIFont.asapBold(16),
       NSForegroundColorAttributeName: UIColor.whiteColor()
     ]
   }
@@ -83,12 +83,16 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    if model.user == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-    
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
   }
   
   public override func viewWillLayoutSubviews() {
@@ -157,6 +161,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
       
       self?.fetchBackgroundImage()
       self?.fetchProfileImage()
+      
+      self?.view.hideLoadingScreen()
     }
   }
   
@@ -302,8 +308,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     cell.controller.get_selectedListing().removeListener(self)
     cell.controller.get_selectedListing().listen(self) { [weak self] listing in
       
-      let listView = ListView()
-      if listView.setListing(listing) { self?.pushViewController(listView, animated: true) }
+      let listViewContainer = ListViewContainer()
+      if listViewContainer.setListing(listing) { self?.pushViewController(listViewContainer, animated: true) }
     }
     
     return cell

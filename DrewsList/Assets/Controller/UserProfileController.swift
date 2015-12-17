@@ -24,7 +24,7 @@ public class UserProfileController {
     // local
 //    getUserFromServer("5672243dce7e7a49fc299832")
     // server
-    getUserFromServer("5673198d8844191f0076af1a")
+    getUserFromServer("56728e4ea0e9851f007e784e")
   }
   
   public func userViewWillAppear() {

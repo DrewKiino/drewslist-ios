@@ -33,6 +33,8 @@ pod 'TextFieldEffects'
 pod 'SwiftyButton'
 pod 'Gifu'
 pod 'Former'
+pod 'NVActivityIndicatorView'
+pod 'LTMorphingLabel'
 
 # pubsub libs
 pod 'Signals'

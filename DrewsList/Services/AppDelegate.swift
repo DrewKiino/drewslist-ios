@@ -49,6 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
     
+    // remove the back button
+    UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
+    
     return true
   }
 
