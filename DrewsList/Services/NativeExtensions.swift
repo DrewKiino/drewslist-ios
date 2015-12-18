@@ -90,8 +90,7 @@ extension UIView {
   public func showLoadingScreen() {
   
     subviews.forEach {
-      if let view: UIView? = $0 where $0.tag == 1337 { view?.removeFromSuperview() }
-      else if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
+      if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
       else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
     }
     
@@ -183,6 +182,18 @@ extension UIView {
     }
     
     notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
+  }
+  
+  public func showComingSoonScreen() {
+    subviews.forEach { if let view: UILabel? = $0 as? UILabel where $0.tag == 1337 { view?.removeFromSuperview() } }
+    
+    let label = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
+    label.text = "Coming Soon!"
+    label.textAlignment = .Center
+    label.font = .asapRegular(16)
+    label.tag = 1337
+    
+    addSubview(label)
   }
 }
 

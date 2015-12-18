@@ -9,46 +9,69 @@
 import Foundation
 import UIKit
 
-public class ListFeedView: DLNavigationController, UITableViewDelegate, UITableViewDataSource {
+public class ListFeedViewContainer: UIScrollView {
+  
+  public var saleListFeedView: ListFeedView?
+  public var wishListFeedView: ListFeedView?
+  
+  public init() {
+    super.init(frame: CGRectZero)
+    
+    setupSaleListFeed()
+    setupWishListFeed()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+  }
+  
+  public func setupSaleListFeed() {
+    saleListFeedView = ListFeedView()
+    addSubview(saleListFeedView!)
+  }
+  
+  public func setupWishListFeed() {
+    wishListFeedView = ListFeedView()
+    addSubview(wishListFeedView!)
+  }
+}
+
+public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSource {
   
   private let controller = ListFeedController()
   private var model: ListFeedModel { get { return controller.getModel() } }
   
-  public var tableView: UITableView?
-
-  
-  public override func viewDidLoad() {
-    super.viewDidLoad()
+  public init() {
+    super.init(frame: CGRectZero, style: .Plain)
     
     setupDataBinding()
     setupTableView()
-    setupSelf()
   }
   
-  public override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
-    
-    tableView?.fillSuperview()
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
   }
   
   private func setupDataBinding() {
     model._listings.listen(self) { [weak self] listings in
-      self?.tableView?.reloadData()
+      self?.reloadData()
     }
   }
   
   private func setupTableView() {
-    tableView = UITableView()
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-    tableView?.registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
-    tableView?.delegate = self
-    tableView?.dataSource = self
-    tableView?.separatorColor = .clearColor()
-    rootView?.view.addSubview(tableView!)
-  }
-  
-  private func setupSelf() {
-    setRootViewTitle("Listings Feed")
+    registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+    registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
+    delegate = self
+    dataSource = self
+    separatorColor = .clearColor()
   }
   
   // MARK: TableView Delegates
@@ -75,8 +98,8 @@ public class ListFeedView: DLNavigationController, UITableViewDelegate, UITableV
   }
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let tableView = tableView where (tableView.contentOffset.y >= (tableView.contentSize.height - tableView.frame.size.height)) &&
-        tableView.frame.height > 0 && controller.getModel().shouldLockView == false && controller.getModel().shouldRefrainFromCallingServer == false
+    if contentOffset.y >= (contentSize.height - frame.size.height) &&
+        frame.height > 0 && controller.getModel().shouldLockView == false && controller.getModel().shouldRefrainFromCallingServer == false
     {
       // user has scrolled to the bottom!
       // begin getting more data

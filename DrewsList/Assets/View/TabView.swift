@@ -13,7 +13,7 @@ import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
-  let feedView = ListFeedView()
+  let communityTab = CommunityFeedView()
   let chatView = ChatHistoryView()
   let scannerView = ScannerView()
   let activityView = UIViewController()
@@ -38,16 +38,16 @@ public class TabView: RAMAnimatedTabBarController {
   }
   
   private func setupViewControllers() {
-    viewControllers = [feedView, userProfileView, chatView, scannerView, activityView]
+    viewControllers = [communityTab, userProfileView, chatView, scannerView, activityView]
   }
   
   private func setupFeedView() {
-    feedView.view.backgroundColor = UIColor.whiteColor()
+    communityTab.view.backgroundColor = UIColor.whiteColor()
     
     let image = Toucan(image: UIImage(named: "Icon-Book")!).resize(CGSize(width: 24, height: 24)).image
     
     let item = RAMAnimatedTabBarItem(title: "Feed", image: image, selectedImage: image)
-    feedView.tabBarItem = item
+    communityTab.tabBarItem = item
   }
   
   private func setupChatView() {
