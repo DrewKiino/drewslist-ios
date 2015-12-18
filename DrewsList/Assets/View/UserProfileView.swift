@@ -13,8 +13,7 @@ import Toucan
 import Haneke
 import Signals
 
-
-public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // NOTE:
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
@@ -29,7 +28,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   // especially when we start unit testing, the test suite wont
   // be able to recognize the default internal variables so either
   // make variables private or public
-  public var rootView: UIViewController?
   public var scrollView: UIScrollView?
   public var bgView: UIView?
   public var bgViewTop: UIImageView?
@@ -62,13 +60,14 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     controller.viewDidLoad()
     
     setupDataBinding()
-    setRootView()
     setupScrollView()
     setupBGView()
     setupPaddingView()
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
+    
+    setRootViewTitle("Your List")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -76,12 +75,16 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    if model.user == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-    
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
   }
   
   public override func viewWillLayoutSubviews() {
@@ -92,7 +95,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
     
-    bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    bgView?.layer.shadowColor = UIColor.clearColor().CGColor
     bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
     bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
     bgView?.layer.shadowOpacity = 1.0
@@ -121,9 +124,15 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   private func fetchBackgroundImage() {
     guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
+    
     bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
+      self.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
       return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
     })
+    
+    Shared.imageCache.fetch(URL: nsurl, formatName: "BGImage").onSuccess { [weak self] image in
+      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    }
   }
   
   private func fetchProfileImage() {
@@ -137,21 +146,19 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   
   private func setupDataBinding() {
     model._user.listen(self) { [weak self] user in
+      guard let user = user where user._id != nil else { return }
       
-      self?.profileUsername?.text = user?.username ?? user?.getName()
+      self?.profileUsername?.text = user.username ?? user.getName()
       self?.bookShelf?.reloadData()
       
       self?.fetchBackgroundImage()
       self?.fetchProfileImage()
+      
+      self?.view.hideLoadingScreen()
     }
   }
   
   // MARK: UI Setup
-  
-  public func setRootView() {
-    rootView = UIViewController()
-    setViewControllers([rootView!], animated: false)
-  }
   
   public func setupScrollView(){
     scrollView = UIScrollView()
@@ -169,6 +176,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     scrollView?.addSubview(bgView!)
     
     bgViewTop = UIImageView()
+    bgViewTop?.backgroundColor = UIColor.whiteColor()
     bgView?.addSubview(bgViewTop!)
     
     bgViewBot = UIView()
@@ -190,8 +198,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     profileUsername = UILabel()
     if let profileUsername = profileUsername {
       profileUsername.text = model.user?.username
-      profileUsername.font = UIFont(name: "Avenir", size: 100)
-      profileUsername.font = UIFont.boldSystemFontOfSize(20.0)
+      profileUsername.font = UIFont.asapBold(24)
       profileUsername.textAlignment = .Center
       profileUsername.textColor = UIColor.blackColor()
       bgView?.addSubview(profileUsername)
@@ -287,8 +294,8 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     cell.controller.get_selectedListing().removeListener(self)
     cell.controller.get_selectedListing().listen(self) { [weak self] listing in
       
-      let listView = ListView()
-      if listView.setListing(listing) { self?.pushViewController(listView, animated: true) }
+      let listViewContainer = ListViewContainer()
+      if listViewContainer.setListing(listing) { self?.pushViewController(listViewContainer, animated: true) }
     }
     
     return cell
@@ -384,7 +391,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
   }
   
   private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(12)
+    label.font = UIFont.systemFontOfSize(16)
     label.textColor = UIColor.sexyGray()
     addSubview(label)
   }

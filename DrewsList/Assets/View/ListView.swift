@@ -14,28 +14,64 @@ import Toucan
 import Haneke
 import SwiftDate
 
-public class ListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public class ListViewContainer: UIViewController {
   
-  private let controller = ListController()
-  
-  private var tableView: UITableView?
+  public var listView: ListView?
+  public var listing: Listing?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupDataBinding()
-    setupTableView()
-    
-    view.backgroundColor = UIColor.whiteColor()
-  }
-  
-  public override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
+    setupListView()
+    setupSelf()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    listView?.fillSuperview()
+  }
+  
+  private func setupListView() {
+    listView = ListView()
+    listView?.setListing(listing)
+    view.addSubview(listView!)
+  }
+  
+  private func setupSelf() {
     
+    view.backgroundColor = .whiteColor()
+    
+    title = "Best Match"
+  }
+  
+  public func setListing(listing: Listing?) -> Bool {
+    guard let listing = listing else { return false }
+    
+    self.listing = listing
+    
+    return true
+  }
+}
+
+public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
+  
+  private let controller = ListController()
+  private var defaultSeperatorColor: UIColor?
+  
+  public var tableView: UITableView?
+  
+  public init() {
+    super.init(frame: CGRectZero)
+    setupDataBinding()
+    setupTableView()
+    
+    backgroundColor = UIColor.whiteColor()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
     tableView?.fillSuperview()
   }
   
@@ -43,6 +79,8 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     guard let listing = listing else { return false }
     
     controller.setListing(listing)
+    
+    tableView?.reloadData()
     
     return true
   }
@@ -56,10 +94,15 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     tableView?.dataSource = self
     tableView?.delegate = self
     tableView?.allowsSelection = false
-    view.addSubview(tableView!)
+    defaultSeperatorColor = tableView?.separatorColor
+    tableView?.separatorColor = .clearColor()
+    addSubview(tableView!)
   }
   
   private func setupDataBinding() {
+    controller.get_Listing().listen(self) { [weak self] listing in
+      self?.tableView?.reloadData()
+    }
   }
   
   // MARK: UITableView Delegates 
@@ -67,7 +110,7 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
     case 0: return 158
-    case 1: return 40
+    case 1: return 56
     case 2: return 200
     default: return 0
     }
@@ -82,11 +125,12 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     // get cell
     let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
     let listing = controller.getListing()
+    let hasMatch = listing?.highestLister != nil || listing?.user != nil
+    if (hasMatch) { tableView.separatorColor = defaultSeperatorColor }
     
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        // clear seperator lines
         cell.subviews.forEach { if let _ = $0 as? BookView { return } else { $0.removeFromSuperview() } }
         
         cell.bookView?.setBook(listing?.book)
@@ -97,22 +141,26 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
       }
       return cell
     case 1:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
-        
-        cell.setListing(listing?.highestLister)
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
+          where listing?.highestLister != nil || listing?.user != nil
+      {
+        cell.setListing(listing?.highestLister ?? listing)
         controller.get_Listing().removeListener(self)
         controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister)
+          cell?.setListing(listing?.highestLister ?? listing)
         }
       }
+      
       return cell
     case 2:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell
+          where listing?.highestLister != nil || listing?.user != nil
+      {
         
-        cell.setListing(listing?.highestLister)
+        cell.setListing(listing?.highestLister ?? listing)
         controller.get_Listing().removeListener(self)
         controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister)
+          cell?.setListing(listing?.highestLister ?? listing)
         }
       }
       return cell
@@ -164,12 +212,13 @@ public class ListerProfileViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 24, height: 24)
+    userImageView?.anchorToEdge(.Left, padding: 16, width: 36, height: 36)
 
-    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 180)
+    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 160)
 
-    listDateTitle?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 12)
-    listDateLabel?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 100, height: 12)
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
+    
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 12, width: 100, height: 16)
   }
   
   private func setupUserImage() {
@@ -179,15 +228,13 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private func setupNameLabel() {
     nameLabel = UILabel()
-    nameLabel?.font = UIFont.asapRegular(16)
-    nameLabel?.adjustsFontSizeToFitWidth = true
-    nameLabel?.minimumScaleFactor = 0.8
+    nameLabel?.font = UIFont.asapRegular(12)
     addSubview(nameLabel!)
   }
   
   private func setupListDateTitle() {
     listDateTitle = UILabel()
-    listDateTitle?.font = UIFont.asapBold(10)
+    listDateTitle?.font = UIFont.asapBold(12)
     listDateTitle?.textAlignment = .Right
     addSubview(listDateTitle!)
   }
@@ -195,17 +242,18 @@ public class ListerProfileViewCell: UITableViewCell {
   private func setupListDateLabel() {
     
     listDateLabel = UILabel()
-    listDateLabel?.font = UIFont.asapRegular(10)
+    listDateLabel?.font = UIFont.asapRegular(12)
     listDateLabel?.textAlignment = .Right
     addSubview(listDateLabel!)
   }
   
   public func setListing(listing: Listing?) {
-    guard let listing = listing, let user = listing.user else { return }
+    guard let listing = listing, let user = listing.user where user._id != nil else { return }
     
     if let url = user.image, let nsurl = NSURL(string: url) {
-      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-        return Toucan(image: image).resize(self.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
+      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_User_Images", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
+        if let this = self { return Toucan(image: image).resize(this.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image }
+        else { return image }
       })
     }
     
@@ -217,11 +265,18 @@ public class ListerProfileViewCell: UITableViewCell {
         let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
     {
       let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
-      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(10), range: NSRange(location: 0,length: 10))
-
+      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+      
       listDateTitle?.attributedText = coloredString
-      listDateLabel?.text = "\(relativeString) ago"
+      
+      listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
     }
+    
+    // not really sure, but the book view covers this view.
+    // so I had to set the z position to go over the book view
+    // then set the background color to clear
+    backgroundColor = .clearColor()
+    layer.zPosition = 1
   }
 }
 
@@ -259,26 +314,20 @@ public class ListerAttributesViewCell: UITableViewCell {
     
     callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
     
-    if let image = UIImage(named: "Icon-CallButton") {
-      let toucan = Toucan(image: image).resize(callButton!.frame.size)
-      callButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
-    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
-    
-    if let image = UIImage(named: "Icon-MessageButton") {
-      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
-      chatButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
-    
-//    conditionImageView?.align(.ToTheRightCentered, relativeTo: conditionLabel!, padding: 8, width: 16, height: 16)
     
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
     
     notesTextViewContainer?.anchorAndFillEdge(.Top, xPad: 12, yPad: 72, otherSize: frame.height - 72 - 16)
     notesTextView?.fillSuperview()
+    
+    let gradient = CAGradientLayer(layer: notesTextViewContainer!.layer)
+    gradient.frame = notesTextViewContainer!.bounds
+    gradient.colors = [UIColor.clearColor().CGColor, UIColor.blueColor().CGColor]
+    gradient.startPoint = CGPoint(x: 0.0, y: 1.0)
+    gradient.endPoint = CGPoint(x: 0.0, y: 0.85)
+    
+    notesTextViewContainer?.layer.mask = gradient
   }
   
   private func setupPriceLabel() {
@@ -311,7 +360,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private func setupNotesTitle() {
     notesTitle = UILabel()
-    notesTitle?.text = "Notes:"
     notesTitle?.font = UIFont.asapBold(12)
     addSubview(notesTitle!)
   }
@@ -323,7 +371,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private func setupNotesTextView() {
     notesTextView = UITextView()
-    notesTextView?.font = UIFont.asapRegular(10)
     notesTextView?.showsVerticalScrollIndicator = false
     notesTextView?.editable = false
     notesTextViewContainer?.addSubview(notesTextView!)
@@ -345,6 +392,17 @@ public class ListerAttributesViewCell: UITableViewCell {
 //      let toucan = Toucan(image: image).resize(conditionImageView!.frame.size)
 //      conditionImageView?.image = toucan.image
 //    }
+    if let image = UIImage(named: "Icon-CallButton") {
+      let toucan = Toucan(image: image).resize(callButton!.frame.size)
+      callButton?.setImage(toucan.image, forState: .Normal)
+    }
+    
+    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    
+    if let image = UIImage(named: "Icon-MessageButton") {
+      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
+      chatButton?.setImage(toucan.image, forState: .Normal)
+    }
     
     if let text = listing.getConditionText() {
       let string = "Condition: \(text)"
@@ -354,6 +412,8 @@ public class ListerAttributesViewCell: UITableViewCell {
       conditionLabel?.attributedText = coloredString
     }
     
+    notesTitle?.text = "Notes:"
+    
     if let notes = listing.notes {
       
       let paragraphStyle = NSMutableParagraphStyle()
@@ -362,11 +422,15 @@ public class ListerAttributesViewCell: UITableViewCell {
       let attributedString = NSAttributedString(string: notes, attributes: [
         NSParagraphStyleAttributeName: paragraphStyle,
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
-        NSForegroundColorAttributeName: UIColor.sexyGray()
+        NSForegroundColorAttributeName: UIColor.sexyGray(),
+        NSFontAttributeName: UIFont.asapRegular(12)
       ])
       
       notesTextView?.attributedText = attributedString
     }
+    
+    // same things is happening as the view view before this
+    layer.zPosition = 2
   }
 }
 
