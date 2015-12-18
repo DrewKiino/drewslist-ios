@@ -83,6 +83,7 @@ extension String {
 import NVActivityIndicatorView
 import LTMorphingLabel
 import SwiftyTimer
+import CWStatusBarNotification
 
 extension UIView {
   
@@ -154,6 +155,34 @@ extension UIView {
         })
       }
     }
+  }
+  
+  public func displayNotification(text: String) {
+    
+    let notification = CWStatusBarNotification()
+    notification.notificationAnimationInStyle = .Bottom
+    notification.notificationAnimationOutStyle = .Bottom
+    notification.notificationStyle = .StatusBarNotification
+
+    let loadingLabel = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
+    loadingLabel.text = text
+    loadingLabel.textAlignment = .Center
+    loadingLabel.font = UIFont.asapBold(12)
+    loadingLabel.textColor = .whiteColor()
+    loadingLabel.morphingEffect = .Evaporate
+    loadingLabel.backgroundColor = .bareBlue()
+    
+    NSTimer.every(0.5) { [weak loadingLabel] in
+      switch loadingLabel?.text {
+      case .Some(text): loadingLabel?.text = "\(text) ."
+      case .Some("\(text) ."): loadingLabel?.text = "\(text) . ."
+      case .Some("\(text) . ."): loadingLabel?.text = "\(text) . . ."
+      case .Some("\(text) . . ."): loadingLabel?.text = text
+      default: break
+      }
+    }
+    
+    notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
   }
 }
 

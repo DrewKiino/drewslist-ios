@@ -35,6 +35,7 @@ pod 'Gifu'
 pod 'Former'
 pod 'NVActivityIndicatorView'
 pod 'LTMorphingLabel'
+pod 'CWStatusBarNotification'
 
 # pubsub libs
 pod 'Signals'

@@ -21,7 +21,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Properties 
   
   private var originalBGViewFrame: CGRect? = CGRectZero
-  
   private let defaultBGURL: String! = "http://www.mybulkleylakesnow.com/wp-content/uploads/2015/11/books-stock.jpg"
   
   // make sure to specify the scope of the variables
@@ -307,6 +306,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     if let offset: CGFloat? = -64 - scrollView.contentOffset.y where offset > 0 {
       let ratio = originalBGViewFrame!.width / originalBGViewFrame!.height
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
+      
+      if offset > 64 && controller.getModel().shouldRefrainFromCallingServer == false {
+        
+        controller.getUserFromServer(model.user?._id)
+        
+        view.displayNotification("Refreshing")
+      }
     }
   }
   
