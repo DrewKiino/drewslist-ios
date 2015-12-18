@@ -141,6 +141,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       }
       return cell
     case 1:
+      
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
           where listing?.highestLister != nil || listing?.user != nil
       {
@@ -193,6 +194,7 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private var userImageView: UIImageView?
   private var nameLabel: UILabel?
+  private var listTypeLabel: UILabel?
   private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
   
@@ -201,6 +203,7 @@ public class ListerProfileViewCell: UITableViewCell {
     
     setupUserImage()
     setupNameLabel()
+    setupListTypeLabel()
     setupListDateLabel()
     setupListDateTitle()
   }
@@ -213,8 +216,10 @@ public class ListerProfileViewCell: UITableViewCell {
     super.layoutSubviews()
     
     userImageView?.anchorToEdge(.Left, padding: 16, width: 36, height: 36)
-
-    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 160)
+    
+    nameLabel?.align(.ToTheRightMatchingTop, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
+    
+    listTypeLabel?.align(.ToTheRightMatchingBottom, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
 
     listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
     
@@ -230,6 +235,12 @@ public class ListerProfileViewCell: UITableViewCell {
     nameLabel = UILabel()
     nameLabel?.font = UIFont.asapRegular(12)
     addSubview(nameLabel!)
+  }
+  
+  private func setupListTypeLabel() {
+    listTypeLabel = UILabel()
+    listTypeLabel?.font = UIFont.asapBold(12)
+    addSubview(listTypeLabel!)
   }
   
   private func setupListDateTitle() {
@@ -259,6 +270,8 @@ public class ListerProfileViewCell: UITableViewCell {
     
     nameLabel?.text = user.username ?? user.getName()
     
+    listTypeLabel?.text = listing.getListTypeText() ?? ""
+    
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
     if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
@@ -284,7 +297,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private var priceLabel: UILabel?
   private var conditionLabel: UILabel?
-  private var conditionImageView: UIImageView?
   private var notesTitle: UILabel?
   private var notesTextViewContainer: UIView?
   private var notesTextView: UITextView?
@@ -353,11 +365,6 @@ public class ListerAttributesViewCell: UITableViewCell {
     addSubview(conditionLabel!)
   }
   
-  private func setupConditionImageView() {
-    conditionImageView = UIImageView()
-    addSubview(conditionImageView!)
-  }
-  
   private func setupNotesTitle() {
     notesTitle = UILabel()
     notesTitle?.font = UIFont.asapBold(12)
@@ -388,10 +395,6 @@ public class ListerAttributesViewCell: UITableViewCell {
       priceLabel?.attributedText = coloredString
     }
     
-//    if let image = listing.getConditionImage() {
-//      let toucan = Toucan(image: image).resize(conditionImageView!.frame.size)
-//      conditionImageView?.image = toucan.image
-//    }
     if let image = UIImage(named: "Icon-CallButton") {
       let toucan = Toucan(image: image).resize(callButton!.frame.size)
       callButton?.setImage(toucan.image, forState: .Normal)

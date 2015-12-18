@@ -17,15 +17,15 @@ public class UserProfileController {
   private let model = UserProfileModel()
   private var refrainTimer: NSTimer?
   private var view: UserProfileView?
-  private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
-//  private let serverUrl = "http://localhost:1337/user"
+//  private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
+  private let serverUrl = "http://localhost:1337/user"
   
   public func viewDidLoad() {
     
     // local
-//    getUserFromServer("5672243dce7e7a49fc299832")
+    getUserFromServer("56733c2d11d037eb19e1488e")
     // server
-    getUserFromServer("56728e4ea0e9851f007e784e")
+//    getUserFromServer("56728e4ea0e9851f007e784e")
   }
   
   public func userViewWillAppear() {

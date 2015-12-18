@@ -75,7 +75,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    if model.user == nil { view.showLoadingScreen() }
+    if model.user?._id == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
