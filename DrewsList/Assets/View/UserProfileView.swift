@@ -65,8 +65,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
-    
-    setRootViewTitle("Your List")
+    setRootViewTitle("Your Profile")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -303,7 +302,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Scroll View Delegates
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let offset: CGFloat? = -64 - scrollView.contentOffset.y where offset > 0 {
+    if let offset: CGFloat? = -scrollView.contentOffset.y where offset > 0 {
       let ratio = originalBGViewFrame!.width / originalBGViewFrame!.height
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
       

@@ -395,7 +395,7 @@ public class ListerAttributesViewCell: UITableViewCell {
       priceLabel?.attributedText = coloredString
     }
     
-    if let image = UIImage(named: "Icon-CallButton") {
+    if let image = UIImage(named: "Icon-CallButton") where callButton?.frame.height > 0 {
       let toucan = Toucan(image: image).resize(callButton!.frame.size)
       callButton?.setImage(toucan.image, forState: .Normal)
     }
@@ -425,7 +425,7 @@ public class ListerAttributesViewCell: UITableViewCell {
       let attributedString = NSAttributedString(string: notes, attributes: [
         NSParagraphStyleAttributeName: paragraphStyle,
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
-        NSForegroundColorAttributeName: UIColor.sexyGray(),
+        NSForegroundColorAttributeName: UIColor.blackColor(),
         NSFontAttributeName: UIFont.asapRegular(12)
       ])
       

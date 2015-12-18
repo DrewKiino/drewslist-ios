@@ -27,6 +27,8 @@ public class DLNavigationController: UINavigationController {
       NSFontAttributeName: UIFont.asapBold(16),
       NSForegroundColorAttributeName: UIColor.whiteColor()
     ]
+    
+    navigationBar.translucent = false
   }
   
   public func setupRootView() {

@@ -20,7 +20,6 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private var rightPageTitleButton: UIButton?
   private var pageSelector: UIView?
   
-  private var doOnce = true
   private var shouldDisableScrollDetection: Bool = false
   
   private var currentPage: CommunityPage = .Middle
@@ -40,6 +39,12 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     setupScrollView()
     setupPages()
     setRootViewTitle("Community Feed")
+    
+    scrollView?.contentSize = CGSizeMake(screen.width * 3, screen.height / 2)
+    // select middle page
+    shouldDisableScrollDetection = true
+    scrollView?.setContentOffset(CGPointMake(screen.width, 0), animated: false)
+    selectPage(.Middle)
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -48,26 +53,17 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    if doOnce {
-      // select middle page
-      shouldDisableScrollDetection = true
-      scrollView?.setContentOffset(CGPointMake(screen.width, 0), animated: false)
-      selectPage(.Middle)
-      doOnce = false
-    }
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 0, yPad: 64, otherSize: 36)
+    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 36)
     pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, middlePageTitleButton!, rightPageTitleButton!], padding: 0)
     
     pageSelector?.frame = middlePageTitleButton!.frame
     
     scrollView?.alignAndFillHeight(align: .UnderCentered, relativeTo: pageTitleContainer!, padding: 0, width: screen.width)
-    scrollView?.contentSize = CGSizeMake(screen.width * 3, screen.height / 2)
     
     leftPage?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: screen.width)
     middlePage?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftPage!, padding: 0, width: screen.width)

@@ -87,7 +87,7 @@ import CWStatusBarNotification
 
 extension UIView {
   
-  public func showLoadingScreen() {
+  public func showLoadingScreen(heightOffset: CGFloat? = nil) {
   
     subviews.forEach {
       if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
@@ -100,7 +100,7 @@ extension UIView {
     addSubview(backgroundView)
     
     let activityView = NVActivityIndicatorView(
-      frame: screen,
+      frame: CGRectMake(0, heightOffset != nil ? heightOffset! : 0, screen.width, screen.height),
       type: .Pacman,
       color: UIColor.sweetBeige(),
       size: CGSizeMake(48, 48)
@@ -109,7 +109,7 @@ extension UIView {
     activityView.startAnimation()
     addSubview(activityView)
     
-    let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8, 100, 48))
+    let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8 + (heightOffset != nil ? heightOffset! : 0), 100, 48))
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)

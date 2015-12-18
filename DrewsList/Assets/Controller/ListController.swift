@@ -14,8 +14,8 @@ import SwiftyJSON
 public class ListController {
   
   private let model = ListModel()
-//  private let serverUrl = "http://drewslist-staging.herokuapp.com/book"
-  private let serverUrl = "http://localhost:1337/book"
+  private let serverUrl = "http://drewslist-staging.herokuapp.com/book"
+//  private let serverUrl = "http://localhost:1337/book"
   
   public init() {}
   
