@@ -189,6 +189,10 @@ public class BookView: UIView {
           self?.stopLoading()
         }
       } else { stopLoading() }
+      
+      NSTimer.after(1.0) { [weak self] in
+        self?.stopLoading()
+      }
     }
   }
   

@@ -99,6 +99,7 @@ public class Listing: Mappable {
     updatedAt     <- map["_id.updatedAt"]
     
     if (user      == nil) { user      <- map["user"] }
+    if (book      == nil) { book      <- map["book"] }
     if (price     == _id) { price     <- map["price"] }
     if (notes     == _id) { notes     <- map["notes"] }
     if (cover     == _id) { cover     <- map["cover"] }

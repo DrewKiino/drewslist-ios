@@ -13,7 +13,7 @@ import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
-  let feedView = UIViewController()
+  let feedView = ListFeedView()
   let chatView = ChatHistoryView()
   let scannerView = ScannerView()
   let activityView = UIViewController()
@@ -38,7 +38,7 @@ public class TabView: RAMAnimatedTabBarController {
   }
   
   private func setupViewControllers() {
-    viewControllers = [userProfileView, chatView, scannerView, activityView]
+    viewControllers = [feedView, userProfileView, chatView, scannerView, activityView]
   }
   
   private func setupFeedView() {

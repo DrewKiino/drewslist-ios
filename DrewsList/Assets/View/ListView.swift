@@ -56,8 +56,9 @@ public class ListViewContainer: UIViewController {
 public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   private let controller = ListController()
-  private var tableView: UITableView?
   private var defaultSeperatorColor: UIColor?
+  
+  public var tableView: UITableView?
   
   public init() {
     super.init(frame: CGRectZero)
@@ -79,6 +80,8 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     controller.setListing(listing)
     
+    tableView?.reloadData()
+    
     return true
   }
   
@@ -97,6 +100,9 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   }
   
   private func setupDataBinding() {
+    controller.get_Listing().listen(self) { [weak self] listing in
+      self?.tableView?.reloadData()
+    }
   }
   
   // MARK: UITableView Delegates 
@@ -119,13 +125,12 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     // get cell
     let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
     let listing = controller.getListing()
-    let hasMatch = controller.getListing()?.highestLister != nil
+    let hasMatch = listing?.highestLister != nil || listing?.user != nil
     if (hasMatch) { tableView.separatorColor = defaultSeperatorColor }
     
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        // clear seperator lines
         cell.subviews.forEach { if let _ = $0 as? BookView { return } else { $0.removeFromSuperview() } }
         
         cell.bookView?.setBook(listing?.book)
@@ -137,26 +142,25 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       return cell
     case 1:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
-          where listing?.highestLister != nil
+          where listing?.highestLister != nil || listing?.user != nil
       {
-        
-        cell.setListing(listing?.highestLister)
+        cell.setListing(listing?.highestLister ?? listing)
         controller.get_Listing().removeListener(self)
         controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister)
+          cell?.setListing(listing?.highestLister ?? listing)
         }
       }
       
       return cell
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell
-          where listing?.highestLister != nil
+          where listing?.highestLister != nil || listing?.user != nil
       {
         
-        cell.setListing(listing?.highestLister)
+        cell.setListing(listing?.highestLister ?? listing)
         controller.get_Listing().removeListener(self)
         controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister)
+          cell?.setListing(listing?.highestLister ?? listing)
         }
       }
       return cell
@@ -262,10 +266,17 @@ public class ListerProfileViewCell: UITableViewCell {
     {
       let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
       coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
-
+      
       listDateTitle?.attributedText = coloredString
-      listDateLabel?.text = "\(relativeString) ago"
+      
+      listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
     }
+    
+    // not really sure, but the book view covers this view.
+    // so I had to set the z position to go over the book view
+    // then set the background color to clear
+    backgroundColor = .clearColor()
+    layer.zPosition = 1
   }
 }
 
@@ -305,12 +316,18 @@ public class ListerAttributesViewCell: UITableViewCell {
     
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
-//    conditionImageView?.align(.ToTheRightCentered, relativeTo: conditionLabel!, padding: 8, width: 16, height: 16)
-    
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
     
     notesTextViewContainer?.anchorAndFillEdge(.Top, xPad: 12, yPad: 72, otherSize: frame.height - 72 - 16)
     notesTextView?.fillSuperview()
+    
+    let gradient = CAGradientLayer(layer: notesTextViewContainer!.layer)
+    gradient.frame = notesTextViewContainer!.bounds
+    gradient.colors = [UIColor.clearColor().CGColor, UIColor.blueColor().CGColor]
+    gradient.startPoint = CGPoint(x: 0.0, y: 1.0)
+    gradient.endPoint = CGPoint(x: 0.0, y: 0.85)
+    
+    notesTextViewContainer?.layer.mask = gradient
   }
   
   private func setupPriceLabel() {
@@ -411,6 +428,9 @@ public class ListerAttributesViewCell: UITableViewCell {
       
       notesTextView?.attributedText = attributedString
     }
+    
+    // same things is happening as the view view before this
+    layer.zPosition = 2
   }
 }
 

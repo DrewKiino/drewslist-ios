@@ -35,6 +35,10 @@
 		EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */; };
 		EE19D1F51C1EAC1000BF2738 /* Asap-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */; };
 		EE19D1F61C1EAC1000BF2738 /* SIL Open Font License.txt in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */; };
+		EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B73771C236FD000BD942C /* ListFeedView.swift */; };
+		EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B73791C236FDF00BD942C /* ListFeedModel.swift */; };
+		EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B737B1C236FE500BD942C /* ListFeedController.swift */; };
+		EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B737D1C2377C600BD942C /* DLNavigationController.swift */; };
 		EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */; };
 		EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */; };
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
@@ -129,6 +133,10 @@
 		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Italic.otf"; sourceTree = "<group>"; };
 		EE19D1F01C1EAC1000BF2738 /* Asap-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Regular.otf"; sourceTree = "<group>"; };
 		EE19D1F11C1EAC1000BF2738 /* SIL Open Font License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SIL Open Font License.txt"; sourceTree = "<group>"; };
+		EE1B73771C236FD000BD942C /* ListFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListFeedView.swift; sourceTree = "<group>"; };
+		EE1B73791C236FDF00BD942C /* ListFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListFeedModel.swift; sourceTree = "<group>"; };
+		EE1B737B1C236FE500BD942C /* ListFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListFeedController.swift; sourceTree = "<group>"; };
+		EE1B737D1C2377C600BD942C /* DLNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLNavigationController.swift; sourceTree = "<group>"; };
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
@@ -278,6 +286,7 @@
 				EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */,
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
+				EE1B73791C236FDF00BD942C /* ListFeedModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -301,6 +310,8 @@
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
+				EE1B73771C236FD000BD942C /* ListFeedView.swift */,
+				EE1B737D1C2377C600BD942C /* DLNavigationController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -319,6 +330,7 @@
 				EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */,
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
+				EE1B737B1C236FE500BD942C /* ListFeedController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -684,9 +696,11 @@
 				3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */,
 				EE8918C71C1169B500FCF031 /* LoginModel.swift in Sources */,
 				3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */,
+				EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */,
 				EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */,
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
+				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
@@ -725,6 +739,7 @@
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
 				EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */,
+				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
@@ -735,6 +750,7 @@
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
+				EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

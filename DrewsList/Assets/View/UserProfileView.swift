@@ -13,7 +13,7 @@ import Toucan
 import Haneke
 import Signals
 
-public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // NOTE:
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
@@ -28,7 +28,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   // especially when we start unit testing, the test suite wont
   // be able to recognize the default internal variables so either
   // make variables private or public
-  public var rootView: UIViewController?
   public var scrollView: UIScrollView?
   public var bgView: UIView?
   public var bgViewTop: UIImageView?
@@ -61,7 +60,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     controller.viewDidLoad()
     
     setupDataBinding()
-    setRootView()
     setupScrollView()
     setupBGView()
     setupPaddingView()
@@ -69,13 +67,7 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
     setupBookshelf()
     setupUsernameLabel()
     
-    navigationBar.barTintColor = UIColor.soothingBlue()
-    navigationBar.tintColor = UIColor.whiteColor()
-    
-    navigationBar.titleTextAttributes = [
-      NSFontAttributeName: UIFont.asapBold(16),
-      NSForegroundColorAttributeName: UIColor.whiteColor()
-    ]
+    setRootViewTitle("Your List")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -167,12 +159,6 @@ public class UserProfileView: UINavigationController,  UIScrollViewDelegate, UIT
   }
   
   // MARK: UI Setup
-  
-  public func setRootView() {
-    rootView = UIViewController()
-    rootView?.title = "Drew's List"
-    setViewControllers([rootView!], animated: false)
-  }
   
   public func setupScrollView(){
     scrollView = UIScrollView()
