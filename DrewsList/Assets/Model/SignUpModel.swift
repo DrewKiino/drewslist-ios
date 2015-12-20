@@ -7,8 +7,14 @@
 //
 
 import Foundation
+import UIKit
+import Signals
+
+
 
 public class SignUpModel {
+  
+  
   
   
 }

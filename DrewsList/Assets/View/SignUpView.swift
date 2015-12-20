@@ -198,8 +198,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       
       idx++
     }
-    //        let toImage = backGroundArray[idx];
-    //        UIView.transitionWithView(self.imageView, duration: 3, options: .TransitionCrossDissolve, animations: {self.imageView.image = toImage}, completion: nil)
     
   }
   
@@ -231,16 +229,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     return true
   }
   
-  //   public func textFieldDidChange() {
-  //        if usernameField.text!.isEmpty || passwordField.text!.isEmpty || emailField.text!.isEmpty
-  //        {
-  //            self.loginButton(false)
-  //        }
-  //        else
-  //        {
-  //            self.loginButton(true)
-  //        }
-  //    }
+  
   
   func buttonPressed(sender: AnyObject) {
     //        self.performSegueWithIdentifier("login", sender: self)
