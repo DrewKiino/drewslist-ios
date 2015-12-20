@@ -80,6 +80,8 @@
 		EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */; };
 		EECFA7381C2760060091915D /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA7371C2760060091915D /* EditProfileView.swift */; };
 		EECFA73A1C27600A0091915D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA7391C27600A0091915D /* SettingsView.swift */; };
+		EECFA73C1C27608D0091915D /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA73B1C27608D0091915D /* EditProfileModel.swift */; };
+		EECFA73E1C2760940091915D /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA73D1C2760940091915D /* EditProfileController.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
 		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
@@ -184,6 +186,8 @@
 		EEB0E2771C22851A0007DE13 /* AcctSettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingView.swift; sourceTree = "<group>"; };
 		EECFA7371C2760060091915D /* EditProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		EECFA7391C27600A0091915D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		EECFA73B1C27608D0091915D /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
+		EECFA73D1C2760940091915D /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
@@ -287,6 +291,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EECFA73B1C27608D0091915D /* EditProfileModel.swift */,
 				EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */,
 				EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
@@ -335,6 +340,7 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EECFA73D1C2760940091915D /* EditProfileController.swift */,
 				EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EED779E21C151DF200D172BE /* BookListController.swift */,
@@ -770,6 +776,7 @@
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
 				EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */,
+				EECFA73C1C27608D0091915D /* EditProfileModel.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
@@ -777,6 +784,7 @@
 				EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */,
+				EECFA73E1C2760940091915D /* EditProfileController.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
