@@ -8,7 +8,6 @@
 
 import UIKit
 import AVFoundation
-import Toucan
 import Neon
 
 public class ScannerView: UIViewController {

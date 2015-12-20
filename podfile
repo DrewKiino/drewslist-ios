@@ -50,10 +50,10 @@ pod 'Neon'
 # image libs
 # pod 'HanekeSwift'
 pod 'SDWebImage'
-pod 'Toucan'
+# pod 'Toucan'
 
 # data storage libs
-pod 'RealmSwift'
+#pod 'RealmSwift'
 
 # onboarding libs
 pod 'Onboard'

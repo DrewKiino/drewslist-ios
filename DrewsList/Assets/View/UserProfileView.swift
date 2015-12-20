@@ -9,8 +9,13 @@
 import Foundation
 import UIKit
 import Neon
+<<<<<<< HEAD
 import Toucan
 import Haneke
+=======
+
+import SDWebImage
+>>>>>>> origin/master
 import Signals
 
 public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {

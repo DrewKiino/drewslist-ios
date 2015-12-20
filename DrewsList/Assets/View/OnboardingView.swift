@@ -8,7 +8,7 @@
 
 import UIKit
 import Onboard
-import Toucan
+
 import Neon
 import SwiftyButton
 

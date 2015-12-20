@@ -164,10 +164,9 @@ public class BookView: UIView {
           Async.background { [weak self] in
             
             // NOTE: correct way to handle memory management with toucan
-            // get size
-            // init toucan
+            // init toucan and pass in the arguments directly in the parameter headers
+            // do the resizing in the background
             var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
-            // deinit size
             
             Async.main { [weak self] in
               

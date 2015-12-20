@@ -11,7 +11,6 @@ import UIKit
 import QuartzCore
 import TextFieldEffects
 import Neon
-import Toucan
 
 
 public class LoginView: UIViewController, UITextFieldDelegate {
