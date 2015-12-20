@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 import Neon
 import Gifu
-import Toucan
-import Haneke
+import SDWebImage
 import SwiftDate
+import Async
 
 public class ListViewContainer: UIViewController {
   
@@ -24,11 +24,12 @@ public class ListViewContainer: UIViewController {
     
     setupListView()
     setupSelf()
+    
+    listView?.fillSuperview()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    listView?.fillSuperview()
   }
   
   private func setupListView() {
@@ -45,17 +46,14 @@ public class ListViewContainer: UIViewController {
   }
   
   public func setListing(listing: Listing?) -> Bool {
-    guard let listing = listing else { return false }
-    
     self.listing = listing
-    
     return true
   }
 }
 
 public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
-  private let controller = ListController()
+  public let controller = ListController()
   private var defaultSeperatorColor: UIColor?
   
   public var tableView: UITableView?
@@ -72,6 +70,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
     tableView?.fillSuperview()
   }
   
@@ -109,7 +108,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0: return 158
+    case 0: return 168
     case 1: return 56
     case 2: return 200
     default: return 0
@@ -122,25 +121,29 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    // get cell
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-    let listing = controller.getListing()
-    let hasMatch = listing?.highestLister != nil || listing?.user != nil
+    // get listing reference
+    var listing: Listing? = controller.getListing()
+    let hasMatch: Bool = listing?.highestLister != nil || listing?.user != nil
     if (hasMatch) { tableView.separatorColor = defaultSeperatorColor }
     
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        cell.subviews.forEach { if let _ = $0 as? BookView { return } else { $0.removeFromSuperview() } }
+        cell.subviews.forEach { if !($0 is BookView) { $0.removeFromSuperview() } }
         
         cell.bookView?.setBook(listing?.book)
         controller.get_Listing().removeListener(self)
         controller.get_Listing().listen(self) { [weak cell] listing in
           cell?.bookView?.setBook(listing?.book)
         }
+        
+        // dealloc listing
+        listing = nil
+        
+        return cell
       }
-      return cell
     case 1:
+      
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
           where listing?.highestLister != nil || listing?.user != nil
       {
@@ -149,9 +152,11 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         controller.get_Listing().listen(self) { [weak cell] listing in
           cell?.setListing(listing?.highestLister ?? listing)
         }
+        
+        listing = nil
+        
+        return cell
       }
-      
-      return cell
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell
           where listing?.highestLister != nil || listing?.user != nil
@@ -162,20 +167,27 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         controller.get_Listing().listen(self) { [weak cell] listing in
           cell?.setListing(listing?.highestLister ?? listing)
         }
+        
+        listing = nil
+        
+        return cell
       }
-      return cell
-    default: return cell
+    default: break
     }
+    
+    listing = nil
+    
+    return UITableViewCell()
   }
 }
 
 public class BookViewCell: UITableViewCell {
   
-  private var bookView: BookView? = BookView()
+  private var bookView: BookView?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    addSubview(bookView!)
+    setupBookView()
   }
 
   public required init?(coder aDecoder: NSCoder) {
@@ -187,12 +199,18 @@ public class BookViewCell: UITableViewCell {
     
     bookView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 150)
   }
+  
+  private func setupBookView() {
+    bookView = BookView()
+    addSubview(bookView!)
+  }
 }
 
 public class ListerProfileViewCell: UITableViewCell {
   
   private var userImageView: UIImageView?
   private var nameLabel: UILabel?
+  private var listTypeLabel: UILabel?
   private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
   
@@ -201,6 +219,7 @@ public class ListerProfileViewCell: UITableViewCell {
     
     setupUserImage()
     setupNameLabel()
+    setupListTypeLabel()
     setupListDateLabel()
     setupListDateTitle()
   }
@@ -213,8 +232,10 @@ public class ListerProfileViewCell: UITableViewCell {
     super.layoutSubviews()
     
     userImageView?.anchorToEdge(.Left, padding: 16, width: 36, height: 36)
-
-    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 160)
+    
+    nameLabel?.align(.ToTheRightMatchingTop, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
+    
+    listTypeLabel?.align(.ToTheRightMatchingBottom, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
 
     listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
     
@@ -230,6 +251,12 @@ public class ListerProfileViewCell: UITableViewCell {
     nameLabel = UILabel()
     nameLabel?.font = UIFont.asapRegular(12)
     addSubview(nameLabel!)
+  }
+  
+  private func setupListTypeLabel() {
+    listTypeLabel = UILabel()
+    listTypeLabel?.font = UIFont.asapBold(12)
+    addSubview(listTypeLabel!)
   }
   
   private func setupListDateTitle() {
@@ -251,32 +278,40 @@ public class ListerProfileViewCell: UITableViewCell {
     guard let listing = listing, let user = listing.user where user._id != nil else { return }
     
     if let url = user.image, let nsurl = NSURL(string: url) {
-      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_User_Images", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
-        if let this = self { return Toucan(image: image).resize(this.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image }
-        else { return image }
-      })
+//      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_User_Images", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
+//        if let this = self { return Toucan(image: image).resize(this.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image }
+//        else { return image }
+//      })
     }
     
-    nameLabel?.text = user.username ?? user.getName()
-    
-    // NOTE: DONT FORGET THESE CODES OMFG
-    // converts the date strings sent from the server to local time strings
-    if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
+    Async.background { [weak self] in
+      
+      Async.main { [weak self] in
+        self?.nameLabel?.text = user.username ?? user.getName()
+        self?.listTypeLabel?.text = listing.getListTypeText() ?? ""
+      }
+      
+      // NOTE: DONT FORGET THESE CODES OMFG
+      // converts the date strings sent from the server to local time strings
+      if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
         let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
-    {
-      let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
-      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+      {
+        let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
+        coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+        
+        Async.main { [weak self] in
+          self?.listDateTitle?.attributedText = coloredString
+          self?.listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
+        }
+      }
       
-      listDateTitle?.attributedText = coloredString
-      
-      listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
+    }.main { [weak self] in
+      // not really sure, but the book view covers this view.
+      // so I had to set the z position to go over the book view
+      // then set the background color to clear
+      self?.backgroundColor = .clearColor()
+      self?.layer.zPosition = 1
     }
-    
-    // not really sure, but the book view covers this view.
-    // so I had to set the z position to go over the book view
-    // then set the background color to clear
-    backgroundColor = .clearColor()
-    layer.zPosition = 1
   }
 }
 
@@ -284,7 +319,6 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private var priceLabel: UILabel?
   private var conditionLabel: UILabel?
-  private var conditionImageView: UIImageView?
   private var notesTitle: UILabel?
   private var notesTextViewContainer: UIView?
   private var notesTextView: UITextView?
@@ -314,6 +348,8 @@ public class ListerAttributesViewCell: UITableViewCell {
     
     callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
     
+    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
@@ -321,13 +357,16 @@ public class ListerAttributesViewCell: UITableViewCell {
     notesTextViewContainer?.anchorAndFillEdge(.Top, xPad: 12, yPad: 72, otherSize: frame.height - 72 - 16)
     notesTextView?.fillSuperview()
     
-    let gradient = CAGradientLayer(layer: notesTextViewContainer!.layer)
-    gradient.frame = notesTextViewContainer!.bounds
-    gradient.colors = [UIColor.clearColor().CGColor, UIColor.blueColor().CGColor]
-    gradient.startPoint = CGPoint(x: 0.0, y: 1.0)
-    gradient.endPoint = CGPoint(x: 0.0, y: 0.85)
-    
-    notesTextViewContainer?.layer.mask = gradient
+    if let container = notesTextViewContainer {
+      
+      var gradient: CAGradientLayer? = CAGradientLayer(layer: container.layer)
+      gradient?.frame = notesTextViewContainer!.bounds
+      gradient?.colors = [UIColor.clearColor().CGColor, UIColor.blueColor().CGColor]
+      gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
+      gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
+      notesTextViewContainer?.layer.mask = gradient
+      gradient = nil
+    }
   }
   
   private func setupPriceLabel() {
@@ -353,14 +392,10 @@ public class ListerAttributesViewCell: UITableViewCell {
     addSubview(conditionLabel!)
   }
   
-  private func setupConditionImageView() {
-    conditionImageView = UIImageView()
-    addSubview(conditionImageView!)
-  }
-  
   private func setupNotesTitle() {
     notesTitle = UILabel()
     notesTitle?.font = UIFont.asapBold(12)
+    notesTitle?.text = "Notes:"
     addSubview(notesTitle!)
   }
   
@@ -377,60 +412,63 @@ public class ListerAttributesViewCell: UITableViewCell {
   }
   
   public func setListing(listing: Listing?) {
-    guard let listing = listing else { return }
     
-    if let price = listing.price {
-      let string = "Desired Price: $\(price)"
-      let coloredString = NSMutableAttributedString(string: string)
-      coloredString.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 13))
-      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 13))
+    Async.background { [weak self, weak listing] in
       
-      priceLabel?.attributedText = coloredString
-    }
-    
-//    if let image = listing.getConditionImage() {
-//      let toucan = Toucan(image: image).resize(conditionImageView!.frame.size)
-//      conditionImageView?.image = toucan.image
-//    }
-    if let image = UIImage(named: "Icon-CallButton") {
-//      let toucan = Toucan(image: image).resize(callButton!.frame.size)
-//      callButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
-    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
-    
-    if let image = UIImage(named: "Icon-MessageButton") {
-//      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
-//      chatButton?.setImage(toucan.image, forState: .Normal)
-    }
-    
-    if let text = listing.getConditionText() {
-      let string = "Condition: \(text)"
-      let coloredString = NSMutableAttributedString(string: string)
-      coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+      let string1 = "Desired Price: $\(listing?.price ?? "")"
+      let coloredString1 = NSMutableAttributedString(string: string1)
+      coloredString1.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 13))
+      coloredString1.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 13))
       
-      conditionLabel?.attributedText = coloredString
-    }
-    
-    notesTitle?.text = "Notes:"
-    
-    if let notes = listing.notes {
+      Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
       
-      let paragraphStyle = NSMutableParagraphStyle()
-      paragraphStyle.alignment = .Justified
+      // NOTE: correct way to handle memory management with toucan
+      // init toucan
+      var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
       
-      let attributedString = NSAttributedString(string: notes, attributes: [
-        NSParagraphStyleAttributeName: paragraphStyle,
+      Async.main { [weak self] in
+        self?.callButton?.setImage(toucan1?.image, forState: .Normal)
+        // deinit toucan
+        toucan1 = nil
+      }
+      
+      var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
+      
+      Async.main { [weak self] in
+        self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
+        toucan2 = nil
+      }
+      
+      let string2 = "Condition: \(listing?.getConditionText() ?? "")"
+      let coloredString2 = NSMutableAttributedString(string: string2)
+      coloredString2.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+      
+      Async.main { [weak self] in
+        self?.conditionLabel?.attributedText = coloredString2
+      }
+      
+      // create paragraph style class
+      var paragraphStyle: NSMutableParagraphStyle? = NSMutableParagraphStyle()
+      paragraphStyle?.alignment = .Justified
+      
+      let attributedString: NSAttributedString = NSAttributedString(string: listing?.notes ?? "", attributes: [
+        NSParagraphStyleAttributeName: paragraphStyle!,
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
-        NSForegroundColorAttributeName: UIColor.sexyGray(),
+        NSForegroundColorAttributeName: UIColor.blackColor(),
         NSFontAttributeName: UIFont.asapRegular(12)
       ])
       
-      notesTextView?.attributedText = attributedString
+      // dealloc paragraph style
+      paragraphStyle = nil
+      
+      Async.main { [weak self] in
+        self?.notesTextView?.attributedText = attributedString
+      }
+      
+    }.main { [weak self] in
+      // same things is happening as the view view before this
+      self?.layer.zPosition = 2
     }
-    
-    // same things is happening as the view view before this
-    layer.zPosition = 2
   }
 }
 

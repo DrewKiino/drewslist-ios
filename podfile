@@ -35,18 +35,21 @@ pod 'Gifu'
 pod 'Former'
 pod 'NVActivityIndicatorView'
 pod 'LTMorphingLabel'
+pod 'CWStatusBarNotification'
 
 # pubsub libs
 pod 'Signals'
 
 # event handling
 pod 'PromiseKit'
+pod 'AsyncSwift'
 
 # view libs
 pod 'Neon'
 
 # image libs
-pod 'HanekeSwift'
+# pod 'HanekeSwift'
+pod 'SDWebImage'
 pod 'Toucan'
 
 # data storage libs

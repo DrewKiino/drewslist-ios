@@ -83,24 +83,24 @@ extension String {
 import NVActivityIndicatorView
 import LTMorphingLabel
 import SwiftyTimer
+import CWStatusBarNotification
 
 extension UIView {
   
-  public func showLoadingScreen() {
+  public func showLoadingScreen(heightOffset: CGFloat? = nil) {
   
     subviews.forEach {
-      if let view: UIView? = $0 where $0.tag == 1337 { view?.removeFromSuperview() }
-      else if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
+      if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
       else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
     }
     
-    let backgroundView = UIView(frame: CGRectMake(0, 64, screen.width, screen.height))
+    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : 64, screen.width, screen.height))
     backgroundView.tag = 1337
     backgroundView.backgroundColor = .whiteColor()
     addSubview(backgroundView)
     
     let activityView = NVActivityIndicatorView(
-      frame: screen,
+      frame: CGRectMake(0, heightOffset != nil ? heightOffset! : 0, screen.width, screen.height),
       type: .Pacman,
       color: UIColor.sweetBeige(),
       size: CGSizeMake(48, 48)
@@ -109,7 +109,7 @@ extension UIView {
     activityView.startAnimation()
     addSubview(activityView)
     
-    let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8, 100, 48))
+    let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8 + (heightOffset != nil ? heightOffset! : 0), 100, 48))
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
@@ -127,7 +127,7 @@ extension UIView {
       }
     }
     
-    NSTimer.after(10.0) { [weak self] in self?.hideLoadingScreen() }
+    NSTimer.after(30.0) { [weak self] in self?.hideLoadingScreen() }
 //    let randomInt = arc4random_uniform(10) + 0
   }
   
@@ -155,10 +155,63 @@ extension UIView {
       }
     }
   }
+  
+  public func displayNotification(text: String) {
+    
+    let notification = CWStatusBarNotification()
+    notification.notificationAnimationInStyle = .Bottom
+    notification.notificationAnimationOutStyle = .Bottom
+    notification.notificationStyle = .StatusBarNotification
+
+    let loadingLabel = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
+    loadingLabel.text = text
+    loadingLabel.textAlignment = .Center
+    loadingLabel.font = UIFont.asapBold(12)
+    loadingLabel.textColor = .whiteColor()
+    loadingLabel.morphingEffect = .Evaporate
+    loadingLabel.backgroundColor = .bareBlue()
+    
+    NSTimer.every(0.5) { [weak loadingLabel] in
+      switch loadingLabel?.text {
+      case .Some(text): loadingLabel?.text = "\(text) ."
+      case .Some("\(text) ."): loadingLabel?.text = "\(text) . ."
+      case .Some("\(text) . ."): loadingLabel?.text = "\(text) . . ."
+      case .Some("\(text) . . ."): loadingLabel?.text = text
+      default: break
+      }
+    }
+    
+    notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
+  }
+  
+  public func showComingSoonScreen() {
+    subviews.forEach { if let view: UILabel? = $0 as? UILabel where $0.tag == 1337 { view?.removeFromSuperview() } }
+    
+    let label = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
+    label.text = "Coming Soon!"
+    label.textAlignment = .Center
+    label.font = .asapRegular(16)
+    label.tag = 1337
+    
+    addSubview(label)
+  }
 }
 
+import SDWebImage
 
-
+extension UIImageView {
+  
+  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock) {
+    guard let url = url, let nsurl = NSURL(string: url) else { return }
+    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
+      .CacheMemoryOnly,
+      .ContinueInBackground,
+//      .ProgressiveDownload,
+      .AvoidAutoSetImage,
+      .LowPriority
+    ], completed: completionHandler)
+  }
+}
 
 
 

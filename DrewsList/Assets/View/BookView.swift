@@ -8,15 +8,19 @@
 
 import Foundation
 import UIKit
-import Toucan
-import Haneke
+import SDWebImage
+import Async
 
 public class BookView: UIView {
   
   private let controller = BookController()
   
+  
   public var attributesContainer: UIView?
+  
   public var imageView: UIImageView?
+  public var image: UIImage?
+  
   public var title: UILabel?
   public var author: UILabel?
   public var edition: UILabel?
@@ -38,6 +42,7 @@ public class BookView: UIView {
     setupIsbnLabel()
     setupDescriptionLabel()
     setupActivityView()
+    setupSelf()
   }
   
   public func setBook(book: Book?) { controller.model.book = book ?? Book() }
@@ -49,7 +54,6 @@ public class BookView: UIView {
     
     imageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 100, height: 150)
     
-    
     attributesContainer?.alignAndFill(align: .ToTheRightCentered, relativeTo: imageView!, padding: 8)
     
     activityView?.anchorInCenter(width: 24, height: 24)
@@ -59,25 +63,21 @@ public class BookView: UIView {
     edition?.alignAndFillWidth(align: .UnderCentered, relativeTo: author!, padding: 0, height: 12)
     isbn?.alignAndFillWidth(align: .UnderCentered, relativeTo: edition!, padding: 0, height: 12)
     desc?.alignAndFillWidth(align: .UnderCentered, relativeTo: isbn!, padding: 0, height: 48)
-    
-    
-    layer.shadowColor = UIColor.darkGrayColor().CGColor
+
     layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0).CGPath
+  }
+  
+  private func setupSelf() {
+    layer.shadowColor = UIColor.darkGrayColor().CGColor
     layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
     layer.shadowOpacity = 1.0
     layer.shadowRadius = 2
     layer.masksToBounds = true
     clipsToBounds = false
-    
-    
-    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
-      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
-    }
   }
   
   private func setupImageView() {
     imageView = UIImageView()
-    
     addSubview(imageView!)
   }
   
@@ -144,7 +144,6 @@ public class BookView: UIView {
   }
   
   private func setupDataBinding() {
-    
     controller.get_Book().listen(self) { [weak self] book in
       self?._setBook(book)
     }
@@ -152,48 +151,91 @@ public class BookView: UIView {
   
   private func _setBook(book: Book?) {
     
-    if let book = book {
+    imageView?.image = nil
+    imageView?.alpha = 0.0
+    
+    let duration: NSTimeInterval = 0.5
+    
+    Async.background { [weak self, weak book] in
       
-      activityView?.hidden = false
-      activityView?.startAnimating()
-      
-      // fixtures
-//      book.title = "The Crazy and Adventurous Voyage of Samson and his Trusty Dog Jayce the Lowrider Part 4"
-//      book.authors.first?.name = "Harry Johnson, Floyd Bernson, Mary Harriet, Christopher Jayce the 2nd"
-      
-      title?.text = book.title
-      
-      author?.text = (book.authors.map { $0.name != nil ? ($0.name!.componentsSeparatedByString(",") as NSArray).componentsJoinedByString(", ") : "" } as NSArray).componentsJoinedByString(", ")
-      
-      edition?.text = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""
-      
-      isbn?.text = book.ISBN13 != nil ? "ISBN:\t\t\(book.ISBN13!)" : book.ISBN10 != nil ? "ISBN:\t\t\(book.ISBN10)" : ""
-      
-      desc?.text = book.description?.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: nil)
-      
-      title?.hidden = true
-      author?.hidden = true
-      edition?.hidden = true
-      isbn?.hidden = true
-      desc?.hidden = true
-      
-      if let imageView = imageView, url: String! = book.largeImage ?? book.mediumImage ?? book.smallImage ?? "", let nsurl = NSURL(string: url) where !url.isEmpty {
+      // MARK: Images
+      if book != nil && book!.hasImageUrl() {
+        self?.imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
+          Async.background { [weak self] in
+            
+            // NOTE: correct way to handle memory management with toucan
+            // get size
+            // init toucan
+            var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
+            // deinit size
+            
+            Async.main { [weak self] in
+              
+              // set the image view's image
+              self?.imageView?.image = toucan1?.image
+              
+              UIView.animateWithDuration(duration) { [weak self] in
+                self?.imageView?.alpha = 1.0
+              }
+              
+              // deinit toucan
+              toucan1 = nil
+              
+              // stop the loading animation
+              self?.stopLoading()
+            }
+          }
+        }
+      } else {
         
-        imageView.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BookImages", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
-          self?.stopLoading()
-          //        return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).maskWithRoundedRect(cornerRadius: 5).image
-          return Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
-        })
+        var toucan2: Toucan? = Toucan(image: UIImage(named: "book-placeholder")!).resize(self?.imageView?.frame.size)
         
-        Shared.imageCache.fetch(URL: nsurl, formatName: "BookImages").onSuccess { [weak self] image in
+        Async.main { [weak self] in
+          self?.imageView?.image = toucan2?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.imageView?.alpha = 1.0
+          }
+          
+          toucan2 = nil
+          
+          // stop the loading animation
           self?.stopLoading()
         }
-      } else { stopLoading() }
+      }
       
-      NSTimer.after(1.0) { [weak self] in
-        self?.stopLoading()
+      
+      
+      // MARK: Attributes
+      guard let book = book else { return }
+      let title = book.title
+      let authors = (book.authors.map { $0.name != nil ? ($0.name!.componentsSeparatedByString(",") as NSArray).componentsJoinedByString(", ") : "" } as NSArray).componentsJoinedByString(", ")
+      let edition = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""
+      let isbn = book.ISBN13 != nil ? "ISBN:\t\t\(book.ISBN13!)" : book.ISBN10 != nil ? "ISBN:\t\t\(book.ISBN10)" : ""
+      let desc = book.description?.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: nil)
+      
+      Async.main { [weak self] in
+        
+        self?.title?.text = title
+        self?.author?.text = authors
+        self?.edition?.text = edition
+        self?.isbn?.text = isbn
+        self?.desc?.text = desc
+        
+        NSTimer.after(1.0) { [weak self] in self?.stopLoading() }
       }
     }
+  }
+  
+  private func startLoading() {
+    activityView?.hidden = false
+    activityView?.startAnimating()
+    
+    title?.hidden = true
+    author?.hidden = true
+    edition?.hidden = true
+    isbn?.hidden = true
+    desc?.hidden = true
   }
   
   private func stopLoading() {

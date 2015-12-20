@@ -16,31 +16,26 @@ public class ListFeedController {
   
   private var refrainTimer: NSTimer?
   
-//  private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
-  private let serverUrl = "http://localhost:1337/listing"
+  private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
+//  private let serverUrl = "http://localhost:1337/listing"
   
-  public init() {
-    getListingsFromServer(0)
-  }
+  public init() {}
   
   public func getModel() -> ListFeedModel { return model }
   
-  public func getListingsFromServer(skip: Int? = nil) {
+  public func getListingsFromServer(skip: Int? = nil, listType: String? = nil) {
     
     // lock the view
     model.shouldLockView = true
     
-    Alamofire.request(.GET, skip != nil ? "\(serverUrl)?skip=\(skip!)" : serverUrl, encoding: .URL)
+    Alamofire.request(.GET, skip != nil ? listType != nil ? "\(serverUrl)?skip=\(skip!)&listType=\(listType!)" : "\(serverUrl)?skip=\(skip!)" : serverUrl, encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {
         log.error(error)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
-        for json in jsonArray {
-          let listing = Listing(json: json)
-          self?.model.listings.append(listing)
-        }
+        for json in jsonArray { self?.model.listings.append(Listing(json: json)) }
         
         // to safeguard against multiple server calls when the server has no more data
         // to send back, we use a timer to disable this controller's server calls

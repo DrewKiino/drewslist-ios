@@ -65,10 +65,20 @@ public class Listing: Mappable {
   
   public func getConditionText() -> String? {
     guard let condition = condition else { return nil }
+    let isSelling = getListTypeText() == "Selling" ? true : false
     switch condition {
-    case "1": return "\'Beat\'"
-    case "2": return "\'Used\'"
-    case "3": return "\'Like New\'"
+    case "1": return isSelling ? "\'Really Used\'" : "\'Any Use\'"
+    case "2": return isSelling ? "\'Used\'" : "\'Usable\'"
+    case "3": return isSelling ? "\'Barely Used\'" : "\'Not Used\'"
+    default: return nil
+    }
+  }
+  
+  public func getListTypeText() -> String? {
+    guard let listType = listType else { return nil }
+    switch listType {
+    case "buying": return "Buying"
+      case "selling": return "Selling"
     default: return nil
     }
   }
@@ -100,6 +110,7 @@ public class Listing: Mappable {
     
     if (user      == nil) { user      <- map["user"] }
     if (book      == nil) { book      <- map["book"] }
+    if (listType  == _id) { listType  <- map["listType"] }
     if (price     == _id) { price     <- map["price"] }
     if (notes     == _id) { notes     <- map["notes"] }
     if (cover     == _id) { cover     <- map["cover"] }
