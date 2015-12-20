@@ -18,33 +18,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
   
-  private let socket = Sockets.sharedInstance()
-
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
-    // init the root view
-    let tabView = TabView()
-    
-    /*
-    * Use this code to get the bounds of the screen
-    *
-    *       UIScreen.mainScreen().bounds
-    *
-    */
-    tabView.view.frame = UIScreen.mainScreen().bounds
-    
-    // set the window to match the screen's bounds
-    window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    
-    // set the root view as the window's root view
-    window!.rootViewController = tabView
-    
-    // commit change
-    window!.makeKeyAndVisible()
+    setupRootView()
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
@@ -94,8 +74,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
       log.info("received remote notification from server: \(alert)")
       // publish to server that the app received the push notification
-      socket.emit("didReceivePushNotification", ["user_id": user_id], forceConnection: true)
+//      socket.emit("didReceivePushNotification", ["user_id": user_id], forceConnection: true)
     }
+  }
+  
+  private func setupRootView() {
+    
+    // init the root view
+    var tabView: TabView? = TabView()
+    
+    /*
+    * Use this code to get the bounds of the screen
+    *
+    *       UIScreen.mainScreen().bounds
+    *
+    */
+    tabView?.view.frame = UIScreen.mainScreen().bounds
+    
+    // set the window to match the screen's bounds
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    
+    // set the root view as the window's root view
+    window?.rootViewController = tabView
+    tabView = nil
+    
+    // commit change
+    window?.makeKeyAndVisible()
   }
 }
 

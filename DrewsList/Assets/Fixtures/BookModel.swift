@@ -125,6 +125,14 @@ public class Book: Mappable {
     mediumImage     <- map["mediumImage"]
     largeImage      <- map["largeImage"]
   }
+  
+  public func hasImageUrl() -> Bool {
+    return (largeImage ?? mediumImage ?? smallImage ?? nil) != nil ?  true : false
+  }
+  
+  public func getImageUrl() -> String? {
+    return largeImage ?? mediumImage ?? smallImage ?? nil
+  }
 }
 
 public class Author: Mappable {

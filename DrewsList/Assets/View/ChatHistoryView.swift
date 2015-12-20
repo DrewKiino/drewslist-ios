@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Neon
-import Haneke
+import SDWebImage
 
 public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableViewDataSource {
   

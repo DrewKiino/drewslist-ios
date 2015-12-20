@@ -44,6 +44,7 @@
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
 		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
 		EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949A1BF30FCC00E228A9 /* UserModel.swift */; };
+		EE4B44441C26632D0069E452 /* Toucan.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B44431C26632D0069E452 /* Toucan.swift */; };
 		EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D8E1C11F1DF00637458 /* TabView.swift */; };
 		EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */; };
 		EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */; };
@@ -52,6 +53,9 @@
 		EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */; };
 		EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */; };
 		EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */; };
+		EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */; };
+		EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */; };
+		EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */; };
 		EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */; };
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
@@ -142,6 +146,7 @@
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		EE4B44431C26632D0069E452 /* Toucan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toucan.swift; sourceTree = "<group>"; };
 		EE4B9D8E1C11F1DF00637458 /* TabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMAnimatedTabBarController.swift; sourceTree = "<group>"; };
 		EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMItemAnimationProtocol.swift; sourceTree = "<group>"; };
@@ -150,6 +155,9 @@
 		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFumeAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedView.swift; sourceTree = "<group>"; };
+		EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedModel.swift; sourceTree = "<group>"; };
+		EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedController.swift; sourceTree = "<group>"; };
 		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
@@ -287,6 +295,7 @@
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE1B73791C236FDF00BD942C /* ListFeedModel.swift */,
+				EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -312,6 +321,7 @@
 				EE8918BB1C1169A800FCF031 /* UserProfileViewDemo.swift */,
 				EE1B73771C236FD000BD942C /* ListFeedView.swift */,
 				EE1B737D1C2377C600BD942C /* DLNavigationController.swift */,
+				EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -331,6 +341,7 @@
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
 				EE1B737B1C236FE500BD942C /* ListFeedController.swift */,
+				EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -344,6 +355,14 @@
 				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
 			);
 			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		EE4B44421C2663260069E452 /* Toucan */ = {
+			isa = PBXGroup;
+			children = (
+				EE4B44431C26632D0069E452 /* Toucan.swift */,
+			);
+			name = Toucan;
 			sourceTree = "<group>";
 		};
 		EE4B9D921C11F37700637458 /* RAMTabBar */ = {
@@ -411,6 +430,7 @@
 		EE5E669C1BE1626600BCF1DE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EE4B44421C2663260069E452 /* Toucan */,
 				EE4B9D921C11F37700637458 /* RAMTabBar */,
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
 				3FB40FA51C025BE500743C74 /* Atlantis.swift */,
@@ -701,6 +721,7 @@
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
+				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
@@ -710,6 +731,7 @@
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
+				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
 				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
@@ -732,6 +754,7 @@
 				EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
+				EE4B44441C26632D0069E452 /* Toucan.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
@@ -749,6 +772,7 @@
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
+				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
 				EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */,
 			);
@@ -888,6 +912,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

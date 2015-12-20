@@ -15,4 +15,7 @@ public class UserProfileModel {
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
+  
+  public let _shouldRefrainFromCallingServer = Signal<Bool>()
+  public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
 }
