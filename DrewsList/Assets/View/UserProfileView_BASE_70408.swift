@@ -9,13 +9,8 @@
 import Foundation
 import UIKit
 import Neon
-<<<<<<< HEAD
 import Toucan
 import Haneke
-=======
-
-import SDWebImage
->>>>>>> origin/master
 import Signals
 
 public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -40,6 +35,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   public var paddingView: UIView?
   public var profileImg: UIImageView?
   public var profileUsername: UILabel?
+  public var settingsButton: UIButton?
   public var tabView: UIView?
   public var bookShelf: UITableView?
   public var saleListView: UICollectionView?
@@ -70,7 +66,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     setupProfileImg()
     setupBookshelf()
     setupUsernameLabel()
-    setupButtons()
     
     setRootViewTitle("Your List")
   }
@@ -225,24 +220,11 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   }
   
   private func setupButtons() {
-    //settingsButton = UIBarButtonItem()
-//    //if let settingsButton = settingsButton {
-//      let button: UIButton = UIButton()
-//      //set image for button
-//      button.setImage(UIImage(named: "Icon-SettingsGear"), forState: UIControlState.Normal)
-//      //add function for button
-//      button.addTarget(self, action: "settingsButtonPressed", forControlEvents: UIControlEvents.TouchUpInside)
-//      //set frame
-//      button.frame = CGRectMake(0, 0, screenSize.width/20, screenSize.width/20)
-//    
-    let myImage = UIImage(named: "Icon-SettingsGear")
-    let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
-//      let settingsGearImage = Toucan(image: UIImage(named: "Icon-SettingsGear")!).resize(size: CGSize(width: screenSize.width/20, height: screenSize.width/20), fitMode: Toucan.Resize.FitMode)
-    
-      let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
-    
-      //settingsButton.action
-      rootView?.navigationItem.rightBarButtonItem = settingsButton
+    settingsButton = UIButton()
+    if let settingsButton = settingsButton {
+      settingsButton.setImage(UIImage(named: "Icon-SettingsGear") as UIImage?, forState: .Normal)
+      bgView?.addSubview(settingsButton)
+    }
   }
   
   private func setupExtraViews() {
@@ -252,12 +234,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       arrow.alpha = 0.0
       bookShelf?.addSubview(arrow)
     }
-  }
-  // MARK: Button Action
-  
-  public func settingsButtonPressed(){
-    let settingsView = SettingsView()
-    rootView?.navigationController?.pushViewController(settingsView, animated: true)
   }
   
   // MARK: Table View Delegates
