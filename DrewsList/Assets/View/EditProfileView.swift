@@ -1,5 +1,5 @@
 //
-//  SettingsView.swift
+//  EditProfileView.swift
 //  DrewsList
 //
 //  Created by Kevin Mowers on 12/19/15.
@@ -9,7 +9,7 @@
 import Foundation
 import Former
 
-public class SettingsView: FormViewController {
+public class EditProfileView: FormViewController {
   
   private let screenSize = UIScreen.mainScreen().bounds
   
@@ -18,32 +18,20 @@ public class SettingsView: FormViewController {
     super.viewDidLoad()
     tableView.scrollEnabled = false
     
-    let editProfileRow = LabelRowFormer<FormLabelCell>()
+    let changePictureRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
-        row.text = "Edit Profile"
+        row.text = "Change Picture"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
           cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
-        let editProfileView = EditProfileView()
-        self.navigationController?.pushViewController(editProfileView, animated: true)
+        //navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
     }
     
-    let accountSettingsRow = LabelRowFormer<FormLabelCell>()
+    let firstNameRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
-        row.text = "Account Settings"
-        row.cellUpdate { cell in
-          cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapRegular(14)
-        }
-      }.onSelected { row in
-        // Do Something
-    }
-    
-    let helpCenterRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.text = "Help Center"
+        row.text = "First Name"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
           cell.titleLabel?.font = UIFont.asapRegular(14)
@@ -52,9 +40,9 @@ public class SettingsView: FormViewController {
         // Do Something
     }
     
-    let termsPrivacyRow = LabelRowFormer<FormLabelCell>()
+    let lastNameRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
-        row.text = "Terms & Privacy"
+        row.text = "Last Name"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
           cell.titleLabel?.font = UIFont.asapRegular(14)
@@ -63,17 +51,17 @@ public class SettingsView: FormViewController {
         // Do Something
     }
     
-    let logoutRow = LabelRowFormer<FormLabelCell>()
+    let usernameRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
-        row.text = "Log Out"
+        row.text = "Username"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapBold(14)
+          cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
         // Do Something
     }
-  
+    
     let blankRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
         row.rowHeight = screenSize.height
@@ -82,12 +70,12 @@ public class SettingsView: FormViewController {
         
     }
     
-
+    
     let header = LabelViewFormer<FormLabelHeaderView>() { view in
       view.titleLabel.text = "Label Header"
     }
     
-    let section = SectionFormer(rowFormer: editProfileRow, accountSettingsRow, helpCenterRow, termsPrivacyRow, logoutRow, blankRow)
+    let section = SectionFormer(rowFormer: changePictureRow, firstNameRow, lastNameRow, usernameRow, blankRow)
       .set(headerViewFormer: header)
     former.append(sectionFormer: section)
     

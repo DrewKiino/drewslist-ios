@@ -393,15 +393,15 @@ public class ListerAttributesViewCell: UITableViewCell {
 //      conditionImageView?.image = toucan.image
 //    }
     if let image = UIImage(named: "Icon-CallButton") {
-      let toucan = Toucan(image: image).resize(callButton!.frame.size)
-      callButton?.setImage(toucan.image, forState: .Normal)
+//      let toucan = Toucan(image: image).resize(callButton!.frame.size)
+//      callButton?.setImage(toucan.image, forState: .Normal)
     }
     
     chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
     
     if let image = UIImage(named: "Icon-MessageButton") {
-      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
-      chatButton?.setImage(toucan.image, forState: .Normal)
+//      let toucan = Toucan(image: image).resize(chatButton!.frame.size)
+//      chatButton?.setImage(toucan.image, forState: .Normal)
     }
     
     if let text = listing.getConditionText() {
