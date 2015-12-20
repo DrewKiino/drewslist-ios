@@ -23,6 +23,7 @@ public class SettingsView: FormViewController {
         row.text = "Edit Profile"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
+          cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
         // Do Something
@@ -33,6 +34,7 @@ public class SettingsView: FormViewController {
         row.text = "Account Settings"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
+          cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
         // Do Something
@@ -43,6 +45,7 @@ public class SettingsView: FormViewController {
         row.text = "Help Center"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
+          cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
         // Do Something
@@ -53,6 +56,7 @@ public class SettingsView: FormViewController {
         row.text = "Terms & Privacy"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
+          cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
         // Do Something
@@ -63,6 +67,7 @@ public class SettingsView: FormViewController {
         row.text = "Log Out"
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
+          cell.titleLabel?.font = UIFont.asapBold(14)
         }
       }.onSelected { row in
         // Do Something
