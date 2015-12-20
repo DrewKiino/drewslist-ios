@@ -8,7 +8,6 @@
 
 import Foundation
 import Former
-import Toucan
 
 public class EditProfileView: FormViewController {
   

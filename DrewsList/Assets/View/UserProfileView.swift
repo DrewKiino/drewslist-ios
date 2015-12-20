@@ -9,13 +9,7 @@
 import Foundation
 import UIKit
 import Neon
-<<<<<<< HEAD
-import Toucan
-import Haneke
-=======
-
 import SDWebImage
->>>>>>> origin/master
 import Signals
 
 public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -129,22 +123,10 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   private func fetchBackgroundImage() {
     guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
-    
-    bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-      self.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
-      return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
-    })
-    
-    Shared.imageCache.fetch(URL: nsurl, formatName: "BGImage").onSuccess { [weak self] image in
-      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
-    }
   }
   
   private func fetchProfileImage() {
     guard let url = model.user?.image, let nsurl = NSURL(string: url) else { return }
-    profileImg?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "ProfileImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-      return Toucan(image: image).resize(self.profileImg!.frame.size, fitMode: .Crop).maskWithEllipse(borderWidth: 1, borderColor: UIColor.whiteColor()).image
-    })
   }
   
   // MARK: Data Binding
@@ -446,17 +428,9 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     let lister = listing.highestLister?.user
     let listerPrice = listing.highestLister?.price
     
-    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
-      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.imageView!.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor()).image
-      })
-    }
+    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {}
     
-    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
-      cell.listerImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.listerImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
-      })
-    }
+    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {}
     
     if let text = listerPrice {
       let string = "Best Match $\(text)"
