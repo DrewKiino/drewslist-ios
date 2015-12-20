@@ -8,6 +8,7 @@
 
 import Foundation
 import Former
+import Toucan
 
 public class EditProfileView: FormViewController {
   
@@ -21,9 +22,12 @@ public class EditProfileView: FormViewController {
     let changePictureRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
         row.text = "Change Picture"
+        
         row.cellUpdate { cell in
           cell.titleLabel.textColor = UIColor.lightGrayColor()
           cell.titleLabel?.font = UIFont.asapRegular(14)
+          
+          //cell.imageView?.image = Toucan(image: UIImage(named: "j")).maskWithEllipse().image
         }
       }.onSelected { row in
         //navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)

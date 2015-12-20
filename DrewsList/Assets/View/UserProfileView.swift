@@ -251,7 +251,8 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Button Action
   
   public func settingsButtonPressed(){
-    print("PRESSING")
+    let settingsView = SettingsView()
+    rootView?.navigationController?.pushViewController(settingsView, animated: true)
   }
   
   // MARK: Table View Delegates
