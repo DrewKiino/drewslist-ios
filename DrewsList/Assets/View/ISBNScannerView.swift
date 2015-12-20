@@ -29,11 +29,11 @@ public class ISBNScannerView: UIViewController, AVCaptureMetadataOutputObjectsDe
   // MARK: Lifecycle
   
   public override func viewDidLoad() {
-      super.viewDidLoad()
-      self.view.clipsToBounds = false
-      self.view.contentMode = .ScaleToFill
-      previewView = UIView()
-      previewView.clipsToBounds = false
+    super.viewDidLoad()
+    self.view.clipsToBounds = false
+    self.view.contentMode = .ScaleToFill
+    previewView = UIView()
+    previewView.clipsToBounds = false
   }
   
   public override func viewWillAppear(animated: Bool) {

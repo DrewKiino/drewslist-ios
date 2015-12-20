@@ -23,9 +23,9 @@ public class TabView: RAMAnimatedTabBarController {
     super.viewDidLoad()
     
 //    setupFeedView()
-    setupBookListView()
+//    setupBookListView()
 //    setupChatView()
-//    setupISBNScannerView()
+    setupISBNScannerView()
 //    setupActivityView()
 //    setupUserProfileView()
     setupViewControllers()
@@ -46,7 +46,7 @@ public class TabView: RAMAnimatedTabBarController {
     
     // set view controllers
 //    viewControllers = [communityTab!, userProfileView!, chatView!, scannerView!, activityView!]
-    viewControllers = [createListingView!]
+    viewControllers = [scannerView!]
     
     // dealloc reference view controllers
     communityTab = nil
@@ -68,16 +68,16 @@ public class TabView: RAMAnimatedTabBarController {
   
   private func setupChatView() {
     
-    let image = Toucan(image: UIImage(named: "Icon-Message-1")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "Chat", image: image, selectedImage: image)
-    chatView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "Icon-Message-1")).resize(CGSize(width: 24, height: 24))
+    chatView?.tabBarItem = RAMAnimatedTabBarItem(title: "Chat", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupISBNScannerView() {
     
-    let image = Toucan(image: UIImage(named: "Icon-Camera")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "List", image: image, selectedImage: image)
-    scannerView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "Icon-Camera")).resize(CGSize(width: 24, height: 24))
+    scannerView?.tabBarItem = RAMAnimatedTabBarItem(title: "List", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupActivityView() {
