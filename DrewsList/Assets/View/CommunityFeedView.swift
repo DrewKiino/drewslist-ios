@@ -45,6 +45,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     shouldDisableScrollDetection = true
     scrollView?.setContentOffset(CGPointMake(screen.width, 0), animated: false)
     selectPage(.Middle)
+    
+    view.backgroundColor = .whiteColor()
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -166,22 +168,22 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     let velocity: CGFloat = 1.0
     switch page {
     case .Left:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [unowned self] in
-        self.pageSelector?.frame = self.leftPageTitleButton!.frame
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.leftPageTitleButton!.frame
       }, completion: { [weak self] bool in
         self?.shouldDisableScrollDetection = false
       })
     break
     case .Middle:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [unowned self] in
-        self.pageSelector?.frame = self.middlePageTitleButton!.frame
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.middlePageTitleButton!.frame
       }, completion: { [weak self] bool in
         self?.shouldDisableScrollDetection = false
       })
     break
     case .Right:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [unowned self] in
-        self.pageSelector?.frame = self.rightPageTitleButton!.frame
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.rightPageTitleButton!.frame
       }, completion: { [weak self] bool in
         self?.shouldDisableScrollDetection = false
       })

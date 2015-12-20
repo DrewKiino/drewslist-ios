@@ -35,10 +35,7 @@ public class ListFeedController {
         log.error(error)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
-        for json in jsonArray {
-          let listing = Listing(json: json)
-          self?.model.listings.append(listing)
-        }
+        for json in jsonArray { self?.model.listings.append(Listing(json: json)) }
         
         // to safeguard against multiple server calls when the server has no more data
         // to send back, we use a timer to disable this controller's server calls

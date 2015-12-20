@@ -143,18 +143,18 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     let velocity: CGFloat = 1.0
     switch page {
     case .Left:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [unowned self] in
-        self.pageSelector?.frame = self.leftPageTitleButton!.frame
-        }, completion: { [weak self] bool in
-          self?.shouldDisableScrollDetection = false
-        })
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.leftPageTitleButton!.frame
+      }, completion: { [weak self] bool in
+        self?.shouldDisableScrollDetection = false
+      })
       break
     case .Right:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [unowned self] in
-        self.pageSelector?.frame = self.rightPageTitleButton!.frame
-        }, completion: { [weak self] bool in
-          self?.shouldDisableScrollDetection = false
-        })
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.rightPageTitleButton!.frame
+      }, completion: { [weak self] bool in
+        self?.shouldDisableScrollDetection = false
+      })
       break
     }
   }
@@ -204,6 +204,7 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   private func setupDataBinding() {
     model._listings.listen(self) { [weak self] listings in
       self?.reloadData()
+      self?.hideLoadingScreen()
     }
     model._listType.listen(self) { [weak self] listType in
       self?.model.listings.removeAll(keepCapacity: false)
@@ -212,7 +213,6 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
   
   private func setupTableView() {
-    registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
     delegate = self
     dataSource = self
@@ -231,15 +231,12 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    let listing = model.listings[indexPath.row]
-    
-    let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-    
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell {
-      cell.listView?.setListing(listing)
+      cell.listView?.setListing(model.listings[indexPath.row])
+      return cell
     }
     
-    return cell
+    return UITableViewCell()
   }
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {

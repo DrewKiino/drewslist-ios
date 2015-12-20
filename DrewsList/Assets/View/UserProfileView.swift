@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 import Neon
 import Toucan
-import Haneke
+import SDWebImage
 import Signals
+import Async
 
 public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
@@ -123,21 +124,20 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   private func fetchBackgroundImage() {
     guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
     
-    bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-      self.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
-      return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
-    })
-    
-    Shared.imageCache.fetch(URL: nsurl, formatName: "BGImage").onSuccess { [weak self] image in
-      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
-    }
+//    bgViewTop?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "BGImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
+//      self.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+//      return Toucan(image: image).resize(self.bgViewTop!.frame.size, fitMode: .Crop).image
+//    })
+//    
+//    Shared.imageCache.fetch(URL: nsurl, formatName: "BGImage").onSuccess { [weak self] image in
+//      self?.bgView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+//    }
   }
   
   private func fetchProfileImage() {
     guard let url = model.user?.image, let nsurl = NSURL(string: url) else { return }
-    profileImg?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "ProfileImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-      return Toucan(image: image).resize(self.profileImg!.frame.size, fitMode: .Crop).maskWithEllipse(borderWidth: 1, borderColor: UIColor.whiteColor()).image
-    })
+//    profileImg?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "ProfileImage", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in return Toucan(image: image).resize(self.profileImg!.frame.size, fitMode: .Crop).maskWithEllipse(borderWidth: 1, borderColor: UIColor.whiteColor()).image
+//    })
   }
   
   // MARK: Data Binding
@@ -427,16 +427,18 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     let lister = listing.highestLister?.user
     let listerPrice = listing.highestLister?.price
     
-    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
-      cell.imageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_Book_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.imageView!.frame.size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor()).image
-      })
+    let placeholderImage = UIImage(named: "book-placeholder")
+    cell.imageView?.image = placeholderImage
+    cell.imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage) { [weak cell] (image, error, cache, url) in
+      guard let size = cell?.imageView?.frame.size else { return }
+      let toucan = Toucan(image: image).resize(size, fitMode: .Crop).maskWithRoundedRect(cornerRadius: 5, borderWidth: 0.5, borderColor: UIColor.blackColor())
+      cell?.imageView?.image = toucan.image
     }
     
-    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
-      cell.listerImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned cell] image in
-        return Toucan(image: image).resize(cell.listerImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
-      })
+    cell.listerImageView?.dl_setImageFromUrl(tag == 0 ? lister?.image : lister?.image) { [weak cell] (image, error, cache, url) in
+      guard let size = cell?.listerImageView?.frame.size else { return }
+      let toucan = Toucan(image: image).resize(size, fitMode: .Crop).maskWithEllipse()
+      cell?.listerImageView?.image = toucan.image
     }
     
     if let text = listerPrice {
@@ -490,6 +492,7 @@ public class BookCell: UICollectionViewCell {
     setupPriceView()
     setupListerPriceLabel()
     setupPriceLabel()
+    setupConstraints()
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -499,15 +502,18 @@ public class BookCell: UICollectionViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
+    
+//    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
+//      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
+//    }
+  }
+  
+  private func setupConstraints() {
     imageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
     infoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: imageView!, padding: 0, height: 36)
     listerImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 4, width: 24, height: 24)
     infoPriceView?.alignAndFill(align: .ToTheRightCentered, relativeTo: listerImageView!, padding: 4)
     infoPriceView?.groupAndFill(group: .Vertical, views: [userPriceLabel!, listerPriceLabel!], padding: 0)
-    
-    if let image = UIImage(named: "book-placeholder"), let imageView = imageView {
-      imageView.image = Toucan(image: image).resize(imageView.frame.size, fitMode: .Clip).image
-    }
   }
   
   private func setupImageView() {

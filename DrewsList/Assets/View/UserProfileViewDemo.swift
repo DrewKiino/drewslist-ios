@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Toucan
-import Haneke
+import SDWebImage
 import Neon
 
 public class UserProfileViewDemo:
@@ -140,7 +140,7 @@ public class UserProfileViewDemo:
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    profileImage.hnk_setImageFromURL(NSURL(string: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")!)
+//    profileImage.hnk_setImageFromURL(NSURL(string: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")!)
   }
   
   override public func viewWillLayoutSubviews() {

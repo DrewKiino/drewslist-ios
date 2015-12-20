@@ -44,6 +44,7 @@
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
 		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
 		EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949A1BF30FCC00E228A9 /* UserModel.swift */; };
+		EE4B44441C26632D0069E452 /* Toucan.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B44431C26632D0069E452 /* Toucan.swift */; };
 		EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D8E1C11F1DF00637458 /* TabView.swift */; };
 		EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */; };
 		EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */; };
@@ -145,6 +146,7 @@
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		EE4B44431C26632D0069E452 /* Toucan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toucan.swift; sourceTree = "<group>"; };
 		EE4B9D8E1C11F1DF00637458 /* TabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMAnimatedTabBarController.swift; sourceTree = "<group>"; };
 		EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMItemAnimationProtocol.swift; sourceTree = "<group>"; };
@@ -355,6 +357,14 @@
 			path = Fixtures;
 			sourceTree = "<group>";
 		};
+		EE4B44421C2663260069E452 /* Toucan */ = {
+			isa = PBXGroup;
+			children = (
+				EE4B44431C26632D0069E452 /* Toucan.swift */,
+			);
+			name = Toucan;
+			sourceTree = "<group>";
+		};
 		EE4B9D921C11F37700637458 /* RAMTabBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -420,6 +430,7 @@
 		EE5E669C1BE1626600BCF1DE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EE4B44421C2663260069E452 /* Toucan */,
 				EE4B9D921C11F37700637458 /* RAMTabBar */,
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
 				3FB40FA51C025BE500743C74 /* Atlantis.swift */,
@@ -743,6 +754,7 @@
 				EEB0E2791C22851A0007DE13 /* AcctSettingView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
+				EE4B44441C26632D0069E452 /* Toucan.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
@@ -900,6 +912,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

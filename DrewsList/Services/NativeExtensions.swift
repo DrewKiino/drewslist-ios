@@ -94,7 +94,7 @@ extension UIView {
       else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
     }
     
-    let backgroundView = UIView(frame: CGRectMake(0, 64, screen.width, screen.height))
+    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : 64, screen.width, screen.height))
     backgroundView.tag = 1337
     backgroundView.backgroundColor = .whiteColor()
     addSubview(backgroundView)
@@ -127,7 +127,7 @@ extension UIView {
       }
     }
     
-    NSTimer.after(10.0) { [weak self] in self?.hideLoadingScreen() }
+    NSTimer.after(30.0) { [weak self] in self?.hideLoadingScreen() }
 //    let randomInt = arc4random_uniform(10) + 0
   }
   
@@ -197,8 +197,21 @@ extension UIView {
   }
 }
 
+import SDWebImage
 
-
+extension UIImageView {
+  
+  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock) {
+    guard let url = url, let nsurl = NSURL(string: url) else { return }
+    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
+      .CacheMemoryOnly,
+      .ContinueInBackground,
+//      .ProgressiveDownload,
+      .AvoidAutoSetImage,
+      .LowPriority
+    ], completed: completionHandler)
+  }
+}
 
 
 
