@@ -11,7 +11,7 @@ import UIKit
 import QuartzCore
 import TextFieldEffects
 import Neon
-import Toucan
+
 import SwiftyButton
 import Former
 

@@ -39,7 +39,7 @@ public class Toucan : NSObject {
   
   public var image : UIImage?
   
-  public init(image withImage: UIImage) {
+  public init(image withImage: UIImage?) {
     self.image = withImage
   }
   

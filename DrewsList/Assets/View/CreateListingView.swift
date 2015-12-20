@@ -11,7 +11,6 @@ import Neon
 import UIKit
 import TextFieldEffects
 import Signals
-import Haneke
 
 enum ForToggle {
     case Wishlist

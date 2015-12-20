@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Toucan
+
 import SDWebImage
 import Neon
 

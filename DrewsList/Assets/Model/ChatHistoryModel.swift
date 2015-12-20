@@ -8,7 +8,6 @@
 
 import Foundation
 import Signals
-import RealmSwift
 
 public class ChatHistoryModel {
   

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import Neon
-import Toucan
+
 import SDWebImage
 import Signals
 import Async
