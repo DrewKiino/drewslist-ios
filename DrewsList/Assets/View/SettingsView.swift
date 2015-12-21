@@ -13,6 +13,7 @@ public class SettingsView: FormViewController {
   
   private let screenSize = UIScreen.mainScreen().bounds
   
+  private var enabled = true
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -26,6 +27,7 @@ public class SettingsView: FormViewController {
           cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
+        self.former.deselect(true)
         let editProfileView = EditProfileView()
         self.navigationController?.pushViewController(editProfileView, animated: true)
     }
@@ -38,7 +40,7 @@ public class SettingsView: FormViewController {
           cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
-        // Do Something
+        self.former.deselect(true)
     }
     
     let helpCenterRow = LabelRowFormer<FormLabelCell>()
@@ -49,7 +51,7 @@ public class SettingsView: FormViewController {
           cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
-        // Do Something
+        self.former.deselect(true)
     }
     
     let termsPrivacyRow = LabelRowFormer<FormLabelCell>()
@@ -60,7 +62,7 @@ public class SettingsView: FormViewController {
           cell.titleLabel?.font = UIFont.asapRegular(14)
         }
       }.onSelected { row in
-        // Do Something
+        self.former.deselect(true)
     }
     
     let logoutRow = LabelRowFormer<FormLabelCell>()
@@ -71,17 +73,14 @@ public class SettingsView: FormViewController {
           cell.titleLabel?.font = UIFont.asapBold(14)
         }
       }.onSelected { row in
-        // Do Something
+        self.former.deselect(true)
     }
   
     let blankRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
         row.rowHeight = screenSize.height
         row.enabled = false
-      }.onSelected { row in
-        
     }
-    
 
     let header = LabelViewFormer<FormLabelHeaderView>() { view in
       view.titleLabel.text = "Label Header"
@@ -92,4 +91,17 @@ public class SettingsView: FormViewController {
     former.append(sectionFormer: section)
     
   }
+  
+  private func disableRowSelected(rowFormer: RowFormer) {
+    guard let disableRow = rowFormer as? LabelRowFormer<FormLabelCell> else { return }
+    self.former.deselect(true)
+    self.former[1...2].flatMap { $0.rowFormers }.forEach {
+      $0.enabled = !enabled
+    }
+    disableRow.text = (enabled ? "Enable" : "Disable") + " All Cells"
+    disableRow.update()
+    self.enabled = !self.enabled
+  }
+  
+  
 }

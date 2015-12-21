@@ -123,6 +123,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   private func fetchBackgroundImage() {
     guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
+    
   }
   
   private func fetchProfileImage() {
@@ -428,9 +429,11 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     let lister = listing.highestLister?.user
     let listerPrice = listing.highestLister?.price
     
-    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {}
+    if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
+    }
     
-    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {}
+    if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
+    }
     
     if let text = listerPrice {
       let string = "Best Match $\(text)"
