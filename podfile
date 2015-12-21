@@ -53,7 +53,7 @@ pod 'SDWebImage'
 # pod 'Toucan'
 
 # data storage libs
-#pod 'RealmSwift'
+pod 'RealmSwift'
 
 # onboarding libs
 pod 'Onboard'

@@ -75,3 +75,4 @@ public class UserModel {
   public var user: User? { didSet { _user => user } }
 }
 
+//public class RealmUser :

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import Toucan
+import Signals
 
 public class EditProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   
@@ -49,6 +49,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private func setupDataBinding() {
     controller.model._user.listen(self) { [weak self] user in
       log.debug(user?.image)
+      self?.tableView.reloadData()
+    }
+    
+    NSTimer.after(10.0) {
+      log.debug(self.model.user?.firstName)
     }
   }
   
@@ -71,40 +76,47 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     
     var cell : UITableViewCell = UITableViewCell()
     
-    
     switch (indexPath.row) {
       case 0:
         if let cell = tableView.dequeueReusableCellWithIdentifier("ProfileImgCell", forIndexPath: indexPath) as? ProfileImgCell {
-          cell.textLabel?.text = "Change Picture"
-          cell.textLabel?.textColor = UIColor.lightGrayColor()
-          cell.textLabel?.font = UIFont.asapRegular(14)
+          cell.label?.text = "Change Picture"
+          cell.label?.textColor = UIColor.lightGrayColor()
+          cell.label?.font = UIFont.asapRegular(14)
           return cell
         }
         break;
       case 1:
         if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = "First Name"
+          cell.textField?.text = model.user?.firstName
           cell.textField?.textColor = UIColor.lightGrayColor()
           cell.textField?.font = UIFont.asapRegular(14)
- 
+          cell._textFieldString.listen(self) { [weak self] string in
+            self?.controller.setFirstName(string)
+          }
           return cell
         }
         break;
    
       case 2:
         if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = "Last Name"
+          cell.textField?.text = model.user?.lastName
           cell.textField?.textColor = UIColor.lightGrayColor()
           cell.textField?.font = UIFont.asapRegular(14)
- 
+          cell._textFieldString.listen(self) { [weak self] string in
+            self?.controller.setLastName(string)
+          }
+
           return cell
         }
         break;
       case 3:
         if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = "Username"
+          cell.textField?.text = model.user?.username
           cell.textField?.textColor = UIColor.lightGrayColor()
           cell.textField?.font = UIFont.asapRegular(14)
+          cell._textFieldString.listen(self) { [weak self] string in
+            self?.controller.setUsername(string)
+          }
           
           return cell
         }
@@ -132,8 +144,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
       return screen.height / 15
     }
   }
-  
-  
 }
 
 
@@ -141,34 +151,43 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   // MARK: Cell Classes
 
 public class ProfileImgCell: UITableViewCell {
-  
-//  public var textView: UILabel?
-//  public var imageView: UIImageView?
-//  
-//  public override init(frame: CGRect) {
-//    super.init(frame: frame)
-//  }
-//  
-//  public required init?(coder aDecoder: NSCoder) {
-//    super.init(coder: aDecoder)
-//  }
+  public var label: UILabel?
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    label = UILabel()
+    addSubview(label!)
+    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+  }
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
 }
 
-public class EditCell: UITableViewCell {
+
+public class EditCell: UITableViewCell, UITextFieldDelegate {
   
   public var textField: UITextField?
   
+  public let _textFieldString = Signal<String?>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+    setupTextField()
+  }
+  
+  public func setupTextField() {
     textField = UITextField()
     addSubview(textField!)
-    textField?.fillSuperview()
-    
+    textField?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+    textField?.delegate = self
   }
   
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-//  }
-}
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    _textFieldString => textField.text
+    return true
+  }
 }

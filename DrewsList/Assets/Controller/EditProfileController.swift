@@ -16,10 +16,24 @@ public class EditProfileController {
   
     let user = User()
     user.image = "https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwinxvapkezJAhUMKyYKHR3CAskQjRwIBw&url=http%3A%2F%2Fengineering.unl.edu%2Fkayla-person%2F&psig=AFQjCNFJgRTV0bIR5OTWTumjJpDKdjFU5w&ust=1450759200227606"
+    user.firstName = "Kevin"
+    user.lastName = "Mowers"
+    user.username = "KasperSeas"
     model.user = user
     
   
   }
   
+  public func setFirstName(string: String?) {
+    model.user?.firstName = string
+  }
+  
+  public func setLastName(string: String?) {
+    model.user?.lastName = string
+  }
+  
+  public func setUsername(string: String?) {
+    model.user?.username = string
+  }
   
 }
