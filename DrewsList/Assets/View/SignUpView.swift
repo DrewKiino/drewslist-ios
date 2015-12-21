@@ -39,12 +39,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   //
   //    '// MARK: .....'
   //
-  // and that they should be placed in its own space because if
-  // tags are places right on top of variables and functions they would
-  // get attached to those things instead
-  // Steven's 'marking' of different class features is a great example
-  // Check out his ISBNScannerView
-  
+  //   
   // MARK: View Controller LifeCycle
   
   public override func viewDidLoad() {

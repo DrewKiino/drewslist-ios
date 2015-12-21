@@ -44,10 +44,6 @@ final class AcctSettingView: FormViewController {
     //DBG
     //let inputAccessoryView = FormerInputAccessoryView(former: Former)
 
-    
-    
-    
-    
     //DBG
 //    let textFields = TextFieldRowFormer<FormTextFieldCell>() {
 //      
@@ -62,14 +58,14 @@ final class AcctSettingView: FormViewController {
 //  }
     
     
- 
+    //AcctSettingView
     let EmailRow = LabelRowFormer<FormLabelCell>()
       .configure { row in
         row.text = "Email"
         row.textDisabledColor = UIColor.bareBlue()
         row.subText = "erolnoble@gmail.com"
       }.onSelected { row in
-        // Do Something
+        // Do Something//Action
     }
     
     let PasswordRow = LabelRowFormer<FormLabelCell>()
@@ -77,7 +73,7 @@ final class AcctSettingView: FormViewController {
         row.text = "UserName"
         row.subText = "Vergil611"
       }.onSelected { row in
-        // Do Something
+        // Do Something//Action
     }
     
     let SchoolRow = LabelRowFormer<FormLabelCell>()
@@ -85,7 +81,7 @@ final class AcctSettingView: FormViewController {
         row.text = "School"
         row.subText = "Cal State Los Angeles"
       }.onSelected { row in
-         //Do Something
+         //Do Something//Action
     }
 
     
@@ -234,9 +230,8 @@ final class AcctSettingView: FormViewController {
 //
     
     
-  
-    //Create_Heaaders_Footers
     
+    //Create_Heaaders_Footers
     let createHeader: (String -> ViewFormer) = { text in
       return LabelViewFormer<FormLabelHeaderView>()
         .configure {
@@ -253,11 +248,12 @@ final class AcctSettingView: FormViewController {
       }
     }
     
-     //DBG
-    //Sections of Settings
-//    let header = LabelViewFormer<FormLabelHeaderView>() { view in
-//      view.titleLabel.text = "Account Setting"
-//    }
+    
+  
+    
+    let header = LabelViewFormer<FormLabelHeaderView>() { view in
+      view.titleLabel.text = "Account Setting"
+    }
     
     
     
@@ -275,14 +271,20 @@ final class AcctSettingView: FormViewController {
   }
 }
 
+private func setupPushPermissions(view: UIView) {
+  
+  
+}
 
+private func setupEmailPermissions(view: UIView) {
+  
+  
+}
 
-
-
-
-
-
-
+private func setupLoginFBPermissions(view: UIView) {
+  
+  
+}
 
 
 

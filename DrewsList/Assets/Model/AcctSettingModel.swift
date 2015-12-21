@@ -11,7 +11,10 @@ import Foundation
 public class AcctSettingModel {
   
   
-  
+  public init() {
+    
+  }
+
   
   
 }
