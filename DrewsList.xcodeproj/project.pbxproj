@@ -48,7 +48,6 @@
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
 		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
 		EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C949A1BF30FCC00E228A9 /* UserModel.swift */; };
-		EE4B44441C26632D0069E452 /* Toucan.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B44431C26632D0069E452 /* Toucan.swift */; };
 		EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D8E1C11F1DF00637458 /* TabView.swift */; };
 		EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */; };
 		EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */; };
@@ -64,7 +63,6 @@
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
-		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
 		EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B91C1169A800FCF031 /* OnboardingView.swift */; };
 		EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BA1C1169A800FCF031 /* UserProfileView.swift */; };
@@ -86,6 +84,8 @@
 		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
 		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
 		EED779E71C15406600D172BE /* BookFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E61C15406600D172BE /* BookFeedView.swift */; };
+		EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEFB7871C280315005CB4F9 /* Toucan.swift */; };
+		EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -154,7 +154,6 @@
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
-		EE4B44431C26632D0069E452 /* Toucan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toucan.swift; sourceTree = "<group>"; };
 		EE4B9D8E1C11F1DF00637458 /* TabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		EE4B9D941C11F38B00637458 /* RAMAnimatedTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMAnimatedTabBarController.swift; sourceTree = "<group>"; };
 		EE4B9D951C11F38B00637458 /* RAMItemAnimationProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMItemAnimationProtocol.swift; sourceTree = "<group>"; };
@@ -170,7 +169,6 @@
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerView.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EE8918B91C1169A800FCF031 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		EE8918BA1C1169A800FCF031 /* UserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
@@ -192,6 +190,8 @@
 		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
 		EED779E61C15406600D172BE /* BookFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookFeedView.swift; sourceTree = "<group>"; };
+		EEEFB7871C280315005CB4F9 /* Toucan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Toucan.swift; path = Toucan/Toucan.swift; sourceTree = "<group>"; };
+		EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +291,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */,
 				EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */,
 				EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
@@ -319,7 +320,6 @@
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
 				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
-				EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */,
 				EE007AF51C1E4DC80088ACBF /* ListView.swift */,
 				EE8918B81C1169A800FCF031 /* LoginView.swift */,
 				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
@@ -372,7 +372,7 @@
 		EE4B44421C2663260069E452 /* Toucan */ = {
 			isa = PBXGroup;
 			children = (
-				EE4B44431C26632D0069E452 /* Toucan.swift */,
+				EEEFB7871C280315005CB4F9 /* Toucan.swift */,
 			);
 			name = Toucan;
 			sourceTree = "<group>";
@@ -741,8 +741,10 @@
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
+				EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
+				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
@@ -753,7 +755,6 @@
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
-				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
 				EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */,
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
@@ -768,7 +769,6 @@
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
 				4F966CEC1C27C32A00CECCC6 /* EditProfileView.swift in Sources */,
-				EE4B44441C26632D0069E452 /* Toucan.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,

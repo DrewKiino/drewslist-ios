@@ -17,10 +17,10 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   
   private weak var labelTimer: NSTimer?
   private var timer: NSTimer?
-  private var session: AVCaptureSession?
-  private var previewLayer: AVCaptureVideoPreviewLayer?
-  private var identifiedBorder: DiscoveredBarCodeView?
+  public var previewLayer: AVCaptureVideoPreviewLayer?
+  public var identifiedBorder: DiscoveredBarCodeView?
   public var shouldResetTimer = true
+  public var session: AVCaptureSession?
 
   private var topView: UIView?
   private var helpButton: UIButton?

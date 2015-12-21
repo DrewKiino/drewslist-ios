@@ -38,7 +38,6 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     setupRightPageTitleButton()
     setupScrollView()
     setupPages()
-    setRootViewTitle("Community Feed")
     
     scrollView?.contentSize = CGSizeMake(screen.width * 3, screen.height / 2)
     // select middle page

@@ -175,11 +175,13 @@ public class CreateListingView : UIViewController {
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
+    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
     saveButton = UIButton()
     saveButton?.setTitle("Save", forState: .Normal)
     saveButton?.titleLabel?.font = UIFont.asapRegular(16)
+    saveButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(saveButton!)
   }
   
@@ -426,7 +428,12 @@ public class CreateListingView : UIViewController {
   }
   
   public func cancel() {
-    
+    if let tabView = presentingViewController as? TabView, let scannerView = (tabView.viewControllers?.filter { $0 is ScannerView })?.first as? ScannerView {
+      scannerView.dismissViewControllerAnimated(true) { [weak scannerView] in
+        scannerView?.previewLayer?.hidden = false
+        scannerView?.session?.startRunning()
+      }
+    }
   }
   
   public func save() {
