@@ -22,12 +22,12 @@ public class TabView: RAMAnimatedTabBarController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-//    setupFeedView()
+    setupFeedView()
     setupBookListView()
-//    setupChatView()
-//    setupISBNScannerView()
-//    setupActivityView()
-//    setupUserProfileView()
+    setupChatView()
+    setupISBNScannerView()
+    setupActivityView()
+    setupUserProfileView()
     setupViewControllers()
     
     tabBar.translucent = false
@@ -45,8 +45,8 @@ public class TabView: RAMAnimatedTabBarController {
   private func setupViewControllers() {
     
     // set view controllers
-//    viewControllers = [communityTab!, userProfileView!, chatView!, scannerView!, activityView!]
-    viewControllers = [createListingView!]
+    viewControllers = [communityTab!, userProfileView!, chatView!, scannerView!, activityView!]
+//    viewControllers = [createListingView!]
     
     // dealloc reference view controllers
     communityTab = nil

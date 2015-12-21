@@ -24,10 +24,32 @@ public class EditProfileView: FormViewController {
         row.text = "Change Picture"
         
         row.cellUpdate { cell in
+          // cell text color & font
           cell.titleLabel.textColor = UIColor.lightGrayColor()
           cell.titleLabel?.font = UIFont.asapRegular(14)
           
-          //cell.imageView?.image = Toucan(image: UIImage(named: "j")).maskWithEllipse().image
+          // cell add profile view
+          cell.subviews.forEach { if $0.tag == 1 { $0.removeFromSuperview() } }
+          var profileImgView :UIImageView? = UIImageView(frame: CGRect(x: screenSize.width-cell.frame.height*(8/5), y: cell.frame.height*(1/10), width: cell.frame.height*(4/5), height: cell.frame.height*(4/5)))
+          profileImgView?.tag = 1
+          cell.addSubview(profileImgView!)
+          let profileImg = UIImage(named: "Icon-Condition2")
+          var profileToucan: Toucan? = Toucan(image: profileImg).resize(CGSize(width: profileImgView!.height, height: profileImgView!.height)).maskWithEllipse()
+          profileImgView?.image = profileToucan?.image
+          profileToucan = nil
+          profileImgView = nil
+          
+          // cell add arrow
+          cell.subviews.forEach { if $0.tag == 2 { $0.removeFromSuperview() } }
+          var arrowImgView :UIImageView? = UIImageView(frame: CGRect(x: screenSize.width-cell.frame.height*(1/2), y: cell.frame.height*(1/4), width: cell.frame.height*(1/2), height: cell.frame.height*(1/2)))
+          arrowImgView?.tag = 2
+          cell.addSubview(arrowImgView!)
+         
+          let arrowImg = UIImage(named: "Icon-OrangeChevron")
+          var arrowToucan: Toucan? = Toucan(image: arrowImg).resize(CGSize(width: arrowImgView!.height, height: arrowImgView!.height)).maskWithEllipse()
+          arrowImgView?.image = arrowToucan?.image
+          arrowToucan = nil
+          arrowImgView = nil
         }
       }.onSelected { row in
         //navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
