@@ -11,6 +11,7 @@ import SwiftyTimer
 import Signals
 import Alamofire
 import SwiftyJSON
+import RealmSwift
 
 public class UserProfileController {
   
@@ -50,6 +51,8 @@ public class UserProfileController {
         
         // set user object
         self?.model.user = user
+        // write user object to realm
+        self?.writeRealmUser()
       }
       
       // create a throttler
@@ -66,4 +69,18 @@ public class UserProfileController {
   
   public func get_User() -> Signal<User?> { return model._user }
   public func getUser() -> User? { return model.user }
+  
+  
+  public func readRealmUser(_id: String?) {
+    guard let _id = _id else { return }
+    let realm = try! Realm()
+    if let realmUser = realm.objectForPrimaryKey(RealmUser.self, key: _id) { model.user = realmUser.getUser() }
+  }
+  
+  public func writeRealmUser(){
+    let realmUser = RealmUser()
+    realmUser.setRealmUser(model.user)
+    let realm = try! Realm()
+    try! realm.write { realm.add(realmUser, update: true) }
+  }
 }

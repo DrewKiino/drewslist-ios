@@ -20,7 +20,6 @@
 		3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */; };
 		3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */; };
 		3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA51C025BE500743C74 /* Atlantis.swift */; };
-		4F18A07C1C275D69006169F5 /* EditProfileView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18A07B1C275D69006169F5 /* EditProfileView2.swift */; };
 		4F18A07E1C275D75006169F5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18A07D1C275D75006169F5 /* SettingsView.swift */; };
 		4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE51C27623900CECCC6 /* EditProfileModel.swift */; };
 		4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE71C27624000CECCC6 /* EditProfileController.swift */; };
@@ -120,7 +119,6 @@
 		3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingController.swift; sourceTree = "<group>"; };
 		3FB40FA51C025BE500743C74 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
 		4DE6F7F5C96749603F0D75BC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		4F18A07B1C275D69006169F5 /* EditProfileView2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileView2.swift; sourceTree = "<group>"; };
 		4F18A07D1C275D75006169F5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4F966CE51C27623900CECCC6 /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
 		4F966CE71C27624000CECCC6 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
@@ -334,7 +332,6 @@
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				4F18A07D1C275D75006169F5 /* SettingsView.swift */,
-				4F18A07B1C275D69006169F5 /* EditProfileView2.swift */,
 				4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */,
 			);
 			path = View;
@@ -728,7 +725,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F18A07C1C275D69006169F5 /* EditProfileView2.swift in Sources */,
 				3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */,
 				EE8918C71C1169B500FCF031 /* LoginModel.swift in Sources */,
 				3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */,

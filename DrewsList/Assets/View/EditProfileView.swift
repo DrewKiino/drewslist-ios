@@ -17,18 +17,28 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView = UITableView()
   
+  public override func viewWillAppear(animated: Bool) {
+    controller.readRealmUser()
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    controller.writeRealmUser()
+  }
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     setupDataBinding()
     setUpTableView()
-    controller.setUp()
-    
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+  }
+  
+  public func setUser(user: User?) {
+    guard let user = user else { return }
+    model.user = user
   }
   
   // MARK: setup view functions
@@ -48,12 +58,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   private func setupDataBinding() {
     controller.model._user.listen(self) { [weak self] user in
-      log.debug(user?.image)
       self?.tableView.reloadData()
-    }
-    
-    NSTimer.after(10.0) {
-      log.debug(self.model.user?.firstName)
     }
   }
   
@@ -187,7 +192,13 @@ public class EditCell: UITableViewCell, UITextFieldDelegate {
   }
   
   public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-    _textFieldString => textField.text
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        _textFieldString.fire(NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1)))
+      // else, user has inputted some new strings
+      } else { _textFieldString.fire(text + string) }
+    }
     return true
   }
 }

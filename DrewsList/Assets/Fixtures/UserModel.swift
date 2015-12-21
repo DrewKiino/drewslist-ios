@@ -10,6 +10,7 @@ import Foundation
 import Signals
 import ObjectMapper
 import SwiftyJSON
+import RealmSwift
 
 public class User: Mappable {
   
@@ -75,4 +76,34 @@ public class UserModel {
   public var user: User? { didSet { _user => user } }
 }
 
-//public class RealmUser :
+public class RealmUser: Object {
+  dynamic var _id: String?
+  dynamic var firstName: String?  
+  dynamic var lastName: String?
+  dynamic var username: String?
+  dynamic var image: String?
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
+  
+  public func setRealmUser(user: User?){
+    guard let user = user else {return}
+    _id = user._id
+    firstName = user.firstName
+    lastName = user.lastName
+    username = user.username
+    image = user.image
+  }
+  
+  public func getUser() -> User {
+    let user = User()
+    user._id = _id
+    user.firstName = firstName
+    user.lastName = lastName
+    user.username = username
+    user.image = image
+    return user
+  }
+  
+}

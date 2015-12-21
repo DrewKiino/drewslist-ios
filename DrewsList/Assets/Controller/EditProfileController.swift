@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 public class EditProfileController {
 
@@ -34,6 +35,28 @@ public class EditProfileController {
   
   public func setUsername(string: String?) {
     model.user?.username = string
+  }
+  
+  public func readRealmUser(){
+    // fixture _id
+    // should be taken from 'NSUserDefaults' instead
+    let realm = try! Realm()
+    if let realmUser = realm.objectForPrimaryKey(RealmUser.self, key: "56728e4ea0e9851f007e784e") {
+      model.user = realmUser.getUser()
+    }
+  }
+  
+  public func writeRealmUser(){
+    let realmUser = RealmUser()
+    realmUser.setRealmUser(model.user)
+    log.debug(realmUser._id)
+    log.debug(realmUser.firstName)
+    log.debug(realmUser.lastName)
+    log.debug(realmUser.username)
+    let realm = try! Realm()
+    try! realm.write {
+      realm.add(realmUser, update: true)
+    }
   }
   
 }
