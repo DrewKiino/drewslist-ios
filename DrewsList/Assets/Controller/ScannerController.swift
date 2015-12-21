@@ -11,75 +11,43 @@ import AVFoundation
 import UIKit
 import Signals
 import SwiftyTimer
+import Alamofire
+import SwiftyJSON
 
-public class ScannerController: NSObject, AVCaptureMetadataOutputObjectsDelegate {
+public class ScannerController: NSObject {
   
   private let model = ScannerModel()
-  
-  private weak var labelTimer: NSTimer?
-  private var timer: NSTimer?
-  private var session: AVCaptureSession?
-  public weak var view: UIView?
-  public var  identifiedBorder: DiscoveredBarCodeView?
-  public var previewLayer: AVCaptureVideoPreviewLayer?
-  public var shouldResetTimer = true
-  
-  public func resetTimer() {
-    timer?.invalidate()
-    timer = nil
-    timer = NSTimer.after(2.0) { [weak self] in
-      self?.model.shouldHideBorder = true
-    }
-  }
-  
-  public func translatePoints(points : [AnyObject], fromView : UIView, toView: UIView) -> [CGPoint]? {
-    var translatedPoints : [CGPoint] = []
-    for point in points {
-      
-      guard let dict = point as? NSDictionary,
-        let x = dict.objectForKey("X") as? NSNumber,
-        let y = dict.objectForKey("Y") as? NSNumber
-      else { return nil }
-      
-      let curr = CGPointMake(CGFloat(x.floatValue), CGFloat(y.floatValue))
-      let currFinal = fromView.convertPoint(curr, toView: toView)
-      translatedPoints.append(currFinal)
-    }
-    
-    return translatedPoints
-  }
-  
-  public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
-    for data in metadataObjects {
-      guard let metaData = data as? AVMetadataObject,
-        let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject,
-        let identifiedBorder = identifiedBorder,
-        let view = view,
-        let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
-        else { return }
-      
-      identifiedBorder.drawBorder(identifiedCorners)
-      identifiedBorder.frame = transformed.bounds
-      identifiedBorder.alpha = 0.9
-      identifiedBorder.hidden = false
-      
-      resetTimer()
-      
-      // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-      let first = metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }.first
-      guard let isbn = first?.stringValue else { return }
-      
-      model.isbn = isbn
-      //print(isbn)
 
-    }
-  }
+  public func getBookFromServer(isbn: String?) {
+    guard let isbn = isbn where model.shouldRefrainFromCallingServer == false else { return }
     
+    // refrain from doing a server call since we are going to do one right now
+    model.shouldRefrainFromCallingServer = true
+    
+    Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=\(isbn)")
+    // then using the builder pattern, chain a response call after
+    .response { [weak self] req, res, data, error in
+      
+      // unwrap error and check if it exists
+      if let error = error {
+        log.error(error)
+        // use JSON library to jsonify the results ( NSData => JSON )
+        // since the results is an array of objects, we get the first name
+      } else if let data = data, let json = JSON(data: data).array?.first {
+        self?.model.book = Book(json: json)
+      }
+      
+      self?.model.shouldRefrainFromCallingServer = false
+    }
+    
+    NSTimer.after(30.0) { [weak self] in self?.model.shouldRefrainFromCallingServer = false }
+  }
+  
   // MARK: Getter
   
-  public func getISBN() -> String? { return model.isbn }
-  public func get_ISBN() -> Signal<String?> { return model._isbn }
+  public func getModel() -> ScannerModel { return model }
   
   public func get_ShouldHideBorder() -> Signal<Bool> { return model._shouldHideBorder }
   
+  public func get_Book() -> Signal<Book?> { return model._book }
 }

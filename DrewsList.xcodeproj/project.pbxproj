@@ -60,7 +60,6 @@
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
-		EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
 		EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B91C1169A800FCF031 /* OnboardingView.swift */; };
 		EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918BA1C1169A800FCF031 /* UserProfileView.swift */; };
@@ -82,8 +81,6 @@
 		EECFA73A1C27600A0091915D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA7391C27600A0091915D /* SettingsView.swift */; };
 		EECFA73C1C27608D0091915D /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA73B1C27608D0091915D /* EditProfileModel.swift */; };
 		EECFA73E1C2760940091915D /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA73D1C2760940091915D /* EditProfileController.swift */; };
-		EECFA7401C2761410091915D /* ISBNScannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA73F1C2761410091915D /* ISBNScannerController.swift */; };
-		EECFA7441C2761570091915D /* ISBNScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EECFA7431C2761570091915D /* ISBNScannerModel.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* BookListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* BookListController.swift */; };
 		EED779E51C151DF800D172BE /* BookListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* BookListModel.swift */; };
@@ -168,7 +165,6 @@
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerView.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EE8918B91C1169A800FCF031 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		EE8918BA1C1169A800FCF031 /* UserProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
@@ -190,8 +186,6 @@
 		EECFA7391C27600A0091915D /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EECFA73B1C27608D0091915D /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
 		EECFA73D1C2760940091915D /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
-		EECFA73F1C2761410091915D /* ISBNScannerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerController.swift; sourceTree = "<group>"; };
-		EECFA7431C2761570091915D /* ISBNScannerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISBNScannerModel.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* BookListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* BookListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListModel.swift; sourceTree = "<group>"; };
@@ -302,7 +296,6 @@
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
 				EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */,
 				EECFA73B1C27608D0091915D /* EditProfileModel.swift */,
-				EECFA7431C2761570091915D /* ISBNScannerModel.swift */,
 				EE1B73791C236FDF00BD942C /* ListFeedModel.swift */,
 				EE007AF71C1E4DCC0088ACBF /* ListModel.swift */,
 				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
@@ -327,7 +320,6 @@
 				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
 				EE1B737D1C2377C600BD942C /* DLNavigationController.swift */,
 				EECFA7371C2760060091915D /* EditProfileView.swift */,
-				EE8918B71C1169A800FCF031 /* ISBNScannerView.swift */,
 				EE1B73771C236FD000BD942C /* ListFeedView.swift */,
 				EE007AF51C1E4DC80088ACBF /* ListView.swift */,
 				EE8918B81C1169A800FCF031 /* LoginView.swift */,
@@ -352,7 +344,6 @@
 				EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */,
 				3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */,
 				EECFA73D1C2760940091915D /* EditProfileController.swift */,
-				EECFA73F1C2761410091915D /* ISBNScannerController.swift */,
 				EE007AF91C1E4DD30088ACBF /* ListController.swift */,
 				EE1B737B1C236FE500BD942C /* ListFeedController.swift */,
 				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
@@ -760,10 +751,8 @@
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
-				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
 				EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */,
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
-				EECFA7441C2761570091915D /* ISBNScannerModel.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
@@ -782,7 +771,6 @@
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
-				EECFA7401C2761410091915D /* ISBNScannerController.swift in Sources */,
 				EEB0E2781C22851A0007DE13 /* AccountSettingView.swift in Sources */,
 				EECFA73C1C27608D0091915D /* EditProfileModel.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,

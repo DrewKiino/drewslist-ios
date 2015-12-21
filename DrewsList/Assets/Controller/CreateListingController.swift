@@ -14,15 +14,12 @@ import Signals
 public class CreateListingController {
     
     // MARK: Properties
-    private let isbn: String!
+    private var isbn: String?
     private let model = Book()
     private let scannerController = ScannerController()
     
     // MARK: Initializers
-    public init() {
-        
-        isbn = scannerController.getISBN()
-    }
+    public init() {}
    
     // MARK: Server
     // Populates the book model with data from the server
