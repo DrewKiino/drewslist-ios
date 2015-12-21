@@ -22,7 +22,6 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   private var identifiedBorder: DiscoveredBarCodeView?
   public var shouldResetTimer = true
 
-  
   private var topView: UIView?
   private var helpButton: UIButton?
   private var searchButton: UIButton?
@@ -160,7 +159,8 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     identifiedBorder?.hidden = true
     session?.stopRunning()
     
-    pushViewController(CreateListingView(), animated: true)
+//    pushViewController(CreateListingView().setBook(book), animated: true)
+    presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
   }
   
   private func setupScanner() {

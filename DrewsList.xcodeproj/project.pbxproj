@@ -70,6 +70,7 @@
 		EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */; };
 		EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */; };
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
+		EE95B5C31C277D6A007FD55A /* CreateListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE95B5C21C277D6A007FD55A /* CreateListingModel.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EEB0E2711C22850E0007DE13 /* AccountSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */; };
@@ -175,6 +176,7 @@
 		EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
 		EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
+		EE95B5C21C277D6A007FD55A /* CreateListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingModel.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EEB0E2701C22850E0007DE13 /* AccountSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingController.swift; sourceTree = "<group>"; };
@@ -303,6 +305,7 @@
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
+				EE95B5C21C277D6A007FD55A /* CreateListingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -738,6 +741,7 @@
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
+				EE95B5C31C277D6A007FD55A /* CreateListingModel.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
