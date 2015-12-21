@@ -15,6 +15,108 @@ import Neon
 import SwiftyButton
 import Former
 
+
+final class DynamicHeightCell: UITableViewCell {
+  
+  var title: String? {
+    get { return titleLabel.text }
+    set { titleLabel.text = newValue }
+  }
+  
+  var body: String? {
+    get { return bodyLabel.text }
+    set { bodyLabel.text = newValue }
+  }
+  var bodyColor: UIColor? {
+    get { return bodyLabel.textColor }
+    set { bodyLabel.textColor = newValue }
+  }
+  
+  /** Dynamic height row for iOS 7
+  override func layoutSubviews() {
+  super.layoutSubviews()
+  titleLabel.preferredMaxLayoutWidth = titleLabel.bounds.width
+  bodyLabel.preferredMaxLayoutWidth = bodyLabel.bounds.width
+  }
+  **/
+  
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    selectionStyle = .None
+    titleLabel.textColor = UIColor.bareBlue()
+  }
+  
+  // MARK: Private
+  
+  @IBOutlet private weak var titleLabel: UILabel!
+  @IBOutlet private weak var bodyLabel: UILabel!
+}
+
+
+
+//let dynamicHeightRow = CustomRowFormer<DynamicHeightCell>(instantiateType: .Nib(nibName: "DynamicHeightCell")) {
+//  $0.title = "Dynamic height"
+//  $0.body = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+//  $0.bodyColor = UIColor.bareBlue()
+//  }.configure {
+//    $0.rowHeight = UITableViewAutomaticDimension
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//DBG
+
+
 /*
 
 public class AccountSettingView: QuickTableViewController

@@ -189,40 +189,23 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     signupButton!.setTitle("Sign Up", forState: UIControlState.Normal)
     signupButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     
+    
     self.view.addSubview(signupButton!)
   
-    
-    
-  
-    
   }
   
 
   public func loginButton(enabled: Bool) -> () {
-    
     
   }
   
   
   public func signupButton(enabled: Bool) -> () {
     
-    
+    self.performSegueWithIdentifier("SignUpView", sender: self)
     
   }
-    public func changeImage(){
-      if idx == backGroundArray.count-1{
-        
-        idx = 0
-        
-      } else{
-        
-        idx++
-      }
-//        let toImage = backGroundArray[idx];
-//        UIView.transitionWithView(self.imageView, duration: 3, options: .TransitionCrossDissolve, animations: {self.imageView.image = toImage}, completion: nil)
-      
-    }
-    
+  
     public override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -232,7 +215,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   }
   
 
-  
+  //TextFieldCaseCode
   public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
     switch textField.tag {
       // username
@@ -252,17 +235,6 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     return true
   }
 
-//   public func textFieldDidChange() {
-//        if usernameField.text!.isEmpty || passwordField.text!.isEmpty || emailField.text!.isEmpty
-//        {
-//            self.loginButton(false)
-//        }
-//        else
-//        {
-//            self.loginButton(true)
-//        }
-//    }
-  
   
     func buttonPressed(sender: AnyObject) {
       
