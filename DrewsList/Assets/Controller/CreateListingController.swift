@@ -25,4 +25,8 @@ public class CreateListingController {
   public func getISBN() -> String? { return isbn }
   
   public func getModel() -> CreateListingModel { return model }
+  
+  public func saveListingToServer() {
+    
+  }
 }
