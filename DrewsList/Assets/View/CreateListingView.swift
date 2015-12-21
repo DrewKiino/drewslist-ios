@@ -47,12 +47,13 @@ public class CreateListingView : UIViewController {
   private let bookController = BookController()
   private var model: CreateListingModel { get { return controller.getModel() } }
   
-  // UIViews
+  // Navigation Header Views
   private var headerView: UIView?
   private var cancelButton: UIButton?
   private var saveButton: UIButton?
   private var headerTitle: UILabel?
   
+  // Scroll Views
   private var scrollView: UIScrollView?
   private var bookView: BookView?
   private var bookDetailsLabel: UILabel?
@@ -67,44 +68,27 @@ public class CreateListingView : UIViewController {
   private var forSelector: UIView?
   private var forToggle: ForToggle = .Wishlist // setting default
   
-  // 'Condition' Detail
-  private var conditionLabel: UILabel?
-  private var conditionContainer: UIView?
-  // 'Condition' Slider
-  private var conditionSlider: UISlider?
-  private var condition1ImageView: UIImageView?
-  private var condition2ImageView: UIImageView?
-  private var condition3ImageView: UIImageView?
-  
+  // 'Cover' Detail
+  private var coverLabel: UILabel?
+  private var coverToggleContainer: UIView?
+  // 'Cover' Toggle Buttons
   private var hardcover: UIButton?
   private var paperback: UIButton?
+  private var coverSelector: UIView?
+  private var coverToggle: CoverToggle = .Hardcover
   
-//  var coverToggle: CoverToggle = .Hardcover // setting default
-  
-  // Book info
-  var book_Title: UILabel?
-  var book_Author: UILabel?
-  var book_ISBN: UILabel?
-  var book_Edition: UILabel?
-  var book_Image: UIImageView?
-  
-  var bookDetailsView: UIView?
-  var bookInfoPaddingView: UIView?
-  var bookInfoView: UIView?
-  
-  // Book details labels
-  var book_details_label: UILabel?
-  var book_info_for: UILabel?
-  var book_info_condition: UILabel?
-  var book_info_cover: UILabel?
-  
-  // Book Info containers
+  // 'Condition' Detail
+  private var conditionLabel: UILabel?
+  private var condtitionLabelPadding: UIView?
+  // 'Condition' Slider
+  private var conditionSlider: UISlider?
+  private var conditionImageViewSelector: UIImageView?
   
   // Text Fields
-  var textField_Price: IsaoTextField?
-  var textField_Notes: IsaoTextField?
+  private var textField_Price: IsaoTextField?
+//  var textField_Notes: IsaoTextField?
   
-  
+  private var textViewNotes: UITextView?
   
   
   override public func viewDidLoad() {
@@ -119,6 +103,7 @@ public class CreateListingView : UIViewController {
     setupContainerView()
     setupBookDetailsLabel()
     setupForListViews()
+    setupCoverViews()
     setupConditionViews()
    
     // MARK: Mock Nav Header Views
@@ -141,13 +126,30 @@ public class CreateListingView : UIViewController {
     // set the wishlist as the default selection
     forSelector?.frame = wishlist!.frame
     
+    // MARK: 'Cover' Views
+    coverLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: forListToggleContainer!, padding: 8, height: 16)
+    coverToggleContainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: coverLabel!, padding: 8, height: 36)
+    coverToggleContainer?.groupAndFill(group: .Horizontal, views: [hardcover!, paperback!], padding: 0)
+    // set the hardcover as the default selection
+    coverSelector?.frame = hardcover!.frame
+    
     // MARK: 'Condition' Views
-    conditionLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: forListToggleContainer!, padding: 8, height: 16)
-    conditionSlider?.alignAndFillWidth(align: .UnderCentered, relativeTo: conditionLabel!, padding: 8, height: 36)
+    conditionLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: coverToggleContainer!, padding: 8, height: 16)
+    condtitionLabelPadding?.alignAndFillWidth(align: .UnderCentered, relativeTo: conditionLabel!, padding: 0, height: 24)
+    conditionSlider?.alignAndFillWidth(align: .UnderCentered, relativeTo: condtitionLabelPadding!, padding: 8, height: 36)
+    
+    // set the condition selector to the middle condition
+    conditionImageViewSelector?.frame = CGRectMake(
+      (conditionLabel!.frame.width / 2) - 3,
+      conditionLabel!.frame.origin.y + 20,
+      24,
+      24
+    )
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    conditionImageViewSelector?.image = Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image
   }
    
   public override func viewWillLayoutSubviews() {
@@ -237,9 +239,40 @@ public class CreateListingView : UIViewController {
     selling?.addTarget(self, action: "selectedSaleList", forControlEvents: .TouchUpInside)
     selling?.backgroundColor = .clearColor()
     selling?.titleLabel?.font = UIFont.asapRegular(16)
-//    selling?.layer.borderColor = UIColor.blackColor().CGColor
-//    selling?.layer.borderWidth = 0.5
     forListToggleContainer?.addSubview(selling!)
+  }
+  
+  private func setupCoverViews() {
+    coverLabel = UILabel()
+    coverLabel?.text = "Cover"
+    coverLabel?.font = UIFont.asapBold(16)
+    coverLabel?.textColor = .sexyGray()
+    containerView?.addSubview(coverLabel!)
+    
+    coverToggleContainer = UIView()
+    coverToggleContainer?.backgroundColor = .whiteColor()
+    containerView?.addSubview(coverToggleContainer!)
+    
+    coverSelector = UIView()
+    coverSelector?.backgroundColor = .juicyOrange()
+    coverSelector?.layer.cornerRadius = 8.0
+    coverToggleContainer?.addSubview(coverSelector!)
+    
+    hardcover = UIButton()
+    hardcover?.setTitle("Hardcover", forState: .Normal)
+    hardcover?.setTitleColor(.blackColor(), forState: .Normal)
+    hardcover?.addTarget(self, action: "selectedHardcover", forControlEvents: .TouchUpInside)
+    hardcover?.backgroundColor = .clearColor()
+    hardcover?.titleLabel?.font = UIFont.asapRegular(16)
+    coverToggleContainer?.addSubview(hardcover!)
+    
+    paperback = UIButton()
+    paperback?.setTitle("Paperback", forState: .Normal)
+    paperback?.setTitleColor(.blackColor(), forState: .Normal)
+    paperback?.addTarget(self, action: "selectedPaperback", forControlEvents: .TouchUpInside)
+    paperback?.backgroundColor = .clearColor()
+    paperback?.titleLabel?.font = UIFont.asapRegular(16)
+    coverToggleContainer?.addSubview(paperback!)
   }
   
   private func setupConditionViews() {
@@ -249,17 +282,20 @@ public class CreateListingView : UIViewController {
     conditionLabel?.textColor = .sexyGray()
     containerView?.addSubview(conditionLabel!)
     
+    condtitionLabelPadding = UIView()
+    containerView?.addSubview(condtitionLabelPadding!)
+    
     conditionSlider = UISlider()
     conditionSlider?.minimumValue = 1
     conditionSlider?.maximumValue = 3
     conditionSlider?.value = 2
     conditionSlider?.tintColor = .sexyGray()
-    conditionSlider?.thumbTintColor = .juicyOrange()
+    conditionSlider?.continuous = true
     conditionSlider?.addTarget(self, action: "sliderDidChange:", forControlEvents: .ValueChanged)
     containerView?.addSubview(conditionSlider!)
     
-    conditionContainer = UIView()
-    
+    conditionImageViewSelector = UIImageView()
+    containerView?.addSubview(conditionImageViewSelector!)
   }
   
   private func setupDataBinding() {
@@ -284,7 +320,7 @@ public class CreateListingView : UIViewController {
     toggleFor()
   }
   
-  func toggleFor() {
+  private func toggleFor() {
     
     let duration: NSTimeInterval = 0.7
     let damping: CGFloat = 0.5
@@ -293,13 +329,46 @@ public class CreateListingView : UIViewController {
     switch forToggle {
     case .Wishlist:
       UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        self?.forSelector?.frame = self!.wishlist!.frame
+        if let frame = self?.wishlist?.frame { self?.forSelector?.frame = frame }
       }, completion: { bool in
       })
       break
     case .Selling:
       UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        self?.forSelector?.frame = self!.selling!.frame
+        if let frame = self?.selling?.frame { self?.forSelector?.frame = frame }
+      }, completion: { bool in
+      })
+      break
+    }
+  }
+  
+  
+  public func selectedHardcover() {
+    coverToggle = .Hardcover
+    toggleCover()
+  }
+  
+  public func selectedPaperback() {
+    coverToggle = .Paperback
+    toggleCover()
+  }
+  
+  private func toggleCover() {
+    
+    let duration: NSTimeInterval = 0.7
+    let damping: CGFloat = 0.5
+    let velocity: CGFloat = 1.0
+    
+    switch coverToggle {
+    case .Hardcover:
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        if let frame = self?.hardcover?.frame { self?.coverSelector?.frame = frame }
+      }, completion: { bool in
+      })
+      break
+    case .Paperback:
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        if let frame = self?.paperback?.frame { self?.coverSelector?.frame = frame }
       }, completion: { bool in
       })
       break
@@ -307,8 +376,63 @@ public class CreateListingView : UIViewController {
   }
   
   public func sliderDidChange(sender: UISlider!) {
-    print("The slider is changing -- Value is: \(sender.value)")
+    
+    let duration: NSTimeInterval = 0.7
+    let damping: CGFloat = 0.5
+    let velocity: CGFloat = 1.0
+
+    switch sender.value {
+    case let x where x < 1.5:
+      conditionSlider?.setValue(1, animated: false)
+      conditionImageViewSelector?.image = Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.conditionImageViewSelector?.frame = CGRectMake(
+          self!.conditionLabel!.frame.origin.x + 3,
+          self!.conditionLabel!.frame.origin.y + 20,
+          24,
+          24
+        )
+      }, completion: { bool in
+      })
+      break
+    case let x where x >= 1.5 && x <= 2.5:
+      conditionSlider?.setValue(2, animated: false)
+      conditionImageViewSelector?.image = Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.conditionImageViewSelector?.frame = CGRectMake(
+          (self!.conditionLabel!.frame.width / 2) - 3,
+          self!.conditionLabel!.frame.origin.y + 20,
+          24,
+          24
+        )
+      }, completion: { bool in
+      })
+      break
+    case let x where x > 2.0 && x <= 3:
+      conditionSlider?.setValue(3, animated: false)
+      conditionImageViewSelector?.image = Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.conditionImageViewSelector?.frame = CGRectMake(
+          (self!.conditionLabel!.frame.width) - 17,
+          self!.conditionLabel!.frame.origin.y + 20,
+          24,
+          24
+        )
+      }, completion: { bool in
+      })
+      break
+    default: break
+    }
   }
+  
+  public func cancel() {
+    
+  }
+  
+  public func save() {
+    
+  }
+
 }
 
 
