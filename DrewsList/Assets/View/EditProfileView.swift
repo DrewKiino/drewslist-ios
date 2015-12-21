@@ -7,103 +7,168 @@
 //
 
 import Foundation
-import Former
+import UIKit
 import Toucan
 
-public class EditProfileView: FormViewController {
+public class EditProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   
+  private let controller = EditProfileController()
+  private var model: EditProfileModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
+  private var tableView = UITableView()
   
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.scrollEnabled = false
     
-    let changePictureRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.text = "Change Picture"
-        
-        row.cellUpdate { cell in
-          // cell text color & font
-          cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapRegular(14)
-          
-          // cell add profile view
-          cell.subviews.forEach { if $0.tag == 1 { $0.removeFromSuperview() } }
-          var profileImgView :UIImageView? = UIImageView(frame: CGRect(x: screenSize.width-cell.frame.height*(8/5), y: cell.frame.height*(1/10), width: cell.frame.height*(4/5), height: cell.frame.height*(4/5)))
-          profileImgView?.tag = 1
-          cell.addSubview(profileImgView!)
-          let profileImg = UIImage(named: "Icon-Condition2")
-          var profileToucan: Toucan? = Toucan(image: profileImg).resize(CGSize(width: profileImgView!.height, height: profileImgView!.height)).maskWithEllipse()
-          profileImgView?.image = profileToucan?.image
-          profileToucan = nil
-          profileImgView = nil
-          
-          // cell add arrow
-          cell.subviews.forEach { if $0.tag == 2 { $0.removeFromSuperview() } }
-          var arrowImgView :UIImageView? = UIImageView(frame: CGRect(x: screenSize.width-cell.frame.height*(1/2), y: cell.frame.height*(1/4), width: cell.frame.height*(1/2), height: cell.frame.height*(1/2)))
-          arrowImgView?.tag = 2
-          cell.addSubview(arrowImgView!)
-         
-          let arrowImg = UIImage(named: "Icon-OrangeChevron")
-          var arrowToucan: Toucan? = Toucan(image: arrowImg).resize(CGSize(width: arrowImgView!.height, height: arrowImgView!.height)).maskWithEllipse()
-          arrowImgView?.image = arrowToucan?.image
-          arrowToucan = nil
-          arrowImgView = nil
-        }
-      }.onSelected { row in
-        //navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
-    }
-    
-    let firstNameRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.text = "First Name"
-        row.cellUpdate { cell in
-          cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapRegular(14)
-        }
-      }.onSelected { row in
-        // Do Something
-    }
-    
-    let lastNameRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.text = "Last Name"
-        row.cellUpdate { cell in
-          cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapRegular(14)
-        }
-      }.onSelected { row in
-        // Do Something
-    }
-    
-    let usernameRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.text = "Username"
-        row.cellUpdate { cell in
-          cell.titleLabel.textColor = UIColor.lightGrayColor()
-          cell.titleLabel?.font = UIFont.asapRegular(14)
-        }
-      }.onSelected { row in
-        // Do Something
-    }
-    
-    let blankRow = LabelRowFormer<FormLabelCell>()
-      .configure { row in
-        row.rowHeight = screenSize.height
-        row.enabled = false
-      }.onSelected { row in
-        
-    }
-    
-    
-    let header = LabelViewFormer<FormLabelHeaderView>() { view in
-      view.titleLabel.text = "Label Header"
-    }
-    
-    let section = SectionFormer(rowFormer: changePictureRow, firstNameRow, lastNameRow, usernameRow, blankRow)
-      .set(headerViewFormer: header)
-    former.append(sectionFormer: section)
+    setupDataBinding()
+    setUpTableView()
+    controller.setUp()
     
   }
+  
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+  }
+  
+  // MARK: setup view functions
+  
+  public func setUpTableView(){
+    view.addSubview(tableView)
+
+    tableView.fillSuperview()
+    tableView.delegate = self
+    tableView.dataSource = self
+    tableView.registerClass(ProfileImgCell.self, forCellReuseIdentifier: "ProfileImgCell")
+    tableView.registerClass(EditCell.self, forCellReuseIdentifier: "EditCell")
+  }
+  
+  
+  // MARK: private functions
+  
+  private func setupDataBinding() {
+    controller.model._user.listen(self) { [weak self] user in
+      log.debug(user?.image)
+    }
+  }
+  
+  private func presentImagePicker() {
+    let picker = UIImagePickerController()
+    picker.delegate = self
+    picker.sourceType = .PhotoLibrary
+    picker.allowsEditing = false
+    //self.navigationController?.pushViewController(picker, animated: true)
+    presentViewController(picker, animated: true, completion: nil)
+  }
+  
+  // MARK: UITableView Classes
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return 5
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    
+    var cell : UITableViewCell = UITableViewCell()
+    
+    
+    switch (indexPath.row) {
+      case 0:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("ProfileImgCell", forIndexPath: indexPath) as? ProfileImgCell {
+          cell.textLabel?.text = "Change Picture"
+          cell.textLabel?.textColor = UIColor.lightGrayColor()
+          cell.textLabel?.font = UIFont.asapRegular(14)
+          return cell
+        }
+        break;
+      case 1:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
+          cell.textField?.text = "First Name"
+          cell.textField?.textColor = UIColor.lightGrayColor()
+          cell.textField?.font = UIFont.asapRegular(14)
+ 
+          return cell
+        }
+        break;
+   
+      case 2:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
+          cell.textField?.text = "Last Name"
+          cell.textField?.textColor = UIColor.lightGrayColor()
+          cell.textField?.font = UIFont.asapRegular(14)
+ 
+          return cell
+        }
+        break;
+      case 3:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
+          cell.textField?.text = "Username"
+          cell.textField?.textColor = UIColor.lightGrayColor()
+          cell.textField?.font = UIFont.asapRegular(14)
+          
+          return cell
+        }
+        break;
+      case 4:
+        cell = tableView.dequeueReusableCellWithIdentifier("EditCell") as! EditCell
+        break;
+      default:
+        break;
+    }
+    
+    cell.textLabel?.textColor = UIColor.lightGrayColor()
+    cell.textLabel?.font = UIFont.asapRegular(14)
+    return cell
+  }
+  
+  public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    print("You selected cell #\(indexPath.row)!")
+  }
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    if (indexPath.row == 4){
+      return screen.height
+    } else {
+      return screen.height / 15
+    }
+  }
+  
+  
+}
+
+
+
+  // MARK: Cell Classes
+
+public class ProfileImgCell: UITableViewCell {
+  
+//  public var textView: UILabel?
+//  public var imageView: UIImageView?
+//  
+//  public override init(frame: CGRect) {
+//    super.init(frame: frame)
+//  }
+//  
+//  public required init?(coder aDecoder: NSCoder) {
+//    super.init(coder: aDecoder)
+//  }
+}
+
+public class EditCell: UITableViewCell {
+  
+  public var textField: UITextField?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+    textField = UITextField()
+    addSubview(textField!)
+    textField?.fillSuperview()
+    
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+//  }
+}
 }
