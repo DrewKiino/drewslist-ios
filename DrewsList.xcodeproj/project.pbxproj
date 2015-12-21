@@ -292,13 +292,10 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */,
 				EEB0E2721C2285150007DE13 /* AccountSettingModel.swift */,
 				EEB0E2731C2285150007DE13 /* AcctSettingModel.swift */,
-=======
 				3960A7EC1C22E15000747C6C /* AcctSettingModel.swift */,
->>>>>>> integrate-user-sign-up-login
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
 				EED779E41C151DF800D172BE /* BookListModel.swift */,
@@ -763,11 +760,8 @@
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
-<<<<<<< HEAD
 				EEB0E2741C2285150007DE13 /* AccountSettingModel.swift in Sources */,
-=======
 				EE8918BC1C1169A800FCF031 /* ISBNScannerView.swift in Sources */,
->>>>>>> integrate-user-sign-up-login
 				EE8918C01C1169A800FCF031 /* UserProfileViewDemo.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
@@ -795,11 +789,8 @@
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
 				EEB0E2711C22850E0007DE13 /* AcctSettingController.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
-<<<<<<< HEAD
 				EEB0E2751C2285150007DE13 /* AcctSettingModel.swift in Sources */,
 				4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */,
-=======
->>>>>>> integrate-user-sign-up-login
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* BookListModel.swift in Sources */,
