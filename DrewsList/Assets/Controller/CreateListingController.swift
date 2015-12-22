@@ -32,7 +32,7 @@ public class CreateListingController {
   // MARK: Getters
   public func getModel() -> CreateListingModel { return model }
   
-  public func saveListingToServer() {
+  public func uploadListingToServer() {
     Alamofire.request(.POST, "", parameters: ["": ""] as [String: AnyObject], encoding: .JSON)
   }
   

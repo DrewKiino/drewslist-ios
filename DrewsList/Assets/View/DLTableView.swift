@@ -30,6 +30,7 @@ public class DLTableView: UITableView {
     registerClass(ToggleCell.self, forCellReuseIdentifier: "ToggleCell")
     registerClass(InputTextFieldCell.self, forCellReuseIdentifier: "InputTextFieldCell")
     registerClass(InputTextViewCell.self, forCellReuseIdentifier: "InputTextViewCell")
+    registerClass(BigButtonCell.self, forCellReuseIdentifier: "BigButtonCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false

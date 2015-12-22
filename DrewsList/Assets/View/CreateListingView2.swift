@@ -468,10 +468,6 @@ public class CreateListingView2 : UIViewController, UITextFieldDelegate {
     }
   }
   
-  public func save() {
-    controller.saveListingToServer()
-  }
-  
   public func keyboardWillAppear(notification: NSNotification) {
 //    guard let keyboardInfo = notification.userInfo,
 //          let frame = scrollViewOriginalFrame,

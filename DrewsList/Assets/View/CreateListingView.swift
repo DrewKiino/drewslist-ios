@@ -11,6 +11,7 @@ import UIKit
 import Signals
 import TextFieldEffects
 import KMPlaceholderTextView
+import SwiftyButton
 
 public class CreateListingView: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
@@ -57,13 +58,14 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     switch indexPath.row {
     case 1, 3, 5, 7: return 24
     case 2: return 168
-    case 10: return 400
+    case 9: return 150
+    case 12: return 400
     default: return 48
     }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 11
+    return 13
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -80,6 +82,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Book"
         cell.hideTopBorder()
+        cell.showBottomBorder()
         cell.alignTextLeft()
         return cell
       }
@@ -149,18 +152,30 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       break
     case 9:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
+        cell.titleLabel?.text = "Notes"
+        cell.inputTextView?.placeholder = "Want to buy or sell this book as soon as possible? Write your pitch here! Please tell them why you are listing this book. Keep it clean please ;)"
         cell._isFirstResponder.removeAllListeners()
         cell._isFirstResponder.listen(self) { [weak self] bool in
           if let cell = self?.tableView?.cellForRowAtIndexPath(indexPath) where bool {
-            self?.tableView?.setContentOffset(CGPointMake(0, screen.height - cell.frame.origin.y + 128), animated: true)
+            self?.tableView?.setContentOffset(CGPointMake(0, screen.height - cell.frame.origin.y + 150), animated: true)
           }
         }
         return cell
       }
       break
     case 10:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+        cell.buttonLabel?.text = "Upload Listing"
+        cell._onPressed.removeAllListeners()
+        cell._onPressed.listen(self) { [weak self] bool in self?.controller.uploadListingToServer() }
+        return cell
+      }
+      break
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.showTopBorder()
         cell.hideBottomBorder()
+        cell.paddingLabel?.text = ""
         return cell
       }
       break
@@ -392,10 +407,11 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   }
 }
 
-public class InputTextViewCell: DLTableViewCell, UITextFieldDelegate {
+public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   
   private let separatorLine = CALayer()
   
+  public var titleLabel: UILabel?
   public var inputTextView: KMPlaceholderTextView?
   
   public let _isFirstResponder = Signal<Bool>()
@@ -403,9 +419,10 @@ public class InputTextViewCell: DLTableViewCell, UITextFieldDelegate {
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupSelf()
+    setupTitleLabel()
     setupInputTextView()
     
-    inputTextView?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    titleLabel?.anchorAndFillEdge(.Top, xPad: 14, yPad: 2, otherSize: 12)
     
     separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
   }
@@ -417,6 +434,7 @@ public class InputTextViewCell: DLTableViewCell, UITextFieldDelegate {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
+    inputTextView?.anchorAndFillEdge(.Top, xPad: 14, yPad: 16, otherSize: bounds.height - 16)
   }
   
   private func setupSelf() {
@@ -424,15 +442,26 @@ public class InputTextViewCell: DLTableViewCell, UITextFieldDelegate {
     hideBothTopAndBottomBorders()
   }
   
-  private func setupInputTextView() {
-    
+  private func setupTitleLabel() {
+    titleLabel = UILabel()
+    titleLabel?.font = .asapRegular(10)
+    titleLabel?.textColor = .sexyGray()
+    addSubview(titleLabel!)
   }
   
-  public func textFieldDidBeginEditing(textField: UITextField) {
+  private func setupInputTextView() {
+    inputTextView  = KMPlaceholderTextView()
+    inputTextView?.font = .asapRegular(12)
+    inputTextView?.placeholderColor = .sexyGray()
+    inputTextView?.delegate = self
+    addSubview(inputTextView!)
+  }
+  
+  public func textViewDidBeginEditing(textView: UITextView) {
     _isFirstResponder => true
   }
   
-  public func textFieldDidEndEditing(textField: UITextField) {
+  public func textViewDidEndEditing(textView: UITextView) {
     _isFirstResponder => false
   }
   
@@ -442,5 +471,65 @@ public class InputTextViewCell: DLTableViewCell, UITextFieldDelegate {
     inputTextView?.resignFirstResponder()
     
     return true
+  }
+}
+
+public class BigButtonCell: DLTableViewCell {
+  
+  private var indicator: UIActivityIndicatorView?
+  public var button: SwiftyCustomContentButton?
+  public var buttonLabel: UILabel?
+  
+  public let _onPressed = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupButton()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    button?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    indicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
+    buttonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupButton() {
+    
+    button = SwiftyCustomContentButton()
+    button?.buttonColor         = .sweetBeige()
+    button?.highlightedColor    = .juicyOrange()
+    button?.shadowColor         = .clearColor()
+    button?.disabledButtonColor = .grayColor()
+    button?.disabledShadowColor = .darkGrayColor()
+    button?.shadowHeight        = 0
+    button?.cornerRadius        = 8
+    button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
+    button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+    
+    indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    button?.customContentView.addSubview(indicator!)
+    
+    buttonLabel = UILabel()
+    buttonLabel?.textAlignment = .Center
+    buttonLabel?.textColor = UIColor.whiteColor()
+    buttonLabel?.font = .asapRegular(16)
+    button?.customContentView.addSubview(buttonLabel!)
+    
+    addSubview(button!)
+  }
+  
+  public func pressed() {
+    _onPressed => true
   }
 }
