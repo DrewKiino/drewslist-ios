@@ -14,7 +14,7 @@
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
 		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; };
 		39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */; };
-		3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */; };
+		3F4CA3A71C0BE94000CFC84D /* CreateListingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3A61C0BE94000CFC84D /* CreateListingView2.swift */; };
 		3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */; };
 		3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */; };
 		3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */; };
@@ -88,6 +88,7 @@
 		EEE2AA0B1C28A3500093DB46 /* AccountSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */; };
 		EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */; };
 		EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */; };
+		EEE2AA111C28F8B50093DB46 /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */; };
 		EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEFB7871C280315005CB4F9 /* Toucan.swift */; };
 		EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */; };
 /* End PBXBuildFile section */
@@ -116,7 +117,7 @@
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		399971DD1C14D1FF008C30FC /* SignUpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
 		39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LoginScrollImage-01.png"; sourceTree = "<group>"; };
-		3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
+		3F4CA3A61C0BE94000CFC84D /* CreateListingView2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateListingView2.swift; path = View/CreateListingView2.swift; sourceTree = "<group>"; };
 		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookController.swift; sourceTree = "<group>"; };
 		3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerController.swift; sourceTree = "<group>"; };
@@ -198,6 +199,7 @@
 		EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsModel.swift; sourceTree = "<group>"; };
 		EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
 		EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLTableView.swift; sourceTree = "<group>"; };
+		EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
 		EEEFB7871C280315005CB4F9 /* Toucan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Toucan.swift; path = Toucan/Toucan.swift; sourceTree = "<group>"; };
 		EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -327,7 +329,6 @@
 				EE007AFB1C1E4F460088ACBF /* BookView.swift */,
 				EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */,
 				EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */,
-				3F4CA3A61C0BE94000CFC84D /* CreateListingView.swift */,
 				EE007AF51C1E4DC80088ACBF /* ListView.swift */,
 				EE8918B81C1169A800FCF031 /* LoginView.swift */,
 				EE8918B91C1169A800FCF031 /* OnboardingView.swift */,
@@ -342,6 +343,7 @@
 				4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */,
 				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
 				EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */,
+				EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -486,6 +488,7 @@
 		EEE2AA071C28A1A60093DB46 /* Temp */ = {
 			isa = PBXGroup;
 			children = (
+				3F4CA3A61C0BE94000CFC84D /* CreateListingView2.swift */,
 				EEE2AA051C28A1930093DB46 /* AccountSettingView2.swift */,
 				EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */,
 			);
@@ -759,6 +762,7 @@
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
 				EEE2AA0B1C28A3500093DB46 /* AccountSettingsModel.swift in Sources */,
+				EEE2AA111C28F8B50093DB46 /* CreateListingView.swift in Sources */,
 				3960A7ED1C22E15000747C6C /* AcctSettingModel.swift in Sources */,
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
@@ -772,7 +776,7 @@
 				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
-				3F4CA3A71C0BE94000CFC84D /* CreateListingView.swift in Sources */,
+				3F4CA3A71C0BE94000CFC84D /* CreateListingView2.swift in Sources */,
 				EED779E31C151DF200D172BE /* BookListController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,

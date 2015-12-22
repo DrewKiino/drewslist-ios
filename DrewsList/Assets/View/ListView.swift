@@ -183,7 +183,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
 public class BookViewCell: UITableViewCell {
   
-  private var bookView: BookView?
+  public var bookView: BookView?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -203,6 +203,10 @@ public class BookViewCell: UITableViewCell {
   private func setupBookView() {
     bookView = BookView()
     addSubview(bookView!)
+  }
+  
+  public func setBook(book: Book?) {
+    bookView?.setBook(book)
   }
 }
 

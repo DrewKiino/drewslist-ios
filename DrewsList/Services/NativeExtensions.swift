@@ -101,6 +101,10 @@ import CWStatusBarNotification
 
 extension UIView {
   
+  public class func animate(animationBlock: () -> Void, completionBlock: ((bool: Bool) -> Void)? = nil) {
+    UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
+  }
+  
   public func showLoadingScreen(heightOffset: CGFloat? = nil) {
   
     subviews.forEach {
