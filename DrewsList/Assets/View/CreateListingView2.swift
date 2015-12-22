@@ -468,6 +468,9 @@ public class CreateListingView2 : UIViewController, UITextFieldDelegate {
     }
   }
   
+  public func save() {
+  }
+  
   public func keyboardWillAppear(notification: NSNotification) {
 //    guard let keyboardInfo = notification.userInfo,
 //          let frame = scrollViewOriginalFrame,

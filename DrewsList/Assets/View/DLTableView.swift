@@ -28,6 +28,8 @@ public class DLTableView: UITableView {
     // MARK: Create Listing View Cells
     registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
     registerClass(ToggleCell.self, forCellReuseIdentifier: "ToggleCell")
+    registerClass(TripleToggleCell.self, forCellReuseIdentifier: "TripleToggleCell")
+    
     registerClass(InputTextFieldCell.self, forCellReuseIdentifier: "InputTextFieldCell")
     registerClass(InputTextViewCell.self, forCellReuseIdentifier: "InputTextViewCell")
     registerClass(BigButtonCell.self, forCellReuseIdentifier: "BigButtonCell")
@@ -37,11 +39,13 @@ public class DLTableView: UITableView {
     backgroundColor = .paradiseGray()
     separatorColor = .clearColor()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissResponder"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "resignFirstResponder"))
   }
   
-  public func dismissResponder() {
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
     visibleCells.forEach { $0.resignFirstResponder() }
+    return true
   }
   
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }

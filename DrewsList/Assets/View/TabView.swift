@@ -46,10 +46,10 @@ public class TabView: RAMAnimatedTabBarController {
     var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
     testView.tabBarItem = RAMAnimatedTabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
-    viewControllers = [testView, scannerView!, communityTab!, chatView!, userProfileView!]
+//    viewControllers = [testView, scannerView!, communityTab!, chatView!, userProfileView!]
     
     // set view controllers
-//    viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
+    viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
     
     // dealloc reference view controllers
     communityTab = nil

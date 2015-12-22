@@ -179,6 +179,11 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     case Left
     case Right
   }
+  
+  public func getListingsFromServer(skip: Int?, listing: String?) {
+    if listing == "buying" { wishListFeedView?.getListingsFromServer(skip, listing: listing) }
+    else if listing == "selling" { saleListFeedView?.getListingsFromServer(skip, listing: listing) }
+  }
 }
 
 public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSource {
@@ -202,10 +207,13 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
   
   private func setupDataBinding() {
+    model._listings.removeAllListeners()
     model._listings.listen(self) { [weak self] listings in
       self?.reloadData()
       self?.hideLoadingScreen()
     }
+    
+    model._listType.removeAllListeners()
     model._listType.listen(self) { [weak self] listType in
       self?.model.listings.removeAll(keepCapacity: false)
       self?.controller.getListingsFromServer(0, listType: listType)
@@ -253,6 +261,12 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
     guard let listType = listType else { return }
     
     model.listType = listType
+  }
+  
+  public func getListingsFromServer(skip: Int?, listing: String?) {
+    showLoadingScreen(-132)
+    controller.getModel().listings.removeAll(keepCapacity: false)
+    controller.getListingsFromServer(skip, listType: listing)
   }
 }
 
