@@ -172,7 +172,6 @@ public class ProfileImgCell: UITableViewCell {
 public class EditCell: UITableViewCell, UITextFieldDelegate {
   
   public var textField: UITextField?
-  
   public let _textFieldString = Signal<String?>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

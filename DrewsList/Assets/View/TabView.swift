@@ -12,6 +12,7 @@ import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
+  var testView = AccountSettingsView()
   var communityTab: CommunityFeedView? = CommunityFeedView()
   var chatView: ChatHistoryView?  = ChatHistoryView()
   var scannerView: ScannerView? = ScannerView()
@@ -42,9 +43,13 @@ public class TabView: RAMAnimatedTabBarController {
   
   private func setupViewControllers() {
     
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    testView.tabBarItem = RAMAnimatedTabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
+    toucan = nil
+    viewControllers = [testView, communityTab!, chatView!, scannerView!, userProfileView!]
+    
     // set view controllers
-    viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
-//    viewControllers = [scannerView!]
+//    viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
     
     // dealloc reference view controllers
     communityTab = nil

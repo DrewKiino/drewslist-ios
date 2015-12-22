@@ -164,10 +164,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public func scrollViewDidScroll(scrollView: UIScrollView) {
     if let offset: CGFloat? = scrollView.contentOffset.x where offset > 0 && shouldDisableScrollDetection == false {
       switch Float(offset!) {
-      case 0...Float(screen.width * 0.5):
+      case 0...Float(screen.width * 0.7):
         selectPage(.Left)
         break
-      case Float(screen.width * 0.5 + 1)...Float(screen.width * 1.5 + -1):
+      case Float(screen.width * 0.7 + 1)...Float(screen.width * 1.5 + -1):
         selectPage(.Right)
         break
       default: break
