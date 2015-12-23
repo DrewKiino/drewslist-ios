@@ -219,7 +219,7 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock) {
+  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock?) {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
       .CacheMemoryOnly,
@@ -227,7 +227,9 @@ extension UIImageView {
 //      .ProgressiveDownload,
       .AvoidAutoSetImage,
       .LowPriority
-    ], completed: completionHandler)
+    ]) { image, error, cache, url in
+      completionHandler?(image, error, cache, url)
+    }
   }
 }
 

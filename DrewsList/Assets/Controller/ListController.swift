@@ -21,4 +21,6 @@ public class ListController {
   public func getListing() -> Listing? { return model.listing }
   
   public func setListing(listing: Listing) { model.listing = listing }
+  
+  public func getModel() -> ListModel { return model }
 }

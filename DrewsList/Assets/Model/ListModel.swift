@@ -83,6 +83,15 @@ public class Listing: Mappable {
     }
   }
   
+  public func getListTypeText2() ->  String? {
+    guard let listType = listType else { return nil }
+    switch listType {
+    case "buying": return "Buyer"
+    case "selling": return "Seller"
+    default: return nil
+    }
+  }
+  
   
   public init() {}
   
