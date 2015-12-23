@@ -109,8 +109,8 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0: return 168
-    case 1: return 56
+    case 0: return 166
+    case 1: return 48
     case 2: return 200
     default: return 0
     }

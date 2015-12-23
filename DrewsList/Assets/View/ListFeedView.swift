@@ -186,13 +186,15 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   }
 }
 
-public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSource {
+public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   private let controller = ListFeedController()
   private var model: ListFeedModel { get { return controller.getModel() } }
   
+  private var tableView: DLTableView?
+  
   public init() {
-    super.init(frame: CGRectZero, style: .Plain)
+    super.init(frame: CGRectZero)
     
     setupDataBinding()
     setupTableView()
@@ -204,12 +206,14 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    tableView?.fillSuperview()
   }
   
   private func setupDataBinding() {
     model._listings.removeAllListeners()
     model._listings.listen(self) { [weak self] listings in
-      self?.reloadData()
+      self?.tableView?.reloadData()
       self?.hideLoadingScreen()
     }
     
@@ -221,16 +225,24 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
   
   private func setupTableView() {
-    registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
-    delegate = self
-    dataSource = self
-    separatorColor = .clearColor()
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
+    addSubview(tableView!)
   }
   
   // MARK: TableView Delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 420
+    
+    if let notes = model.listings[indexPath.row].notes where !notes.isEmpty {
+      
+      let height = NSAttributedString(string: notes).heightWithConstrainedWidth(screen.width)
+      
+      return 325 + (height < 100 ? height : 100)
+      
+    } else  { return 275 }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -244,11 +256,12 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
       return cell
     }
     
-    return UITableViewCell()
+    return DLTableViewCell()
   }
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if contentOffset.y >= (contentSize.height - frame.size.height) &&
+    guard let tableView = tableView else { return }
+    if tableView.contentOffset.y >= (tableView.contentSize.height - frame.size.height) &&
         frame.height > 0 && controller.getModel().shouldLockView == false && controller.getModel().shouldRefrainFromCallingServer == false
     {
       // user has scrolled to the bottom!
@@ -270,28 +283,3 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
 }
 
-public class ListFeedCell: UITableViewCell {
-  
-  public var listView: ListView?
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupListView()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    listView?.fillSuperview()
-  }
-  
-  private func setupListView() {
-    listView = ListView()
-    listView?.tableView?.scrollEnabled = false
-    addSubview(listView!)
-  }
-}

@@ -43,6 +43,9 @@ public class DLTableView: UITableView {
     registerClass(ListerProfileViewCell.self, forCellReuseIdentifier: "ListerProfileViewCell")
     registerClass(ListerAttributesViewCell.self, forCellReuseIdentifier: "ListerAttributesViewCell")
     
+    // MARK: List Feed Cells
+    registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()
@@ -456,9 +459,9 @@ public class ListerProfileViewCell: DLTableViewCell {
     
     listTypeLabel?.align(.ToTheRightMatchingBottom, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
     
-    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 6, width: 100, height: 16)
     
-    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 12, width: 100, height: 16)
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 6, width: 100, height: 16)
   }
   
   private override func setupSelf() {
@@ -613,20 +616,6 @@ public class ListerAttributesViewCell: DLTableViewCell {
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
-    
-    notesTextViewContainer?.anchorAndFillEdge(.Top, xPad: 12, yPad: 72, otherSize: frame.height - 72 - 16)
-    notesTextView?.fillSuperview()
-    
-    if let container = notesTextViewContainer {
-      
-      var gradient: CAGradientLayer? = CAGradientLayer(layer: container.layer)
-      gradient?.frame = notesTextViewContainer!.bounds
-      gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
-      gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
-      gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
-      notesTextViewContainer?.layer.mask = gradient
-      gradient = nil
-    }
   }
   
   private override func setupSelf() {
@@ -661,7 +650,6 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private func setupNotesTitle() {
     notesTitle = UILabel()
     notesTitle?.font = UIFont.asapBold(12)
-    notesTitle?.text = "Notes:"
     addSubview(notesTitle!)
   }
   
@@ -674,6 +662,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     notesTextView = UITextView()
     notesTextView?.showsVerticalScrollIndicator = false
     notesTextView?.editable = false
+    notesTextViewContainer?.layer.mask = nil
     notesTextViewContainer?.addSubview(notesTextView!)
   }
   
@@ -713,6 +702,13 @@ public class ListerAttributesViewCell: DLTableViewCell {
         self?.conditionLabel?.attributedText = coloredString2
       }
       
+      
+      if let notes = listing?.notes {
+        Async.main { [weak self] in
+          self?.notesTitle?.text = !notes.isEmpty ? "Notes:" : nil
+        }
+      }
+      
       // create paragraph style class
       var paragraphStyle: NSMutableParagraphStyle? = NSMutableParagraphStyle()
       paragraphStyle?.alignment = .Justified
@@ -728,12 +724,46 @@ public class ListerAttributesViewCell: DLTableViewCell {
       paragraphStyle = nil
       
       Async.main { [weak self] in
+        
         self?.notesTextView?.attributedText = attributedString
+        
+        self?.notesTextView?.sizeToFit()
+        
+        let height: CGFloat! = self?.notesTextView!.frame.size.height < 100 ? self?.notesTextView!.frame.size.height : 100
+        var notesTitle: UILabel! = self?.notesTitle!
+        
+        self?.notesTextViewContainer?.alignAndFillWidth(
+          align: .UnderCentered,
+          relativeTo: notesTitle,
+          padding: 11,
+          height: height
+        )
+        
+        notesTitle = nil
+        
+        self?.notesTextView?.fillSuperview()
+        
+        self?.notesTextViewContainer?.layer.mask = nil
+        
+        Async.background { [weak self] in
+          let layer: CALayer! = self?.notesTextViewContainer?.layer
+          let bounds: CGRect! = self?.notesTextViewContainer?.bounds
+          var gradient: CAGradientLayer? = CAGradientLayer(layer: layer)
+          gradient?.frame = bounds
+          gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
+          gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
+          gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
+          
+          Async.main { [weak self] in
+            self?.notesTextViewContainer?.layer.mask = gradient
+            gradient = nil
+          }
+        }
       }
-      
-      }.main { [weak self] in
-        // same things is happening as the view view before this
-        self?.layer.zPosition = 2
+    
+    }.main { [weak self] in
+      // same things is happening as the view view before this
+      self?.layer.zPosition = 2
     }
   }
 }
@@ -870,7 +900,7 @@ public class ListCell: UICollectionViewCell {
     
     bookImageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
     bookPriceLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookImageView!, padding: 4, height: 12)
-    matchInfoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookPriceLabel!, padding: 2, height: 36)
+    matchInfoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookPriceLabel!, padding: 2, height: 24)
     matchUserImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 24, height: 24)
     matchPriceLabel?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: matchUserImageView!, padding: 2, height: 12)
     matchUserNameLabel?.alignAndFillWidth(align: .ToTheRightMatchingTop, relativeTo: matchUserImageView!, padding: 2, height: 12)
@@ -905,6 +935,8 @@ public class ListCell: UICollectionViewCell {
   private func setupMatchInfoView() {
     matchInfoView = UIView()
     matchInfoView?.userInteractionEnabled = true
+    matchInfoView?.layer.cornerRadius = 12
+    matchInfoView?.layer.masksToBounds = true
     addSubview(matchInfoView!)
   }
   
@@ -960,7 +992,6 @@ public class ListCell: UICollectionViewCell {
     matchUserImageView?.image = nil
     matchUserImageView?.alpha = 0.0
     
-    
     // set lister price label
     bookPriceLabel?.text = nil
     
@@ -981,6 +1012,9 @@ public class ListCell: UICollectionViewCell {
   
   public func setHighestLister(listing: Listing?) {
     
+    // refresh match info view
+    matchInfoView?.backgroundColor = .clearColor()
+    
     // refresh lister labels
     matchPriceLabel?.text = nil
     matchUserNameLabel?.text = nil
@@ -996,6 +1030,8 @@ public class ListCell: UICollectionViewCell {
       // if highest lister exists, add tap gesture
       matchTapGesture = UITapGestureRecognizer(target: self, action: "selectedMatch")
       matchInfoView?.addGestureRecognizer(matchTapGesture!)
+      
+      matchInfoView?.backgroundColor = .sweetBeige()
       
       let duration: NSTimeInterval = 0.2
       
@@ -1159,6 +1195,31 @@ public class BookViewCell: DLTableViewCell {
   }
 }
 
+public class ListFeedCell: DLTableViewCell {
+  
+  public var listView: ListView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupListView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    listView?.fillSuperview()
+  }
+  
+  private func setupListView() {
+    listView = ListView()
+    listView?.tableView?.scrollEnabled = false
+    addSubview(listView!)
+  }
+}
 
 
 
