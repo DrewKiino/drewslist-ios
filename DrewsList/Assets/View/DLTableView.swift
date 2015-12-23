@@ -18,45 +18,58 @@ public class DLTableView: UITableView {
   }
   
   private func setupSelf() {
+    
+    // MARK: Regular Static View Cell
     registerClass(PaddingCell.self, forCellReuseIdentifier: "PaddingCell")
     registerClass(TitleCell.self, forCellReuseIdentifier: "TitleCell")
     registerClass(FullTitleCell.self, forCellReuseIdentifier: "FullTitleCell")
     registerClass(SwitchCell.self, forCellReuseIdentifier: "SwitchCell")
     
+    // MARK: Create Listing View Cells
+    registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
+    registerClass(ToggleCell.self, forCellReuseIdentifier: "ToggleCell")
+    registerClass(TripleToggleCell.self, forCellReuseIdentifier: "TripleToggleCell")
+    
+    registerClass(InputTextFieldCell.self, forCellReuseIdentifier: "InputTextFieldCell")
+    registerClass(InputTextViewCell.self, forCellReuseIdentifier: "InputTextViewCell")
+    registerClass(BigButtonCell.self, forCellReuseIdentifier: "BigButtonCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()
     separatorColor = .clearColor()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "resignFirstResponder"))
   }
   
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    visibleCells.forEach { $0.resignFirstResponder() }
+    return true
+  }
   
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
 }
 
-
-public class PaddingCell: UITableViewCell {
+public class DLTableViewCell: UITableViewCell {
   
-  public var paddingLabel: UILabel?
+  private let separatorLine = CALayer()
+  
   private let topBorder = CALayer()
   private let bottomBorder = CALayer()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupSelf()
-    setupPaddingLabel()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
   }
   
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    paddingLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 12, otherSize: 300)
-    
-    topBorder.frame = CGRectMake(0, 0, bounds.size.width, 1)
+    topBorder.frame = CGRectMake(0, 0, bounds.size.width, 0.5)
     bottomBorder.frame = CGRectMake(0, bounds.size.height - 1, bounds.size.width, 1)
+    
+    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 0.5)
   }
   
   private func setupSelf() {
@@ -70,7 +83,79 @@ public class PaddingCell: UITableViewCell {
     bottomBorder.zPosition = 2
     layer.addSublayer(bottomBorder)
     
+    separatorLine.backgroundColor = UIColor.tableViewNativeSeparatorColor().CGColor
+    separatorLine.zPosition = 2
+    layer.addSublayer(separatorLine)
+    
+    separatorInset = UIEdgeInsetsMake(0, width, 0, 0)
+    
     hideSeparatorLine()
+    hideBothTopAndBottomBorders()
+  }
+
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public func showSeparatorLine() {
+    separatorLine.hidden = false
+  }
+  
+  public func hideSeparatorLine() {
+    separatorLine.hidden = true
+  }
+  
+  public func hideBothTopAndBottomBorders() {
+    hideTopBorder()
+    hideBottomBorder()
+  }
+  
+  public func showBothTopAndBottomBorders() {
+    showTopBorder()
+    showBottomBorder()
+  }
+  
+  public func showTopBorder() {
+    topBorder.hidden = false
+  }
+  
+  public func showBottomBorder() {
+    bottomBorder.hidden = false
+  }
+  
+  public func hideTopBorder() {
+    topBorder.hidden = true
+  }
+  
+  public func hideBottomBorder() {
+    bottomBorder.hidden = true
+  }
+}
+
+public class PaddingCell: DLTableViewCell {
+  
+  public var paddingLabel: UILabel?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupPaddingLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  private override func setupSelf() {
+    super.setupSelf()
+    
+    showBothTopAndBottomBorders()
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    paddingLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 4, otherSize: 300)
   }
   
   private func setupPaddingLabel() {
@@ -83,22 +168,12 @@ public class PaddingCell: UITableViewCell {
     addSubview(paddingLabel!)
   }
   
-  public func hideSeparatorLine() {
-    separatorInset = UIEdgeInsetsMake(0, width, 0, 0)
-  }
-  
-  public func hideTopBorder() {
-    topBorder.hidden = true
-  }
-  
-  public func hideBottomBorder() {
-    bottomBorder.hidden = true
+  public func alignTextLeft() {
+    paddingLabel?.textAlignment = .Left
   }
 }
 
-public class TitleCell: UITableViewCell {
-  
-  private let separatorLine = CALayer()
+public class TitleCell: DLTableViewCell {
   
   public var titleLabel: UILabel?
   public var titleTextLabel: UILabel?
@@ -111,8 +186,6 @@ public class TitleCell: UITableViewCell {
     
     titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 80)
     titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
-    
-    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -121,15 +194,11 @@ public class TitleCell: UITableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
   }
   
-  private func setupSelf() {
+  private override func setupSelf() {
+    super.setupSelf()
     backgroundColor = .whiteColor()
-    
-    separatorLine.backgroundColor = UIColor.tableViewNativeSeparatorColor().CGColor
-    separatorLine.zPosition = 2
-    layer.addSublayer(separatorLine)
   }
   
   private func setupTitleLabel() {
@@ -149,16 +218,9 @@ public class TitleCell: UITableViewCell {
     titleTextLabel?.minimumScaleFactor = 0.8
     addSubview(titleTextLabel!)
   }
-  
-  public func hideSeparatorLine() {
-    separatorInset = UIEdgeInsetsMake(0, width, 0, 0)
-    separatorLine.hidden = true
-  }
 }
 
-public class FullTitleCell: UITableViewCell {
-  
-  private let separatorLine = CALayer()
+public class FullTitleCell: DLTableViewCell {
   
   public var titleLabel: UILabel?
   public var rightImageView: UIImageView?
@@ -174,8 +236,6 @@ public class FullTitleCell: UITableViewCell {
     titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 200)
     rightImageView?.anchorToEdge(.Right, padding: 12, width: 12, height: 16)
     rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
-    
-    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -187,7 +247,9 @@ public class FullTitleCell: UITableViewCell {
     
   }
   
-  private func setupSelf() {
+  private override func setupSelf() {
+    super.setupSelf()
+    
     backgroundColor = .whiteColor()
     multipleTouchEnabled = false
     
@@ -211,10 +273,6 @@ public class FullTitleCell: UITableViewCell {
     addSubview(rightImageView!)
   }
   
-  public func hideSeparatorLine() {
-    separatorInset = UIEdgeInsetsMake(0, width, 0, 0)
-  }
-  
   public func select() { _didSelectCell => true }
   
   public func pressed(sender: UILongPressGestureRecognizer) {
@@ -231,7 +289,7 @@ public class FullTitleCell: UITableViewCell {
   }
 }
 
-public class SwitchCell: UITableViewCell {
+public class SwitchCell: DLTableViewCell {
   
   public enum Toggle {
     case On
@@ -277,7 +335,8 @@ public class SwitchCell: UITableViewCell {
     
   }
   
-  private func setupSelf() {
+  private override func setupSelf() {
+    super.setupSelf()
     
     backgroundColor = .whiteColor()
     multipleTouchEnabled = false
@@ -300,10 +359,6 @@ public class SwitchCell: UITableViewCell {
     switchImageView = UIImageView(image: UIImage(named: "check")?.imageWithRenderingMode(.AlwaysTemplate))
     switchImageView?.tintColor = .juicyOrange()
     addSubview(switchImageView!)
-  }
-  
-  public func hideSeparatorLine() {
-    separatorInset = UIEdgeInsetsMake(0, width, 0, 0)
   }
   
   public func select() {
@@ -359,4 +414,33 @@ public class SwitchCell: UITableViewCell {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

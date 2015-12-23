@@ -24,9 +24,9 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   
   private var currentPage: CommunityPage = .Middle
   
-  private var leftPage: UIView?
-  private var middlePage: ListFeedViewContainer?
-  private var rightPage: UIView?
+  public var leftPage: UIView?
+  public var middlePage: ListFeedViewContainer?
+  public var rightPage: UIView?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -161,7 +161,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     selectPage(.Right)
   }
   
-  public func selectPage(page: CommunityPage) {
+  private func selectPage(page: CommunityPage) {
     let duration: NSTimeInterval = 0.7
     let damping: CGFloat = 0.5
     let velocity: CGFloat = 1.0

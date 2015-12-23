@@ -45,9 +45,9 @@ public class ListViewContainer: UIViewController {
     title = "Best Match"
   }
   
-  public func setListing(listing: Listing?) -> Bool {
+  public func setListing(listing: Listing?) -> Self {
     self.listing = listing
-    return true
+    return self
   }
 }
 
@@ -183,7 +183,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
 public class BookViewCell: UITableViewCell {
   
-  private var bookView: BookView?
+  public var bookView: BookView?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -203,6 +203,10 @@ public class BookViewCell: UITableViewCell {
   private func setupBookView() {
     bookView = BookView()
     addSubview(bookView!)
+  }
+  
+  public func setBook(book: Book?) {
+    bookView?.setBook(book)
   }
 }
 
@@ -361,7 +365,7 @@ public class ListerAttributesViewCell: UITableViewCell {
       
       var gradient: CAGradientLayer? = CAGradientLayer(layer: container.layer)
       gradient?.frame = notesTextViewContainer!.bounds
-      gradient?.colors = [UIColor.clearColor().CGColor, UIColor.blueColor().CGColor]
+      gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
       gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
       gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
       notesTextViewContainer?.layer.mask = gradient

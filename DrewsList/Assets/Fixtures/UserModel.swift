@@ -37,6 +37,9 @@ public class User: Mappable {
   
   public let _bgImage = Signal<String?>()
   public var bgImage : String? { didSet { _bgImage => bgImage } }
+  
+  public let _description = Signal<String?>()
+  public var description: String? { didSet { _description => description } }
 
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
@@ -65,10 +68,12 @@ public class User: Mappable {
     email           <- map["email"]
     firstName       <- map["firstName"]
     lastName        <- map["lastName"]
-    school          <- map["school"]
     username        <- map["username"]
-    deviceToken     <- map["deviceToken"]
+    school          <- map["school"]
     image           <- map["image"]
+    bgImage         <- map["bgImage"]
+    description     <- map["description"]
+    deviceToken     <- map["deviceToken"]
     listings        <- map["listings"]
   }
   
