@@ -2,146 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SchemeUserState</key>
-	<dict>
-		<key>Alamofire.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>AsyncSwift.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>CWStatusBarNotification.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Former.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Gifu.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>JSQMessagesViewController.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>JSQSystemSoundPlayer.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>LTMorphingLabel.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>NVActivityIndicatorView.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Neon.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>OMGHTTPURLRQ.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>ObjectMapper.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Onboard.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PermissionScope.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Pods-DrewsListTests.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Pods.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PromiseKit.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>PureLayout.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SDWebImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Signals.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Socket.IO-Client-Swift.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SwiftDate.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SwiftyButton.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SwiftyJSON.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>SwiftyTimer.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>TextFieldEffects.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0189EF37A99C5728D8C9AA9D17E7DDFB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>040A7A29749406229DF7EC2690DF6BB8</key>
 		<dict>
 			<key>primary</key>
@@ -152,27 +14,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1300E4C02D3301B7C05ABFA05E419DBC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>17E8161DE89DBB79B1010AA163911934</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>190ACD3A51BC90B85EADB13E9CDD207B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>1B1EC21162C159CD051A6DC30BCB169F</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>1F8DCBE73A09EBAB2937B7895A56384D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -188,16 +35,6 @@
 			<true/>
 		</dict>
 		<key>35C737B77B4E5A4F3DDC645C78BAA076</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>37CD6806FD4177E6B4400DF1B12C51F7</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>41C86DC88750F287587228A7179D1935</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -227,11 +64,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6918A95545997A3366BE21B85E63CA74</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>6BE2662FE5F4136E2732484368EA4E71</key>
 		<dict>
 			<key>primary</key>
@@ -247,27 +79,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>858985998CAAB4F82F6EFAB5CAD37DAC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>886450A935EC498BEF84D723CC169D02</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>95DB89A8BFC5FF0BF98458651D0163CD</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>980933AEBFB68262FC5D0C757539CEE4</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>985071A9AA6E6836960B61BCC88CC2D6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -292,11 +109,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B381BAC954700CAEC273F5C3A1086596</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>B4FBE5DA02B7322FF7D3C2D4486F37DE</key>
 		<dict>
 			<key>primary</key>
@@ -308,11 +120,6 @@
 			<true/>
 		</dict>
 		<key>C6B7AB52663DB4ED7F6BD1CE5D14E1A5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CA0B8644038D86A7CB3A7E98202FAC9B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

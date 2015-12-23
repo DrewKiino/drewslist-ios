@@ -17,6 +17,9 @@ public class User: Mappable {
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
+  public let _email = Signal<String?>()
+  public var email: String? { didSet { _email => email } }
+  
   public let _firstName = Signal<String?>()
   public var firstName: String? { didSet { _firstName => firstName } }
   
@@ -26,11 +29,17 @@ public class User: Mappable {
   public let _username = Signal<String?>()
   public var username: String? { didSet { _username => username } }
   
+  public let _school = Signal<String?>()
+  public var school: String? { didSet { _school => school } }
+  
   public let _image = Signal<String?>()
   public var image: String? { didSet { _image => image } }
   
   public let _bgImage = Signal<String?>()
   public var bgImage : String? { didSet { _bgImage => bgImage } }
+  
+  public let _description = Signal<String?>()
+  public var description: String? { didSet { _description => description } }
 
   public let _deviceToken = Signal<String?>()
   public var deviceToken: String? { didSet { _deviceToken => deviceToken } }
@@ -55,12 +64,16 @@ public class User: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
+    _id             <- map["_id"]
+    email           <- map["email"]
     firstName       <- map["firstName"]
     lastName        <- map["lastName"]
     username        <- map["username"]
-    _id             <- map["_id"]
-    deviceToken     <- map["deviceToken"]
+    school          <- map["school"]
     image           <- map["image"]
+    bgImage         <- map["bgImage"]
+    description     <- map["description"]
+    deviceToken     <- map["deviceToken"]
     listings        <- map["listings"]
   }
   
@@ -77,31 +90,39 @@ public class UserModel {
 }
 
 public class RealmUser: Object {
+  
   dynamic var _id: String?
+  dynamic var email: String?
   dynamic var firstName: String?  
   dynamic var lastName: String?
   dynamic var username: String?
+  dynamic var school: String?
   dynamic var image: String?
   
   public override static func primaryKey() -> String? {
     return "_id"
   }
   
-  public func setRealmUser(user: User?){
-    guard let user = user else {return}
+  public func setRealmUser(user: User?) -> Self {
+    guard let user = user else { return self }
     _id = user._id
+    email = user.email
     firstName = user.firstName
     lastName = user.lastName
     username = user.username
+    school = user.school
     image = user.image
+    return self
   }
   
   public func getUser() -> User {
     let user = User()
     user._id = _id
+    user.email = email
     user.firstName = firstName
     user.lastName = lastName
     user.username = username
+    user.school = school
     user.image = image
     return user
   }

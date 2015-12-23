@@ -2,578 +2,862 @@
 //  CreateListingView.swift
 //  DrewsList
 //
-//  Created by Steven Yang on 11/22/15.
+//  Created by Andrew Aquino on 12/21/15.
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
 import Foundation
-import Neon
 import UIKit
-import TextFieldEffects
 import Signals
+import TextFieldEffects
+import KMPlaceholderTextView
+import SwiftyButton
 
-enum ForToggle {
-    case Wishlist
-    case Selling
-    func name() -> String {
-        switch self {
-        case .Wishlist:
-            return "Wishlist"
-        case .Selling:
-            return "Selling"
-        }
+public class CreateListingView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+  
+  private let controller = CreateListingController()
+  private var model: CreateListingModel { get { return controller.getModel() } }
+  
+  // Navigation Header Views
+  private var headerView: UIView?
+  private var cancelButton: UIButton?
+  private var saveButton: UIButton?
+  private var headerTitle: UILabel?
+  
+  private var tableView: DLTableView?
+  
+  // MARK: View Lifecycle
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setupSelf()
+    setupDataBinding()
+    setupHeaderView()
+    setupTableView()
+    
+    headerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
+    headerTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
+    cancelButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
+    saveButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
+    
+    tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
+  }
+  
+  // MARK: Setup Functions
+  
+  private func setupSelf() {
+    view.backgroundColor = .whiteColor()
+  }
+  
+  private func setupDataBinding() {
+    model._book.removeAllListeners()
+    model._book.listen(self) { [weak self] book in
+      self?.tableView?.reloadData()
     }
+    
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      // dismiss keyboard
+      self?.tableView?.resignFirstResponder()
+      // hide header buttons
+      self?.hideHeaderButtons()
+      // show loading screen
+      if bool == true { self?.view.showLoadingScreen() }
+      else if bool == false { self?.view.hideLoadingScreen() }
+    }
+    
+    model._serverCallbackFromUploadListing.removeAllListeners()
+    model._serverCallbackFromUploadListing.listen(self) { [weak self] bool in
+      // show header buttons
+      self?.showHeaderButtons()
+      // hide loading screen
+      self?.view.hideLoadingScreen()
+      // dismiss feed and present listing feed if callback was good
+      if bool == true { self?.dismissAndPresentListingFeed() }
+    }
+  }
+  
+  private func setupHeaderView() {
+    headerView = UIView()
+    headerView?.backgroundColor = .soothingBlue()
+    view.addSubview(headerView!)
+    
+    headerTitle = UILabel()
+    headerTitle?.text = "Create A Listing"
+    headerTitle?.textAlignment = .Center
+    headerTitle?.font = UIFont.asapBold(16)
+    headerTitle?.textColor = .whiteColor()
+    headerView?.addSubview(headerTitle!)
+    
+    cancelButton = UIButton()
+    cancelButton?.setTitle("Cancel", forState: .Normal)
+    cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
+    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    headerView?.addSubview(cancelButton!)
+    
+    saveButton = UIButton()
+    saveButton?.setTitle("Upload", forState: .Normal)
+    saveButton?.titleLabel?.font = UIFont.asapRegular(16)
+    saveButton?.addTarget(self, action: "upload", forControlEvents: .TouchUpInside)
+    headerView?.addSubview(saveButton!)
+  }
+  
+  private func setupTableView() {
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    view.addSubview(tableView!)
+  }
+  
+  // MARK: TableView Delegates
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    switch indexPath.row {
+    case 0, 2, 4, 6, 8: return 24
+    case 1: return 168
+    case 10: return 150
+    case 13: return 400
+    default: return 48
+    }
+  }
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return 14
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    switch indexPath.row {
+//    case 0:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//        cell.paddingLabel?.font = .asapBold(16)
+//        cell.paddingLabel?.text = "Listing Details"
+//        cell.hideBothTopAndBottomBorders()
+//        return cell
+//      }
+//      break
+    case 0:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Book"
+        cell.hideTopBorder()
+        cell.showBottomBorder()
+        cell.alignTextLeft()
+        return cell
+      }
+      break
+    case 1:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+        cell.setBook(model.book)
+        return cell
+      }
+      break
+    case 2:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "For"
+        cell.alignTextLeft()
+        return cell
+      }
+      break
+    case 3:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("ToggleCell", forIndexPath: indexPath) as? ToggleCell {
+        cell.leftToggleButton?.setTitle("My Wish List", forState: .Normal)
+        cell.rightToggleButton?.setTitle("My Sale List", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] toggle in
+          switch toggle {
+          case .Left:
+            self?.model.listing?.listType = "buying"
+            return
+          case .Right:
+            self?.model.listing?.listType = "selling"
+            return
+          }
+        }
+        cell.hideTopBorder()
+        return cell
+      }
+      break
+    case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Cover"
+        cell.alignTextLeft()
+        return cell
+      }
+      break
+    case 5:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("ToggleCell", forIndexPath: indexPath) as? ToggleCell {
+        cell.leftToggleButton?.setTitle("Hardcover", forState: .Normal)
+        cell.rightToggleButton?.setTitle("Paperback", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] toggle in
+          switch toggle {
+          case .Left:
+            self?.model.listing?.cover = "hardcover"
+            return
+          case .Right:
+            self?.model.listing?.cover = "paperback"
+            return
+          }
+        }
+        return cell
+      }
+      break
+    case 6:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Condition"
+        cell.alignTextLeft()
+        return cell
+      }
+      break
+    case 7:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TripleToggleCell", forIndexPath: indexPath) as? TripleToggleCell {
+        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] toggle in
+          switch toggle {
+          case .Left:
+            self?.model.listing?.condition = "1"
+            return
+          case .Middle:
+            self?.model.listing?.condition = "2"
+            return
+          case .Right:
+            self?.model.listing?.condition = "3"
+            return
+          }
+        }
+        return cell
+      }
+      break
+    case 8:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Information"
+        cell.alignTextLeft()
+        return cell
+      }
+      break
+    case 9:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+        cell.inputTextField?.placeholder = "Price"
+        cell.inputTextField?.keyboardType = .DecimalPad
+        cell._isFirstResponder.removeAllListeners()
+        cell._isFirstResponder.listen(self) { [weak self] bool in
+          if let cell = self?.tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0)) {
+            self?.tableView?.setContentOffset(CGPointMake(0, cell.frame.origin.y), animated: true)
+          }
+        }
+        cell._inputTextFieldString.removeAllListeners()
+        cell._inputTextFieldString.listen(self) { [weak self] text in
+          self?.model.listing?.price = text
+        }
+        return cell
+      }
+      break
+    case 10:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
+        cell.titleLabel?.text = "Notes"
+        cell.inputTextView?.placeholder = "Want to buy or sell this book as soon as possible? Write your pitch here! Tell future users why you are listing this book. Keep it clean please ;)"
+        cell._isFirstResponder.removeAllListeners()
+        cell._isFirstResponder.listen(self) { [weak self] bool in
+          if let cell = self?.tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0)) {
+            self?.tableView?.setContentOffset(CGPointMake(0, cell.frame.origin.y), animated: true)
+          }
+        }
+        cell._inputTextViewString.removeAllListeners()
+        cell._inputTextViewString.listen(self) { [weak self] text in
+          self?.model.listing?.notes = text
+        }
+        return cell
+      }
+      break
+    case 11:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+        cell.buttonLabel?.text = "Upload Listing"
+        cell._onPressed.removeAllListeners()
+        cell._onPressed.listen(self) { [weak self] bool in self?.controller.uploadListingToServer() }
+        return cell
+      }
+      break
+    case 13:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.showTopBorder()
+        cell.hideBottomBorder()
+        cell.paddingLabel?.text = ""
+        return cell
+      }
+      break
+    default: break
+    }
+    
+    return UITableViewCell()
+  }
+  
+  
+  // MARK: Class Functions
+  
+  public func setBook(book: Book?) -> Self {
+    model.book = book
+    return self
+  }
+  
+  public func dismissAndPresentListingFeed() {
+    if  let tabView = presentingViewController as? TabView,
+        let scannerView = (tabView.viewControllers?.filter { $0 is ScannerView })?.first as? ScannerView,
+        let communityFeedView = (tabView.viewControllers?.filter { $0 is CommunityFeedView })?.first as? CommunityFeedView
+    {
+      // dismiss view and go back to scanner view
+      scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak communityFeedView] in
+        // setup scanner view to start new session
+        scannerView?.previewLayer?.hidden = false
+        scannerView?.session?.startRunning()
+        tabView?.selectedIndex = 0
+        communityFeedView?.selectMiddlePage()
+        if self?.model.listing?.listType == "buying" {
+          communityFeedView?.middlePage?.selectLeftPage()
+          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "buying")
+        } else if self?.model.listing?.listType == "selling" {
+          communityFeedView?.middlePage?.selectRightPage()
+          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "selling")
+        }
+      }
+    }
+  }
+  
+  public func cancel() {
+    if let tabView = presentingViewController as? TabView, let scannerView = (tabView.viewControllers?.filter { $0 is ScannerView })?.first as? ScannerView {
+      scannerView.dismissViewControllerAnimated(true) { [weak scannerView] in
+        scannerView?.previewLayer?.hidden = false
+        scannerView?.session?.startRunning()
+      }
+    }
+  }
+  
+  public func upload() {
+    controller.uploadListingToServer()
+  }
+  
+  public func hideHeaderButtons() {
+    cancelButton?.hidden = true
+    saveButton?.hidden = true
+  }
+  
+  public func showHeaderButtons() {
+    cancelButton?.hidden = false
+    saveButton?.hidden = false
+  }
 }
 
-enum CoverToggle {
-    case Hardcover
-    case Paperback
-    func name() -> String {
-        switch self {
-            case .Hardcover:
-                return "Hardcover"
-            case .Paperback:
-                return "Paperback"
-        }
+public class ToggleCell: DLTableViewCell {
+  
+  public enum Toggle {
+    case Left
+    case Right
+    public func getValue() -> Bool {
+      switch self {
+      case .Left: return true
+      case .Right: return false
+      }
     }
-}
-
-public class CreateListingView : UIViewController {
+  }
+  
+  private var leftToggleButton: UIButton?
+  private var rightToggleButton: UIButton?
+  private var toggleSelector: UIView?
+  private var toggleContainer: UIView?
+  private var toggle: Toggle = .Left// setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupToggleViews()
     
-    // MARK: Properties
+    toggleContainer?.fillSuperview()
+    toggleContainer?.groupAndFill(group: .Horizontal, views: [leftToggleButton!, rightToggleButton!], padding: 8)
     
-    private let listingController = CreateListingController()
-    private let bookController = BookController()
+    toggleSelector?.frame = leftToggleButton!.frame
+//    leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupToggleViews() {
+    toggleContainer = UIView()
+    toggleContainer?.backgroundColor = .whiteColor()
+    toggleContainer?.multipleTouchEnabled = true
+    addSubview(toggleContainer!)
     
-    let screenSize: CGRect = UIScreen.mainScreen().bounds
-    let navbar: UINavigationBar = UINavigationBar()
+    toggleSelector = UIView()
+    toggleSelector?.backgroundColor = .sweetBeige()
+    toggleSelector?.layer.cornerRadius = 8.0
+    toggleContainer?.addSubview(toggleSelector!)
     
-    // Toggle Buttons
-    let wishlist: UIButton = UIButton(type: .Custom)
-    let selling: UIButton = UIButton(type: .Custom)
-    let hardcover: UIButton = UIButton(type: .Custom)
-    let paperback: UIButton = UIButton(type: .Custom)
+    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    press.minimumPressDuration = 0.01
     
-    var coverToggle: CoverToggle = .Hardcover // setting default
-    var forToggle: ForToggle = .Wishlist // setting default
+    toggleContainer?.addGestureRecognizer(press)
     
-    // Book info
-    var book_Title: UILabel = UILabel()
-    var book_Author: UILabel = UILabel()
-    var book_ISBN: UILabel = UILabel()
-    var book_Edition: UILabel = UILabel()
-    var book_Image: UIImageView = UIImageView()
+    leftToggleButton = UIButton()
+    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.backgroundColor = .clearColor()
+    leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(leftToggleButton!)
     
-    // UIViews
-    let containerView: UIView = UIView()
-    let bookDetailsView: UIView = UIView()
-    let bookInfoPaddingView: UIView = UIView()
-    let bookInfoView: UIView = UIView()
-    
-    // Book details labels
-    let book_details_label: UILabel = UILabel()
-    let book_info_for: UILabel = UILabel()
-    let book_info_condition: UILabel = UILabel()
-    let book_info_cover: UILabel = UILabel()
-    
-    // Book Info containers
-    let forButtonContainer: UIView = UIView()
-    let conditionContainer: UIView = UIView()
-    let coverButtonContainer: UIView = UIView()
-    let notesContainer: UIView = UIView()
-    
-    // Text Fields
-    var textField_Price: IsaoTextField = IsaoTextField()
-    var textField_Notes: IsaoTextField = IsaoTextField()
-    
-    override public func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Set up the container view
-        containerView.clipsToBounds = true
-        containerView.backgroundColor = UIColor(red: 247, green: 247, blue: 247, alpha: 1.0)
-        self.view.addSubview(containerView)
-        
-        // Setup up the bookDetailsView
-        bookDetailsView.backgroundColor = UIColor.blackColor()
-        bookDetailsView.layer.borderWidth = 1
-        bookDetailsView.layer.borderColor = UIColor.sexyGray().CGColor
-        
-        book_Title.text = "Book Title"
-        book_Title.textAlignment = .Left
-        book_Title.font = UIFont.systemFontOfSize(14)
-        book_Title.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        bookDetailsView.addSubview(book_Title)
-        
-        book_Author.text = "By Steven Yang"
-        book_Author.textAlignment = .Left
-        book_Author.font = UIFont.systemFontOfSize(14)
-        book_Author.textColor = UIColor(red: 157, green: 157, blue: 157, alpha: 1.0)
-        bookDetailsView.addSubview(book_Author)
-        
-        book_ISBN.text = "ISBN: 000-00-0-000"
-        book_ISBN.textAlignment = .Left
-        book_ISBN.font = UIFont.systemFontOfSize(14)
-        book_ISBN.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        bookDetailsView.addSubview(book_ISBN)
-        
-        book_Edition.text = "Edition: N/A"
-        book_Edition.textAlignment = .Left
-        book_Edition.font = UIFont.systemFontOfSize(14)
-        book_Edition.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        bookDetailsView.addSubview(book_Edition)
-        
-        containerView.addSubview(bookDetailsView)
-        
-        // Book Info Padding
-        book_details_label.text = "Book Details"
-        book_details_label.textAlignment = .Left
-        book_details_label.font = UIFont.systemFontOfSize(12)
-        book_details_label.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-
-        bookInfoPaddingView.backgroundColor = UIColor.blueColor()
-        bookInfoPaddingView.addSubview(book_details_label)
-        
-        containerView.addSubview(bookInfoPaddingView)
-        
-        // Set up Book Details View
-        bookInfoView.backgroundColor = UIColor.blackColor()
-        
-        book_info_for.text = "For"
-        book_info_for.textAlignment = .Left
-        book_info_for.font = UIFont.systemFontOfSize(14)
-        book_info_for.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        
-        bookInfoView.addSubview(book_info_for)
-        
-        // For Buttons
-        let label = UILabel()
-        
-        // Button
-        wishlist.frame = CGRectMake(10, screenSize.height * 0.4, screenSize.height * 0.2, screenSize.height * 0.1)
-        wishlist.addTarget(self, action: "wishListButtonPressed", forControlEvents: .TouchUpInside)
-        wishlist.backgroundColor = UIColor.grayColor()
-        wishlist.layer.borderWidth = 1
-        wishlist.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        // Label
-        label.text = "Wishlist"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = wishlist.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        wishlist.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        wishlist.addSubview(label)
-        forButtonContainer.addSubview(wishlist)
-        
-        // Selling
-        
-        // Button
-        selling.frame = CGRectMake(screenSize.height * 0.3, screenSize.height * 0.4, screenSize.height * 0.2, screenSize.height * 0.1)
-        selling.addTarget(self, action: "sellingButtonPressed", forControlEvents: .TouchUpInside)
-        selling.backgroundColor = UIColor.grayColor()
-        selling.layer.borderWidth = 1
-        selling.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        // Label
-        label.text = "Selling"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = selling.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        selling.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        selling.addSubview(label)
-        forButtonContainer.addSubview(selling)
-
-        bookInfoView.addSubview(forButtonContainer)
-        containerView.addSubview(bookInfoView)
-        
-        // Cover
-        
-        book_info_cover.text = "Cover"
-        book_info_cover.textAlignment = .Left
-        book_info_cover.font = UIFont.systemFontOfSize(14)
-        book_info_cover.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        
-        bookInfoView.addSubview(book_info_cover)
-        
-        // Button
-        paperback.frame = CGRectMake(10, screenSize.height * 0.7, screenSize.height * 0.2, screenSize.height * 0.1)
-        paperback.addTarget(self, action: "paperBackButtonPressed", forControlEvents: .TouchUpInside)
-        paperback.backgroundColor = UIColor.grayColor()
-        paperback.layer.borderWidth = 1
-        paperback.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        // Label
-        label.text = "Paperback"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = paperback.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        paperback.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        paperback.addSubview(label)
-        coverButtonContainer.addSubview(paperback)
-        
-        // Button
-        hardcover.frame = CGRectMake(screenSize.height * 0.3, screenSize.height * 0.7, screenSize.height * 0.2, screenSize.height * 0.1)
-        hardcover.addTarget(self, action: "hardCoverButtonPressed", forControlEvents: .TouchUpInside)
-        hardcover.backgroundColor = UIColor.grayColor()
-        hardcover.layer.borderWidth = 1
-        hardcover.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        // Label
-        label.text = "Hardcover"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = hardcover.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        hardcover.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        hardcover.addSubview(label)
-        coverButtonContainer.addSubview(hardcover)
-        
-        bookInfoView.addSubview(coverButtonContainer)
-        
-        // Construct Condition container
-        book_info_condition.text = "Condition"
-        book_info_condition.textAlignment = .Left
-        book_info_condition.font = UIFont.systemFontOfSize(14)
-        book_info_condition.textColor = UIColor(red: 153, green: 153, blue: 153, alpha: 1.0)
-        book_info_condition.anchorInCorner(.TopLeft, xPad: 30, yPad: 5, width: 50, height: 20)
-        
-        bookInfoView.addSubview(book_info_condition)
-        
-        let slider = UISlider()
-        slider.anchorInCorner(.TopLeft, xPad: 10, yPad: 5, width: 375, height: 10)
-        slider.minimumValue = 1
-        slider.maximumValue = 3
-        slider.value = 2
-        slider.tintColor = UIColor.blueColor()
-        slider.addTarget(self, action: "sliderDidChange:", forControlEvents: .ValueChanged)
-        conditionContainer.addSubview(slider)
-        
-        bookInfoView.addSubview(conditionContainer)
-
-        // Create UI elements
-//        setupUITexts()
-//        setupBookListener()
-//        createNavbar()
-        createPriceField()
-        createNotesField()
-//        createWishListButton()
-//        createSellingButton()
-//        createPaperbackButton()
-//        createHardCoverButton()
-//        createSlider()
-    
-        // Setup keyboard functions -- move keyboard
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
-        print("View loaded on the screen")
-        
-    }
-   
-    public override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        containerView.fillSuperview(left: 0, right: 0, top: 75, bottom: 0)
-        bookDetailsView.anchorInCorner(.TopRight, xPad: 0, yPad: 50, width: 425, height: 180)
-        bookInfoView.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 425, height: 800)
-        
-        layoutFrames()
-        
-        // Setup UIViews
-//        setupNavbarPadding()
-//        setupBookDetailsView()
-//        setupBookDetailsPadding()
-//        setupBookInfoView()
-    }
-    // MARK: Listeners
-    
-    public func setupBookListener() {
+    rightToggleButton = UIButton()
+    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.backgroundColor = .clearColor()
+    rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(rightToggleButton!)
+  }
+  
+  public func dragSelector(sender: UILongPressGestureRecognizer) {
+    if (sender.state == .Began) {
+    } else if (sender.state == .Ended){
+      snapToToggle(sender.locationInView(self))
+//      animateToggleIntersections()
+    } else  if pointInside(sender.locationInView(self), withEvent: nil),
+      let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      let leftLimit = leftToggleButton.center.x
+      let rightLimit = rightToggleButton.center.x
+      let newCenter = selector.center.x - (selector.center.x - sender.locationInView(self).x)
       
-      bookController.get_Book().listen(self) { [weak self] book in
-        self?.book_Title.text = book?.title
-        self?.book_Author.text = book?.authors.first?.name ?? ""
+      if newCenter > leftLimit && newCenter < rightLimit {
+        UIView.animate({ [unowned selector] in selector.center.x = newCenter })
+      }
+    }
+  }
+  
+  private func animateToggleIntersections() {
+    if  let selector = toggleSelector,
+        let leftToggleButton = leftToggleButton,
+        let rightToggleButton = rightToggleButton
+    {
+      if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+        })
+      } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+        })
+      }
+    }
+  }
+  
+  private func snapToToggle(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+        let leftToggleButton = leftToggleButton,
+        let rightToggleButton = rightToggleButton
+    {
+      if CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = leftToggleButton.center.x
+        })
+        toggle = .Left
+      } else if CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = rightToggleButton.center.x
+        })
+        toggle = .Right
+      } else {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = leftToggleButton.center.x
+        })
+        toggle = .Left
+      }
+      
+    }
+    
+    _didSelectCell => toggle
+  }
+}
+
+public class TripleToggleCell: DLTableViewCell {
+  
+  public enum Toggle {
+    case Left
+    case Middle
+    case Right
+  }
+  
+  private var leftToggleButton: UIButton?
+  private var middleToggleButton: UIButton?
+  private var rightToggleButton: UIButton?
+  private var toggleSelector: UIView?
+  private var toggleContainer: UIView?
+  private var toggle: Toggle = .Middle// setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupToggleViews()
+    
+    toggleContainer?.fillSuperview()
+    toggleContainer?.groupAndFill(group: .Horizontal, views: [leftToggleButton!, middleToggleButton!, rightToggleButton!], padding: 8)
+    
+    toggleSelector?.frame = middleToggleButton!.frame
+    
+    leftToggleButton?.imageView?.tintColor = .juicyOrange()
+    middleToggleButton?.imageView?.tintColor = .blackColor()
+    rightToggleButton?.imageView?.tintColor = .juicyOrange()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    leftToggleButton?.setImage(leftToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+    middleToggleButton?.setImage(middleToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+    rightToggleButton?.setImage(rightToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupToggleViews() {
+    toggleContainer = UIView()
+    toggleContainer?.backgroundColor = .whiteColor()
+    toggleContainer?.multipleTouchEnabled = true
+    addSubview(toggleContainer!)
+    
+    toggleSelector = UIView()
+    toggleSelector?.backgroundColor = .sweetBeige()
+    toggleSelector?.layer.cornerRadius = 8.0
+    toggleContainer?.addSubview(toggleSelector!)
+    
+    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    press.minimumPressDuration = 0.01
+    
+    toggleContainer?.addGestureRecognizer(press)
+    
+    leftToggleButton = UIButton()
+    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.backgroundColor = .clearColor()
+    leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(leftToggleButton!)
+    
+    middleToggleButton = UIButton()
+    middleToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middleToggleButton?.backgroundColor = .clearColor()
+    middleToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(middleToggleButton!)
+    
+    rightToggleButton = UIButton()
+    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.backgroundColor = .clearColor()
+    rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(rightToggleButton!)
+  }
+  
+  public func dragSelector(sender: UILongPressGestureRecognizer) {
+    if (sender.state == .Began) {
+    } else if (sender.state == .Ended){
+      snapToToggle(sender.locationInView(self))
+      animateToggleIntersections(sender.locationInView(self))
+    } else  if pointInside(sender.locationInView(self), withEvent: nil),
+      let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      let leftLimit = leftToggleButton.center.x
+      let rightLimit = rightToggleButton.center.x
+      let newCenter = selector.center.x - (selector.center.x - sender.locationInView(self).x)
+      
+      if newCenter > leftLimit && newCenter < rightLimit {
+        UIView.animate({ [unowned selector] in selector.center.x = newCenter })
+      }
+    }
+  }
+  
+  private func animateToggleIntersections(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let middleToggleButton = middleToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) || CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .blackColor()
+          self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
+        })
+      } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) || CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.rightToggleButton?.imageView?.tintColor = .blackColor()
+        })
+      } else if CGRectIntersectsRect(middleToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.middleToggleButton?.imageView?.tintColor = .blackColor()
+          self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
+        })
+      }
+    }
+  }
+  
+  private func snapToToggle(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let middleToggleButton = middleToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = leftToggleButton.center.x })
+        toggle = .Left
+      } else if CGRectContainsPoint(middleToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = middleToggleButton.center.x })
+        toggle = .Middle
+      } else if CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = rightToggleButton.center.x })
+        toggle = .Right
+      } else {
+        UIView.animate({ [unowned selector] in selector.center.x = middleToggleButton.center.x })
+        toggle = .Middle
       }
     }
     
-    // MARK: Navbar
-    
-    func createNavbar() {
-        print("Creating the navbar")
-        navbar.frame = CGRectMake(0, 0, screenSize.width, screenSize.height * 0.1)
-        navbar.barTintColor = UIColor.bareBlue()
-        self.view.addSubview(navbar)
-    }
-    
-    // MARK: Texts
-    
-    func setupUITexts() {
-        
-//        book_ISBN.text = listingController.getISBN()
-        book_Edition.text = "N/A"
-       
-        book_Title.anchorInCenter(width: screenSize.width, height: screenSize.height)
-        
-        self.view.addSubview(book_Title)
-        self.view.addSubview(book_Author)
-        self.view.addSubview(book_ISBN)
-        self.view.addSubview(book_Edition)
-        
-    }
-    
-    // MARK: For
-    
-    // Wishlist
-    func createWishListButton() {
-        
-        print("Creating the wishlist button")
-        let label = UILabel()
-        
-        // Button
-        wishlist.frame = CGRectMake(10, screenSize.height * 0.4, screenSize.height * 0.2, screenSize.height * 0.1)
-        wishlist.addTarget(self, action: "wishListButtonPressed", forControlEvents: .TouchUpInside)
-        wishlist.backgroundColor = UIColor.grayColor()
-        
-        // Label
-        label.text = "Wishlist"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = wishlist.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        wishlist.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        bookInfoView.addSubview(wishlist)
-        bookInfoView.addSubview(label)
-        
-    }
-    
-    func wishListButtonPressed() {
-        print("WishList button pressed")
-        forToggle = .Wishlist
-        toggleFor()
-    }
-    
-    // Selling
-    func createSellingButton() {
-        
-        print("Creating the selling button")
-        let label = UILabel()
-        
-        // Button
-        selling.frame = CGRectMake(screenSize.height * 0.3, screenSize.height * 0.4, screenSize.height * 0.2, screenSize.height * 0.1)
-        selling.addTarget(self, action: "sellingButtonPressed", forControlEvents: .TouchUpInside)
-        selling.backgroundColor = UIColor.grayColor()
-      
-    
-        // Label
-        label.text = "Selling"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = selling.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        selling.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        bookInfoView.addSubview(selling)
-        bookInfoView.addSubview(label)
-        
-    }
-    
-    func sellingButtonPressed() {
-        print("Selling button pressed")
-        forToggle = .Selling
-        toggleFor()
-        
-    }
-    
-    func toggleFor() {
-        
-        switch (forToggle) {
-        case .Wishlist:
-            print("Wishlist button pressed")
-            wishlist.backgroundColor = UIColor.blueColor()
-            selling.backgroundColor = UIColor.grayColor()
-            break
-        case .Selling:
-            print("Selling button pressed")
-            selling.backgroundColor = UIColor.blueColor()
-            wishlist.backgroundColor = UIColor.grayColor()
-            break
-        }
-    }
-    
-    // MARK: Cover
-    
-    // Paperback
-    func createPaperbackButton() {
-        
-        print("Creating the paperback button")
-        let label = UILabel()
-        
-        // Button
-        paperback.frame = CGRectMake(10, screenSize.height * 0.7, screenSize.height * 0.2, screenSize.height * 0.1)
-        paperback.addTarget(self, action: "paperBackButtonPressed", forControlEvents: .TouchUpInside)
-        paperback.backgroundColor = UIColor.grayColor()
-        
-        // Label
-        label.text = "Paperback"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = paperback.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        paperback.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        bookInfoView.addSubview(paperback)
-        bookInfoView.addSubview(label)
-        
-    }
-    
-    func paperBackButtonPressed() {
-        print("Paperback button pressed")
-        coverToggle = .Paperback
-        toggleCover()
-    }
-    
-    // Hardback
-    func createHardCoverButton() {
-    
-        print("Creating the cancel button")
-        let label = UILabel()
-        
-        // Button
-        hardcover.frame = CGRectMake(screenSize.height * 0.3, screenSize.height * 0.7, screenSize.height * 0.2, screenSize.height * 0.1)
-        hardcover.addTarget(self, action: "hardCoverButtonPressed", forControlEvents: .TouchUpInside)
-        hardcover.backgroundColor = UIColor.grayColor()
-        
-        // Label
-        label.text = "Hardcover"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
-        label.frame = hardcover.frame
-        label.font = UIFont.boldSystemFontOfSize(16.0)
-        
-        hardcover.layer.zPosition = 2
-        label.layer.zPosition = 3
-        
-        bookInfoView.addSubview(hardcover)
-        bookInfoView.addSubview(label)
-    
-    }
-    
-    func hardCoverButtonPressed() {
-        print("Hardcover button pressed")
-        coverToggle = .Hardcover
-        toggleCover()
-        
-    }
-    
-    func toggleCover() {
-        
-        switch (coverToggle) {
-        case .Hardcover:
-            print("Hardcover button pressed")
-            hardcover.backgroundColor = UIColor.blueColor()
-            paperback.backgroundColor = UIColor.grayColor()
-            break
-        case .Paperback:
-            print("Paperback button pressed")
-            paperback.backgroundColor = UIColor.blueColor()
-            hardcover.backgroundColor = UIColor.grayColor()
-            break
-        }
-    }
-    
-    // MARK: Slider
-    
-    func createSlider() {
-        
-//        let slider = UISlider(frame: CGRectMake(10,screenSize.height * 0.6,screenSize.height * 0.6,screenSize.height * 0.05))
-        let slider = UISlider()
-        slider.anchorInCorner(.TopLeft, xPad: 10, yPad: 5, width: 50, height: 10)
-        slider.minimumValue = 1
-        slider.maximumValue = 3
-        slider.value = 2
-        slider.tintColor = UIColor.blueColor()
-        slider.addTarget(self, action: "sliderDidChange:", forControlEvents: .ValueChanged)
-        bookInfoView.addSubview(slider)
-    }
-    
-    func sliderDidChange(sender: UISlider!) {
-        
-        print("The slider is changing -- Value is: \(sender.value)")
-    }
-    
-    // MARK: Text Fields
-    
-    func createPriceField() {
-        
-        textField_Price = IsaoTextField(frame: CGRectMake(0,0,screenSize.height * 0.5,120))
-        textField_Price.drawViewsForRect(CGRectMake(0,0,screenSize.height * 0.5,120))
-        textField_Price.frame.origin = CGPointMake(10,screenSize.height * 0.7)
-        textField_Price.activeColor = UIColor(red: 240/255.0, green: 139/255.0, blue: 35/225.0, alpha: 1.0)
-        textField_Price.inactiveColor = UIColor.grayColor()
-        textField_Price.placeholder = "Price"
-        textField_Price.placeholderFontScale = 1
-        textField_Price.animateViewsForTextDisplay()
-        bookInfoView.addSubview(textField_Price)
-    }
-    
-    func createNotesField() {
-        
-        textField_Notes = IsaoTextField(frame: CGRectMake(0,0,screenSize.height * 0.5,120))
-        textField_Notes.drawViewsForRect(CGRectMake(0,0,screenSize.height * 0.5,120))
-        textField_Notes.frame.origin = CGPointMake(10,screenSize.height * 0.8)
-        textField_Notes.activeColor = UIColor(red: 240/255.0, green: 139/255.0, blue: 35/225.0, alpha: 1.0)
-        textField_Notes.inactiveColor = UIColor.grayColor()
-        textField_Notes.placeholder = "Notes"
-        textField_Notes.placeholderFontScale = 1
-        textField_Notes.animateViewsForTextDisplay()
-        bookInfoView.addSubview(textField_Notes)
-    }
-    
-    // MARK: Keyboard
-    
-    func keyboardWillShow(sender: NSNotification) {
-        self.view.frame.origin.y -= 150
-    }
-    
-    func keyboardWillHide(sender: NSNotification) {
-        self.view.frame.origin.y += 150
-    }
-    
-    // MARK: Server
-    public func saveButtonPressed() {
-        print("The save button has been pressed")
-    }
-    
-    // MARK: Views Setup
-    private func layoutFrames() {
-        bookDetailsView.groupInCorner(group: .Vertical, views: [book_Title, book_Author, book_ISBN, book_Edition], inCorner: .TopRight, padding: 10, width: 200, height: 30)
+    _didSelectCell => toggle
+  }
+}
 
-        bookInfoPaddingView.alignAndFillWidth(align: .UnderMatchingLeft, relativeTo: bookDetailsView, padding: 0, height: 60)
-        bookInfoPaddingView.groupInCorner(group: .Horizontal, views: [book_details_label], inCorner: .TopLeft, padding: 10, width: 120, height: 50)
-        
-        bookInfoView.alignAndFillHeight(align: .UnderMatchingLeft, relativeTo: bookInfoPaddingView, padding: 0, width: 450)
-        forButtonContainer.groupInCorner(group: .Horizontal, views: [wishlist, selling], inCorner: .TopLeft, padding: 0, width: 180, height: 50)
-        coverButtonContainer.groupInCorner(group: .Horizontal, views: [paperback, hardcover], inCorner: .TopLeft, padding: 0, width: 180, height: 50)
-        bookInfoView.groupInCorner(group: .Vertical, views: [book_info_for, forButtonContainer, book_info_condition, conditionContainer,book_info_cover, coverButtonContainer, textField_Price, textField_Notes], inCorner: .TopLeft, padding: 15, width: 425, height: 30)
+
+public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
+  
+  private let separatorLine = CALayer()
+  
+  public var inputTextField: HoshiTextField?
+  
+  public let _inputTextFieldString = Signal<String?>()
+  
+  public let _isFirstResponder = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupInputTextField()
+    
+    inputTextField?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    
+    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupInputTextField() {
+    inputTextField = HoshiTextField()
+    inputTextField?.textColor = .blackColor()
+    inputTextField?.font = .asapRegular(16)
+    inputTextField?.borderInactiveColor = UIColor.tableViewNativeSeparatorColor()
+    inputTextField?.borderActiveColor = UIColor.sweetBeige()
+    inputTextField?.placeholderColor = UIColor.sexyGray()
+    inputTextField?.delegate = self
+    addSubview(inputTextField!)
+  }
+  
+  public func textFieldDidBeginEditing(textField: UITextField) {
+    _isFirstResponder => true
+  }
+  
+  public func textFieldDidEndEditing(textField: UITextField) {
+    _isFirstResponder => false
+  }
+  
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    inputTextField?.resignFirstResponder()
+    
+    return true
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        _inputTextFieldString.fire(NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1)))
+        // else, user has inputted some new strings
+      } else { _inputTextFieldString.fire(text + string) }
     }
+    return true
+  }
+}
+
+public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
+  
+  private let separatorLine = CALayer()
+  
+  public var titleLabel: UILabel?
+  public var inputTextView: KMPlaceholderTextView?
+  
+  public let _inputTextViewString = Signal<String?>()
+  
+  public let _isFirstResponder = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupTitleLabel()
+    setupInputTextView()
+    
+    titleLabel?.anchorAndFillEdge(.Top, xPad: 14, yPad: 2, otherSize: 12)
+    
+    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    inputTextView?.anchorAndFillEdge(.Top, xPad: 14, yPad: 16, otherSize: bounds.height - 16)
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupTitleLabel() {
+    titleLabel = UILabel()
+    titleLabel?.font = .asapRegular(10)
+    titleLabel?.textColor = .sexyGray()
+    addSubview(titleLabel!)
+  }
+  
+  private func setupInputTextView() {
+    inputTextView  = KMPlaceholderTextView()
+    inputTextView?.font = .asapRegular(12)
+    inputTextView?.placeholderColor = .sexyGray()
+    inputTextView?.delegate = self
+    addSubview(inputTextView!)
+  }
+  
+  public func textViewDidBeginEditing(textView: UITextView) {
+    _isFirstResponder => true
+  }
+  
+  public func textViewDidEndEditing(textView: UITextView) {
+    _isFirstResponder => false
+  }
+  
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    inputTextView?.resignFirstResponder()
+    
+    return true
+  }
+  
+  public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    if let string = textView.text {
+      // this means the user inputted a backspace
+      if text.characters.count == 0 && string.characters.count > 0 {
+        _inputTextViewString.fire(NSString(string: string).substringWithRange(NSRange(location: 0, length: string.characters.count - 1)))
+        // else, user has inputted some new strings
+      } else { _inputTextViewString.fire(string + text) }
+    }
+    return true
+  }
+}
+
+public class BigButtonCell: DLTableViewCell {
+  
+  private var indicator: UIActivityIndicatorView?
+  public var button: SwiftyCustomContentButton?
+  public var buttonLabel: UILabel?
+  
+  public let _onPressed = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupButton()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    button?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    indicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
+    buttonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupButton() {
+    
+    button = SwiftyCustomContentButton()
+    button?.buttonColor         = .sweetBeige()
+    button?.highlightedColor    = .juicyOrange()
+    button?.shadowColor         = .clearColor()
+    button?.disabledButtonColor = .grayColor()
+    button?.disabledShadowColor = .darkGrayColor()
+    button?.shadowHeight        = 0
+    button?.cornerRadius        = 8
+    button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
+    button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+    
+    indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    button?.customContentView.addSubview(indicator!)
+    
+    buttonLabel = UILabel()
+    buttonLabel?.textAlignment = .Center
+    buttonLabel?.textColor = UIColor.whiteColor()
+    buttonLabel?.font = .asapRegular(16)
+    button?.customContentView.addSubview(buttonLabel!)
+    
+    addSubview(button!)
+  }
+  
+  public func pressed() {
+    _onPressed => true
+  }
 }

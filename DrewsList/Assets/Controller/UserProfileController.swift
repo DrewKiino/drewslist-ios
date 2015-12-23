@@ -46,11 +46,8 @@ public class UserProfileController {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
-        // create user object
-        let user = User(json: json)
-        
-        // set user object
-        self?.model.user = user
+        // create and  user object
+        self?.model.user = User(json: json)
         // write user object to realm
         self?.writeRealmUser()
       }
@@ -81,6 +78,9 @@ public class UserProfileController {
     let realmUser = RealmUser()
     realmUser.setRealmUser(model.user)
     let realm = try! Realm()
-    try! realm.write { realm.add(realmUser, update: true) }
+    try! realm.write {
+      realm.deleteAll()
+      realm.add(realmUser, update: true)
+    }
   }
 }

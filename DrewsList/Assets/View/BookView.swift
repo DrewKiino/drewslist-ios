@@ -154,35 +154,32 @@ public class BookView: UIView {
     imageView?.image = nil
     imageView?.alpha = 0.0
     
-    let duration: NSTimeInterval = 0.5
-    
     Async.background { [weak self, weak book] in
+      
+      let duration: NSTimeInterval = 0.5
       
       // MARK: Images
       if book != nil && book!.hasImageUrl() {
         self?.imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
-          Async.background { [weak self] in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
+          
+          Async.main { [weak self] in
             
-            // NOTE: correct way to handle memory management with toucan
-            // init toucan and pass in the arguments directly in the parameter headers
-            // do the resizing in the background
-            var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
+            // set the image view's image
+            self?.imageView?.image = toucan1?.image
             
-            Async.main { [weak self] in
-              
-              // set the image view's image
-              self?.imageView?.image = toucan1?.image
-              
-              UIView.animateWithDuration(duration) { [weak self] in
-                self?.imageView?.alpha = 1.0
-              }
-              
-              // deinit toucan
-              toucan1 = nil
-              
-              // stop the loading animation
-              self?.stopLoading()
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.imageView?.alpha = 1.0
             }
+            
+            // deinit toucan
+            toucan1 = nil
+            
+            // stop the loading animation
+            self?.stopLoading()
           }
         }
       } else {
@@ -202,8 +199,6 @@ public class BookView: UIView {
           self?.stopLoading()
         }
       }
-      
-      
       
       // MARK: Attributes
       guard let book = book else { return }

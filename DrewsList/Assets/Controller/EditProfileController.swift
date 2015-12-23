@@ -49,14 +49,9 @@ public class EditProfileController {
   public func writeRealmUser(){
     let realmUser = RealmUser()
     realmUser.setRealmUser(model.user)
-    log.debug(realmUser._id)
-    log.debug(realmUser.firstName)
-    log.debug(realmUser.lastName)
-    log.debug(realmUser.username)
     let realm = try! Realm()
     try! realm.write {
       realm.add(realmUser, update: true)
     }
   }
-  
 }

@@ -36,6 +36,7 @@ pod 'Former'
 pod 'NVActivityIndicatorView'
 pod 'LTMorphingLabel'
 pod 'CWStatusBarNotification'
+pod 'KMPlaceholderTextView'
 
 # pubsub libs
 pod 'Signals'

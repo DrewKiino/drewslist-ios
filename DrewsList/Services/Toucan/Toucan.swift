@@ -171,7 +171,7 @@ public class Toucan : NSObject {
       
       var resizedImageBounds: CGRect? = CGRect(x: 0, y: 0, width: round(originalWidth * scaleRatio), height: round(originalHeight * scaleRatio))
       
-      guard let resizedImage: UIImage = Util.drawImageInBounds(_image!, bounds: resizedImageBounds!) else { return nil }
+      guard let resizedImage: UIImage = Util.drawImageInBounds(_image, bounds: resizedImageBounds) else { return nil }
       
       switch (fitMode) {
       case .Clip:
@@ -569,8 +569,8 @@ public class Toucan : NSObject {
      
      - returns: Resized image within bounds
      */
-    static func drawImageInBounds(image: UIImage?, bounds : CGRect) -> UIImage? {
-      return drawImageWithClosure(size: bounds.size) { [weak image] (weak size: CGSize, weak context: CGContext) -> () in
+    static func drawImageInBounds(image: UIImage?, bounds : CGRect?) -> UIImage? {
+      return drawImageWithClosure(size: bounds?.size) { [weak image] (weak size: CGSize, weak context: CGContext) -> () in
         var _bounds: CGRect? = bounds
         image?.drawInRect(_bounds!)
         image = nil
@@ -586,13 +586,15 @@ public class Toucan : NSObject {
      
      - returns: Resized and cropped image
      */
-    static func croppedImageWithRect(image: UIImage?, rect: CGRect) -> UIImage? {
-      return drawImageWithClosure(size: rect.size) { [weak image] (size: CGSize, context: CGContext) -> () in
+    static func croppedImageWithRect(image: UIImage?, rect: CGRect?) -> UIImage? {
+      return drawImageWithClosure(size: rect?.size) { [weak image] (size: CGSize, context: CGContext) -> () in
         guard let image = image else { return }
-        let drawRect = CGRectMake(-rect.origin.x, -rect.origin.y, image.size.width, image.size.height)
-        CGContextClipToRect(context, CGRectMake(0, 0, rect.size.width, rect.size.height))
+        var _rect: CGRect? = rect
+        let drawRect = CGRectMake(-_rect!.origin.x, -_rect!.origin.y, image.size.width, image.size.height)
+        CGContextClipToRect(context, CGRectMake(0, 0, _rect!.size.width, _rect!.size.height))
         image.drawInRect(drawRect)
-      };
+        _rect = nil
+      }
     }
     
     /**
@@ -603,7 +605,7 @@ public class Toucan : NSObject {
      
      - returns: Image pulled from the end of the closure
      */
-    static func drawImageWithClosure(size size: CGSize!, closure: (size: CGSize, context: CGContext) -> ()) -> UIImage {
+    static func drawImageWithClosure(size size: CGSize?, closure: (size: CGSize, context: CGContext) -> ()) -> UIImage {
       var _closure: ((size: CGSize, context: CGContext) -> ())? = closure
       var _size: CGSize? = size
       UIGraphicsBeginImageContextWithOptions(_size!, false, 0)

@@ -11,6 +11,8 @@ import UIKit
 
 extension UIColor {
   
+  // MARK: Main App Colors
+  
   public class func sexyGray() -> UIColor {
     return UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
   }
@@ -27,12 +29,24 @@ extension UIColor {
     return UIColor(red: 249/255, green: 198/255, blue: 118/255, alpha: 1.0)
   }
   
+  // NOTE: Highlight Color
+  
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
   }
   
   public class func moneyGreen() -> UIColor {
     return UIColor(red: 32/255, green: 108/255, blue: 42/255, alpha: 1.0)
+  }
+  
+  // NOTE: TableView Padding Color
+  
+  public class func paradiseGray() -> UIColor {
+    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 0.5)
+  }
+  
+  public class func tableViewNativeSeparatorColor() -> UIColor {
+    return UIColor(red: 224/255, green: 224/255, blue: 224/255, alpha: 1.0)
   }
 }
 
@@ -86,6 +100,10 @@ import SwiftyTimer
 import CWStatusBarNotification
 
 extension UIView {
+  
+  public class func animate(animationBlock: () -> Void, completionBlock: ((bool: Bool) -> Void)? = nil) {
+    UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
+  }
   
   public func showLoadingScreen(heightOffset: CGFloat? = nil) {
   

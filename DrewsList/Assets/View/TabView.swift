@@ -12,8 +12,8 @@ import Onboard
 
 public class TabView: RAMAnimatedTabBarController {
   
+  var testView = CreateListingView()
   var communityTab: CommunityFeedView? = CommunityFeedView()
-  var createListingView: CreateListingView? = CreateListingView()
   var chatView: ChatHistoryView?  = ChatHistoryView()
   var scannerView: ScannerView? = ScannerView()
   var activityView: UIViewController? = UIViewController()
@@ -22,8 +22,7 @@ public class TabView: RAMAnimatedTabBarController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupFeedView()
-    setupBookListView()
+    setupCommunityTab()
     setupChatView()
     setupISBNScannerView()
     setupActivityView()
@@ -44,53 +43,49 @@ public class TabView: RAMAnimatedTabBarController {
   
   private func setupViewControllers() {
     
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    testView.tabBarItem = RAMAnimatedTabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
+    toucan = nil
+    viewControllers = [userProfileView!, scannerView!, communityTab!, chatView!]
+    
     // set view controllers
-    viewControllers = [communityTab!, userProfileView!, chatView!, scannerView!, activityView!]
-//    viewControllers = [createListingView!]
+//    viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
     
     // dealloc reference view controllers
     communityTab = nil
-    createListingView = nil
-    userProfileView = nil
     chatView = nil
     scannerView = nil
     activityView = nil
+    userProfileView = nil
   }
   
-  private func setupFeedView() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "Icon-Book")).resize(CGSize(width: 24, height: 24))
+  private func setupCommunityTab() {
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
     communityTab?.tabBarItem = RAMAnimatedTabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
   }
   
-  private func setupBookListView() {
-  }
-  
   private func setupChatView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-Message-1")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "Chat", image: image, selectedImage: image)
-    chatView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-4")).resize(CGSize(width: 24, height: 24))
+    chatView?.tabBarItem = RAMAnimatedTabBarItem(title: "Chat", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupISBNScannerView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-Camera")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "List", image: image, selectedImage: image)
-    scannerView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-3")).resize(CGSize(width: 24, height: 24))
+    scannerView?.tabBarItem = RAMAnimatedTabBarItem(title: "Scanner", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupActivityView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-CameraSnap")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "Activity", image: image, selectedImage: image)
-    activityView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-2")).resize(CGSize(width: 24, height: 24))
+    activityView?.tabBarItem = RAMAnimatedTabBarItem(title: "Activity", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupUserProfileView() {
-  
-    let image = Toucan(image: UIImage(named: "Icon-GreyStarEmpty")).resize(CGSize(width: 24, height: 24)).image
-    let item = RAMAnimatedTabBarItem(title: "Your Profile", image: image, selectedImage: image)
-    userProfileView?.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-5")).resize(CGSize(width: 24, height: 24))
+    userProfileView?.tabBarItem = RAMAnimatedTabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
 }

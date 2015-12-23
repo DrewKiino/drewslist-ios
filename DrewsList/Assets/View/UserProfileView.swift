@@ -11,6 +11,7 @@ import UIKit
 import Neon
 import SDWebImage
 import Signals
+import Async
 
 public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
@@ -31,10 +32,9 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   public var bgView: UIView?
   public var bgViewTop: UIImageView?
   public var bgViewBot: UIView?
-  public var paddingView: UIView?
   public var profileImg: UIImageView?
   public var profileUsername: UILabel?
-  public var tabView: UIView?
+  public var descriptionTextView: UITextView?
   public var bookShelf: UITableView?
   public var saleListView: UICollectionView?
   public var wishListView: UICollectionView?
@@ -55,18 +55,40 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   override public func viewDidLoad() {
     super.viewDidLoad()
     
-    controller.viewDidLoad()
-    
+    setupSelf()
     setupDataBinding()
     setupScrollView()
     setupBGView()
-    setupPaddingView()
     setupProfileImg()
+    setupDescriptionTextView()
     setupBookshelf()
     setupUsernameLabel()
     setupButtons()
     
     setRootViewTitle("Your List")
+    
+    // MARK: Neon Layouts
+    
+    scrollView?.fillSuperview()
+    
+    bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
+    bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
+    
+    bgView?.layer.shadowColor = UIColor.clearColor().CGColor
+    bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
+    bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+    bgView?.layer.shadowOpacity = 1.0
+    bgView?.layer.shadowRadius = 2
+    bgView?.layer.masksToBounds = true
+    bgView?.clipsToBounds = false
+    
+    // set the profile image's layouts, then fetch image
+    profileImg?.anchorInCenter(width: 64, height: 64)
+    
+    profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
+    
+    // record the background view's original height
+    originalBGViewFrame = bgViewTop?.frame
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -89,74 +111,42 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    scrollView?.fillSuperview()
+    descriptionTextView?.sizeToFit()
+    descriptionTextView?.alignAndFillWidth(
+      align: .UnderCentered,
+      relativeTo: bgView!,
+      padding: 16,
+      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
+    )
     
-    bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
-    bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
+    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
-    bgView?.layer.shadowColor = UIColor.clearColor().CGColor
-    bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
-    bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
-    bgView?.layer.shadowOpacity = 1.0
-    bgView?.layer.shadowRadius = 2
-    bgView?.layer.masksToBounds = true
-    bgView?.clipsToBounds = false
-    
-    paddingView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bgView!, padding: 8, height: 2)
-    
-    // fetch the background image since we now have the image view's frame
-    fetchBackgroundImage()
-    
-    // set the profile image's layouts, then fetch image
-    profileImg?.anchorInCenter(width: 64, height: 64)
-    fetchProfileImage()
-    
-    profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
-    
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: paddingView!, padding: 0, height: 600)
-    
-    scrollView?.contentSize = CGSizeMake(view.frame.size.width, view.frame.size.height + 200)
-    
-    // record the background view's original height
-    originalBGViewFrame = bgViewTop?.frame
-  }
-  
-  private func fetchBackgroundImage() {
-    guard let url = model.user?.bgImage ?? defaultBGURL, let nsurl = NSURL(string: url) where model.user?._id != nil else { return }
-    
-  }
-  
-  private func fetchProfileImage() {
-    guard let url = model.user?.image, let nsurl = NSURL(string: url) else { return }
+    scrollView?.contentSize = CGSizeMake(screen.width, 1000)
   }
   
   // MARK: Data Binding
   
   private func setupDataBinding() {
     model._user.listen(self) { [weak self] user in
-      guard let user = user where user._id != nil else { return }
-      
-      self?.profileUsername?.text = user.username ?? user.getName()
+      self?.setUser(user)
       self?.bookShelf?.reloadData()
-      
-      self?.fetchBackgroundImage()
-      self?.fetchProfileImage()
-      
       self?.view.hideLoadingScreen()
     }
   }
   
   // MARK: UI Setup
   
+  public func setupSelf() {
+    controller.viewDidLoad()
+  }
+  
   public func setupScrollView(){
     scrollView = UIScrollView()
-    if let scrollView = scrollView {
-      scrollView.tag = 0
-      scrollView.delegate = self
-      scrollView.backgroundColor = UIColor.whiteColor()
-      scrollView.showsVerticalScrollIndicator = false
-      rootView?.view.addSubview(scrollView)
-    }
+    scrollView?.tag = 0
+    scrollView?.delegate = self
+    scrollView?.backgroundColor = UIColor.whiteColor()
+    scrollView?.showsVerticalScrollIndicator = false
+    rootView?.view.addSubview(scrollView!)
   }
   
   public func setupBGView(){
@@ -172,11 +162,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     bgView?.addSubview(bgViewBot!)
   }
   
-  public func setupPaddingView() {
-    paddingView = UIView()
-    view.addSubview(paddingView!)
-  }
-  
   public func setupProfileImg(){
     profileImg = UIImageView()
     bgView?.addSubview(profileImg!)
@@ -184,27 +169,31 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public func setupUsernameLabel(){
     profileUsername = UILabel()
-    if let profileUsername = profileUsername {
-      profileUsername.text = model.user?.username
-      profileUsername.font = UIFont.asapBold(24)
-      profileUsername.textAlignment = .Center
-      profileUsername.textColor = UIColor.blackColor()
-      bgView?.addSubview(profileUsername)
-    }
+    profileUsername?.text = model.user?.username
+    profileUsername?.font = UIFont.asapBold(24)
+    profileUsername?.textAlignment = .Center
+    profileUsername?.textColor = UIColor.blackColor()
+    bgView?.addSubview(profileUsername!)
+  }
+  
+  private func setupDescriptionTextView() {
+    descriptionTextView = UITextView()
+    descriptionTextView?.editable = false
+    descriptionTextView?.showsVerticalScrollIndicator = false
+    descriptionTextView?.font = .asapRegular(12)
+    scrollView?.addSubview(descriptionTextView!)
   }
   
   private func setupBookshelf() {
     bookShelf = UITableView()
-    if let bookShelf = bookShelf {
-      bookShelf.delegate = self
-      bookShelf.dataSource = self
-      bookShelf.scrollEnabled = false
-      bookShelf.separatorStyle = .None
-      bookShelf.multipleTouchEnabled = true
-      bookShelf.allowsSelection = false
-      bookShelf.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
-      scrollView!.addSubview(bookShelf)
-    }
+    bookShelf?.delegate = self
+    bookShelf?.dataSource = self
+    bookShelf?.scrollEnabled = false
+    bookShelf?.separatorStyle = .None
+    bookShelf?.multipleTouchEnabled = true
+    bookShelf?.allowsSelection = false
+    bookShelf?.registerClass(BookListView.self, forCellReuseIdentifier: "cell")
+    scrollView?.addSubview(bookShelf!)
   }
   
   private func setupButtons() {
@@ -236,11 +225,108 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       bookShelf?.addSubview(arrow)
     }
   }
+  
+  public func setUser(user: User?) {
+    
+    profileImg?.alpha = 0.0
+    
+    // fixture
+//    user?.description = "Bacon ipsum dolor amet kielbasa bacon landjaeger brisket venison fatback. Sausage pork flank, hamburger bresaola cupim sirloin swine pastrami pig leberkas brisket. Prosciutto sirloin venison bresaola meatloaf swine landjaeger, shankle turkey shoulder. Spare ribs strip steak salami venison kielbasa pancetta prosciutto turducken beef ham hock shank tri-tip brisket tenderloin. Bresaola shankle pork chop, short loin jerky brisket strip steak frankfurter ground round. Tri-tip t-bone jowl tail pancetta. Prosciutto tail filet mignon, kevin pork chop tenderloin pork belly jowl beef ribs. Shank strip steak t-bone flank, ham cow porchetta pork loin spare ribs short ribs bresaola rump capicola. Strip steak salami picanha ball tip, ground round beef doner. Ham hock pig prosciutto, sirloin tri-tip flank kielbasa swine short loin beef jerky picanha filet mignon meatball. T-bone prosciutto brisket tongue, spare ribs tail salami corned beef. Turkey spare ribs shoulder frankfurter tail boudin. Frankfurter andouille sirloin ball tip beef ribs kevin brisket tongue corned beef ham hock t-bone cupim. Picanha leberkas bacon, ground round tongue short loin kevin meatloaf pork loin shankle cow jowl. Swine t-bone kielbasa andouille sausage, ball tip boudin jowl hamburger meatball ground round biltong. Tongue tenderloin frankfurter short ribs ball tip turkey cow alcatra. Pork loin ham hock bresaola short ribs porchetta, bacon corned beef. Venison cow drumstick, hamburger kielbasa prosciutto beef. Meatloaf shoulder chuck short ribs ball tip bacon turkey t-bone cow tongue capicola swine venison. Pork frankfurter alcatra spare ribs jerky landjaeger. Short ribs turkey ham meatball. Pork frankfurter brisket, sirloin shankle short loin beef prosciutto spare ribs porchetta sausage. Doner leberkas swine, pig beef kevin salami pancetta t-bone. Frankfurter corned beef ham pig shoulder meatball biltong. Turducken pork loin jowl beef jerky filet mignon meatball flank corned beef meatloaf venison brisket."
+    
+    Async.background { [weak self, weak user] in
+      guard let user = user else { return }
+      
+      let duration: NSTimeInterval = 0.5
+      
+      // MARK: Images
+      if user.image != nil {
+        
+        self?.profileImg?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImg?.frame.size).maskWithEllipse()
+          
+          Async.main { [weak self] in
+            
+            // set the image view's image
+            self?.profileImg?.image = toucan?.image
+            
+            // stop the loading animation
+            self?.view.hideLoadingScreen()
+            
+            // animate
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.profileImg?.alpha = 1.0
+            }
+            
+            // deinit toucan
+            toucan = nil
+          }
+        }
+      } else {
+        
+        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
+        
+        Async.main { [weak self] in
+          
+          self?.profileImg?.image = toucan?.image
+          
+          // stop the loading animation
+          self?.view.hideLoadingScreen()
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.profileImg?.alpha = 1.0
+          }
+          
+          toucan = nil
+        }
+      }
+      
+      if user.bgImage != nil {
+        
+        self?.bgViewTop?.dl_setImageFromUrl(user.bgImage) { [weak self] image, error, cache, url in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan: Toucan? = Toucan(image: image).resize(self?.bgViewTop?.frame.size, fitMode: .Crop)
+          
+          Async.main { [weak self] in
+            
+            // set the image view's image
+            self?.bgViewTop?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.bgViewTop?.alpha = 1.0
+            }
+            
+            // deinit toucan
+            toucan = nil
+          }
+        }
+      } else {
+        
+        var toucan: Toucan? = Toucan(image: UIImage(named: "BackgroundImage_Books-33")).resize(self?.profileImg?.frame.size, fitMode: .Crop)
+        
+        Async.main { [weak self] in
+          
+          self?.bgViewTop?.image = toucan?.image
+          
+          toucan = nil
+        }
+      }
+      
+      Async.main { [weak self] in
+        self?.profileUsername?.text = user.username ?? user.getName()
+        self?.descriptionTextView?.text = user.description
+      }
+    }
+  }
+  
   // MARK: Button Action
   
   public func settingsButtonPressed(){
-    let settingsView = SettingsView()
-    rootView?.navigationController?.pushViewController(settingsView, animated: true)
+    rootView?.navigationController?.pushViewController(SettingsView(), animated: true)
   }
   
   // MARK: Table View Delegates
@@ -269,6 +355,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       cell.controller.model.bookList = user.listings.filter { $0.listType == "selling" }
       
       // data bind
+      user._saleList.removeAllListeners()
       user._saleList.listen(self) { [weak cell] list in
         cell?.controller.model.bookList = list
       }
@@ -284,6 +371,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       cell.controller.model.bookList = user.listings.filter { $0.listType == "buying" }
       
       // data bind
+      user._wishList.removeAllListeners()
       user._wishList.listen(self) { [weak cell] list in
         cell?.controller.model.bookList = list
       }
@@ -294,15 +382,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     // add databinding to cells
     cell.controller.get_selectedBook().removeListener(self)
-    cell.controller.get_selectedBook().listen(self) { [weak self] book in
+    cell.controller.get_selectedBook().listen(self) {  book in
       log.debug(book?._id)
     }
     
     cell.controller.get_selectedListing().removeListener(self)
     cell.controller.get_selectedListing().listen(self) { [weak self] listing in
-      
-      let listViewContainer = ListViewContainer()
-      if listViewContainer.setListing(listing) { self?.pushViewController(listViewContainer, animated: true) }
+      self?.pushViewController(ListViewContainer().setListing(listing), animated: true)
     }
     
     return cell
@@ -311,7 +397,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Scroll View Delegates
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let offset: CGFloat? = -64 - scrollView.contentOffset.y where offset > 0 {
+    if let offset: CGFloat? = -scrollView.contentOffset.y where offset > 0 {
       let ratio = originalBGViewFrame!.width / originalBGViewFrame!.height
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
     }
@@ -341,11 +427,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     layer.shadowOffset = CGSize(width: 0, height: 0)
     layer.shadowOpacity = 0.4
     layer.shadowRadius = 3
-  }
-  
-  public func arrangeViews(){
-    scrollView!.contentSize = CGSizeMake(screenSize.width, bgView!.frame.height + (bookShelf?.frame.height)!)
-    scrollView?.bringSubviewToFront(tabView!)
   }
 }
 
@@ -430,6 +511,7 @@ public class BookListView: UITableViewCell, UICollectionViewDataSource, UICollec
     let listerPrice = listing.highestLister?.price
     
     if let url = book?.largeImage ??  book?.mediumImage ?? book?.smallImage, let nsurl = NSURL(string: url) {
+      
     }
     
     if let url = tag == 0 ? lister?.image : lister?.image, let nsurl = NSURL(string: url) {
@@ -553,5 +635,55 @@ public class BookCell: UICollectionViewCell {
   
   public func selectedLister() {
     didSelectLister => true
+  }
+  
+  
+  public func setBook(book: Book?) {
+    
+    imageView?.image = nil
+    imageView?.alpha = 0.0
+    
+    Async.background { [weak self, weak book] in
+      
+      let duration: NSTimeInterval = 0.5
+      
+      // MARK: Images
+      if book != nil && book!.hasImageUrl() {
+        self?.imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
+          
+          Async.main { [weak self] in
+            
+            // set the image view's image
+            self?.imageView?.image = toucan1?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.imageView?.alpha = 1.0
+            }
+            
+            // deinit toucan
+            toucan1 = nil
+          }
+        }
+        
+      } else {
+        
+        var toucan2: Toucan? = Toucan(image: UIImage(named: "book-placeholder")!).resize(self?.imageView?.frame.size)
+        
+        Async.main { [weak self] in
+          
+          self?.imageView?.image = toucan2?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.imageView?.alpha = 1.0
+          }
+          
+          toucan2 = nil
+        }
+      }
+    }
   }
 }
