@@ -364,6 +364,11 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     // add databinding to cells
     cell._didSelectListing.removeAllListeners()
     cell._didSelectListing.listen(self) { [weak self] list_id in
+      self?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(), animated: true)
+    }
+    
+    cell._didSelectMatch.removeAllListeners()
+    cell._didSelectMatch.listen(self) { [weak self] list_id in
       self?.pushViewController(ListViewContainer().setList_id(list_id), animated: true)
     }
     

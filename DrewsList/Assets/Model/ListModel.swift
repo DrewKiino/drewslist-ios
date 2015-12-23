@@ -16,6 +16,11 @@ public class ListModel {
   public let _listing = Signal<Listing?>()
   public var listing: Listing? { didSet { _listing => listing } }
   
+  public let _shouldRefrainFromCallingServer = Signal<Bool>()
+  public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
+  
+  public let _serverCallbackFromFindListing = Signal<Bool>()
+  public var serverCallbackFromFindListing: Bool = false { didSet { _serverCallbackFromFindListing => serverCallbackFromFindListing } }
 }
 
 public class Listing: Mappable {
