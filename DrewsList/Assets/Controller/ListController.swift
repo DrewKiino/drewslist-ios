@@ -13,7 +13,7 @@ import SwiftyJSON
 
 public class ListController {
   
-  private let model = ListModel()
+  private var model: ListModel! = ListModel()
   private var refrainTimer: NSTimer?
   private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
   //  private let serverUrl = "http://localhost:1337/listing"
@@ -23,6 +23,7 @@ public class ListController {
   public func getListingFromServer(list_id: String?) {
     guard let list_id = list_id else { return }
     
+    if model == nil { model = ListModel() }
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true

@@ -13,6 +13,9 @@ import SwiftyJSON
 
 public class ListModel {
   
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
   public let _listing = Signal<Listing?>()
   public var listing: Listing? { didSet { _listing => listing } }
   

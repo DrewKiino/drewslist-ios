@@ -14,6 +14,7 @@ import SDWebImage
 import SwiftDate
 import Async
 import Signals
+import RealmSwift
 
 public class ListViewContainer: UIViewController {
   
@@ -38,6 +39,11 @@ public class ListViewContainer: UIViewController {
   }
   
   private func setupListView() {
+    listView?._chatButtonPressed.removeAllListeners()
+    listView?._chatButtonPressed.listen(self) { [weak self] bool in
+      self?.readRealmUser()
+      self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
+    }
     view.addSubview(listView!)
   }
   
@@ -60,6 +66,11 @@ public class ListViewContainer: UIViewController {
     title = "Your Listing"
     return self
   }
+  
+  // MARK: Realm Functions
+  
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { listView?.model.user = realmUser.getUser() } }
+  public func writeRealmUser() { try! Realm().write { try! Realm().add(RealmUser().setRealmUser( listView?.model.user), update: true) } }
 }
 
 public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
@@ -67,6 +78,9 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   private let controller = ListController()
   private var model: ListModel { get { return controller.getModel() } }
   public var isUserListing: Bool = false
+  
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
   
   public var tableView: DLTableView?
   
@@ -174,6 +188,10 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         cell.isUserListing = isUserListing
         cell.setListing(model.listing)
+        cell._chatButtonPressed.removeAllListeners()
+        cell._chatButtonPressed.listen(self) { [weak self] bool in
+          self?._chatButtonPressed.fire(bool)
+        }
         model._listing.removeListener(self)
         model._listing.listen(self) { [weak cell] listing in
           cell?.setListing(listing)
@@ -355,6 +373,9 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   public var isUserListing: Bool = false
   
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupSelf()
@@ -385,12 +406,6 @@ public class ListerAttributesViewCell: DLTableViewCell {
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
   }
   
-//  private override func setupSelf() {
-//    super.setupSelf()
-//    
-//    backgroundColor = .whiteColor()
-//  }
-  
   private func setupSelf() {
     
     backgroundColor = .whiteColor()
@@ -406,6 +421,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   private func setupChatButton() {
     chatButton = UIButton()
+    chatButton?.addTarget(self, action: "chatButtonPressed", forControlEvents: .TouchUpInside)
     addSubview(chatButton!)
   }
   
@@ -549,6 +565,10 @@ public class ListerAttributesViewCell: DLTableViewCell {
         // same things is happening as the view view before this
         self?.layer.zPosition = 2
     }
+  }
+  
+  public func chatButtonPressed() {
+    _chatButtonPressed => true
   }
 }
 

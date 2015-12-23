@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Signals
 
 public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
@@ -21,6 +22,9 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   public var saleListFeedView: ListFeedView?
   public var wishListFeedView: ListFeedView?
+  
+  public let _chatButtonPressed = Signal<Listing?>()
+  public let _callButtonPressed = Signal<Listing?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -112,16 +116,21 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public func setupSaleListFeed() {
     saleListFeedView = ListFeedView()
     saleListFeedView?.setListType("selling")
+    saleListFeedView?._chatButtonPressed.removeAllListeners()
+    saleListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+      self?._chatButtonPressed.fire(listing)
+    }
     scrollView?.addSubview(saleListFeedView!)
-    
     saleListFeedView?.showLoadingScreen(-132)
   }
   
   public func setupWishListFeed() {
     wishListFeedView = ListFeedView()
     wishListFeedView?.setListType("buying")
+    wishListFeedView?._chatButtonPressed.removeAllListeners()
+    wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+    }
     scrollView?.addSubview(wishListFeedView!)
-    
     wishListFeedView?.showLoadingScreen(-132)
   }
   
@@ -193,6 +202,9 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   private var tableView: DLTableView?
   
+  public let _chatButtonPressed = Signal<Listing?>()
+  public let _callButtonPressed = Signal<Listing?>()
+  
   public init() {
     super.init(frame: CGRectZero)
     
@@ -253,6 +265,10 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell {
       cell.listView?.setListing(model.listings[indexPath.row])
+      cell.listView?._chatButtonPressed.removeAllListeners()
+      cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
+        self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
+      }
       return cell
     }
     

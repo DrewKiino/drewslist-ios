@@ -32,7 +32,7 @@ public class ChatView: JSQMessagesViewController {
   
   private func setupDataBinding() {
     // set and listen for changes in the user's username
-    senderDisplayName = model.user?.username ?? ""
+  senderDisplayName = model.user?.username ?? ""
     model.user?._username.listen(self) { [weak self] username in
       guard let username = username else { return }
       self?.senderDisplayName = username
@@ -82,6 +82,14 @@ public class ChatView: JSQMessagesViewController {
   
   public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return model.messages.count
+  }
+  
+  public func setUsers(user: User?, friend: User?) -> Self {
+    
+    log.debug(user?._id)
+    log.debug(friend?._id)
+    
+    return self
   }
 }
 
