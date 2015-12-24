@@ -114,7 +114,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.titleLabel?.text = "Log in with Facebook"
+        cell.titleButton?.setTitle("Log in with Facebook", forState: .Normal)
         cell._didSelectCell.listen(self) { bool in
           log.debug(bool)
         }

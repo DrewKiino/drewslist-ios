@@ -8,10 +8,10 @@
 
 import Foundation
 import UIKit
-import QuartzCore
 import TextFieldEffects
 import Neon
 import SwiftyButton
+import RealmSwift
 
 public class LoginView: UIViewController, UITextFieldDelegate {
   
@@ -30,10 +30,12 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   private var loginButtonIndicator: UIActivityIndicatorView?
   private var loginButtonLabel: UILabel?
   private var orLabel: UILabel?
-  var signupButton:    SwiftyCustomContentButton?         //UIButton?
+  private var optionsContrainer: UIView?
+  private var signUpOption: UIButton?
+  private var forgotPasswordOption: UIButton?
   
-  private var idx: Int = 0
-  private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
+//  private var idx: Int = 0
+//  private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
 
   // MARK: View Controller LifeCycle
   
@@ -48,7 +50,15 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     setupPasswordLabel()
     setupEmailLabel()
     setupLoginButton()
-    setupOrLabel()
+//    setupOrLabel()
+    setupOptions()
+    
+    view.showLoadingScreen(0, bgOffset: 64)
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    checkIfUserHasSeenOnboardingView()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -66,11 +76,14 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
     
-    loginButton?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 8, height: 48)
+    loginButton?.align(.UnderCentered, relativeTo: passwordField!, padding: 32, width: passwordField!.frame.width, height: 36)
     loginButtonIndicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
     loginButtonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
     
     orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 24)
+    
+    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 8, height: 24)
+    optionsContrainer?.groupAndFill(group: .Horizontal, views: [signUpOption!, forgotPasswordOption!], padding: 0)
   }
   
   private func setupSelf() {
@@ -106,6 +119,9 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     emailField?.delegate = self
     emailField?.font = .asapRegular(16)
     emailField?.textColor = .whiteColor()
+    emailField?.spellCheckingType = .No
+    emailField?.autocorrectionType = .No
+    emailField?.autocapitalizationType = .None
     
     containerView?.addSubview(emailField!)
   }
@@ -119,6 +135,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     passwordField?.delegate = self
     passwordField?.secureTextEntry = true
     passwordField?.font = .asapRegular(16)
+    passwordField?.spellCheckingType = .No
+    passwordField?.autocorrectionType = .No
     passwordField?.textColor = .whiteColor()
     
     containerView?.addSubview(passwordField!)
@@ -158,9 +176,33 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     orLabel?.font = .asapRegular(12)
     containerView?.addSubview(orLabel!)
   }
-  
+
+  private func setupOptions() {
+    optionsContrainer = UIView()
+    containerView?.addSubview(optionsContrainer!)
+    
+    signUpOption = UIButton()
+    signUpOption?.titleLabel?.font = .asapRegular(10)
+    signUpOption?.setTitleColor(.whiteColor(), forState: .Normal)
+    signUpOption?.setTitle("Sign-Up", forState: .Normal)
+    signUpOption?.titleLabel?.textAlignment = .Center
+    signUpOption?.addTarget(self, action: "signupButtonPressed", forControlEvents: .TouchUpInside)
+    optionsContrainer?.addSubview(signUpOption!)
+    
+    forgotPasswordOption = UIButton()
+    forgotPasswordOption?.titleLabel?.font = .asapRegular(10)
+    forgotPasswordOption?.setTitleColor(.whiteColor(), forState: .Normal)
+    forgotPasswordOption?.setTitle("Forgot password?", forState: .Normal)
+    forgotPasswordOption?.titleLabel?.textAlignment = .Center
+    optionsContrainer?.addSubview(forgotPasswordOption!)
+  }
+
   public func loginButtonPressed() {
     log.debug("mark")
+  }
+  
+  public func signupButtonPressed() {
+    presentViewController(SignUpView(), animated: true, completion: nil)
   }
   
   public func signupButton(enabled: Bool) -> () {
@@ -168,10 +210,6 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     self.performSegueWithIdentifier("SignUpView", sender: self)
     
   }
-  
-    public override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
   
   public func textFieldDidBeginEditing(textField: UITextField) {
     
@@ -217,5 +255,18 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   
   public override func prefersStatusBarHidden() -> Bool {
     return true
+  }
+  
+  
+  public func checkIfUserHasSeenOnboardingView() {
+    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
+      if !userDefaults.didShowOnboarding {
+        presentViewController(OnboardingView(), animated: true) { [weak self] in
+          self?.view.hideLoadingScreen()
+        }
+      } else {
+        view.hideLoadingScreen()
+      }
+    }
   }
 }

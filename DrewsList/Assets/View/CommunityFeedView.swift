@@ -58,8 +58,6 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    checkIfUserIsLoggedIn()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -227,15 +225,6 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
       default: break
       }
     }
-  }
-  
-  // MARK: User Auth
-  
-  public func checkIfUserIsLoggedIn() {
-    // check if user is already logged in
-    controller.readRealmUser()
-    // if not show login view
-    if model.user == nil { presentViewController(LoginView(), animated: true, completion: nil) }
   }
 }
 

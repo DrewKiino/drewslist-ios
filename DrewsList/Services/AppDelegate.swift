@@ -8,6 +8,7 @@
 
 import UIKit
 import Signals
+import RealmSwift
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
@@ -19,6 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
+    
+    // figure out if user defaults already exist 
+    // if it doesn't, create one and persist it.
+    if readUserDefaults() == nil { writeNewUserDefaults() }
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
@@ -98,5 +103,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // commit change
     window?.makeKeyAndVisible()
   }
+  
+  // MARK: Realm Functions
+  func readUserDefaults() -> UserDefaults? { if let defaults =  try! Realm().objects(UserDefaults.self).first { return defaults } else { return nil } }
+  func writeNewUserDefaults(){ try! Realm().write { try! Realm().delete(Realm().objects(UserDefaults.self)); try! Realm().add(UserDefaults(), update: true) } }
 }
+
+
+public class UserDefaults: Object {
+  
+  dynamic var _id: String?
+  
+  // onboarding
+  dynamic var didShowOnboarding: Bool = false
+  
+  // school selection
+  dynamic var school: String?
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
+}
+
 

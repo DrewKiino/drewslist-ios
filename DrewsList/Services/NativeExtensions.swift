@@ -126,14 +126,14 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
-  public func showLoadingScreen(heightOffset: CGFloat? = nil) {
+  public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil) {
   
     subviews.forEach {
       if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
       else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
     }
     
-    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : 64, screen.width, screen.height))
+    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : bgOffset ?? 64, screen.width, screen.height))
     backgroundView.tag = 1337
     backgroundView.backgroundColor = .whiteColor()
     addSubview(backgroundView)

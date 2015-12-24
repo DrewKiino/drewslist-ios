@@ -121,7 +121,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
       self?._chatButtonPressed.fire(listing)
     }
     scrollView?.addSubview(saleListFeedView!)
-    saleListFeedView?.showLoadingScreen(-132)
+    saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func setupWishListFeed() {
@@ -131,7 +131,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
     }
     scrollView?.addSubview(wishListFeedView!)
-    wishListFeedView?.showLoadingScreen(-132)
+    wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func selectLeftPage() {
@@ -293,7 +293,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   public func getListingsFromServer(skip: Int?, listing: String?) {
-    showLoadingScreen(-132)
+    showLoadingScreen(-132, bgOffset: nil)
     controller.getModel().listings.removeAll(keepCapacity: false)
     controller.getListingsFromServer(skip, listType: listing)
   }

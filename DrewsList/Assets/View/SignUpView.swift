@@ -1,291 +1,289 @@
 //
-//  SignUpView.swift
-//  DrewsList
+//  ViewController.swift
+//  Swifty
 //
-//  Created by Starflyer on 12/6/15.
-//  Copyright © 2015 Totem. All rights reserved.
-//
+///  Created by Starflyer on 11/29/15.
+//  Copyright © 2015 abearablecode. All rights reserved.
+///
 
+import Foundation
 import UIKit
-import QuartzCore
 import TextFieldEffects
 import Neon
-
 import SwiftyButton
-
+import RealmSwift
 
 public class SignUpView: UIViewController, UITextFieldDelegate {
   
   // good job specifying all the function and variable class scopes!
   
-  private let controller = SignUpController()
-  private var model: SignUpModel{ get { return controller.model } }
+  private let controller = LoginController()
+  private var model: LoginModel { get { return controller.model } }
   
-
+  private var scrollView: UIScrollView?
+  
   //MARK: Outlets for UI Elements.
-  private let backgroundImage = UIImageView()
-  private let containerView = UIView()
-  private var SignedUpButton: SwiftyButton?
-  var firstname:   HoshiTextField?
-  var emailField:  HoshiTextField?
-  var lastname:   HoshiTextField?
-  var password: HoshiTextField?
-  var signedUpButton:  SwiftyButton?  //UIButton?
-
+  private var backgroundImage: UIImageView?
+  private var containerView: UIView?
+  private var drewslistLogo: UIImageView?
+  private var emailField:      HoshiTextField?
+  private var passwordField:   HoshiTextField?
+  private var rePasswordField: HoshiTextField?
+  private var schoolTextField: HoshiTextField?
+  private var signupButton:     SwiftyCustomContentButton?          //UIButton?
+  private var signupButtonIndicator: UIActivityIndicatorView?
+  private var signupButtonLabel: UILabel?
+  private var orLabel: UILabel?
+  private var optionsContrainer: UIView?
+  private var signUpOption: UIButton?
   
-
+//  private var idx: Int = 0
+//  private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
   
-  // the mark tag's syntax looks like this:
-  //
-  //    '// MARK: .....'
-  //
-  //   
   // MARK: View Controller LifeCycle
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupSelf()
     setupBackgroundImage()
+    setupScrollView()
     setupContainerView()
-    setupfirstnameLabel()
-    setuplastnameLabel()
+    setupDrewslistLogo()
     setupEmailLabel()
-    setupPasswordlabel()
-    
-    
-    // remember to modularize each setup function to it's distinct functionality
-    
-  
-
+    setupPasswordLabel()
+    setupSchoolTextField()
+    setupSignupButton()
+    setupOptions()
+    resetSchoolInput()
   }
   
-  private func setupBackgroundImage() {
-    view.addSubview(backgroundImage)
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    resignFirstResponder()
+    setSchool()
   }
-  
-  private func setupContainerView() {
-    containerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
-    view.addSubview(containerView)
-  }
-  
-  public func dismissKeyboard() {
-    firstname?.resignFirstResponder()
-    emailField?.resignFirstResponder()
-    lastname?.resignFirstResponder()
-    password?.resignFirstResponder()
-  }
-  
-  //MARK: Global Variables for Changing Image Functionality.
-  private var idx: Int = 0
-  private let backGroundArray = [UIImage(named: "img1-1.png"),UIImage(named:"book6.png"), UIImage(named: "book7.png")]
-  
-  public func setupfirstnameLabel() {
-    //    usernameField.alpha = 0;
-    //    usernameField.tag = 1
-    //    usernameField.delegate = self
-    firstname = HoshiTextField()
-    firstname?.borderInactiveColor = UIColor.bareBlue()
-    firstname?.borderActiveColor = UIColor.juicyOrange()
-    firstname?.placeholderColor = UIColor.sexyGray()
-    firstname?.placeholder = "Enter your first name"
-    firstname?.delegate = self
-    
-    containerView.addSubview(firstname!)
-  }
-  
-  public func setupEmailLabel() {
-    emailField = HoshiTextField()
-    emailField?.borderInactiveColor = UIColor.bareBlue()
-    emailField?.borderInactiveColor = UIColor.juicyOrange()
-    emailField?.borderInactiveColor = UIColor.sexyGray()
-    emailField?.placeholder = "Enter an Email"
-    emailField?.delegate = self
-    
-    containerView.addSubview(emailField!)
-    
-  }
-  
-  public func setuplastnameLabel() {
-    //    passwordField.alpha = 0;
-    //    passwordField.tag = 2
-    //    passwordField.delegate = self
-    lastname = HoshiTextField()
-    lastname?.borderInactiveColor = UIColor.bareBlue()
-    lastname?.borderActiveColor = UIColor.juicyOrange()
-    lastname?.placeholderColor = UIColor.sexyGray()
-    lastname?.placeholder = "Enter your last name"
-    lastname?.delegate = self
-    
-    containerView.addSubview(lastname!)
-  }
-  
-  public func setupPasswordlabel() {
-    password = HoshiTextField()
-    password?.borderInactiveColor = UIColor.bareBlue()
-    password?.borderActiveColor = UIColor.juicyOrange()
-    password?.placeholderColor = UIColor.sexyGray()
-    password?.placeholder = "Enter a Password"
-    password?.delegate = self
-    
-    containerView.addSubview(password!)
-    
-    
-    
-  }
-  
-  
-//  //SignedUpButton???
-//  private func SignedUpButton(view: UIView) {
-//    SignedUpButton = SwiftyButton()
-//    SignedUpButton?.buttonColor = .sexyGray()
-//    SignedUpButton?.shadowColor = .juicyOrange()
-//    SignedUpButton?.shadowHeight = 3
-//    SignedUpButton?.cornerRadius = 3
-//    SignedUpButton?.titleLabel?.font = UIFont(name: "HelveticaNeue", size: 12)
-//    SignedUpButton?.setTitle("Next", forState: .Normal)
-//    SignedUpButton?.frame = CGRectMake(48, screen.height - 124, 100, 24)
-//    
-//  }
-  
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    backgroundImage.fillSuperview()
-    backgroundImage.image = Toucan(image: UIImage(named: "DrewsList_WireFrames_iOS-21")!).resize(backgroundImage.frame.size).image
     
-    containerView.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
+    backgroundImage?.fillSuperview()
+    backgroundImage?.image = Toucan(image: UIImage(named: "background-image2")).resize(backgroundImage?.frame.size, fitMode: .Clip).image
     
-    firstname?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
-    lastname?.alignAndFillWidth(align: .UnderCentered, relativeTo: firstname!, padding: 0, height: 48)
-    emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: lastname!, padding: 0, height: 48)
-    password?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    scrollView?.fillSuperview()
+    scrollView?.contentSize = CGSizeMake(screen.width, screen.height + 200)
     
+    containerView?.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
     
-  
-//    //NextButton//SignUpButton
-//      next = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-//      next?.layer.cornerRadius = 3.0
-//      next?.layer.borderWidth = 2.0
-//      next?.backgroundColor = UIColor.juicyOrange()
-//      next?.layer.borderColor = UIColor.juicyOrange().CGColor
-//      next?.setTitle("Next", forState: UIControlState.Normal)
-//      next?.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-//     //add target on this button//
-//    
-//  
-//       self.view.addSubview(next!)
+    drewslistLogo?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: containerView!.frame.width * 0.11)
+    drewslistLogo?.image = Toucan(image: UIImage(named: "DrewsListLogo_Login-1")).resize(drewslistLogo?.frame.size).image
     
-    //SetupSwiftySignedUpButton
-    signedUpButton = SwiftyButton()
-    signedUpButton?.buttonColor = .juicyOrange()
-    signedUpButton?.shadowColor = .bareBlue()
-    signedUpButton?.shadowHeight = 2
-    signedUpButton?.cornerRadius = 2
-    signedUpButton?.titleLabel?.font = UIFont(name: "Asap-Bold", size: 18)
-    signedUpButton?.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-    signedUpButton?.setTitle("Next", forState: .Normal)
-    signedUpButton?.frame = CGRectMake(screen.width / 2 - 100, screen.height - 35 - 35, 200, 45)
+    emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
+    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    rePasswordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 48)
+    schoolTextField?.alignAndFillWidth(align: .UnderCentered, relativeTo: rePasswordField!, padding: 0, height: 48)
     
-    view.addSubview(signedUpButton!)
+    signupButton?.align(.UnderCentered, relativeTo: schoolTextField!, padding: 32, width: passwordField!.frame.width, height: 36)
+    signupButtonIndicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
+    signupButtonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
     
+    orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: signupButton!, padding: 0, height: 24)
     
+    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: signupButton!, padding: 8, height: 24)
+    optionsContrainer?.groupAndFill(group: .Horizontal, views: [signUpOption!], padding: 0)
   }
   
-  
-  public func signupButtonPressed () {
-
+  private func setupSelf() {
+    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
   }
   
+  private func setupBackgroundImage() {
+    backgroundImage = UIImageView()
+    view.addSubview(backgroundImage!)
+  }
   
-  public func changeImage(){
-    if idx == backGroundArray.count-1{
-      
-      idx = 0
-      
-    } else{
-      
-      idx++
-    }
+  private func setupScrollView() {
+    scrollView = UIScrollView()
+    scrollView?.showsVerticalScrollIndicator = false
+    scrollView?.scrollEnabled = false
+    view.addSubview(scrollView!)
+  }
+  
+  private func setupContainerView() {
+    containerView = UIView()
+    scrollView?.addSubview(containerView!)
+  }
+  
+  private func setupDrewslistLogo() {
+    drewslistLogo = UIImageView()
+    containerView?.addSubview(drewslistLogo!)
+  }
+  
+  public func dismissKeyboard() {
+    emailField?.resignFirstResponder()
+    passwordField?.resignFirstResponder()
+    rePasswordField?.resignFirstResponder()
+  }
+  
+  public func setupEmailLabel() {
+    emailField = HoshiTextField()
+    emailField?.borderInactiveColor = .bareBlue()
+    emailField?.borderActiveColor = .juicyOrange()
+    emailField?.placeholderColor = .whiteColor()
+    emailField?.placeholder = "Email"
+    emailField?.delegate = self
+    emailField?.font = .asapRegular(16)
+    emailField?.textColor = .whiteColor()
+    emailField?.spellCheckingType = .No
+    emailField?.autocorrectionType = .No
+    emailField?.autocapitalizationType = .None
     
+    containerView?.addSubview(emailField!)
   }
   
-  public override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
+  public func setupPasswordLabel() {
+    passwordField = HoshiTextField()
+    passwordField?.borderInactiveColor = .bareBlue()
+    passwordField?.borderActiveColor = .juicyOrange()
+    passwordField?.placeholderColor = .whiteColor()
+    passwordField?.placeholder = "Password"
+    passwordField?.delegate = self
+    passwordField?.secureTextEntry = true
+    passwordField?.font = .asapRegular(16)
+    passwordField?.spellCheckingType = .No
+    passwordField?.autocorrectionType = .No
+    passwordField?.textColor = .whiteColor()
+    
+    containerView?.addSubview(passwordField!)
+    
+    rePasswordField = HoshiTextField()
+    rePasswordField?.borderInactiveColor = .bareBlue()
+    rePasswordField?.borderActiveColor = .juicyOrange()
+    rePasswordField?.placeholderColor = .whiteColor()
+    rePasswordField?.placeholder = "Retype Password"
+    rePasswordField?.delegate = self
+    rePasswordField?.secureTextEntry = true
+    rePasswordField?.font = .asapRegular(16)
+    rePasswordField?.spellCheckingType = .No
+    rePasswordField?.autocorrectionType = .No
+    rePasswordField?.textColor = .whiteColor()
+    
+    containerView?.addSubview(rePasswordField!)
   }
   
-  public func textFieldDidBeginEditing(textField: UITextField) {
+  private func setupSchoolTextField() {
+    schoolTextField = HoshiTextField()
+    schoolTextField?.borderInactiveColor = .bareBlue()
+    schoolTextField?.borderActiveColor = .juicyOrange()
+    schoolTextField?.placeholderColor = .whiteColor()
+    schoolTextField?.placeholder = "School"
+    schoolTextField?.delegate = self
+    schoolTextField?.font = .asapRegular(16)
+    schoolTextField?.spellCheckingType = .No
+    schoolTextField?.autocorrectionType = .No
+    schoolTextField?.textColor = .whiteColor()
+    schoolTextField?.tag = 5
+    containerView?.addSubview(schoolTextField!)
   }
   
+  private func setupSignupButton() {
+    //SetupSwitfysignupButton
+    signupButton = SwiftyCustomContentButton()
+    signupButton?.buttonColor         = .juicyOrange()
+    signupButton?.highlightedColor    = .darkJuicyOrange()
+    signupButton?.shadowColor         = .clearColor()
+    signupButton?.disabledButtonColor = .clearColor()
+    signupButton?.disabledShadowColor = .clearColor()
+    signupButton?.shadowHeight        = 0.0
+    signupButton?.cornerRadius        = 0.0
+    signupButton?.buttonPressDepth    = 0.0 // In percentage of shadowHeight
+    signupButton?.addTarget(self, action: "signupButtonPressed", forControlEvents: .TouchUpInside)
+    
+    signupButtonIndicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    signupButton?.customContentView.addSubview(signupButtonIndicator!)
+    
+    signupButtonLabel = UILabel()
+    signupButtonLabel?.text =  "Signup"
+    signupButtonLabel?.textAlignment = .Center
+    signupButtonLabel?.textColor = .whiteColor()
+    signupButtonLabel?.font = .asapRegular(12)
+    signupButton?.customContentView.addSubview(signupButtonLabel!)
+    
+    containerView?.addSubview(signupButton!)
+  }
   
+  private func setupOrLabel() {
+    orLabel = UILabel()
+    orLabel?.text =  "Or"
+    orLabel?.textAlignment = .Center
+    orLabel?.textColor = .sexyGray()
+    orLabel?.font = .asapRegular(12)
+    containerView?.addSubview(orLabel!)
+  }
   
-  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-    switch textField.tag {
-      // username
-    case 1:
-      print("Hello \(textField.text!)")
-      break
-      // password
-    case 2:
-      print("Hi \(textField.text!)")
-      break
-      // email
-    case 3:
-      print(textField.text)
-      break
-    default: break
-    }
+  private func setupOptions() {
+    optionsContrainer = UIView()
+    containerView?.addSubview(optionsContrainer!)
+    
+    signUpOption = UIButton()
+    signUpOption?.titleLabel?.font = .asapRegular(10)
+    signUpOption?.setTitleColor(.whiteColor(), forState: .Normal)
+    signUpOption?.setTitle("Login", forState: .Normal)
+    signUpOption?.titleLabel?.textAlignment = .Center
+    signUpOption?.addTarget(self, action: "loginButtonPressed", forControlEvents: .TouchUpInside)
+    optionsContrainer?.addSubview(signUpOption!)
+  }
+  
+  public func loginButtonPressed() {
+    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  public override func prefersStatusBarHidden() -> Bool {
     return true
   }
   
-  
-  
-  func buttonPressed(sender: AnyObject) {
-    //        self.performSegueWithIdentifier("login", sender: self)
+  public func searchSchools() {
+    presentViewController(SearchSchoolView(), animated: true, completion: nil)
   }
   
-  func signupPressed(sender: AnyObject) {
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    schoolTextField?.resignFirstResponder()
+    return true
   }
   
-  
-  func backgroundPressed(sender: AnyObject) {
-    firstname?.resignFirstResponder()
-    lastname?.resignFirstResponder()
-    emailField?.resignFirstResponder()
-    password?.resignFirstResponder()
+  public func resetSchoolInput() {
+    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
+      try! Realm().write { [weak self] in
+        userDefaults.school = nil
+        self?.schoolTextField?.text = nil
+        try! Realm().add(userDefaults, update: true)
+      }
+    }
   }
   
+  public func setSchool() {
+    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
+      try! Realm().write { [weak self] in
+        self?.schoolTextField?.text = userDefaults.school
+        try! Realm().add(userDefaults, update: true)
+      }
+    }
+  }
   
+  // MARK: TextView Delegates 
+  
+  public func textFieldDidBeginEditing(textField: UITextField) {
+    if textField.tag == 5 {
+      textField.resignFirstResponder()
+      searchSchools()
+    } else {
+      scrollView?.setContentOffset(CGPointMake(0, 110), animated: true)
+    }
+  }
+  
+  public func textFieldDidEndEditing(textField: UITextField) {
+    scrollView?.setContentOffset(CGPointMake(0, 0), animated: true)
+  }
 }
-
-
-
-//
-////Extension for Color to take Hex Values
-//extension UIColor{
-//  
-//  // this is nice.
-//  
-//  class func colorWithHex(hex: String, alpha: CGFloat = 1.0) -> UIColor {
-//    var rgb: CUnsignedInt = 0;
-//    let scanner = NSScanner(string: hex)
-//    
-//    if hex.hasPrefix("#") {
-//      // skip '#' character
-//      scanner.scanLocation = 1
-//    }
-//    scanner.scanHexInt(&rgb)
-//    
-//    let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-//    let g = CGFloat((rgb & 0xFF00) >> 8) / 255.0
-//    let b = CGFloat(rgb & 0xFF) / 255.0
-//    
-//    return UIColor(red: r, green: g, blue: b, alpha: alpha)
-//  }
-//}
-//
-//
-//
-//
-
-

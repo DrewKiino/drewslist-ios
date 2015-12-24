@@ -131,7 +131,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == true { self?.showLoadingScreen(-64) }
+      if bool == true { self?.showLoadingScreen(-64, bgOffset: nil) }
       else if bool == false { self?.hideLoadingScreen() }
     }
     

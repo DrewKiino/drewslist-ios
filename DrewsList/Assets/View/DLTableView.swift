@@ -234,7 +234,7 @@ public class TitleCell: DLTableViewCell {
 
 public class FullTitleCell: DLTableViewCell {
   
-  public var titleLabel: UILabel?
+  public var titleButton: UIButton?
   public var rightImageView: UIImageView?
   
   public let _didSelectCell = Signal<Bool>()
@@ -245,7 +245,7 @@ public class FullTitleCell: DLTableViewCell {
     setupTitleLabel()
     setupRightImageView()
     
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 200)
+    titleButton?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: screen.width - 48)
     rightImageView?.anchorToEdge(.Right, padding: 12, width: 12, height: 16)
     rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
   }
@@ -263,20 +263,17 @@ public class FullTitleCell: DLTableViewCell {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
-    multipleTouchEnabled = false
-    
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
-    pressGesture.minimumPressDuration = 0.01
-    addGestureRecognizer(pressGesture)
   }
   
   private func setupTitleLabel() {
-    titleLabel = UILabel()
-    titleLabel?.textColor = .blackColor()
-    titleLabel?.font = .asapRegular(16)
-    titleLabel?.adjustsFontSizeToFitWidth = true
-    titleLabel?.minimumScaleFactor = 0.8
-    addSubview(titleLabel!)
+    titleButton = UIButton()
+    titleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    titleButton?.contentHorizontalAlignment = .Left
+    titleButton?.titleLabel?.font = .asapRegular(16)
+    titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
+    titleButton?.titleLabel?.minimumScaleFactor = 0.5
+    titleButton?.addTarget(self, action: "select", forControlEvents: .TouchUpInside)
+    addSubview(titleButton!)
   }
   
   public func setupRightImageView() {
@@ -285,20 +282,10 @@ public class FullTitleCell: DLTableViewCell {
     addSubview(rightImageView!)
   }
   
-  public func select() { _didSelectCell => true }
-  
-  public func pressed(sender: UILongPressGestureRecognizer) {
-    if (sender.state == .Began) {
-      
-      backgroundColor = .sweetBeige()
-      
-    } else if (sender.state == .Ended){
-      
-      backgroundColor = .whiteColor()
-      
-      if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
-    }
+  public func select() {
+    _didSelectCell => true
   }
+  
 }
 
 public class SwitchCell: DLTableViewCell {
