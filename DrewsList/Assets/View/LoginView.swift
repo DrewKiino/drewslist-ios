@@ -11,7 +11,8 @@ import UIKit
 import QuartzCore
 import TextFieldEffects
 import Neon
-
+import Toucan
+import SwiftyButton
 
 public class LoginView: UIViewController, UITextFieldDelegate {
   
@@ -26,8 +27,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   var usernameField:   HoshiTextField?
   var emailField:      HoshiTextField?
   var passwordField:   HoshiTextField?
-  var loginButton:     UIButton?
-  var signupButton:    UIButton?
+  var loginButton:     SwiftyButton?          //UIButton?
+  var signupButton:    SwiftyButton?         //UIButton?
   
   // the mark tag's syntax looks like this:
   // 
@@ -50,38 +51,10 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     setupUsernameLabel()
     setupPasswordLabel()
     setupEmailLabel()
+    
+    
   
-    
-    
     // remember to modularize each setup function to it's distinct functionality
-    
-//      loginButton.alpha   = 0;
-    
-//      UIView.animateWithDuration(0.7, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations: {
-//        self.usernameField.alpha = 1.0
-//        self.emailField.alpha = 1.0
-//        self.passwordField.alpha = 1.0
-//        self.loginButton.alpha   = 0.9
-//      }, completion: nil)
-    
-      // Notifiying for Changes in the textFields
-//        usernameField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
-//        passwordField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
-//        emailField.addTarget(self, action: "textFieldDidChange", forControlEvents: UIControlEvents.EditingChanged)
-    
-    
-    
-      
-      // Visual Effect View for background
-//      let visualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Dark)) as UIVisualEffectView
-//      visualEffectView.frame = self.view.frame
-//      visualEffectView.alpha = 0.5
-//      imageView.image = UIImage(named: "img1-1.png")
-//      imageView.addSubview(visualEffectView)
-//      
-//      
-//      NSTimer.scheduledTimerWithTimeInterval(6, target: self, selector: "changeImage", userInfo: nil, repeats: true)
-//      self.loginButton(false)
   }
   
   
@@ -143,8 +116,6 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   }
   
 
-  
-  
   //9261 299999 2562 5479 5314
   
   public override func viewWillLayoutSubviews() {
@@ -154,47 +125,80 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     backgroundImage.image = Toucan(image: UIImage(named: "DrewsList_WireFrames_iOS-21")!).resize(backgroundImage.frame.size).image
 
     containerView.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
-  
-    
-
-    
     usernameField?.anchorAndFillEdge(.Top, xPad: 0, yPad: 60, otherSize: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: usernameField!, padding: 0, height: 48)
-    //loginButton!.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 50)
   
     
     
-    //loginButton
-    loginButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-    loginButton!.layer.cornerRadius = 3.0
-    loginButton!.layer.borderWidth = 2.0
-    loginButton!.center = CGPoint(x: 85, y: 480)
-    loginButton!.backgroundColor = UIColor.juicyOrange()
-    loginButton!.layer.borderColor = UIColor.juicyOrange().CGColor
-    loginButton!.setTitle("Log In", forState: UIControlState.Normal)
-    loginButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+ /*
+    
+    //Mark: Temp Login/Signup Buttons
+    
+    
+//    //loginButton
+//    loginButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
+//    loginButton!.layer.cornerRadius = 3.0
+//    loginButton!.layer.borderWidth = 2.0
+//    loginButton!.center = CGPoint(x: 85, y: 480)
+//    loginButton!.backgroundColor = UIColor.juicyOrange()
+//    loginButton!.layer.borderColor = UIColor.juicyOrange().CGColor
+//    loginButton!.setTitle("Log In", forState: UIControlState.Normal)
+//    loginButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+//
+//  
+//
+//    self.view.addSubview(loginButton!)
+//    
+//    //SignUpButton
+//    signupButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8),
+//    self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
+//    signupButton!.layer.cornerRadius = 3.0
+//    signupButton!.layer.borderWidth = 2.0
+//    signupButton!.center = CGPoint(x: 230 , y: 480)
+//    signupButton!.backgroundColor = UIColor.bareBlue()
+//    signupButton!.layer.backgroundColor = UIColor.bareBlue().CGColor
+//    signupButton!.setTitle("Sign Up", forState: UIControlState.Normal)
+//    signupButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+//    
+//    
+//    self.view.addSubview(signupButton!)
+    
+*/
 
-  
 
-    self.view.addSubview(loginButton!)
+    //SetupSwitfyloginButton
+    loginButton = SwiftyButton()
+    loginButton?.buttonColor = .juicyOrange()
+    loginButton?.shadowColor = .bareBlue()
+    loginButton?.shadowHeight = 2
+    loginButton?.cornerRadius = 2
+    loginButton?.titleLabel?.font = UIFont(name: "Asap-Bold", size: 13)
+    loginButton?.setTitle("Log In", forState: .Normal)
+    loginButton?.frame = CGRectMake(60, screen.height - 150, 110, 30)
     
-    //SignUpButton
-    signupButton = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8),
-    self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-    signupButton!.layer.cornerRadius = 3.0
-    signupButton!.layer.borderWidth = 2.0
-    signupButton!.center = CGPoint(x: 230 , y: 480)
-    signupButton!.backgroundColor = UIColor.bareBlue()
-    signupButton!.layer.backgroundColor = UIColor.bareBlue().CGColor
-    signupButton!.setTitle("Sign Up", forState: UIControlState.Normal)
-    signupButton!.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+    view.addSubview(loginButton!)
     
     
-    self.view.addSubview(signupButton!)
+    
+    
+//    //SetupSwiftySignupButton //Need to DBG
+//    signupButton = SwiftyButton()
+//    signupButton?.buttonColor = .bareBlue()
+//    signupButton?.shadowColor = .juicyOrange()
+//    signupButton?.shadowHeight = 2
+//    signupButton?.cornerRadius = 2
+//    signupButton?.titleLabel?.font = UIFont(name: "Asap-Bold", size:  13)
+//    signupButton?.setTitle("Sign Up", forState: .Normal)
+//    signupButton?.frame = CGRectMake(60, screen.height - 150, 110, 30)
+//    //signupButton?.addTarget(self, action: "SignUpView", forControlEvents: .TouchUpInside)
+//    
+//    view.addSubview(signupButton!)
+
+    
   
   }
   
-
+  
   public func loginButton(enabled: Bool) -> () {
     
   }

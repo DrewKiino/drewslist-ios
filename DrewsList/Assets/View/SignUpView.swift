@@ -30,7 +30,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   var emailField:  HoshiTextField?
   var lastname:   HoshiTextField?
   var password: HoshiTextField?
-  var next:     UIButton?
+  var signedUpButton:  SwiftyButton?  //UIButton?
 
   
 
@@ -163,18 +163,32 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     
   
-    //NextButton//SignUpButton
-      next = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
-      next?.layer.cornerRadius = 3.0
-      next?.layer.borderWidth = 2.0
-      next?.backgroundColor = UIColor.juicyOrange()
-      next?.layer.borderColor = UIColor.juicyOrange().CGColor
-      next?.setTitle("Next", forState: UIControlState.Normal)
-      next?.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-     //add target on this button//
+//    //NextButton//SignUpButton
+//      next = UIButton(frame: CGRectMake(self.view.bounds.origin.x + (self.view.bounds.width * 0.325), self.view.bounds.origin.y + (self.view.bounds.height * 0.8), self.view.bounds.origin.x + (self.view.bounds.width * 0.35), self.view.bounds.origin.y + (self.view.bounds.height * 0.05)))
+//      next?.layer.cornerRadius = 3.0
+//      next?.layer.borderWidth = 2.0
+//      next?.backgroundColor = UIColor.juicyOrange()
+//      next?.layer.borderColor = UIColor.juicyOrange().CGColor
+//      next?.setTitle("Next", forState: UIControlState.Normal)
+//      next?.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+//     //add target on this button//
+//    
+//  
+//       self.view.addSubview(next!)
     
-  
-       self.view.addSubview(next!)
+    //SetupSwiftySignedUpButton
+    signedUpButton = SwiftyButton()
+    signedUpButton?.buttonColor = .juicyOrange()
+    signedUpButton?.shadowColor = .bareBlue()
+    signedUpButton?.shadowHeight = 2
+    signedUpButton?.cornerRadius = 2
+    signedUpButton?.titleLabel?.font = UIFont(name: "Asap-Bold", size: 18)
+    signedUpButton?.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+    signedUpButton?.setTitle("Next", forState: .Normal)
+    signedUpButton?.frame = CGRectMake(screen.width / 2 - 100, screen.height - 35 - 35, 200, 45)
+    
+    view.addSubview(signedUpButton!)
+    
     
   }
   
