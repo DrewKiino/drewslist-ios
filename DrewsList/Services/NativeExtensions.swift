@@ -11,6 +11,23 @@ import UIKit
 
 extension UIColor {
   
+  class func colorWithHex(hex: String, alpha: CGFloat = 1.0) -> UIColor {
+    var rgb: CUnsignedInt = 0;
+    let scanner = NSScanner(string: hex)
+    
+    if hex.hasPrefix("#") {
+      // skip '#' character
+      scanner.scanLocation = 1
+    }
+    scanner.scanHexInt(&rgb)
+    
+    let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+    let g = CGFloat((rgb & 0xFF00) >> 8) / 255.0
+    let b = CGFloat(rgb & 0xFF) / 255.0
+    
+    return UIColor(red: r, green: g, blue: b, alpha: alpha)
+  }
+  
   // MARK: Main App Colors
   
   public class func sexyGray() -> UIColor {
@@ -33,6 +50,10 @@ extension UIColor {
   
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
+  }
+  
+  public class func darkJuicyOrange() -> UIColor {
+    return UIColor(red: 210/255, green: 113/255, blue: 14/255, alpha: 1.0)
   }
   
   public class func moneyGreen() -> UIColor {

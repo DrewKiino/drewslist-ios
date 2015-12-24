@@ -34,6 +34,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupSelf()
     setupPageTitleContainer()
     setupPageSelector()
     setupLeftPageTitleButton()
@@ -57,6 +58,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
+    checkIfUserIsLoggedIn()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -75,6 +78,9 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     
     leftPage?.showComingSoonScreen()
     rightPage?.showComingSoonScreen()
+  }
+  
+  private func setupSelf() {
   }
   
   private func setupPageTitleContainer() {
@@ -221,6 +227,15 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
       default: break
       }
     }
+  }
+  
+  // MARK: User Auth
+  
+  public func checkIfUserIsLoggedIn() {
+    // check if user is already logged in
+    controller.readRealmUser()
+    // if not show login view
+    if model.user == nil { presentViewController(LoginView(), animated: true, completion: nil) }
   }
 }
 

@@ -188,6 +188,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         cell.isUserListing = isUserListing
         cell.setListing(model.listing)
+        cell.showSeparatorLine()
         cell._chatButtonPressed.removeAllListeners()
         cell._chatButtonPressed.listen(self) { [weak self] bool in
           self?._chatButtonPressed.fire(bool)

@@ -111,9 +111,6 @@ public class ChatController {
         }
       }
     }
-    
-    // connect to server
-    socket.connect()
   }
   
   public func didPressSendButton(text: String) {
@@ -172,8 +169,13 @@ public class ChatController {
     )
   }
   
+  public func connectToServer() {
+    socket.connect()
+  }
   
-  
+  public func disconnectFromServer() {
+    socket.disconnect()
+  }
   
   
   

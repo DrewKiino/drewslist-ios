@@ -16,8 +16,7 @@ public class AccountSettingsController {
   
   public func getModel() -> AccountSettingsModel { return model }
   
-  // MARK: Realm Functions
-  
+  // MARK: Realm Functions 
   public func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
   

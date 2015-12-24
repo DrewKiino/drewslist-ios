@@ -67,20 +67,7 @@ public class UserProfileController {
   public func get_User() -> Signal<User?> { return model._user }
   public func getUser() -> User? { return model.user }
   
-  
-  public func readRealmUser(_id: String?) {
-    guard let _id = _id else { return }
-    let realm = try! Realm()
-    if let realmUser = realm.objectForPrimaryKey(RealmUser.self, key: _id) { model.user = realmUser.getUser() }
-  }
-  
-  public func writeRealmUser(){
-    let realmUser = RealmUser()
-    realmUser.setRealmUser(model.user)
-    let realm = try! Realm()
-    try! realm.write {
-      realm.deleteAll()
-      realm.add(realmUser, update: true)
-    }
-  }
+  // MARK: Realm Functions
+  public func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
 }
