@@ -23,6 +23,7 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    setupSelf()
     setupDataBinding()
   }
   
@@ -30,9 +31,20 @@ public class ChatView: JSQMessagesViewController {
     super.viewDidAppear(animated)
   }
   
+  private func setupSelf() {
+    // set chat view title to friend's title
+    title = model.friend?.getName()
+    // hide attachment button
+    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+  }
+  
   private func setupDataBinding() {
+    model._friend.removeAllListeners()
+    model._friend.listen(self) { [weak self] friend in
+      self?.title = friend?.getName()
+    }
     // set and listen for changes in the user's username
-  senderDisplayName = model.user?.username ?? ""
+    senderDisplayName = model.user?.username ?? ""
     model.user?._username.listen(self) { [weak self] username in
       guard let username = username else { return }
       self?.senderDisplayName = username
@@ -86,8 +98,8 @@ public class ChatView: JSQMessagesViewController {
   
   public func setUsers(user: User?, friend: User?) -> Self {
     
-    log.debug(user?._id)
-    log.debug(friend?._id)
+    model.user = user
+    model.friend = friend
     
     return self
   }

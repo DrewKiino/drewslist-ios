@@ -34,15 +34,13 @@ public class ChatController {
   public init() {
     setupSockets()
     setupDataBinding()
-    remoteNotification.listen(self) { [unowned self] payload in
-      self.didPressSendButton(payload.description)
-    }
   }
   
   private func setupDataBinding() {
     // have the controller listen for send message status
     // if 'didSend' is true, then the server has ressed back an 'OK'
     // else if it is false, then the server has ressed back an error
+    didSendMessage.removeAllListeners()
     didSendMessage.listen(self) { didSend in
     }
   }
@@ -51,6 +49,7 @@ public class ChatController {
     
     // subscribe to the server chat framework's connect callback
     socket.on("subscribeCallback") { json in
+      
       if let response = json["response"].string {
         log.info("joined room: \(response)")
       } else if let error = json["error"].string {
@@ -112,6 +111,9 @@ public class ChatController {
         }
       }
     }
+    
+    // connect to server
+    socket.connect()
   }
   
   public func didPressSendButton(text: String) {

@@ -10,7 +10,6 @@ import UIKit
 import Signals
 
 public let log = Atlantis.Logger()
-public let remoteNotification = Signal<[NSObject: AnyObject]>()
 public let screen = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
@@ -73,8 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let user_id = payload.valueForKey("user_id")
     {
       log.info("received remote notification from server: \(alert)")
-      // publish to server that the app received the push notification
-//      socket.emit("didReceivePushNotification", ["user_id": user_id], forceConnection: true)
     }
   }
   

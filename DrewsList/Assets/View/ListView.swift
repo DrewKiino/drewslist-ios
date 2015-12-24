@@ -475,6 +475,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
         var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
         
         Async.main { [weak self] in
+          self?.callButton?.hidden = false
           self?.callButton?.setImage(toucan1?.image, forState: .Normal)
           // deinit toucan
           toucan1 = nil
@@ -483,14 +484,15 @@ public class ListerAttributesViewCell: DLTableViewCell {
         var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
         
         Async.main { [weak self] in
+          self?.chatButton?.hidden = false
           self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
           toucan2 = nil
         }
         
       } else {
         Async.main { [weak self] in
-          self?.callButton?.setImage(nil, forState: .Normal)
-          self?.chatButton?.setImage(nil, forState: .Normal)
+          self?.callButton?.hidden = true
+          self?.chatButton?.hidden = true
         }
       }
       
