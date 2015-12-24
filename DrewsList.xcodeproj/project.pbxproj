@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
-		3960A7ED1C22E15000747C6C /* AcctSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3960A7EC1C22E15000747C6C /* AcctSettingModel.swift */; };
 		3960A7F01C233BBD00747C6C /* DynamicHeightCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3960A7EF1C233BBD00747C6C /* DynamicHeightCell.xib */; };
 		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; };
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
@@ -45,6 +44,7 @@
 		EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B73791C236FDF00BD942C /* ListFeedModel.swift */; };
 		EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B737B1C236FE500BD942C /* ListFeedController.swift */; };
 		EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B737D1C2377C600BD942C /* DLNavigationController.swift */; };
+		EE27AB471C2B7A7200EEFA4D /* AccountSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */; };
 		EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */; };
 		EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */; };
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
@@ -76,7 +76,6 @@
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
-		EEB0E2711C22850E0007DE13 /* AcctSettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2701C22850E0007DE13 /* AcctSettingController.swift */; };
 		EEB0E2791C22851A0007DE13 /* AccountSettingsView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* UserProfileListingController.swift */; };
@@ -84,7 +83,6 @@
 		EED779E71C15406600D172BE /* BookFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E61C15406600D172BE /* BookFeedView.swift */; };
 		EEE2AA061C28A1930093DB46 /* AccountSettingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA051C28A1930093DB46 /* AccountSettingView2.swift */; };
 		EEE2AA091C28A33C0093DB46 /* AccountSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */; };
-		EEE2AA0B1C28A3500093DB46 /* AccountSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */; };
 		EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */; };
 		EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */; };
 		EEE2AA111C28F8B50093DB46 /* CreateListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */; };
@@ -110,7 +108,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3960A7EC1C22E15000747C6C /* AcctSettingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingModel.swift; sourceTree = "<group>"; };
 		3960A7EF1C233BBD00747C6C /* DynamicHeightCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DynamicHeightCell.xib; sourceTree = "<group>"; };
 		399971D91C14CF0A008C30FC /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
@@ -155,6 +152,7 @@
 		EE1B73791C236FDF00BD942C /* ListFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListFeedModel.swift; sourceTree = "<group>"; };
 		EE1B737B1C236FE500BD942C /* ListFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListFeedController.swift; sourceTree = "<group>"; };
 		EE1B737D1C2377C600BD942C /* DLNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLNavigationController.swift; sourceTree = "<group>"; };
+		EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsModel.swift; sourceTree = "<group>"; };
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
@@ -186,7 +184,6 @@
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
-		EEB0E2701C22850E0007DE13 /* AcctSettingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcctSettingController.swift; sourceTree = "<group>"; };
 		EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountSettingsView3.swift; path = View/AccountSettingsView3.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* UserProfileListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingController.swift; sourceTree = "<group>"; };
@@ -194,7 +191,6 @@
 		EED779E61C15406600D172BE /* BookFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookFeedView.swift; sourceTree = "<group>"; };
 		EEE2AA051C28A1930093DB46 /* AccountSettingView2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountSettingView2.swift; path = View/AccountSettingView2.swift; sourceTree = "<group>"; };
 		EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsController.swift; sourceTree = "<group>"; };
-		EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsModel.swift; sourceTree = "<group>"; };
 		EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
 		EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLTableView.swift; sourceTree = "<group>"; };
 		EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingView.swift; sourceTree = "<group>"; };
@@ -300,8 +296,8 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */,
 				EEEFB7891C28032A005CB4F9 /* CreateListingModel.swift */,
-				3960A7EC1C22E15000747C6C /* AcctSettingModel.swift */,
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE8918C51C1169B500FCF031 /* LoginModel.swift */,
 				EED779E41C151DF800D172BE /* UserProfileListingModel.swift */,
@@ -314,7 +310,6 @@
 				EE1B73791C236FDF00BD942C /* ListFeedModel.swift */,
 				EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */,
 				4F966CE51C27623900CECCC6 /* EditProfileModel.swift */,
-				EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -348,7 +343,6 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				EEB0E2701C22850E0007DE13 /* AcctSettingController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
@@ -758,9 +752,7 @@
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
-				EEE2AA0B1C28A3500093DB46 /* AccountSettingsModel.swift in Sources */,
 				EEE2AA111C28F8B50093DB46 /* CreateListingView.swift in Sources */,
-				3960A7ED1C22E15000747C6C /* AcctSettingModel.swift in Sources */,
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
@@ -777,6 +769,7 @@
 				EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
+				EE27AB471C2B7A7200EEFA4D /* AccountSettingsModel.swift in Sources */,
 				4F18A07E1C275D75006169F5 /* SettingsView.swift in Sources */,
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
@@ -806,7 +799,6 @@
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
-				EEB0E2711C22850E0007DE13 /* AcctSettingController.swift in Sources */,
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
