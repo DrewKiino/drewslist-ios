@@ -8,6 +8,7 @@
 
 import Foundation
 import Former
+import RealmSwift
 
 public class SettingsView: FormViewController {
   
@@ -72,8 +73,16 @@ public class SettingsView: FormViewController {
         cell.titleLabel.textColor = UIColor.lightGrayColor()
         cell.titleLabel?.font = UIFont.asapBold(14)
       }
-    }.onSelected { row in
-      self.former.deselect(true)
+    }.onSelected { [weak self] row in
+      self?.former.deselect(true)
+      
+      // deletes the current user, then will log user out.
+      self?.deleteRealmUser()
+      // since the current user does not exist anymore
+      // we ask the tab view to check any current user, since we have no current user
+      // it will present the login screen
+      self?.navigationController?.popToRootViewControllerAnimated(true)
+      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.checkIfUserIsLoggedIn() }
     }
   
     let blankRow = LabelRowFormer<FormLabelCell>()
@@ -100,4 +109,15 @@ public class SettingsView: FormViewController {
     disableRow.update()
     self.enabled = !self.enabled
   }
+  
+  
+  // this one deletes all prior users, on logout.
+  public func deleteRealmUser(){ try! Realm().write { try! Realm().delete(try! Realm().objects(RealmUser.self)) } }
 }
+
+
+
+
+
+
+

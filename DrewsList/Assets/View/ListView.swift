@@ -13,17 +13,18 @@ import Gifu
 import SDWebImage
 import SwiftDate
 import Async
+import Signals
+import RealmSwift
 
 public class ListViewContainer: UIViewController {
   
   public var listView: ListView?
-  public var listing: Listing?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupListView()
     setupSelf()
+    setupListView()
     
     listView?.fillSuperview()
   }
@@ -32,31 +33,56 @@ public class ListViewContainer: UIViewController {
     super.viewWillLayoutSubviews()
   }
   
-  private func setupListView() {
-    listView = ListView()
-    listView?.setListing(listing)
-    view.addSubview(listView!)
-  }
-  
   private func setupSelf() {
     
     view.backgroundColor = .whiteColor()
-    
-    title = "Best Match"
+  }
+  
+  private func setupListView() {
+    listView?._chatButtonPressed.removeAllListeners()
+    listView?._chatButtonPressed.listen(self) { [weak self] bool in
+      self?.readRealmUser()
+      self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
+    }
+    view.addSubview(listView!)
   }
   
   public func setListing(listing: Listing?) -> Self {
-    self.listing = listing
+    listView = ListView()
+    listView?.setListing(listing)
+    title = "View Listing"
     return self
   }
+  
+  public func setList_id(list_id: String?) -> Self {
+    listView = ListView()
+    listView?.getListingFromServer(list_id)
+    title = "View Listing"
+    return self
+  }
+  
+  public func isUserListing() -> Self {
+    listView?.isUserListing = true
+    title = "Your Listing"
+    return self
+  }
+  
+  // MARK: Realm Functions
+  
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { listView?.model.user = realmUser.getUser() } }
+  public func writeRealmUser() { try! Realm().write { try! Realm().add(RealmUser().setRealmUser( listView?.model.user), update: true) } }
 }
 
 public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
-  public let controller = ListController()
-  private var defaultSeperatorColor: UIColor?
+  private let controller = ListController()
+  private var model: ListModel { get { return controller.getModel() } }
+  public var isUserListing: Bool = false
   
-  public var tableView: UITableView?
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
+  
+  public var tableView: DLTableView?
   
   public init() {
     super.init(frame: CGRectZero)
@@ -84,23 +110,35 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     return true
   }
   
+  public func getListingFromServer(list_id: String?) {
+    controller.getListingFromServer(list_id)
+  }
+  
   private func setupTableView() {
-    tableView = UITableView()
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-    tableView?.registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
-    tableView?.registerClass(ListerProfileViewCell.self, forCellReuseIdentifier: "ListerProfileViewCell")
-    tableView?.registerClass(ListerAttributesViewCell.self, forCellReuseIdentifier: "ListerAttributesViewCell")
+    tableView = DLTableView()
     tableView?.dataSource = self
     tableView?.delegate = self
-    tableView?.allowsSelection = false
-    defaultSeperatorColor = tableView?.separatorColor
-    tableView?.separatorColor = .clearColor()
+    tableView?.backgroundColor = .whiteColor()
+    
     addSubview(tableView!)
   }
   
   private func setupDataBinding() {
-    controller.get_Listing().listen(self) { [weak self] listing in
+    model._listing.removeAllListeners()
+    model._listing.listen(self) { [weak self] listing in
       self?.tableView?.reloadData()
+    }
+    
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == true { self?.showLoadingScreen(-64, bgOffset: nil) }
+      else if bool == false { self?.hideLoadingScreen() }
+    }
+    
+    model._serverCallbackFromFindListing.removeAllListeners()
+    model._serverCallbackFromFindListing.listen(self) { [weak self] bool in
+      if bool == true { self?.tableView?.reloadData() }
+      self?.hideLoadingScreen()
     }
   }
   
@@ -108,8 +146,8 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0: return 168
-    case 1: return 56
+    case 0: return 166
+    case 1: return 48
     case 2: return 200
     default: return 0
     }
@@ -122,95 +160,55 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     // get listing reference
-    var listing: Listing? = controller.getListing()
-    let hasMatch: Bool = listing?.highestLister != nil || listing?.user != nil
-    if (hasMatch) { tableView.separatorColor = defaultSeperatorColor }
-    
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        cell.subviews.forEach { if !($0 is BookView) { $0.removeFromSuperview() } }
         
-        cell.bookView?.setBook(listing?.book)
-        controller.get_Listing().removeListener(self)
-        controller.get_Listing().listen(self) { [weak cell] listing in
+        cell.bookView?.setBook(model.listing?.book)
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
           cell?.bookView?.setBook(listing?.book)
         }
-        
-        // dealloc listing
-        listing = nil
         
         return cell
       }
     case 1:
       
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell
-          where listing?.highestLister != nil || listing?.user != nil
-      {
-        cell.setListing(listing?.highestLister ?? listing)
-        controller.get_Listing().removeListener(self)
-        controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister ?? listing)
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
+        cell.setListing(model.listing)
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
+          cell?.setListing(listing)
         }
-        
-        listing = nil
         
         return cell
       }
     case 2:
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell
-          where listing?.highestLister != nil || listing?.user != nil
-      {
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
         
-        cell.setListing(listing?.highestLister ?? listing)
-        controller.get_Listing().removeListener(self)
-        controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister ?? listing)
+        cell.isUserListing = isUserListing
+        cell.setListing(model.listing)
+        cell.showSeparatorLine()
+        cell._chatButtonPressed.removeAllListeners()
+        cell._chatButtonPressed.listen(self) { [weak self] bool in
+          self?._chatButtonPressed.fire(bool)
         }
-        
-        listing = nil
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
+          cell?.setListing(listing)
+        }
         
         return cell
       }
     default: break
     }
     
-    listing = nil
-    
-    return UITableViewCell()
+    return DLTableViewCell()
   }
 }
 
-public class BookViewCell: UITableViewCell {
-  
-  public var bookView: BookView?
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupBookView()
-  }
 
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    bookView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 150)
-  }
-  
-  private func setupBookView() {
-    bookView = BookView()
-    addSubview(bookView!)
-  }
-  
-  public func setBook(book: Book?) {
-    bookView?.setBook(book)
-  }
-}
-
-public class ListerProfileViewCell: UITableViewCell {
+public class ListerProfileViewCell: DLTableViewCell {
   
   private var userImageView: UIImageView?
   private var nameLabel: UILabel?
@@ -240,10 +238,20 @@ public class ListerProfileViewCell: UITableViewCell {
     nameLabel?.align(.ToTheRightMatchingTop, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
     
     listTypeLabel?.align(.ToTheRightMatchingBottom, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
-
-    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 12, width: 100, height: 16)
     
-    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 12, width: 100, height: 16)
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 6, width: 100, height: 16)
+    
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 6, width: 100, height: 16)
+  }
+  
+//  private override func setupSelf() {
+//    super.setupSelf()
+//    
+//    backgroundColor = .whiteColor()
+//  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
   }
   
   private func setupUserImage() {
@@ -279,13 +287,47 @@ public class ListerProfileViewCell: UITableViewCell {
   }
   
   public func setListing(listing: Listing?) {
-    guard let listing = listing, let user = listing.user where user._id != nil else { return }
+    guard let listing = listing, let user = listing.user else { return }
     
-    if let url = user.image, let nsurl = NSURL(string: url) {
-//      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Medium_User_Images", diskCapacity: 10 * 1024 * 1024) { [weak self] image in
-//        if let this = self { return Toucan(image: image).resize(this.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image }
-//        else { return image }
-//      })
+    let duration: NSTimeInterval = 0.5
+    
+    // MARK: Images
+    if user.image != nil {
+      
+      userImageView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+        // NOTE: correct way to handle memory management with toucan
+        // init toucan and pass in the arguments directly in the parameter headers
+        // do the resizing in the background
+        var toucan: Toucan? = Toucan(image: image).resize(self?.userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+        
+        Async.main { [weak self] in
+          
+          // set the image view's image
+          self?.userImageView?.image = toucan?.image
+          
+          // animate
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.userImageView?.alpha = 1.0
+          }
+          
+          // deinit toucan
+          toucan = nil
+        }
+      }
+    } else {
+      
+      var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+      
+      Async.main { [weak self] in
+        
+        self?.userImageView?.image = toucan?.image
+        
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.userImageView?.alpha = 1.0
+        }
+        
+        toucan = nil
+      }
     }
     
     Async.background { [weak self] in
@@ -309,17 +351,17 @@ public class ListerProfileViewCell: UITableViewCell {
         }
       }
       
-    }.main { [weak self] in
-      // not really sure, but the book view covers this view.
-      // so I had to set the z position to go over the book view
-      // then set the background color to clear
-      self?.backgroundColor = .clearColor()
-      self?.layer.zPosition = 1
+      }.main { [weak self] in
+        // not really sure, but the book view covers this view.
+        // so I had to set the z position to go over the book view
+        // then set the background color to clear
+        self?.backgroundColor = .clearColor()
+        self?.layer.zPosition = 1
     }
   }
 }
 
-public class ListerAttributesViewCell: UITableViewCell {
+public class ListerAttributesViewCell: DLTableViewCell {
   
   private var priceLabel: UILabel?
   private var conditionLabel: UILabel?
@@ -330,8 +372,14 @@ public class ListerAttributesViewCell: UITableViewCell {
   private var chatButton: UIButton?
   private var callButton: UIButton?
   
+  public var isUserListing: Bool = false
+  
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
     setupPriceLabel()
     setupChatButton()
     setupCallButton()
@@ -357,21 +405,13 @@ public class ListerAttributesViewCell: UITableViewCell {
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
-    
-    notesTextViewContainer?.anchorAndFillEdge(.Top, xPad: 12, yPad: 72, otherSize: frame.height - 72 - 16)
-    notesTextView?.fillSuperview()
-    
-    if let container = notesTextViewContainer {
-      
-      var gradient: CAGradientLayer? = CAGradientLayer(layer: container.layer)
-      gradient?.frame = notesTextViewContainer!.bounds
-      gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
-      gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
-      gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
-      notesTextViewContainer?.layer.mask = gradient
-      gradient = nil
-    }
   }
+  
+  private func setupSelf() {
+    
+    backgroundColor = .whiteColor()
+  }
+
   
   private func setupPriceLabel() {
     priceLabel = UILabel()
@@ -382,6 +422,7 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   private func setupChatButton() {
     chatButton = UIButton()
+    chatButton?.addTarget(self, action: "chatButtonPressed", forControlEvents: .TouchUpInside)
     addSubview(chatButton!)
   }
   
@@ -399,12 +440,13 @@ public class ListerAttributesViewCell: UITableViewCell {
   private func setupNotesTitle() {
     notesTitle = UILabel()
     notesTitle?.font = UIFont.asapBold(12)
-    notesTitle?.text = "Notes:"
     addSubview(notesTitle!)
   }
   
   private func setupNotesTextViewContainer() {
     notesTextViewContainer = UIView()
+    notesTextViewContainer?.layer.mask = nil
+    notesTextViewContainer?.hidden = true
     addSubview(notesTextViewContainer!)
   }
   
@@ -417,6 +459,8 @@ public class ListerAttributesViewCell: UITableViewCell {
   
   public func setListing(listing: Listing?) {
     
+    notesTextViewContainer?.hidden = true
+    
     Async.background { [weak self, weak listing] in
       
       let string1 = "Desired Price: $\(listing?.price ?? "")"
@@ -426,21 +470,31 @@ public class ListerAttributesViewCell: UITableViewCell {
       
       Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
       
-      // NOTE: correct way to handle memory management with toucan
-      // init toucan
-      var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
-      
-      Async.main { [weak self] in
-        self?.callButton?.setImage(toucan1?.image, forState: .Normal)
-        // deinit toucan
-        toucan1 = nil
-      }
-      
-      var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
-      
-      Async.main { [weak self] in
-        self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
-        toucan2 = nil
+      if self?.isUserListing == false {
+        
+        // init toucan
+        var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
+        
+        Async.main { [weak self] in
+          self?.callButton?.hidden = false
+          self?.callButton?.setImage(toucan1?.image, forState: .Normal)
+          // deinit toucan
+          toucan1 = nil
+        }
+        
+        var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
+        
+        Async.main { [weak self] in
+          self?.chatButton?.hidden = false
+          self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
+          toucan2 = nil
+        }
+        
+      } else {
+        Async.main { [weak self] in
+          self?.callButton?.hidden = true
+          self?.chatButton?.hidden = true
+        }
       }
       
       let string2 = "Condition: \(listing?.getConditionText() ?? "")"
@@ -449,6 +503,13 @@ public class ListerAttributesViewCell: UITableViewCell {
       
       Async.main { [weak self] in
         self?.conditionLabel?.attributedText = coloredString2
+      }
+      
+      
+      if let notes = listing?.notes {
+        Async.main { [weak self] in
+          self?.notesTitle?.text = !notes.isEmpty ? "Notes:" : nil
+        }
       }
       
       // create paragraph style class
@@ -460,26 +521,59 @@ public class ListerAttributesViewCell: UITableViewCell {
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
         NSForegroundColorAttributeName: UIColor.blackColor(),
         NSFontAttributeName: UIFont.asapRegular(12)
-      ])
+        ])
       
       // dealloc paragraph style
       paragraphStyle = nil
       
       Async.main { [weak self] in
+        
         self?.notesTextView?.attributedText = attributedString
+        self?.notesTextView?.sizeToFit()
+        
+        let height: CGFloat! = self?.notesTextView!.frame.size.height < 100 ? self?.notesTextView!.frame.size.height : 100
+        var notesTitle: UILabel! = self?.notesTitle!
+        
+        self?.notesTextViewContainer?.alignAndFillWidth(
+          align: .UnderCentered,
+          relativeTo: notesTitle,
+          padding: 11,
+          height: height
+        )
+        
+        notesTitle = nil
+        
+        self?.notesTextView?.fillSuperview()
+        
+        self?.notesTextViewContainer?.layer.mask = nil
+        
+        Async.background { [weak self] in
+          let layer: CALayer! = self?.notesTextViewContainer?.layer
+          let bounds: CGRect! = self?.notesTextViewContainer?.bounds
+          var gradient: CAGradientLayer? = CAGradientLayer(layer: layer)
+          gradient?.frame = bounds
+          gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
+          gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
+          gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
+          
+          Async.main { [weak self] in
+            self?.notesTextViewContainer?.layer.mask = gradient
+            self?.notesTextViewContainer?.hidden = false
+            gradient = nil
+          }
+        }
       }
       
-    }.main { [weak self] in
-      // same things is happening as the view view before this
-      self?.layer.zPosition = 2
+      }.main { [weak self] in
+        // same things is happening as the view view before this
+        self?.layer.zPosition = 2
     }
   }
+  
+  public func chatButtonPressed() {
+    _chatButtonPressed => true
+  }
 }
-
-
-
-
-
 
 
 

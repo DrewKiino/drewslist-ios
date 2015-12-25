@@ -7,3 +7,10 @@
 //
 
 import Foundation
+import Signals
+
+public class CommunityFeedModel {
+  
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+}

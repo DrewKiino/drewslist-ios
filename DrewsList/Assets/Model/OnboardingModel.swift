@@ -7,10 +7,8 @@
 //
 
 import Foundation
+import RealmSwift
 
 public class OnboardingModel {
   
-  public init() {
-    
-  }
 }
