@@ -13,6 +13,9 @@ import RealmSwift
 
 public class TabView: UITabBarController {
   
+  private let controller = TabController()
+  private var model: TabModel { get { return controller.model } }
+  
   var testView = CreateListingView()
   var communityView: CommunityFeedView? = CommunityFeedView()
   var chatView: ChatHistoryView?  = ChatHistoryView()
@@ -90,9 +93,7 @@ public class TabView: UITabBarController {
   
   // MARK: User Auth
   public func checkIfUserIsLoggedIn() {
-    // check if user is already logged in
-    if try! Realm().objects(RealmUser.self).first == nil { presentViewController(LoginView(), animated: false, completion: nil) }
-    // if not show login view
+    if !controller.checkIfUserIsLoggedIn() { presentViewController(LoginView(), animated: false, completion: nil) }
   }
 }
 

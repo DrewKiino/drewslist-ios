@@ -63,8 +63,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     setupUsernameLabel()
     setupButtons()
     
-    setRootViewTitle("Your List")
-    
     // MARK: Neon Layouts
     
     scrollView?.fillSuperview()
@@ -136,6 +134,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public func setupSelf() {
     controller.viewDidLoad()
+    setRootViewTitle("Profile")
   }
   
   public func setupScrollView(){
@@ -237,6 +236,10 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
             
             // set the image view's image
             self?.profileImg?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.profileImg?.alpha = 1.0
+            }
             
             // stop the loading animation
             self?.view.hideLoadingScreen()

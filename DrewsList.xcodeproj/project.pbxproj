@@ -60,6 +60,8 @@
 		EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */; };
 		EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */; };
 		EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */; };
+		EE53E75D1C2D00C900A32613 /* TabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE53E75C1C2D00C900A32613 /* TabController.swift */; };
+		EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE53E75E1C2D00DB00A32613 /* TabModel.swift */; };
 		EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */; };
 		EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */; };
 		EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */; };
@@ -172,6 +174,8 @@
 		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFumeAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE53E75C1C2D00C900A32613 /* TabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabController.swift; sourceTree = "<group>"; };
+		EE53E75E1C2D00DB00A32613 /* TabModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabModel.swift; sourceTree = "<group>"; };
 		EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedView.swift; sourceTree = "<group>"; };
 		EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedModel.swift; sourceTree = "<group>"; };
 		EE55200F1C23BAE7008EF831 /* CommunityFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedController.swift; sourceTree = "<group>"; };
@@ -319,6 +323,7 @@
 				EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */,
 				4F966CE51C27623900CECCC6 /* EditProfileModel.swift */,
 				EE3D67A61C2BF72800299F34 /* SearchSchoolModel.swift */,
+				EE53E75E1C2D00DB00A32613 /* TabModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -369,6 +374,7 @@
 				4F966CE71C27624000CECCC6 /* EditProfileController.swift */,
 				EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */,
 				EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */,
+				EE53E75C1C2D00C900A32613 /* TabController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -776,6 +782,7 @@
 				EE3D67A51C2BF72100299F34 /* SearchSchoolController.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
+				EE53E75D1C2D00C900A32613 /* TabController.swift in Sources */,
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				3F4CA3A71C0BE94000CFC84D /* CreateListingView2.swift in Sources */,
@@ -808,6 +815,7 @@
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
+				EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
 				4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */,

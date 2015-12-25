@@ -27,6 +27,8 @@ public class LoginController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
+    log.debug("mark")
+    
     Alamofire.request(
       .POST,
       ServerUrl.Staging.getValue() + "/user/authenticateWithLocalAuth",
@@ -44,6 +46,8 @@ public class LoginController {
           
         } else if let data = data, let json: JSON! = JSON(data: data) {
           
+          log.debug(json)
+          
           if json["errmsg"].string != nil || json["error"].string != nil {
             
             if json["error"].string?.containsString("email") == true {
@@ -55,7 +59,6 @@ public class LoginController {
             }
             
           } else {
-            
             // create and  user object
             self?.model.user = User(json: json)
             // write user object to realm
