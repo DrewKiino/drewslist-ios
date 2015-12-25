@@ -12,6 +12,7 @@ import TextFieldEffects
 import Neon
 import SwiftyButton
 import RealmSwift
+import Async
 
 public class LoginView: UIViewController, UITextFieldDelegate {
   
@@ -21,6 +22,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   private var model: LoginModel { get { return controller.model } }
   
   //MARK: Outlets for UI Elements.
+  private var activityView: UIActivityIndicatorView?
   private var backgroundImage: UIImageView?
   private var containerView: UIView?
   private var drewslistLogo: UIImageView?
@@ -44,8 +46,10 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     
     
     setupSelf()
+    setupDataBinding()
     setupBackgroundImage()
     setupContainerView()
+    hideUI()
     setupDrewslistLogo()
     setupPasswordLabel()
     setupEmailLabel()
@@ -54,16 +58,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     setupOptions()
     
     view.showLoadingScreen(0, bgOffset: 64)
-  }
-  
-  public override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
-    checkIfUserHasSeenOnboardingView()
-  }
-  
-  public override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
     
+    activityView?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 24, height: 24)
     
     backgroundImage?.fillSuperview()
     backgroundImage?.image = Toucan(image: UIImage(named: "background-image2")).resize(backgroundImage?.frame.size, fitMode: .Clip).image
@@ -71,7 +67,6 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     containerView?.fillSuperview(left: 40, right: 40, top: 128, bottom: 128)
     
     drewslistLogo?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: containerView!.frame.width * 0.11)
-    drewslistLogo?.image = Toucan(image: UIImage(named: "DrewsListLogo_Login-1")).resize(drewslistLogo?.frame.size).image
     
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
@@ -82,12 +77,72 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     
     orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 24)
     
-    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 8, height: 24)
-    optionsContrainer?.groupAndFill(group: .Horizontal, views: [signUpOption!, forgotPasswordOption!], padding: 0)
+    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 48)
+    signUpOption?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 60)
+    forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    checkIfUserHasSeenOnboardingView()
+    
+    if drewslistLogo?.image == nil {
+      Async.background { [weak self] in
+        var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListLogo_Login-1")).resize(self?.drewslistLogo?.frame.size)
+        Async.main { [weak self] in
+          self?.drewslistLogo?.image = toucan?.image
+          toucan = nil
+        }
+      }
+    }
+    
+    showUI()
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+  }
+  
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
   }
   
   private func setupSelf() {
     view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
+    
+    activityView = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView?.layer.zPosition = 3
+    view.addSubview(activityView!)
+  }
+  
+  private func setupDataBinding() {
+    model._isValidEmail.removeAllListeners()
+    model._isValidEmail.listen(self) { [weak self] bool in
+      if bool != true { self?.loginButtonLabel?.text = "Email does not exist!" }
+      NSTimer.after(3.0) { [weak self] in self?.loginButtonLabel?.text = "Login" }
+    }
+    model._isValidPassword.removeAllListeners()
+    model._isValidPassword.listen(self) { [weak self] bool in
+      if bool != true { self?.loginButtonLabel?.text = "Password does not match!" }
+      NSTimer.after(3.0) { [weak self] in self?.loginButtonLabel?.text = "Login" }
+    }
+    model._serverError.removeAllListeners()
+    model._serverError.listen(self) { [weak self] bool in
+      if bool == true { self?.loginButtonLabel?.text = "Server Error. Sorry." }
+      NSTimer.after(3.0) { [weak self] in self?.loginButtonLabel?.text = "Login" }
+    }
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool != true { self?.loginButtonIndicator?.stopAnimating() }
+      else { self?.loginButtonIndicator?.startAnimating() }
+    }
+    model._user.removeAllListeners()
+    model._user.listen(self) { user in
+      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
+        tabView.selectedIndex = 0
+        tabView.dismissViewControllerAnimated(true, completion: nil)
+      }
+    }
   }
   
   private func setupBackgroundImage() {
@@ -122,6 +177,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     emailField?.spellCheckingType = .No
     emailField?.autocorrectionType = .No
     emailField?.autocapitalizationType = .None
+    emailField?.clearButtonMode = .WhileEditing
+    emailField?.tag = 4
     
     containerView?.addSubview(emailField!)
   }
@@ -138,6 +195,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     passwordField?.spellCheckingType = .No
     passwordField?.autocorrectionType = .No
     passwordField?.textColor = .whiteColor()
+    passwordField?.clearButtonMode = .WhileEditing
+    passwordField?.tag = 5
     
     containerView?.addSubview(passwordField!)
   }
@@ -156,14 +215,14 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     loginButton?.addTarget(self, action: "loginButtonPressed", forControlEvents: .TouchUpInside)
     
     loginButtonIndicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
-    loginButton?.customContentView.addSubview(loginButtonIndicator!)
+    loginButton?.addSubview(loginButtonIndicator!)
     
     loginButtonLabel = UILabel()
     loginButtonLabel?.text =  "Login"
     loginButtonLabel?.textAlignment = .Center
     loginButtonLabel?.textColor = .whiteColor()
     loginButtonLabel?.font = .asapRegular(12)
-    loginButton?.customContentView.addSubview(loginButtonLabel!)
+    loginButton?.addSubview(loginButtonLabel!)
     
     containerView?.addSubview(loginButton!)
   }
@@ -185,78 +244,35 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     signUpOption?.titleLabel?.font = .asapRegular(10)
     signUpOption?.setTitleColor(.whiteColor(), forState: .Normal)
     signUpOption?.setTitle("Sign-Up", forState: .Normal)
-    signUpOption?.titleLabel?.textAlignment = .Center
+    signUpOption?.contentHorizontalAlignment = .Left
     signUpOption?.addTarget(self, action: "signupButtonPressed", forControlEvents: .TouchUpInside)
     optionsContrainer?.addSubview(signUpOption!)
     
     forgotPasswordOption = UIButton()
     forgotPasswordOption?.titleLabel?.font = .asapRegular(10)
     forgotPasswordOption?.setTitleColor(.whiteColor(), forState: .Normal)
-    forgotPasswordOption?.setTitle("Forgot password?", forState: .Normal)
-    forgotPasswordOption?.titleLabel?.textAlignment = .Center
+    forgotPasswordOption?.setTitle("|\tForgot Password?", forState: .Normal)
+    forgotPasswordOption?.contentHorizontalAlignment = .Left
     optionsContrainer?.addSubview(forgotPasswordOption!)
   }
 
   public func loginButtonPressed() {
-    log.debug("mark")
+    controller.loginUserToServer()
   }
   
   public func signupButtonPressed() {
-    presentViewController(SignUpView(), animated: true, completion: nil)
-  }
-  
-  public func signupButton(enabled: Bool) -> () {
-    
-    self.performSegueWithIdentifier("SignUpView", sender: self)
-    
-  }
-  
-  public func textFieldDidBeginEditing(textField: UITextField) {
-    
-  }
-  
-
-  //TextFieldCaseCode
-  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-    switch textField.tag {
-      // username
-    case 1:
-      print("Hello \(textField.text!)")
-      break
-      // password
-    case 2:
-      print("Hi \(textField.text!)")
-      break
-      // email
-    case 3:
-      print(textField.text)
-      break
-    default: break
+    activityView?.startAnimating()
+    hideUI { [weak self] bool in
+      self?.containerView?.hidden = true
+      self?.presentViewController(SignUpView(), animated: false) { [weak self] in
+        self?.activityView?.stopAnimating()
+      }
     }
-    return true
   }
-
-  
-    func buttonPressed(sender: AnyObject) {
-      
-//        self.performSegueWithIdentifier("login", sender: self)
-    }
-    
-    func signupPressed(sender: AnyObject) {
-      
-    }
-    
-    
-    func backgroundPressed(sender: AnyObject) {
-        passwordField?.resignFirstResponder()
-        emailField?.resignFirstResponder()
-    }
-    
   
   public override func prefersStatusBarHidden() -> Bool {
     return true
   }
-  
   
   public func checkIfUserHasSeenOnboardingView() {
     if let userDefaults = try! Realm().objects(UserDefaults.self).first {
@@ -268,5 +284,63 @@ public class LoginView: UIViewController, UITextFieldDelegate {
         view.hideLoadingScreen()
       }
     }
+    NSTimer.after(1.0) { [weak self] in self?.view.hideLoadingScreen() }
+  }
+  
+  public func hideUI() {
+    containerView?.hidden = true
+    containerView?.alpha = 0.0
+  }
+  
+  public func hideUI(callback: Bool -> Void) {
+    UIView.animateWithDuration(0.2, animations: { [weak self] in
+      self?.containerView?.alpha = 0.0
+    }, completion: callback)
+  }
+  
+  public func showUI() {
+    containerView?.hidden = false
+    UIView.animateWithDuration(0.2, animations: { [weak self] in
+      self?.containerView?.alpha = 1.0
+    })
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        var _string: String? = NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1))
+        switch textField.tag {
+          // email
+        case 4:
+          model.email = _string
+          break
+          // password
+        case 5:
+          model.password = _string
+          break
+        default: break
+        }
+        _string = nil
+        // else, user has inputted some new strings
+      } else {
+        var _string: String? = text + string
+        switch textField.tag {
+          // email
+        case 4:
+          model.email = _string
+          break
+          // password
+        case 5:
+          model.password = _string
+          break
+        default: break
+        }
+        _string = nil
+      }
+    }
+    return true
   }
 }
+
+

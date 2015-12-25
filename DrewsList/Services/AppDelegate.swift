@@ -84,6 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     var tabView: TabView? = TabView()
+//    var tabView: SignUpView? = SignUpView()
     
     /*
     * Use this code to get the bounds of the screen
@@ -119,6 +120,7 @@ public class UserDefaults: Object {
   
   // school selection
   dynamic var school: String?
+  dynamic var state: String?
   
   public override static func primaryKey() -> String? {
     return "_id"

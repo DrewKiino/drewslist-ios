@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import RealmSwift
 
 public class SearchSchoolController {
   
@@ -71,6 +72,16 @@ public class SearchSchoolController {
     }
     let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
     return "\(serverUrl)?q=\(queryString)&limit=100"
+  }
+  
+  public func saveData() {
+    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
+      try! Realm().write { [weak self] in
+        userDefaults.school = self?.model.school?.name
+        userDefaults.state = self?.model.school?.state
+        try! Realm().add(userDefaults, update: true)
+      }
+    }
   }
 }
 

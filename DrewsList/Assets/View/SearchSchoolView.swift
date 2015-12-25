@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import Signals
-import RealmSwift
 
 public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
   
@@ -19,7 +18,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   // Navigation Header Views
   private var headerView: UIView?
   private var cancelButton: UIButton?
-  private var chooseButton: UIButton?
+//  private var chooseButton: UIButton?
   private var headerTitle: UILabel?
   
   // Search Bar
@@ -42,7 +41,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     headerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
     headerTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
     cancelButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
-    chooseButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
+//    chooseButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
     
     searchBarContainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: headerView!, padding: 0, height: 36)
     searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 48)
@@ -96,11 +95,11 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
-    chooseButton = UIButton()
-    chooseButton?.setTitle("Choose", forState: .Normal)
-    chooseButton?.titleLabel?.font = UIFont.asapRegular(16)
-    chooseButton?.addTarget(self, action: "choose", forControlEvents: .TouchUpInside)
-    headerView?.addSubview(chooseButton!)
+//    chooseButton = UIButton()
+//    chooseButton?.setTitle("Choose", forState: .Normal)
+//    chooseButton?.titleLabel?.font = UIFont.asapRegular(16)
+//    chooseButton?.addTarget(self, action: "choose", forControlEvents: .TouchUpInside)
+//    headerView?.addSubview(chooseButton!)
   }
   
   private func setupSearchBar() {
@@ -117,6 +116,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     searchBarTextField?.autocapitalizationType = .Words
     searchBarTextField?.spellCheckingType = .No
     searchBarTextField?.autocorrectionType = .No
+    searchBarTextField?.clearButtonMode = .WhileEditing
     searchBarContainer?.addSubview(searchBarTextField!)
     
     searchBarImageView = UIImageView()
@@ -141,12 +141,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   
   public func choose() {
     searchBarTextField?.resignFirstResponder()
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write { [weak self] in
-        userDefaults.school = self?.model.school?.name
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
+    controller.saveData()
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
   

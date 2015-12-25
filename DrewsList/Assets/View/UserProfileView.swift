@@ -289,7 +289,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       
       Async.background { [weak self] in
         
-        var toucan: Toucan? = Toucan(image: UIImage(named: "BackgroundImage_Books-33")).resize(self?.profileImg?.frame.size, fitMode: .Crop)
+        var toucan: Toucan? = Toucan(image: UIImage(named: "background-image2")).resize(self?.profileImg?.frame.size, fitMode: .Clip)
         
         Async.main { [weak self] in
           
