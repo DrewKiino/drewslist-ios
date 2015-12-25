@@ -12,6 +12,9 @@ import Neon
 
 public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   
+  private let controller = CommunityFeedController()
+  private var model: CommunityFeedModel { get { return controller.model } }
+  
   private var scrollView: UIScrollView?
   
   private var pageTitleContainer: UIView?
@@ -31,6 +34,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupSelf()
     setupPageTitleContainer()
     setupPageSelector()
     setupLeftPageTitleButton()
@@ -72,6 +76,9 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     
     leftPage?.showComingSoonScreen()
     rightPage?.showComingSoonScreen()
+  }
+  
+  private func setupSelf() {
   }
   
   private func setupPageTitleContainer() {
@@ -137,6 +144,11 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     scrollView?.addSubview(leftPage!)
     
     middlePage = ListFeedViewContainer()
+    middlePage?._chatButtonPressed.removeAllListeners()
+    middlePage?._chatButtonPressed.listen(self) { [weak self] listing in
+      self?.controller.readRealmUser()
+      self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user), animated: true)
+    }
     scrollView?.addSubview(middlePage!)
     
     rightPage = UIView()

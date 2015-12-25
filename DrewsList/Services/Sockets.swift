@@ -13,18 +13,26 @@ import PromiseKit
 import SwiftyJSON
 import Alamofire
 
+public enum ServerUrl {
+  case Local
+  case Staging
+  public func getValue() -> String {
+    switch self {
+    case .Local: return "http://localhost:1337"
+    case .Staging: return "https://drewslist-staging.herokuapp.com"
+    }
+  }
+}
+
 public class Sockets {
   
   private struct Singleton {
-    static let serverURL = "http://localhost:1337"
-//    static let serverURL = "https://drewslist-staging.herokuapp.com"
     static let socket = Sockets()
     static var _sessionCount = 0
     static var sessionCount: Int { get { return _sessionCount++ } }
   }
   
   public class func sharedInstance() -> Sockets { return Singleton.socket }
-  public class func getServerURL() -> String { return Singleton.serverURL }
   public class func getSessionCount() -> Int { return Singleton.sessionCount }
   
   
@@ -33,6 +41,8 @@ public class Sockets {
   public let socket = Sockets.new()
   
   public func connect(execute: (() -> Void)? = nil) {
+    // reset all handlers
+    socket.removeAllHandlers()
     // subscribe to default streams
     socket.on("message") { data, socket in
       log.debug(data)
@@ -50,8 +60,9 @@ public class Sockets {
     socket.on("reconnectAttempt") { data, socket in
       log.debug(data)
     }
-    socket.on("disconnect") { data, socket in
+    socket.on("disconnect") { [weak self] data, socket in
       log.info("disconnected from server.")
+      self?.socket.removeAllHandlers()
     }
     socket.on("connectCallback") { [unowned self] data, socket in
       guard let jsonArray = JSON(data).array else { return }
@@ -77,7 +88,7 @@ public class Sockets {
   
   public class func new() -> SocketIOClient {
     let socket = SocketIOClient(
-      socketURL: Sockets.getServerURL(),
+      socketURL: ServerUrl.Staging.getValue(),
       options: [
         .Log(false),
         .ForcePolling(false),

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Signals
 
 public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
@@ -21,6 +22,9 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   public var saleListFeedView: ListFeedView?
   public var wishListFeedView: ListFeedView?
+  
+  public let _chatButtonPressed = Signal<Listing?>()
+  public let _callButtonPressed = Signal<Listing?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -112,17 +116,22 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public func setupSaleListFeed() {
     saleListFeedView = ListFeedView()
     saleListFeedView?.setListType("selling")
+    saleListFeedView?._chatButtonPressed.removeAllListeners()
+    saleListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+      self?._chatButtonPressed.fire(listing)
+    }
     scrollView?.addSubview(saleListFeedView!)
-    
-    saleListFeedView?.showLoadingScreen(-132)
+    saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func setupWishListFeed() {
     wishListFeedView = ListFeedView()
     wishListFeedView?.setListType("buying")
+    wishListFeedView?._chatButtonPressed.removeAllListeners()
+    wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+    }
     scrollView?.addSubview(wishListFeedView!)
-    
-    wishListFeedView?.showLoadingScreen(-132)
+    wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func selectLeftPage() {
@@ -186,13 +195,18 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   }
 }
 
-public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSource {
+public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   private let controller = ListFeedController()
   private var model: ListFeedModel { get { return controller.getModel() } }
   
+  private var tableView: DLTableView?
+  
+  public let _chatButtonPressed = Signal<Listing?>()
+  public let _callButtonPressed = Signal<Listing?>()
+  
   public init() {
-    super.init(frame: CGRectZero, style: .Plain)
+    super.init(frame: CGRectZero)
     
     setupDataBinding()
     setupTableView()
@@ -204,12 +218,14 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    tableView?.fillSuperview()
   }
   
   private func setupDataBinding() {
     model._listings.removeAllListeners()
     model._listings.listen(self) { [weak self] listings in
-      self?.reloadData()
+      self?.tableView?.reloadData()
       self?.hideLoadingScreen()
     }
     
@@ -221,16 +237,24 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
   
   private func setupTableView() {
-    registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
-    delegate = self
-    dataSource = self
-    separatorColor = .clearColor()
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
+    addSubview(tableView!)
   }
   
   // MARK: TableView Delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 420
+    
+    if let notes = model.listings[indexPath.row].notes where !notes.isEmpty {
+      
+      let height = NSAttributedString(string: notes).heightWithConstrainedWidth(screen.width)
+      
+      return 325 + (height < 100 ? height : 100)
+      
+    } else  { return 275 }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -241,14 +265,19 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell {
       cell.listView?.setListing(model.listings[indexPath.row])
+      cell.listView?._chatButtonPressed.removeAllListeners()
+      cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
+        self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
+      }
       return cell
     }
     
-    return UITableViewCell()
+    return DLTableViewCell()
   }
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if contentOffset.y >= (contentSize.height - frame.size.height) &&
+    guard let tableView = tableView else { return }
+    if tableView.contentOffset.y >= (tableView.contentSize.height - frame.size.height) &&
         frame.height > 0 && controller.getModel().shouldLockView == false && controller.getModel().shouldRefrainFromCallingServer == false
     {
       // user has scrolled to the bottom!
@@ -264,34 +293,9 @@ public class ListFeedView: UITableView, UITableViewDelegate, UITableViewDataSour
   }
   
   public func getListingsFromServer(skip: Int?, listing: String?) {
-    showLoadingScreen(-132)
+    showLoadingScreen(-132, bgOffset: nil)
     controller.getModel().listings.removeAll(keepCapacity: false)
     controller.getListingsFromServer(skip, listType: listing)
   }
 }
 
-public class ListFeedCell: UITableViewCell {
-  
-  public var listView: ListView?
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupListView()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    listView?.fillSuperview()
-  }
-  
-  private func setupListView() {
-    listView = ListView()
-    listView?.tableView?.scrollEnabled = false
-    addSubview(listView!)
-  }
-}

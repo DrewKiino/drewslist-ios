@@ -153,16 +153,13 @@ public class BookView: UIView {
     
     imageView?.image = nil
     imageView?.alpha = 0.0
-    
     let duration: NSTimeInterval = 0.5
-    
-    Async.background { [weak self, weak book] in
       
       // MARK: Images
       if book != nil && book!.hasImageUrl() {
-        self?.imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
+        imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
           Async.background { [weak self] in
-            
+        
             // NOTE: correct way to handle memory management with toucan
             // init toucan and pass in the arguments directly in the parameter headers
             // do the resizing in the background
@@ -180,31 +177,32 @@ public class BookView: UIView {
               // deinit toucan
               toucan1 = nil
               
-              // stop the loading animation
               self?.stopLoading()
             }
           }
         }
       } else {
         
-        var toucan2: Toucan? = Toucan(image: UIImage(named: "book-placeholder")!).resize(self?.imageView?.frame.size)
-        
-        Async.main { [weak self] in
-          self?.imageView?.image = toucan2?.image
+        Async.background { [weak self] in
           
-          UIView.animateWithDuration(duration) { [weak self] in
-            self?.imageView?.alpha = 1.0
+          var toucan2: Toucan? = Toucan(image: UIImage(named: "book-placeholder")!).resize(self?.imageView?.frame.size)
+          
+          Async.main { [weak self] in
+            self?.imageView?.image = toucan2?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.imageView?.alpha = 1.0
+            }
+            
+            toucan2 = nil
+            
+            self?.stopLoading()
           }
-          
-          toucan2 = nil
-          
-          // stop the loading animation
-          self?.stopLoading()
         }
       }
-      
-      
-      
+    
+    Async.background { [weak self] in
+    
       // MARK: Attributes
       guard let book = book else { return }
       let title = book.title

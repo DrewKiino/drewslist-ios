@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Onboard
+import RealmSwift
 
 public class TabView: RAMAnimatedTabBarController {
   
@@ -36,9 +37,7 @@ public class TabView: RAMAnimatedTabBarController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-//    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
-//    presentViewController(OnboardingView(), animated: true, completion: nil)
+    checkIfUserIsLoggedIn()
   }
   
   private func setupViewControllers() {
@@ -46,7 +45,7 @@ public class TabView: RAMAnimatedTabBarController {
     var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
     testView.tabBarItem = RAMAnimatedTabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
-//    viewControllers = [testView, scannerView!, communityTab!, chatView!, userProfileView!]
+//    viewControllers = [userProfileView!, scannerView!, communityTab!, chatView!]
     
     // set view controllers
     viewControllers = [communityTab!, chatView!, scannerView!, activityView!, userProfileView!]
@@ -88,4 +87,18 @@ public class TabView: RAMAnimatedTabBarController {
     userProfileView?.tabBarItem = RAMAnimatedTabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
   }
+  
+  // MARK: User Auth
+  public func checkIfUserIsLoggedIn() {
+    // check if user is already logged in
+    if try! Realm().objects(RealmUser.self).first == nil { presentViewController(LoginView(), animated: false, completion: nil) }
+    // if not show login view
+  }
 }
+
+
+
+
+
+
+
