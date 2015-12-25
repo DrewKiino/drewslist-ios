@@ -15,7 +15,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private let controller = EditProfileController()
   private var model: EditProfileModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
-  private var tableView = UITableView()
+  private var tableView: DLTableView?
   
   public override func viewWillAppear(animated: Bool) {
     controller.readRealmUser()
@@ -34,6 +34,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    tableView?.fillSuperview()
   }
   
   public func setUser(user: User?) {
@@ -44,22 +45,23 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   // MARK: setup view functions
   
   public func setUpTableView(){
-    view.addSubview(tableView)
-
-    tableView.fillSuperview()
-    tableView.delegate = self
-    tableView.dataSource = self
-    tableView.registerClass(ProfileImgCell.self, forCellReuseIdentifier: "ProfileImgCell")
-    tableView.registerClass(EditCell.self, forCellReuseIdentifier: "EditCell")
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    view.addSubview(tableView!)
   }
   
   
   // MARK: private functions
   
   private func setupDataBinding() {
+    // setup view's databinding
     controller.model._user.listen(self) { [weak self] user in
-      self?.tableView.reloadData()
+      //self?.setUser(user)
+      self?.tableView!.reloadData()
     }
+    // setup controller's databinding
+    controller.setupDataBinding()
   }
   
   private func presentImagePicker() {
@@ -79,23 +81,32 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    var cell : UITableViewCell = UITableViewCell()
+    let cell : UITableViewCell = UITableViewCell()
     
     switch (indexPath.row) {
       case 0:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("ProfileImgCell", forIndexPath: indexPath) as? ProfileImgCell {
+        if let cell = tableView.dequeueReusableCellWithIdentifier("ChangeImageCell", forIndexPath: indexPath) as? ChangeImageCell {
           cell.label?.text = "Change Picture"
           cell.label?.textColor = UIColor.lightGrayColor()
           cell.label?.font = UIFont.asapRegular(14)
+          
+          print("moo")
+          ///////////////
+          //cell.setupUserImage(model.user)
+          ///////////////
+          
+          cell._didSelectCell.listen( self ) { [weak self] bool in
+            self?.presentImagePicker()
+          }
           return cell
         }
         break;
       case 1:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = model.user?.firstName
-          cell.textField?.textColor = UIColor.lightGrayColor()
-          cell.textField?.font = UIFont.asapRegular(14)
-          cell._textFieldString.listen(self) { [weak self] string in
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+          cell.inputTextField?.text = model.user?.firstName
+          cell.inputTextField?.textColor = UIColor.lightGrayColor()
+          cell.inputTextField?.font = UIFont.asapRegular(14)
+          cell._inputTextFieldString.listen(self) { [weak self] string in
             self?.controller.setFirstName(string)
           }
           return cell
@@ -103,31 +114,35 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
         break;
    
       case 2:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = model.user?.lastName
-          cell.textField?.textColor = UIColor.lightGrayColor()
-          cell.textField?.font = UIFont.asapRegular(14)
-          cell._textFieldString.listen(self) { [weak self] string in
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+          cell.inputTextField?.text = model.user?.lastName
+          cell.inputTextField?.textColor = UIColor.lightGrayColor()
+          cell.inputTextField?.font = UIFont.asapRegular(14)
+          cell._inputTextFieldString.listen(self) { [weak self] string in
             self?.controller.setLastName(string)
           }
-
           return cell
         }
         break;
       case 3:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("EditCell", forIndexPath: indexPath) as? EditCell {
-          cell.textField?.text = model.user?.username
-          cell.textField?.textColor = UIColor.lightGrayColor()
-          cell.textField?.font = UIFont.asapRegular(14)
-          cell._textFieldString.listen(self) { [weak self] string in
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+          cell.inputTextField?.text = model.user?.username
+          cell.inputTextField?.textColor = UIColor.lightGrayColor()
+          cell.inputTextField?.font = UIFont.asapRegular(14)
+          
+          cell._inputTextFieldString.listen(self) { [weak self] string in
             self?.controller.setUsername(string)
           }
-          
           return cell
         }
         break;
       case 4:
-        cell = tableView.dequeueReusableCellWithIdentifier("EditCell") as! EditCell
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+          cell.backgroundColor = UIColor.whiteColor()
+          cell.hideBothTopAndBottomBorders()
+          cell.selectionStyle = .None
+          return cell
+        }
         break;
       default:
         break;
@@ -138,8 +153,16 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     return cell
   }
   
-  public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    print("You selected cell #\(indexPath.row)!")
+  public func imagePickerController(
+    picker: UIImagePickerController,
+    didFinishPickingMediaWithInfo info: [String : AnyObject])
+  {
+    // expecting image here?
+    // model.profileImage = image
+  }
+  
+  public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    dismissViewControllerAnimated(true, completion: nil)
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -149,55 +172,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
       return screen.height / 15
     }
   }
+  
+  
 }
 
-
-
-  // MARK: Cell Classes
-
-public class ProfileImgCell: UITableViewCell {
-  public var label: UILabel?
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    label = UILabel()
-    addSubview(label!)
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-  }
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-}
-
-
-public class EditCell: UITableViewCell, UITextFieldDelegate {
-  
-  public var textField: UITextField?
-  public let _textFieldString = Signal<String?>()
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupTextField()
-  }
-  
-  public func setupTextField() {
-    textField = UITextField()
-    addSubview(textField!)
-    textField?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-    textField?.delegate = self
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-    if let text = textField.text {
-      // this means the user inputted a backspace
-      if string.characters.count == 0 {
-        _textFieldString.fire(NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1)))
-      // else, user has inputted some new strings
-      } else { _textFieldString.fire(text + string) }
-    }
-    return true
-  }
-}

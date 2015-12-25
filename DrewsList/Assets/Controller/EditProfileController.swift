@@ -21,8 +21,16 @@ public class EditProfileController {
     user.lastName = "Mowers"
     user.username = "KasperSeas"
     model.user = user
-    
+  }
   
+  public func setupDataBinding() {
+    model._profileImage.listen(self) { [weak self] image in
+     self?.updateUserInServer()
+    }
+  }
+  
+  private func updateUserInServer() {
+    
   }
   
   public func setFirstName(string: String?) {

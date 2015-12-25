@@ -315,8 +315,8 @@
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE1B73791C236FDF00BD942C /* ListFeedModel.swift */,
 				EE55200D1C23BADF008EF831 /* CommunityFeedModel.swift */,
-				4F966CE51C27623900CECCC6 /* EditProfileModel.swift */,
 				EEE2AA0A1C28A3500093DB46 /* AccountSettingsModel.swift */,
+				4F966CE51C27623900CECCC6 /* EditProfileModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -339,11 +339,11 @@
 				EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
-				4F18A07D1C275D75006169F5 /* SettingsView.swift */,
-				4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */,
-				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
-				EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */,
 				EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */,
+				EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */,
+				4F18A07D1C275D75006169F5 /* SettingsView.swift */,
+				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
+				4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
