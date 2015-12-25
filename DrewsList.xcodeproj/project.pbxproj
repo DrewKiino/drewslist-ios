@@ -79,6 +79,7 @@
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EEB0E2791C22851A0007DE13 /* AccountSettingsView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */; };
+		EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */; };
 		EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* UserProfileListingController.swift */; };
@@ -190,6 +191,7 @@
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountSettingsView3.swift; path = View/AccountSettingsView3.swift; sourceTree = "<group>"; };
+		EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedView.swift; sourceTree = "<group>"; };
 		EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolView.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* UserProfileListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingController.swift; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 				EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */,
 				EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */,
 				EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */,
+				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -787,6 +790,7 @@
 				EE3D67A71C2BF72800299F34 /* SearchSchoolModel.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
+				EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,

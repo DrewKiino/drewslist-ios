@@ -219,7 +219,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     guard let user = user else { return }
     
-    let duration: NSTimeInterval = 0.5
+    let duration: NSTimeInterval = 0.2
     
     // MARK: Images
     if user.image != nil {
@@ -232,6 +232,8 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           var toucan: Toucan? = Toucan(image: image).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
           
           Async.main { [weak self] in
+            
+            self?.profileImg?.alpha = 0.0
             
             // set the image view's image
             self?.profileImg?.image = toucan?.image
@@ -251,6 +253,8 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
         var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
         
         Async.main { [weak self] in
+          
+          self?.profileImg?.alpha = 0.0
           
           self?.profileImg?.image = toucan?.image
           
@@ -277,8 +281,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           
           Async.main { [weak self] in
             
-            // set the image view's image
+            self?.bgViewTop?.alpha = 0.0
+            
             self?.bgViewTop?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.bgViewTop?.alpha = 1.0
+            }
             
             // deinit toucan
             toucan = nil
@@ -293,15 +302,29 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
         
         Async.main { [weak self] in
           
+          self?.bgViewTop?.alpha = 0.0
+          
           self?.bgViewTop?.image = toucan?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.bgViewTop?.alpha = 1.0
+          }
           
           toucan = nil
         }
       }
     }
     
-    profileUsername?.text = user.username ?? user.getName()
-    descriptionTextView?.text = user.description
+    profileUsername?.alpha = 0.0
+    descriptionTextView?.alpha = 0.0
+    
+    UIView.animateWithDuration(duration) { [weak self, weak user] in
+      self?.profileUsername?.text = user?.username ?? user?.getName()
+      self?.descriptionTextView?.text = user?.description
+      
+      self?.profileUsername?.alpha = 1.0
+      self?.descriptionTextView?.alpha = 1.0
+    }
   }
   
   // MARK: Button Action
