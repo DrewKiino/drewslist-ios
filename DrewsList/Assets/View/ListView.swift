@@ -70,7 +70,7 @@ public class ListViewContainer: UIViewController {
   // MARK: Realm Functions
   
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { listView?.model.user = realmUser.getUser() } }
-  public func writeRealmUser() { try! Realm().write { try! Realm().add(RealmUser().setRealmUser( listView?.model.user), update: true) } }
+  public func writeRealmUser() { try! Realm().write { try! Realm().add(RealmUser().setRealmUser( self.listView?.model.user), update: true) } }
 }
 
 public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {

@@ -34,6 +34,9 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     super.viewDidLoad()
     setupDataBinding()
     setupScanner()
+    setupTopView()
+    setupHelpButton()
+    setupSearchButton()
   }
   
   public override func viewWillAppear(animated: Bool) {

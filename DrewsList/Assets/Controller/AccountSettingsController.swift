@@ -18,11 +18,8 @@ public class AccountSettingsController {
   
   // MARK: Realm Functions 
   public func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
-<<<<<<< HEAD
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
-=======
-  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
-  
+
   private let Pscope = PermissionScope()
   
   
@@ -66,5 +63,4 @@ public class AccountSettingsController {
       
     }
   }
->>>>>>> 866e3c12b7d33c34c023c42868a4dc0377b01cd0
 }
