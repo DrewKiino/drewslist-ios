@@ -20,9 +20,6 @@ public class CreateListingController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = "http://drewslist-staging.herokuapp.com"
-//  private let serverUrl = "http://localhost:1337"
-  
   // MARK: Initializers
   public init() {
     readRealmUser()
@@ -66,7 +63,7 @@ public class CreateListingController {
     // make the request following the server's route pattern
     Alamofire.request(
       .POST,
-      "\(serverUrl)/user/listBook",
+      "\(ServerUrl.Staging.getValue())/user/listBook",
       parameters: [
         "user_id": user_id,
         "book_id": book_id,

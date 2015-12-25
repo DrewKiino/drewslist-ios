@@ -18,8 +18,6 @@ public class UserProfileController {
   private let model = UserProfileModel()
   private var refrainTimer: NSTimer?
   private var view: UserProfileView?
-//  private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
-  private let serverUrl = "http://localhost:1337/user"
   
   public func viewDidLoad() {
     
@@ -40,7 +38,7 @@ public class UserProfileController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, serverUrl, parameters: [ "_id": user_id ], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {

@@ -15,8 +15,6 @@ public class ListController {
   
   private var model: ListModel! = ListModel()
   private var refrainTimer: NSTimer?
-  private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
-  //  private let serverUrl = "http://localhost:1337/listing"
   
   public init() {}
   
@@ -28,7 +26,7 @@ public class ListController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, serverUrl, parameters: [ "_id": list_id], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/listing", parameters: [ "_id": list_id], encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {

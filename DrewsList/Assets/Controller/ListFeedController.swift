@@ -17,8 +17,7 @@ public class ListFeedController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
-//  private let serverUrl = "http://localhost:1337/listing"
+  private let serverUrl = ServerUrl.Staging.getValue() + "/listing"
   
   public init() {}
   

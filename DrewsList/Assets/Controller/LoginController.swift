@@ -15,8 +15,6 @@ public class LoginController {
   
   public let model = LoginModel()
   
-  // private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
-  private let serverUrl = "http://localhost:1337/user"
   private var refrainTimer: NSTimer?
   
   
@@ -31,7 +29,7 @@ public class LoginController {
     
     Alamofire.request(
       .POST,
-      serverUrl + "/authenticateWithLocalAuth",
+      ServerUrl.Staging.getValue() + "/user/authenticateWithLocalAuth",
       parameters: [
         "email": email,
         "password": password
