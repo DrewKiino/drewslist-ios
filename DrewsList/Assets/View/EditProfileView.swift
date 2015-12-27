@@ -37,10 +37,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     tableView?.fillSuperview()
   }
   
-  public func setUser(user: User?) {
-    guard let user = user else { return }
-    model.user = user
-  }
+  
   
   // MARK: setup view functions
   
@@ -56,12 +53,16 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   private func setupDataBinding() {
     // setup view's databinding
-    controller.model._user.listen(self) { [weak self] user in
-      //self?.setUser(user)
+    model._user.listen(self) { [weak self] user in
       self?.tableView!.reloadData()
     }
     // setup controller's databinding
     controller.setupDataBinding()
+  }
+  
+  public func setUser(user: User?) {
+    guard let user = user else { return }
+    model.user = user
   }
   
   private func presentImagePicker() {
@@ -86,10 +87,12 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     switch (indexPath.row) {
       case 0:
         if let cell = tableView.dequeueReusableCellWithIdentifier("ChangeImageCell", forIndexPath: indexPath) as? ChangeImageCell {
+//          guard let user = model.user where user._id != nil != nil else { break }
           cell.label?.text = "Change Picture"
           cell.label?.textColor = UIColor.lightGrayColor()
           cell.label?.font = UIFont.asapRegular(14)
           
+       
           ///////////////
           //cell.setupUserImage(model.user)
           ///////////////
