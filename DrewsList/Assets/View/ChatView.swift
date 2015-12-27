@@ -23,14 +23,32 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    setupSelf()
     setupDataBinding()
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    controller.connectToServer()
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    controller.disconnectFromServer()
+  }
+  
+  private func setupSelf() {
+    // set chat view title to friend's title
+    title = model.friend?.getName()
+    // hide attachment button
+    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
   }
   
   private func setupDataBinding() {
+    model._friend.removeAllListeners()
+    model._friend.listen(self) { [weak self] friend in
+      self?.title = friend?.getName()
+    }
     // set and listen for changes in the user's username
     senderDisplayName = model.user?.username ?? ""
     model.user?._username.listen(self) { [weak self] username in
@@ -82,6 +100,14 @@ public class ChatView: JSQMessagesViewController {
   
   public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return model.messages.count
+  }
+  
+  public func setUsers(user: User?, friend: User?) -> Self {
+    
+    model.user = user
+    model.friend = friend
+    
+    return self
   }
 }
 

@@ -8,10 +8,13 @@
 
 import UIKit
 import Signals
+<<<<<<< HEAD
 //
+=======
+import RealmSwift
+>>>>>>> master
 
 public let log = Atlantis.Logger()
-public let remoteNotification = Signal<[NSObject: AnyObject]>()
 public let screen = UIScreen.mainScreen().bounds
 
 @UIApplicationMain
@@ -19,14 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
   
-  private let socket = Sockets.sharedInstance()
-
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
+    
+    // figure out if user defaults already exist 
+    // if it doesn't, create one and persist it.
+    if readUserDefaults() == nil { writeNewUserDefaults() }
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
+<<<<<<< HEAD
     // init the root view
     let tabView = LoginView()
     
@@ -46,9 +52,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // commit change
     window!.makeKeyAndVisible()
+=======
+    setupRootView()
+>>>>>>> master
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    
+    // remove the back button
+    UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
     
     return true
   }
@@ -91,9 +103,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let user_id = payload.valueForKey("user_id")
     {
       log.info("received remote notification from server: \(alert)")
-      // publish to server that the app received the push notification
-      socket.emit("didReceivePushNotification", ["user_id": user_id], forceConnection: true)
     }
   }
+  
+  private func setupRootView() {
+    
+    // init the root view
+//    var tabView: TabView? = TabView()
+    var tabView: SearchUserView? = SearchUserView()
+    
+    /*
+    * Use this code to get the bounds of the screen
+    *
+    *       UIScreen.mainScreen().bounds
+    *
+    */
+    tabView?.view.frame = UIScreen.mainScreen().bounds
+    
+    // set the window to match the screen's bounds
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    
+    // set the root view as the window's root view
+    window?.rootViewController = tabView
+    tabView = nil
+    
+    // commit change
+    window?.makeKeyAndVisible()
+  }
+  
+  // MARK: Realm Functions
+  func readUserDefaults() -> UserDefaults? { if let defaults =  try! Realm().objects(UserDefaults.self).first { return defaults } else { return nil } }
+  func writeNewUserDefaults(){ try! Realm().write { try! Realm().delete(Realm().objects(UserDefaults.self)); try! Realm().add(UserDefaults(), update: true) } }
 }
+
+
+public class UserDefaults: Object {
+  
+  dynamic var _id: String?
+  
+  // onboarding
+  dynamic var didShowOnboarding: Bool = false
+  
+  // school selection
+  dynamic var school: String?
+  dynamic var state: String?
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
+}
+
 

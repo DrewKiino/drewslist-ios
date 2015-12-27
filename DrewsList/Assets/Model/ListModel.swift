@@ -13,9 +13,17 @@ import SwiftyJSON
 
 public class ListModel {
   
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
   public let _listing = Signal<Listing?>()
   public var listing: Listing? { didSet { _listing => listing } }
   
+  public let _shouldRefrainFromCallingServer = Signal<Bool>()
+  public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
+  
+  public let _serverCallbackFromFindListing = Signal<Bool>()
+  public var serverCallbackFromFindListing: Bool = false { didSet { _serverCallbackFromFindListing => serverCallbackFromFindListing } }
 }
 
 public class Listing: Mappable {
@@ -53,6 +61,46 @@ public class Listing: Mappable {
   public let _updatedAt = Signal<String?>()
   public var updatedAt: String? { didSet { _updatedAt => updatedAt } }
   
+  public func getConditionImage() -> UIImage? {
+    guard let condition = condition else { return nil }
+    switch condition {
+      case "1": return UIImage(named: "Icon-Condition1")
+      case "2": return UIImage(named: "Icon-Condition2")
+      case "3": return UIImage(named: "Icon-Condition3")
+    default: return nil
+    }
+  }
+  
+  public func getConditionText() -> String? {
+    guard let condition = condition else { return nil }
+    let isSelling = getListTypeText() == "Selling" ? true : false
+    switch condition {
+    case "1": return isSelling ? "\'Really Used\'" : "\'Any Use\'"
+    case "2": return isSelling ? "\'Used\'" : "\'Usable\'"
+    case "3": return isSelling ? "\'Barely Used\'" : "\'Not Used\'"
+    default: return nil
+    }
+  }
+  
+  public func getListTypeText() -> String? {
+    guard let listType = listType else { return nil }
+    switch listType {
+    case "buying": return "Buying"
+      case "selling": return "Selling"
+    default: return nil
+    }
+  }
+  
+  public func getListTypeText2() ->  String? {
+    guard let listType = listType else { return nil }
+    switch listType {
+    case "buying": return "Buyer"
+    case "selling": return "Seller"
+    default: return nil
+    }
+  }
+  
+  
   public init() {}
   
   public init(json: JSON) {
@@ -78,6 +126,8 @@ public class Listing: Mappable {
     updatedAt     <- map["_id.updatedAt"]
     
     if (user      == nil) { user      <- map["user"] }
+    if (book      == nil) { book      <- map["book"] }
+    if (listType  == _id) { listType  <- map["listType"] }
     if (price     == _id) { price     <- map["price"] }
     if (notes     == _id) { notes     <- map["notes"] }
     if (cover     == _id) { cover     <- map["cover"] }

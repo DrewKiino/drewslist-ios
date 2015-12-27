@@ -10,31 +10,92 @@ import Foundation
 import UIKit
 import Neon
 import Gifu
-import Toucan
-import Haneke
+import SDWebImage
 import SwiftDate
+import Async
+import Signals
+import RealmSwift
 
-public class ListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
+public class ListViewContainer: UIViewController {
   
-  private let controller = ListController()
-  
-  private var tableView: UITableView?
+  public var listView: ListView?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupDataBinding()
-    setupTableView()
+    setupSelf()
+    setupListView()
     
-    view.backgroundColor = UIColor.whiteColor()
-  }
-  
-  public override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
+    listView?.fillSuperview()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+  }
+  
+  private func setupSelf() {
+    
+    view.backgroundColor = .whiteColor()
+  }
+  
+  private func setupListView() {
+    listView?._chatButtonPressed.removeAllListeners()
+    listView?._chatButtonPressed.listen(self) { [weak self] bool in
+      self?.readRealmUser()
+      self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
+    }
+    view.addSubview(listView!)
+  }
+  
+  public func setListing(listing: Listing?) -> Self {
+    listView = ListView()
+    listView?.setListing(listing)
+    title = "View Listing"
+    return self
+  }
+  
+  public func setList_id(list_id: String?) -> Self {
+    listView = ListView()
+    listView?.getListingFromServer(list_id)
+    title = "View Listing"
+    return self
+  }
+  
+  public func isUserListing() -> Self {
+    listView?.isUserListing = true
+    title = "Your Listing"
+    return self
+  }
+  
+  // MARK: Realm Functions
+  
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { listView?.model.user = realmUser.getUser() } }
+  public func writeRealmUser() { try! Realm().write { try! Realm().add(RealmUser().setRealmUser( self.listView?.model.user), update: true) } }
+}
+
+public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
+  
+  private let controller = ListController()
+  private var model: ListModel { get { return controller.getModel() } }
+  public var isUserListing: Bool = false
+  
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
+  
+  public var tableView: DLTableView?
+  
+  public init() {
+    super.init(frame: CGRectZero)
+    setupDataBinding()
+    setupTableView()
+    
+    backgroundColor = UIColor.whiteColor()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
     
     tableView?.fillSuperview()
   }
@@ -44,30 +105,49 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
     
     controller.setListing(listing)
     
+    tableView?.reloadData()
+    
     return true
   }
   
+  public func getListingFromServer(list_id: String?) {
+    controller.getListingFromServer(list_id)
+  }
+  
   private func setupTableView() {
-    tableView = UITableView()
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-    tableView?.registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
-    tableView?.registerClass(ListerProfileViewCell.self, forCellReuseIdentifier: "ListerProfileViewCell")
-    tableView?.registerClass(ListerAttributesViewCell.self, forCellReuseIdentifier: "ListerAttributesViewCell")
+    tableView = DLTableView()
     tableView?.dataSource = self
     tableView?.delegate = self
-    tableView?.allowsSelection = false
-    view.addSubview(tableView!)
+    tableView?.backgroundColor = .whiteColor()
+    
+    addSubview(tableView!)
   }
   
   private func setupDataBinding() {
+    model._listing.removeAllListeners()
+    model._listing.listen(self) { [weak self] listing in
+      self?.tableView?.reloadData()
+    }
+    
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == true { self?.showLoadingScreen(-64, bgOffset: nil) }
+      else if bool == false { self?.hideLoadingScreen() }
+    }
+    
+    model._serverCallbackFromFindListing.removeAllListeners()
+    model._serverCallbackFromFindListing.listen(self) { [weak self] bool in
+      if bool == true { self?.tableView?.reloadData() }
+      self?.hideLoadingScreen()
+    }
   }
   
   // MARK: UITableView Delegates 
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0: return 158
-    case 1: return 40
+    case 0: return 166
+    case 1: return 48
     case 2: return 200
     default: return 0
     }
@@ -79,64 +159,61 @@ public class ListView: UIViewController, UITableViewDataSource, UITableViewDeleg
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    // get cell
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-    let listing = controller.getListing()
-    
+    // get listing reference
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        // clear seperator lines
-        cell.subviews.forEach { if let _ = $0 as? BookView { return } else { $0.removeFromSuperview() } }
         
-        cell.bookView?.setBook(listing?.book)
-        controller.get_Listing().removeListener(self)
-        controller.get_Listing().listen(self) { [weak cell] listing in
+        cell.bookView?.setBook(model.listing?.book)
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
           cell?.bookView?.setBook(listing?.book)
         }
-      }
-      return cell
-    case 1:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
         
-        cell.setListing(listing?.highestLister)
-        controller.get_Listing().removeListener(self)
-        controller.get_Listing().listen(self) { [weak cell] listing in
-          cell?.setListing(listing?.highestLister)
-        }
+        return cell
       }
-      return cell
+    case 1:
+      
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerProfileViewCell", forIndexPath: indexPath) as? ListerProfileViewCell {
+        cell.setListing(model.listing)
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
+          cell?.setListing(listing)
+        }
+        
+        return cell
+      }
     case 2:
-      return cell
-    default: return cell
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
+        
+        cell.isUserListing = isUserListing
+        cell.setListing(model.listing)
+        cell.showSeparatorLine()
+        cell._chatButtonPressed.removeAllListeners()
+        cell._chatButtonPressed.listen(self) { [weak self] bool in
+          self?._chatButtonPressed.fire(bool)
+        }
+        model._listing.removeListener(self)
+        model._listing.listen(self) { [weak cell] listing in
+          cell?.setListing(listing)
+        }
+        
+        return cell
+      }
+    default: break
     }
-  }
-}
-
-public class BookViewCell: UITableViewCell {
-  
-  private var bookView: BookView? = BookView()
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    addSubview(bookView!)
-  }
-
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
     
-    bookView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 150)
+    return DLTableViewCell()
   }
 }
 
-public class ListerProfileViewCell: UITableViewCell {
+
+public class ListerProfileViewCell: DLTableViewCell {
   
   private var userImageView: UIImageView?
   private var nameLabel: UILabel?
+  private var listTypeLabel: UILabel?
+  private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -144,7 +221,9 @@ public class ListerProfileViewCell: UITableViewCell {
     
     setupUserImage()
     setupNameLabel()
+    setupListTypeLabel()
     setupListDateLabel()
+    setupListDateTitle()
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -154,11 +233,25 @@ public class ListerProfileViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    userImageView?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 24, height: 24)
-
-    nameLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: userImageView!, padding: 8, width: 100)
-
-    listDateLabel?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 100, height: 24)
+    userImageView?.anchorToEdge(.Left, padding: 16, width: 36, height: 36)
+    
+    nameLabel?.align(.ToTheRightMatchingTop, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
+    
+    listTypeLabel?.align(.ToTheRightMatchingBottom, relativeTo: userImageView!, padding: 8, width: 160, height: 16)
+    
+    listDateTitle?.anchorInCorner(.TopRight, xPad: 16, yPad: 6, width: 100, height: 16)
+    
+    listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 6, width: 100, height: 16)
+  }
+  
+//  private override func setupSelf() {
+//    super.setupSelf()
+//    
+//    backgroundColor = .whiteColor()
+//  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
   }
   
   private func setupUserImage() {
@@ -168,65 +261,132 @@ public class ListerProfileViewCell: UITableViewCell {
   
   private func setupNameLabel() {
     nameLabel = UILabel()
-    nameLabel?.font = UIFont.asapRegular(16)
-    nameLabel?.adjustsFontSizeToFitWidth = true
-    nameLabel?.minimumScaleFactor = 0.8
+    nameLabel?.font = UIFont.asapRegular(12)
     addSubview(nameLabel!)
   }
   
+  private func setupListTypeLabel() {
+    listTypeLabel = UILabel()
+    listTypeLabel?.font = UIFont.asapBold(12)
+    addSubview(listTypeLabel!)
+  }
+  
+  private func setupListDateTitle() {
+    listDateTitle = UILabel()
+    listDateTitle?.font = UIFont.asapBold(12)
+    listDateTitle?.textAlignment = .Right
+    addSubview(listDateTitle!)
+  }
+  
   private func setupListDateLabel() {
+    
     listDateLabel = UILabel()
+    listDateLabel?.font = UIFont.asapRegular(12)
+    listDateLabel?.textAlignment = .Right
     addSubview(listDateLabel!)
   }
   
   public func setListing(listing: Listing?) {
     guard let listing = listing, let user = listing.user else { return }
     
-    if let url = user.image, let nsurl = NSURL(string: url) {
-      userImageView?.hnk_setImageFromURL(nsurl, format: Format<UIImage>(name: "Small_User_Images", diskCapacity: 10 * 1024 * 1024) { [unowned self] image in
-        return Toucan(image: image).resize(self.userImageView!.frame.size, fitMode: .Crop).maskWithEllipse().image
-      })
+    let duration: NSTimeInterval = 0.5
+    
+    // MARK: Images
+    if user.image != nil {
+      
+      userImageView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+        // NOTE: correct way to handle memory management with toucan
+        // init toucan and pass in the arguments directly in the parameter headers
+        // do the resizing in the background
+        var toucan: Toucan? = Toucan(image: image).resize(self?.userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+        
+        Async.main { [weak self] in
+          
+          // set the image view's image
+          self?.userImageView?.image = toucan?.image
+          
+          // animate
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.userImageView?.alpha = 1.0
+          }
+          
+          // deinit toucan
+          toucan = nil
+        }
+      }
+    } else {
+      
+      var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+      
+      Async.main { [weak self] in
+        
+        self?.userImageView?.image = toucan?.image
+        
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.userImageView?.alpha = 1.0
+        }
+        
+        toucan = nil
+      }
     }
     
-    nameLabel?.text = user.username ?? user.getName()
-    
-//    log.debug(listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2))
-    listDateLabel?.text = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
-    
-  }
-  
-  public override func setSelected(selected: Bool, animated: Bool) {
-    super.setSelected(selected, animated: animated)
-    
-    if(selected) {
-      userImageView?.backgroundColor = UIColor.whiteColor()
-      nameLabel?.backgroundColor = UIColor.whiteColor()
-      listDateLabel?.backgroundColor = UIColor.whiteColor()
-    }
-  }
-  
-  public override func setHighlighted(highlighted: Bool, animated: Bool) {
-    super.setHighlighted(highlighted, animated: false)
-    
-    if(highlighted) {
-      userImageView?.backgroundColor = UIColor.whiteColor()
-      nameLabel?.backgroundColor = UIColor.whiteColor()
-      listDateLabel?.backgroundColor = UIColor.whiteColor()
+    Async.background { [weak self] in
+      
+      Async.main { [weak self] in
+        self?.nameLabel?.text = user.username ?? user.getName()
+        self?.listTypeLabel?.text = listing.getListTypeText() ?? ""
+      }
+      
+      // NOTE: DONT FORGET THESE CODES OMFG
+      // converts the date strings sent from the server to local time strings
+      if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
+        let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
+      {
+        let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
+        coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+        
+        Async.main { [weak self] in
+          self?.listDateTitle?.attributedText = coloredString
+          self?.listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
+        }
+      }
+      
+      }.main { [weak self] in
+        // not really sure, but the book view covers this view.
+        // so I had to set the z position to go over the book view
+        // then set the background color to clear
+        self?.backgroundColor = .clearColor()
+        self?.layer.zPosition = 1
     }
   }
 }
 
-public class ListerAttributesViewCell: UITableViewCell {
+public class ListerAttributesViewCell: DLTableViewCell {
   
   private var priceLabel: UILabel?
   private var conditionLabel: UILabel?
-  private var notesLabel: UILabel?
+  private var notesTitle: UILabel?
+  private var notesTextViewContainer: UIView?
+  private var notesTextView: UITextView?
   
   private var chatButton: UIButton?
   private var callButton: UIButton?
   
+  public var isUserListing: Bool = false
+  
+  public let _chatButtonPressed = Signal<Bool>()
+  public let _callButtonPressed = Signal<Bool>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupPriceLabel()
+    setupChatButton()
+    setupCallButton()
+    setupConditionLabel()
+    setupNotesTitle()
+    setupNotesTextViewContainer()
+    setupNotesTextView()
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -236,17 +396,33 @@ public class ListerAttributesViewCell: UITableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    priceLabel?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 100, height: 24)
-    priceLabel?.backgroundColor = UIColor.redColor()
+    priceLabel?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 200, height: 12)
+    
+    callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
+    
+    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    
+    conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
+    
+    notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
   }
+  
+  private func setupSelf() {
+    
+    backgroundColor = .whiteColor()
+  }
+
   
   private func setupPriceLabel() {
     priceLabel = UILabel()
+    priceLabel?.font = UIFont.asapRegular(12)
+    priceLabel?.textColor = UIColor.moneyGreen()
     addSubview(priceLabel!)
   }
   
   private func setupChatButton() {
     chatButton = UIButton()
+    chatButton?.addTarget(self, action: "chatButtonPressed", forControlEvents: .TouchUpInside)
     addSubview(chatButton!)
   }
   
@@ -254,12 +430,150 @@ public class ListerAttributesViewCell: UITableViewCell {
     callButton = UIButton()
     addSubview(callButton!)
   }
+  
+  private func setupConditionLabel() {
+    conditionLabel = UILabel()
+    conditionLabel?.font = UIFont.asapRegular(12)
+    addSubview(conditionLabel!)
+  }
+  
+  private func setupNotesTitle() {
+    notesTitle = UILabel()
+    notesTitle?.font = UIFont.asapBold(12)
+    addSubview(notesTitle!)
+  }
+  
+  private func setupNotesTextViewContainer() {
+    notesTextViewContainer = UIView()
+    notesTextViewContainer?.layer.mask = nil
+    notesTextViewContainer?.hidden = true
+    addSubview(notesTextViewContainer!)
+  }
+  
+  private func setupNotesTextView() {
+    notesTextView = UITextView()
+    notesTextView?.showsVerticalScrollIndicator = false
+    notesTextView?.editable = false
+    notesTextViewContainer?.addSubview(notesTextView!)
+  }
+  
+  public func setListing(listing: Listing?) {
+    
+    notesTextViewContainer?.hidden = true
+    
+    Async.background { [weak self, weak listing] in
+      
+      let string1 = "Desired Price: $\(listing?.price ?? "")"
+      let coloredString1 = NSMutableAttributedString(string: string1)
+      coloredString1.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 13))
+      coloredString1.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 13))
+      
+      Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
+      
+      if self?.isUserListing == false {
+        
+        // init toucan
+        var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
+        
+        Async.main { [weak self] in
+          self?.callButton?.hidden = false
+          self?.callButton?.setImage(toucan1?.image, forState: .Normal)
+          // deinit toucan
+          toucan1 = nil
+        }
+        
+        var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
+        
+        Async.main { [weak self] in
+          self?.chatButton?.hidden = false
+          self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
+          toucan2 = nil
+        }
+        
+      } else {
+        Async.main { [weak self] in
+          self?.callButton?.hidden = true
+          self?.chatButton?.hidden = true
+        }
+      }
+      
+      let string2 = "Condition: \(listing?.getConditionText() ?? "")"
+      let coloredString2 = NSMutableAttributedString(string: string2)
+      coloredString2.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
+      
+      Async.main { [weak self] in
+        self?.conditionLabel?.attributedText = coloredString2
+      }
+      
+      
+      if let notes = listing?.notes {
+        Async.main { [weak self] in
+          self?.notesTitle?.text = !notes.isEmpty ? "Notes:" : nil
+        }
+      }
+      
+      // create paragraph style class
+      var paragraphStyle: NSMutableParagraphStyle? = NSMutableParagraphStyle()
+      paragraphStyle?.alignment = .Justified
+      
+      let attributedString: NSAttributedString = NSAttributedString(string: listing?.notes ?? "", attributes: [
+        NSParagraphStyleAttributeName: paragraphStyle!,
+        NSBaselineOffsetAttributeName: NSNumber(float: 0),
+        NSForegroundColorAttributeName: UIColor.blackColor(),
+        NSFontAttributeName: UIFont.asapRegular(12)
+        ])
+      
+      // dealloc paragraph style
+      paragraphStyle = nil
+      
+      Async.main { [weak self] in
+        
+        self?.notesTextView?.attributedText = attributedString
+        self?.notesTextView?.sizeToFit()
+        
+        let height: CGFloat! = self?.notesTextView!.frame.size.height < 100 ? self?.notesTextView!.frame.size.height : 100
+        var notesTitle: UILabel! = self?.notesTitle!
+        
+        self?.notesTextViewContainer?.alignAndFillWidth(
+          align: .UnderCentered,
+          relativeTo: notesTitle,
+          padding: 11,
+          height: height
+        )
+        
+        notesTitle = nil
+        
+        self?.notesTextView?.fillSuperview()
+        
+        self?.notesTextViewContainer?.layer.mask = nil
+        
+        Async.background { [weak self] in
+          let layer: CALayer! = self?.notesTextViewContainer?.layer
+          let bounds: CGRect! = self?.notesTextViewContainer?.bounds
+          var gradient: CAGradientLayer? = CAGradientLayer(layer: layer)
+          gradient?.frame = bounds
+          gradient?.colors = [UIColor.clearColor().CGColor, UIColor.whiteColor().CGColor]
+          gradient?.startPoint = CGPoint(x: 0.0, y: 1.0)
+          gradient?.endPoint = CGPoint(x: 0.0, y: 0.85)
+          
+          Async.main { [weak self] in
+            self?.notesTextViewContainer?.layer.mask = gradient
+            self?.notesTextViewContainer?.hidden = false
+            gradient = nil
+          }
+        }
+      }
+      
+      }.main { [weak self] in
+        // same things is happening as the view view before this
+        self?.layer.zPosition = 2
+    }
+  }
+  
+  public func chatButtonPressed() {
+    _chatButtonPressed => true
+  }
 }
-
-
-
-
-
 
 
 

@@ -8,78 +8,99 @@
 
 import Foundation
 import UIKit
-import Toucan
 import Onboard
+import RealmSwift
 
-public class TabView: RAMAnimatedTabBarController {
+public class TabView: UITabBarController {
   
-  let feedView = UIViewController()
-  let chatView = ChatHistoryView()
-  let scannerView = ScannerView()
-  let activityView = UIViewController()
-  let userProfileView = UserProfileView()
+  private let controller = TabController()
+  private var model: TabModel { get { return controller.model } }
+  
+  var testView = CreateListingView()
+  var communityView: CommunityFeedView? = CommunityFeedView()
+  var chatView: ChatHistoryView?  = ChatHistoryView()
+  var scannerView: ScannerView? = ScannerView()
+  var activityView: ActivityFeedView? = ActivityFeedView()
+  var userProfileView: UserProfileView? = UserProfileView()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupViewControllers()
-    setupFeedView()
+    setupCommunityTab()
     setupChatView()
     setupISBNScannerView()
     setupActivityView()
     setupUserProfileView()
+    setupViewControllers()
+    
+    tabBar.translucent = false
+    tabBar.tintColor = .soothingBlue()
+    tabBar.barTintColor = .whiteColor()
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-//    if !NSUserDefaults.standardUserDefaults().boolForKey("OnboardingSeen") { presentViewController( OnboardingView(), animated: true, completion: nil) }
-//    presentViewController(OnboardingView(), animated: true, completion: nil)
+    checkIfUserIsLoggedIn()
   }
   
   private func setupViewControllers() {
-    viewControllers = [userProfileView, chatView, scannerView, activityView]
+    
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    testView.tabBarItem = UITabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
+    toucan = nil
+//    viewControllers = [userProfileView!, scannerView!, communityTab!, chatView!]
+    
+    // set view controllers
+    viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
+    
+    // dealloc reference view controllers
+    communityView = nil
+    chatView = nil
+    scannerView = nil
+    activityView = nil
+    userProfileView = nil
   }
   
-  private func setupFeedView() {
-    feedView.view.backgroundColor = UIColor.whiteColor()
-    
-    let image = Toucan(image: UIImage(named: "Icon-Book")!).resize(CGSize(width: 24, height: 24)).image
-    
-    let item = RAMAnimatedTabBarItem(title: "Feed", image: image, selectedImage: image)
-    feedView.tabBarItem = item
+  private func setupCommunityTab() {
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    communityView?.tabBarItem = UITabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
+    toucan = nil
   }
   
   private func setupChatView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-Message-1")!).resize(CGSize(width: 24, height: 24)).image
-    
-    let item = RAMAnimatedTabBarItem(title: "Chat", image: image, selectedImage: image)
-    
-    chatView.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-4")).resize(CGSize(width: 24, height: 24))
+    chatView?.tabBarItem = UITabBarItem(title: "Chat", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupISBNScannerView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-Camera")!).resize(CGSize(width: 24, height: 24)).image
-    
-    let item = RAMAnimatedTabBarItem(title: "ISBN", image: image, selectedImage: image)
-    scannerView.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-3")).resize(CGSize(width: 24, height: 24))
+    scannerView?.tabBarItem = UITabBarItem(title: "Scanner", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupActivityView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-CameraSnap")!).resize(CGSize(width: 24, height: 24)).image
-    
-    let item = RAMAnimatedTabBarItem(title: "Activity", image: image, selectedImage: image)
-    activityView.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-2")).resize(CGSize(width: 24, height: 24))
+    activityView?.tabBarItem = UITabBarItem(title: "Activity", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
   }
   
   private func setupUserProfileView() {
-    
-    let image = Toucan(image: UIImage(named: "Icon-GreyStarEmpty")!).resize(CGSize(width: 24, height: 24)).image
-    
-    let item = RAMAnimatedTabBarItem(title: "Profile", image: image, selectedImage: image)
-    userProfileView.tabBarItem = item
+    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-5")).resize(CGSize(width: 24, height: 24))
+    userProfileView?.tabBarItem = UITabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
+    toucan = nil
+  }
+  
+  // MARK: User Auth
+  public func checkIfUserIsLoggedIn() {
+    if !controller.checkIfUserIsLoggedIn() { presentViewController(LoginView(), animated: false, completion: nil) }
   }
 }
+
+
+
+
+
+
+
+

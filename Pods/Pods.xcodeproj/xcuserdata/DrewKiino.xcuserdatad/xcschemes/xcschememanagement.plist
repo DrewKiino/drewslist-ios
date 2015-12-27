@@ -9,6 +9,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>AsyncSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>CWStatusBarNotification.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Former.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -19,17 +29,27 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>HanekeSwift.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>JSQMessagesViewController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>JSQSystemSoundPlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>KMPlaceholderTextView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>LTMorphingLabel.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>NVActivityIndicatorView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -89,6 +109,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SDWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Signals.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -124,35 +149,10 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Toucan.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>00780F92687BAF0E032B871D6253FEB6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>010CB74F98460A7FAA30DDCF181F77EC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>03362091E46E90A580DF4075F67600D1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>040A7A29749406229DF7EC2690DF6BB8</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>088414A02F2C348B857B8CDBCB62F706</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -177,17 +177,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2584DAFBD22EF9B6D822B4D77811CC40</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>2620F12C1176436B3B3784520F311BC7</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>3062092477B30B86E7CD5696C7220F3F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -198,11 +188,6 @@
 			<true/>
 		</dict>
 		<key>432ECC54282C84882B482CCB4CF227FC</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>48038475853E22AF4EF1D5E76240B73B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -218,11 +203,6 @@
 			<true/>
 		</dict>
 		<key>5BDA4284E300AA187C3FB3EC3FCD7153</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>60679B5D8FE4AC618997C6F8B9D24883</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -247,11 +227,6 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>8EF9DE7F07D0A3829A3E050E9B9D5E4C</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>95DB89A8BFC5FF0BF98458651D0163CD</key>
 		<dict>
 			<key>primary</key>
@@ -262,17 +237,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>987DD38354EA12CE40C8FFA51DB3A8A5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>9BE8412C12E7C97B27AEBCA6D7CF1514</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9C47DFC8AA355CFA7363B930B121794B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -292,17 +257,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B2F5F5F5BD8EBD85E08312DC2B7838A6</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>B4FBE5DA02B7322FF7D3C2D4486F37DE</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>BE5C3BBE60B1E1D1918D75AE455EB3FB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -313,11 +268,6 @@
 			<true/>
 		</dict>
 		<key>C6B7AB52663DB4ED7F6BD1CE5D14E1A5</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C914A06A7BA7A063D8636DAA8E60557F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -343,11 +293,6 @@
 			<true/>
 		</dict>
 		<key>F6C9E19DCC0E5F6DC65A644950DFEB7A</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>FBEA1960B69B4EF16E8CB1A5827F6ECA</key>
 		<dict>
 			<key>primary</key>
 			<true/>

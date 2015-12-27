@@ -9,6 +9,9 @@ use_frameworks!
 
 #####################################
 
+# facebook sdk integration
+# pod 'FBSDKCoreKit'
+# pod 'FBSDKLoginKit'
 
 # socket libs
 pod 'Socket.IO-Client-Swift'
@@ -33,19 +36,25 @@ pod 'TextFieldEffects'
 pod 'SwiftyButton'
 pod 'Gifu'
 pod 'Former'
+pod 'NVActivityIndicatorView'
+pod 'LTMorphingLabel'
+pod 'CWStatusBarNotification'
+pod 'KMPlaceholderTextView'
 
 # pubsub libs
 pod 'Signals'
 
 # event handling
 pod 'PromiseKit'
+pod 'AsyncSwift'
 
 # view libs
 pod 'Neon'
 
 # image libs
-pod 'HanekeSwift'
-pod 'Toucan'
+# pod 'HanekeSwift'
+pod 'SDWebImage'
+# pod 'Toucan'
 
 # data storage libs
 pod 'RealmSwift'
