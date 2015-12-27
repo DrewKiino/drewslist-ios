@@ -20,20 +20,12 @@ public class UserProfileController {
   private var view: UserProfileView?
   
   public func viewDidLoad() {
-    
-    // local
-//    getUserFromServer("56733c2d11d037eb19e1488e")
-    // server
     readRealmUser()
     getUserFromServer()
   }
   
-  public func userViewWillAppear() {
-  }
-  
   public func getUserFromServer() {
     guard let user_id = model.user?._id else { return }
-    
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
@@ -45,7 +37,6 @@ public class UserProfileController {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
-        log.debug(json)
         // create and  user object
         self?.model.user = User(json: json)
         // write user object to realm
@@ -56,9 +47,18 @@ public class UserProfileController {
       // this will disable this controllers server calls for 10 seconds
       self?.refrainTimer?.invalidate()
       self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
+      self?.refrainTimer = NSTimer.after(1.0) { [weak self] in
+        // allow the controller to make server calls again
         self?.model.shouldRefrainFromCallingServer = false
       }
+    }
+    
+    // just in case the doesn't ever respond...
+    refrainTimer?.invalidate()
+    refrainTimer = nil
+    refrainTimer = NSTimer.after(60.0) { [weak self] in
+      // disable loading screen
+      self?.model.shouldRefrainFromCallingServer = false
     }
   }
   

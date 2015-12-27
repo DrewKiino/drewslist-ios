@@ -27,8 +27,6 @@ public class LoginController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    log.debug("mark")
-    
     Alamofire.request(
       .POST,
       ServerUrl.Staging.getValue() + "/user/authenticateWithLocalAuth",
@@ -45,8 +43,6 @@ public class LoginController {
           self?.model._serverError.fire(true)
           
         } else if let data = data, let json: JSON! = JSON(data: data) {
-          
-          log.debug(json)
           
           if json["errmsg"].string != nil || json["error"].string != nil {
             

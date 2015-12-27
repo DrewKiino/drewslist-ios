@@ -93,7 +93,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    if model.user == nil { view.showLoadingScreen() }
+    if profileImg?.image == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
@@ -123,10 +123,22 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Data Binding
   
   private func setupDataBinding() {
+    model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      self?.setUser(user)
-      self?.bookShelf?.reloadData()
-      self?.view.hideLoadingScreen()
+    }
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == true {
+        self?.view.showLoadingScreen(nil, bgOffset: nil ,fadeIn: true) { [weak self] in
+          if let frame = self?.originalBGViewFrame { self?.bgViewTop?.frame = frame }
+          self?.scrollView?.panGestureRecognizer.enabled = false
+          self?.scrollView?.panGestureRecognizer.enabled = true
+        }
+      } else {
+        self?.setUser(self?.model.user)
+        self?.bookShelf?.reloadData()
+        self?.view.hideLoadingScreen()
+      }
     }
   }
   
@@ -241,9 +253,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
               self?.profileImg?.alpha = 1.0
             }
             
-            // stop the loading animation
-            self?.view.hideLoadingScreen()
-            
             // deinit toucan
             toucan = nil
           }
@@ -261,9 +270,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           
           self?.profileImg?.image = toucan?.image
           
-          // stop the loading animation
-          self?.view.hideLoadingScreen()
-          
           UIView.animateWithDuration(duration) { [weak self] in
             self?.profileImg?.alpha = 1.0
           }
@@ -277,6 +283,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       
       bgViewTop?.dl_setImageFromUrl(user.bgImage) { [weak self] image, error, cache, url in
         Async.background { [weak self] in
+          
           // NOTE: correct way to handle memory management with toucan
           // init toucan and pass in the arguments directly in the parameter headers
           // do the resizing in the background
@@ -407,6 +414,9 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     if let offset: CGFloat? = -scrollView.contentOffset.y where offset > 0 {
       let ratio = originalBGViewFrame!.width / originalBGViewFrame!.height
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
+      
+      // if the offset is greater than 64, then call the server to update the user object in the model
+      if offset >= 128 && model.shouldRefrainFromCallingServer == false { controller.getUserFromServer() }
     }
   }
   

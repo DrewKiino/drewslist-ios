@@ -343,6 +343,17 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     }
     return true
   }
+  
+  public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    switch textField.tag {
+    case 4:
+      passwordField?.becomeFirstResponder()
+      break
+      // password
+    default: break
+    }
+    return false
+  }
 }
 
 

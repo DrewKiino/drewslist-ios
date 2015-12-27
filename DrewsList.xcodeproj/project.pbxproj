@@ -83,6 +83,9 @@
 		EEB0E2791C22851A0007DE13 /* AccountSettingsView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */; };
 		EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */; };
 		EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */; };
+		EEC3E04B1C2DFE2A00D7843C /* SearchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */; };
+		EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC3E04C1C2DFE3200D7843C /* SearchUserModel.swift */; };
+		EEC3E04F1C2DFE3800D7843C /* SearchUserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */; };
 		EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED29A0E1BF533A1009C6D47 /* Sockets.swift */; };
 		EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* UserProfileListingController.swift */; };
 		EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* UserProfileListingModel.swift */; };
@@ -197,6 +200,9 @@
 		EEB0E2771C22851A0007DE13 /* AccountSettingsView3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountSettingsView3.swift; path = View/AccountSettingsView3.swift; sourceTree = "<group>"; };
 		EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedView.swift; sourceTree = "<group>"; };
 		EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolView.swift; sourceTree = "<group>"; };
+		EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchUserView.swift; sourceTree = "<group>"; };
+		EEC3E04C1C2DFE3200D7843C /* SearchUserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchUserModel.swift; sourceTree = "<group>"; };
+		EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchUserController.swift; sourceTree = "<group>"; };
 		EED29A0E1BF533A1009C6D47 /* Sockets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sockets.swift; sourceTree = "<group>"; };
 		EED779E21C151DF200D172BE /* UserProfileListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* UserProfileListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingModel.swift; sourceTree = "<group>"; };
@@ -324,6 +330,7 @@
 				4F966CE51C27623900CECCC6 /* EditProfileModel.swift */,
 				EE3D67A61C2BF72800299F34 /* SearchSchoolModel.swift */,
 				EE53E75E1C2D00DB00A32613 /* TabModel.swift */,
+				EEC3E04C1C2DFE3200D7843C /* SearchUserModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -352,6 +359,7 @@
 				EEE2AA101C28F8B50093DB46 /* CreateListingView.swift */,
 				EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */,
 				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
+				EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -375,6 +383,7 @@
 				EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */,
 				EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */,
 				EE53E75C1C2D00C900A32613 /* TabController.swift */,
+				EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -777,6 +786,7 @@
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
+				EEC3E04B1C2DFE2A00D7843C /* SearchUserView.swift in Sources */,
 				EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE3D67A51C2BF72100299F34 /* SearchSchoolController.swift in Sources */,
@@ -802,6 +812,7 @@
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
+				EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */,
 				EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */,
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */,
@@ -826,6 +837,7 @@
 				3F4CA3B31C0BEB4F00CFC84D /* ScannerModel.swift in Sources */,
 				4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
+				EEC3E04F1C2DFE3800D7843C /* SearchUserController.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */,
 				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,

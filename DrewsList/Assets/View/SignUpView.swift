@@ -146,7 +146,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     model._isValidPassword.listen(self) { [weak self] bool in
       if bool != true {
         self?.passwordField?.placeholderLabel.font = .asapRegular(8)
-        self?.passwordField?.placeholder = "Password, at least 8 letters, 1 upper, 1 lower, 1 number, and 1 symbol"
+        self?.passwordField?.placeholder = "Password, at least 8 letters, 1 upper, 1 lower, 1 number, & 1 symbol"
       } else {
         self?.passwordField?.placeholderLabel.font = .asapRegular(10.5)
         self?.passwordField?.placeholder = "Password"
@@ -492,5 +492,30 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       }
     }
     return true
+  }
+  
+  public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    switch textField.tag {
+      // firstName
+    case 2:
+      lastNameField?.becomeFirstResponder()
+      break
+      // lastName
+    case 3:
+      emailField?.becomeFirstResponder()
+      break
+      // email
+    case 4:
+      passwordField?.becomeFirstResponder()
+      break
+      // password
+    case 5:
+      rePasswordField?.becomeFirstResponder()
+      // repassword
+    case 6:
+      schoolTextField?.becomeFirstResponder()
+    default: break
+    }
+    return false
   }
 }

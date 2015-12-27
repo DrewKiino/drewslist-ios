@@ -86,6 +86,7 @@ public class CreateListingController {
         self?.model.serverCallbackFromUploadlIsting = false
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
+        log.debug(json)
         // using ObjectMapper we quickly convert the json data into an actual object we can use
         // then we set the model's book with the new book
         self?.model.serverCallbackFromUploadlIsting = true
