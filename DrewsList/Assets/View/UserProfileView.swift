@@ -63,8 +63,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     setupUsernameLabel()
     setupButtons()
     
-    setRootViewTitle("Your List")
-    
     // MARK: Neon Layouts
     
     scrollView?.fillSuperview()
@@ -95,7 +93,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    if model.user == nil { view.showLoadingScreen() }
+    if profileImg?.image == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
@@ -125,10 +123,22 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Data Binding
   
   private func setupDataBinding() {
+    model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      self?.setUser(user)
-      self?.bookShelf?.reloadData()
-      self?.view.hideLoadingScreen()
+    }
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == true {
+        self?.view.showLoadingScreen(nil, bgOffset: nil ,fadeIn: true) { [weak self] in
+          if let frame = self?.originalBGViewFrame { self?.bgViewTop?.frame = frame }
+          self?.scrollView?.panGestureRecognizer.enabled = false
+          self?.scrollView?.panGestureRecognizer.enabled = true
+        }
+      } else {
+        self?.setUser(self?.model.user)
+        self?.bookShelf?.reloadData()
+        self?.view.hideLoadingScreen()
+      }
     }
   }
   
@@ -136,6 +146,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public func setupSelf() {
     controller.viewDidLoad()
+    setRootViewTitle("Profile")
   }
   
   public func setupScrollView(){
@@ -219,7 +230,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     guard let user = user else { return }
     
-    let duration: NSTimeInterval = 0.5
+    let duration: NSTimeInterval = 0.2
     
     // MARK: Images
     if user.image != nil {
@@ -233,11 +244,14 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           
           Async.main { [weak self] in
             
+            self?.profileImg?.alpha = 0.0
+            
             // set the image view's image
             self?.profileImg?.image = toucan?.image
             
-            // stop the loading animation
-            self?.view.hideLoadingScreen()
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.profileImg?.alpha = 1.0
+            }
             
             // deinit toucan
             toucan = nil
@@ -252,10 +266,9 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
         
         Async.main { [weak self] in
           
-          self?.profileImg?.image = toucan?.image
+          self?.profileImg?.alpha = 0.0
           
-          // stop the loading animation
-          self?.view.hideLoadingScreen()
+          self?.profileImg?.image = toucan?.image
           
           UIView.animateWithDuration(duration) { [weak self] in
             self?.profileImg?.alpha = 1.0
@@ -270,6 +283,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       
       bgViewTop?.dl_setImageFromUrl(user.bgImage) { [weak self] image, error, cache, url in
         Async.background { [weak self] in
+          
           // NOTE: correct way to handle memory management with toucan
           // init toucan and pass in the arguments directly in the parameter headers
           // do the resizing in the background
@@ -277,8 +291,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           
           Async.main { [weak self] in
             
-            // set the image view's image
+            self?.bgViewTop?.alpha = 0.0
+            
             self?.bgViewTop?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.bgViewTop?.alpha = 1.0
+            }
             
             // deinit toucan
             toucan = nil
@@ -293,15 +312,29 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
         
         Async.main { [weak self] in
           
+          self?.bgViewTop?.alpha = 0.0
+          
           self?.bgViewTop?.image = toucan?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.bgViewTop?.alpha = 1.0
+          }
           
           toucan = nil
         }
       }
     }
     
-    profileUsername?.text = user.username ?? user.getName()
-    descriptionTextView?.text = user.description
+    profileUsername?.alpha = 0.0
+    descriptionTextView?.alpha = 0.0
+    
+    UIView.animateWithDuration(duration) { [weak self, weak user] in
+      self?.profileUsername?.text = user?.username ?? user?.getName()
+      self?.descriptionTextView?.text = user?.description
+      
+      self?.profileUsername?.alpha = 1.0
+      self?.descriptionTextView?.alpha = 1.0
+    }
   }
   
   // MARK: Button Action
@@ -381,6 +414,9 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     if let offset: CGFloat? = -scrollView.contentOffset.y where offset > 0 {
       let ratio = originalBGViewFrame!.width / originalBGViewFrame!.height
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
+      
+      // if the offset is greater than 64, then call the server to update the user object in the model
+      if offset >= 128 && model.shouldRefrainFromCallingServer == false { controller.getUserFromServer() }
     }
   }
   

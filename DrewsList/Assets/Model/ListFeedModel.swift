@@ -8,6 +8,7 @@
 
 import Foundation
 import Signals
+import RealmSwift
 
 public class ListFeedModel {
   
@@ -22,4 +23,5 @@ public class ListFeedModel {
   
   public let _shouldRefrainFromCallingServer = Signal<Bool>()
   public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
+
 }
