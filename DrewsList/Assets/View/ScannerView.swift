@@ -10,9 +10,10 @@ import UIKit
 import AVFoundation
 import Neon
 import Async
+import Toucan
 
 public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
-    
+  
   // MARK: Properties
   
   private weak var labelTimer: NSTimer?
@@ -55,8 +56,19 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    guard let helpButton = helpButton,
+      let searchButton = searchButton,
+      let topView = topView,
+      let helpImage = UIImage(named: "help-button"),
+      let searchImage = UIImage(named: "search-button")
+      else { return }
+    
+    topView.groupInCorner(group: .Horizontal, views: [helpButton], inCorner: .TopLeft, padding: 20, width: 48, height: 48)
+    topView.groupInCorner(group: .Horizontal, views: [searchButton], inCorner: .TopRight, padding: 20, width: 48, height: 48)
+    helpButton.setImage(Toucan(image: helpImage).resize(helpButton.frame.size).image, forState: .Normal)
+    searchButton.setImage(Toucan(image: searchImage).resize(searchButton.frame.size).image, forState: .Normal)
   }
-  
+
     // MARK: Setup
   
   private func setupDataBinding() {
