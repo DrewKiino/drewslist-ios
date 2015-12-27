@@ -149,7 +149,7 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
-  public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil) {
+  public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil, fadeIn: Bool = false, completionHandler: (() -> Void)? = nil) {
   
     subviews.forEach {
       if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
@@ -157,8 +157,9 @@ extension UIView {
     }
     
     let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : bgOffset ?? 64, screen.width, screen.height))
-    backgroundView.tag = 1337
+    backgroundView.alpha = 0.0
     backgroundView.backgroundColor = .whiteColor()
+    backgroundView.tag = 1337
     addSubview(backgroundView)
     
     let activityView = NVActivityIndicatorView(
@@ -167,17 +168,33 @@ extension UIView {
       color: UIColor.sweetBeige(),
       size: CGSizeMake(48, 48)
     )
+    activityView.alpha = 0.0
     activityView.backgroundColor = .clearColor()
     activityView.startAnimation()
     addSubview(activityView)
     
     let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8 + (heightOffset != nil ? heightOffset! : 0), 100, 48))
+    loadingLabel.alpha = 0.0
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
     loadingLabel.textColor = .blackColor()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
+    
+    if fadeIn == true {
+      UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseInOut, animations: { [weak backgroundView, weak activityView, weak loadingLabel] in
+        backgroundView?.alpha = 1.0
+        activityView?.alpha = 1.0
+        loadingLabel?.alpha = 1.0
+      }, completion: { bool in
+        completionHandler?()
+      })
+    } else {
+      backgroundView.alpha = 1.0
+      activityView.alpha = 1.0
+      loadingLabel.alpha = 1.0
+    }
     
     NSTimer.every(0.5) { [weak loadingLabel] in
       switch loadingLabel?.text {

@@ -11,7 +11,7 @@ import UIKit
 import Neon
 import SDWebImage
 
-public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITableViewDataSource {
   
   // MVC
   private let controller = ChatHistoryController()
@@ -21,12 +21,14 @@ public class ChatHistoryView: UIViewController, UITableViewDelegate, UITableView
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    setup()
+    setupSelf()
     setupTableView()
   }
   
-  private func setup() {
+  private func setupSelf() {
     view.backgroundColor = UIColor.whiteColor()
+    
+    setRootViewTitle("Chat")
   }
   
   private func setupTableView() {

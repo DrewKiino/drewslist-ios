@@ -16,8 +16,6 @@ import SwiftyJSON
 public class SignUpController {
   
   public let model =  SignUpModel()
-//  private let serverUrl = "http://drewslist-staging.herokuapp.com/user"
-  private let serverUrl = "http://localhost:1337/user"
   private var refrainTimer: NSTimer?
 
   
@@ -95,7 +93,7 @@ public class SignUpController {
     
     Alamofire.request(
       .POST,
-      serverUrl,
+      ServerUrl.Staging.getValue() + "/user",
       parameters: [
         "firstName": firstName,
         "lastName": lastName,

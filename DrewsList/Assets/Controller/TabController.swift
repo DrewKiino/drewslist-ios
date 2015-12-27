@@ -1,31 +1,54 @@
 //
-//  UserProfileController.swift
+//  TabViewController.swift
 //  DrewsList
 //
-//  Created by Kevin Mowers on 11/7/15.
+//  Created by Andrew Aquino on 12/24/15.
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
 import Foundation
-import SwiftyTimer
-import Signals
 import Alamofire
 import SwiftyJSON
 import RealmSwift
 
-public class UserProfileController {
+public class TabController {
   
-  private let model = UserProfileModel()
-  private var refrainTimer: NSTimer?
-  private var view: UserProfileView?
+  public let model = TabModel()
   
-  public func viewDidLoad() {
+  public var refrainTimer: NSTimer?
+  
+  public init() {
+    // NOTE: Important! These functions have to be called in this order
+    setupDataBinding()
     readRealmUser()
-    getUserFromServer()
+    updateUserFromServer()
+  }
+  
+  private func setupDataBinding() {
+    model._user.removeAllListeners()
+    model._user.listen(self) { [weak self] user in
+      self?.updateUserFromServer()
+    }
+  }
+  
+  public func checkIfUserIsLoggedIn() -> Bool {
+    // check if user is already logged in
+    if let user = try! Realm().objects(RealmUser.self).first?.getUser() {
+      model.user = user
+      
+      return true
+    // if we already have a user, attempt to call the server to update the current user
+    // if not show login view
+    } else { return false }
+  }
+  
+  public func updateUserFromServer() {
+    
   }
   
   public func getUserFromServer() {
     guard let user_id = model.user?._id else { return }
+    
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
@@ -33,9 +56,15 @@ public class UserProfileController {
     Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
       
+      log.debug(req?.URLString)
+      
       if let error = error {
+        
         log.error(error)
+        
       } else if let data = data, let json: JSON! = JSON(data: data) {
+        
+        log.debug(json)
         
         // create and  user object
         self?.model.user = User(json: json)
@@ -47,25 +76,12 @@ public class UserProfileController {
       // this will disable this controllers server calls for 10 seconds
       self?.refrainTimer?.invalidate()
       self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(1.0) { [weak self] in
-        // allow the controller to make server calls again
+      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
         self?.model.shouldRefrainFromCallingServer = false
       }
     }
-    
-    // just in case the doesn't ever respond...
-    refrainTimer?.invalidate()
-    refrainTimer = nil
-    refrainTimer = NSTimer.after(60.0) { [weak self] in
-      // disable loading screen
-      self?.model.shouldRefrainFromCallingServer = false
-    }
   }
-  
-  public func getModel() -> UserProfileModel { return model }
-  
-  public func get_User() -> Signal<User?> { return model._user }
-  public func getUser() -> User? { return model.user }
+
   
   // MARK: Realm Functions
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }

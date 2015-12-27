@@ -32,6 +32,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
  // MARK: Lifecycle
   public override func viewDidLoad() {
     super.viewDidLoad()
+    setupSelf()
     setupDataBinding()
     setupScanner()
     setupTopView()
@@ -58,6 +59,10 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   }
   
     // MARK: Setup
+  
+  private func setupSelf() {
+    setRootViewTitle("Scanner")
+  }
   
   private func setupDataBinding() {
     

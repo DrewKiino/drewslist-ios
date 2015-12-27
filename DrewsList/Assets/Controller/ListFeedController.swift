@@ -17,14 +17,15 @@ public class ListFeedController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = "http://drewslist-staging.herokuapp.com/listing"
-//  private let serverUrl = "http://localhost:1337/listing"
+  private let serverUrl = ServerUrl.Staging.getValue() + "/listing"
   
   public init() {}
   
   public func getModel() -> ListFeedModel { return model }
   
   public func getListingsFromServer(skip: Int? = nil, listType: String? = nil) {
+    
+    if skip == 0 { model.listings.removeAll(keepCapacity: false) }
     
     // lock the view
     model.shouldLockView = true
@@ -36,6 +37,8 @@ public class ListFeedController {
         log.error(error)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
+        // for each listing in the JSON response, append it to the listings array 
+        // in the list feed model
         for json in jsonArray { self?.model.listings.append(Listing(json: json)) }
         
         // to safeguard against multiple server calls when the server has no more data

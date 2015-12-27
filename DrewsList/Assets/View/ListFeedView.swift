@@ -219,6 +219,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
+    tableView?.showsVerticalScrollIndicator = true
     tableView?.fillSuperview()
   }
   

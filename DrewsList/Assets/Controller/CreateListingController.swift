@@ -20,9 +20,6 @@ public class CreateListingController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = "http://drewslist-staging.herokuapp.com"
-//  private let serverUrl = "http://localhost:1337"
-  
   // MARK: Initializers
   public init() {
     readRealmUser()
@@ -66,7 +63,7 @@ public class CreateListingController {
     // make the request following the server's route pattern
     Alamofire.request(
       .POST,
-      "\(serverUrl)/user/listBook",
+      "\(ServerUrl.Staging.getValue())/user/listBook",
       parameters: [
         "user_id": user_id,
         "book_id": book_id,
@@ -89,6 +86,7 @@ public class CreateListingController {
         self?.model.serverCallbackFromUploadlIsting = false
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
+        log.debug(json)
         // using ObjectMapper we quickly convert the json data into an actual object we can use
         // then we set the model's book with the new book
         self?.model.serverCallbackFromUploadlIsting = true

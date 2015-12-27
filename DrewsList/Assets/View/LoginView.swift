@@ -137,7 +137,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
       else { self?.loginButtonIndicator?.startAnimating() }
     }
     model._user.removeAllListeners()
-    model._user.listen(self) { user in
+    model._user.listen(self) { [weak self] user in
+      self?.dismissKeyboard()
       if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
         tabView.selectedIndex = 0
         tabView.dismissViewControllerAnimated(true, completion: nil)
@@ -257,6 +258,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   }
 
   public func loginButtonPressed() {
+    dismissKeyboard()
     controller.loginUserToServer()
   }
   
@@ -340,6 +342,17 @@ public class LoginView: UIViewController, UITextFieldDelegate {
       }
     }
     return true
+  }
+  
+  public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    switch textField.tag {
+    case 4:
+      passwordField?.becomeFirstResponder()
+      break
+      // password
+    default: break
+    }
+    return false
   }
 }
 

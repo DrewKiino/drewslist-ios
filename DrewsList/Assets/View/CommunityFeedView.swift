@@ -79,6 +79,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   }
   
   private func setupSelf() {
+    setRootViewTitle("Community")
   }
   
   private func setupPageTitleContainer() {
