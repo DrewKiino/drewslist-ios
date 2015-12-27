@@ -11,6 +11,23 @@ import UIKit
 
 extension UIColor {
   
+  class func colorWithHex(hex: String, alpha: CGFloat = 1.0) -> UIColor {
+    var rgb: CUnsignedInt = 0;
+    let scanner = NSScanner(string: hex)
+    
+    if hex.hasPrefix("#") {
+      // skip '#' character
+      scanner.scanLocation = 1
+    }
+    scanner.scanHexInt(&rgb)
+    
+    let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+    let g = CGFloat((rgb & 0xFF00) >> 8) / 255.0
+    let b = CGFloat(rgb & 0xFF) / 255.0
+    
+    return UIColor(red: r, green: g, blue: b, alpha: alpha)
+  }
+  
   // MARK: Main App Colors
   
   public class func sexyGray() -> UIColor {
@@ -33,6 +50,10 @@ extension UIColor {
   
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
+  }
+  
+  public class func darkJuicyOrange() -> UIColor {
+    return UIColor(red: 210/255, green: 113/255, blue: 14/255, alpha: 1.0)
   }
   
   public class func moneyGreen() -> UIColor {
@@ -92,6 +113,29 @@ extension String {
     }
     return self
   }
+  
+  public func isValidName() -> Bool {
+    if let _ = try! NSRegularExpression(pattern: ".*[^A-Za-z-].*", options: .CaseInsensitive).firstMatchInString(self, options: .ReportCompletion, range: NSMakeRange(0, self.characters.count)) { return false }
+    return true
+  }
+  
+  public func isValidPassword() -> Bool {
+    if  let _ = self.rangeOfCharacterFromSet(.uppercaseLetterCharacterSet()),
+        let _ = self.rangeOfCharacterFromSet(.lowercaseLetterCharacterSet()),
+        let _ = self.rangeOfCharacterFromSet(.decimalDigitCharacterSet()),
+        let _ = self.rangeOfCharacterFromSet(NSCharacterSet.alphanumericCharacterSet().invertedSet)
+        where self.rangeOfCharacterFromSet(.whitespaceCharacterSet()) == nil && !self.isEmpty
+    {
+      return true
+    }
+    return false
+  }
+  
+  func isValidEmail() -> Bool {
+    let emailRegEx = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+    let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+    return emailTest.evaluateWithObject(self) && !self.isEmpty
+  }
 }
 
 import NVActivityIndicatorView
@@ -105,16 +149,17 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
-  public func showLoadingScreen(heightOffset: CGFloat? = nil) {
+  public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil, fadeIn: Bool = false, completionHandler: (() -> Void)? = nil) {
   
     subviews.forEach {
       if let view = $0 as? NVActivityIndicatorView { view.removeFromSuperview() }
       else if let view = $0 as? LTMorphingLabel { view.removeFromSuperview() }
     }
     
-    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : 64, screen.width, screen.height))
-    backgroundView.tag = 1337
+    let backgroundView = UIView(frame: CGRectMake(0, heightOffset != nil ? 0 : bgOffset ?? 64, screen.width, screen.height))
+    backgroundView.alpha = 0.0
     backgroundView.backgroundColor = .whiteColor()
+    backgroundView.tag = 1337
     addSubview(backgroundView)
     
     let activityView = NVActivityIndicatorView(
@@ -123,17 +168,33 @@ extension UIView {
       color: UIColor.sweetBeige(),
       size: CGSizeMake(48, 48)
     )
+    activityView.alpha = 0.0
     activityView.backgroundColor = .clearColor()
     activityView.startAnimation()
     addSubview(activityView)
     
     let loadingLabel = LTMorphingLabel(frame: CGRectMake((screen.width / 2) - 56, (screen.height / 2) + 8 + (heightOffset != nil ? heightOffset! : 0), 100, 48))
+    loadingLabel.alpha = 0.0
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
     loadingLabel.textColor = .blackColor()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
+    
+    if fadeIn == true {
+      UIView.animateWithDuration(0.2, delay: 0, options: .CurveEaseInOut, animations: { [weak backgroundView, weak activityView, weak loadingLabel] in
+        backgroundView?.alpha = 1.0
+        activityView?.alpha = 1.0
+        loadingLabel?.alpha = 1.0
+      }, completion: { bool in
+        completionHandler?()
+      })
+    } else {
+      backgroundView.alpha = 1.0
+      activityView.alpha = 1.0
+      loadingLabel.alpha = 1.0
+    }
     
     NSTimer.every(0.5) { [weak loadingLabel] in
       switch loadingLabel?.text {
@@ -219,7 +280,7 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock) {
+  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock?) {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
       .CacheMemoryOnly,
@@ -227,7 +288,27 @@ extension UIImageView {
 //      .ProgressiveDownload,
       .AvoidAutoSetImage,
       .LowPriority
-    ], completed: completionHandler)
+    ]) { image, error, cache, url in
+      completionHandler?(image, error, cache, url)
+    }
+  }
+}
+
+extension NSAttributedString {
+  
+  func heightWithConstrainedWidth(width: CGFloat) -> CGFloat {
+    let constraintRect = CGSize(width: width, height: CGFloat.max)
+    let boundingBox = self.boundingRectWithSize(constraintRect, options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
+    
+    return ceil(boundingBox.height)
+  }
+  
+  func widthWithConstrainedHeight(height: CGFloat) -> CGFloat {
+    let constraintRect = CGSize(width: CGFloat.max, height: height)
+    
+    let boundingBox = self.boundingRectWithSize(constraintRect, options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
+    
+    return ceil(boundingBox.width)
   }
 }
 

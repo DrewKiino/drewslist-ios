@@ -13,9 +13,17 @@ import SwiftyJSON
 
 public class ListModel {
   
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
   public let _listing = Signal<Listing?>()
   public var listing: Listing? { didSet { _listing => listing } }
   
+  public let _shouldRefrainFromCallingServer = Signal<Bool>()
+  public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
+  
+  public let _serverCallbackFromFindListing = Signal<Bool>()
+  public var serverCallbackFromFindListing: Bool = false { didSet { _serverCallbackFromFindListing => serverCallbackFromFindListing } }
 }
 
 public class Listing: Mappable {
@@ -79,6 +87,15 @@ public class Listing: Mappable {
     switch listType {
     case "buying": return "Buying"
       case "selling": return "Selling"
+    default: return nil
+    }
+  }
+  
+  public func getListTypeText2() ->  String? {
+    guard let listType = listType else { return nil }
+    switch listType {
+    case "buying": return "Buyer"
+    case "selling": return "Seller"
     default: return nil
     }
   }

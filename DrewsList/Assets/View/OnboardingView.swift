@@ -8,9 +8,9 @@
 
 import UIKit
 import Onboard
-
 import Neon
 import SwiftyButton
+import RealmSwift
 
 public class OnboardingView : UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   
@@ -34,10 +34,13 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     setupOnboardingView()
   }
   
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    setOnboardingAsBeenSeen()
+  }
+  
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    
-    
   }
   
   private func setupOnboardingView() {
@@ -190,5 +193,15 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   public func acceptPushPermNow() {
     controller.showPermissions()
+  }
+  
+  
+  public func setOnboardingAsBeenSeen() {
+    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
+      try! Realm().write {
+        userDefaults.didShowOnboarding = true
+        try! Realm().add(userDefaults, update: true)
+      }
+    }
   }
 }
