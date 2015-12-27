@@ -435,7 +435,6 @@ public class ChangeImageCell: DLTableViewCell {
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    print("moo2")
     layoutSubviews()
     setupLabel()
     setupProfileImgView()

@@ -90,7 +90,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           cell.label?.textColor = UIColor.lightGrayColor()
           cell.label?.font = UIFont.asapRegular(14)
           
-          print("moo")
           ///////////////
           //cell.setupUserImage(model.user)
           ///////////////
