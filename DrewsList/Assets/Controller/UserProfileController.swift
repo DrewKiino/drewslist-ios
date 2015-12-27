@@ -25,7 +25,7 @@ public class UserProfileController {
   }
   
   public func getUserFromServer() {
-    guard let user_id = model.user?._id else { return }
+    guard let user_id = model.user?._id where model.shouldRefrainFromCallingServer == false else { return }
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true

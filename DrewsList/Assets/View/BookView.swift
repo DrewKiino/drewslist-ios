@@ -19,6 +19,7 @@ public class BookView: UIView {
   public var attributesContainer: UIView?
   
   public var imageView: UIImageView?
+  public var imageViewUrl: String?
   public var image: UIImage?
   
   public var title: UILabel?
@@ -45,7 +46,7 @@ public class BookView: UIView {
     setupSelf()
   }
   
-  public func setBook(book: Book?) { controller.model.book = book ?? Book() }
+  public func setBook(book: Book?) { controller.model.book = book }
   
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
   
@@ -151,55 +152,58 @@ public class BookView: UIView {
   
   private func _setBook(book: Book?) {
     
-    imageView?.image = nil
-    imageView?.alpha = 0.0
-    let duration: NSTimeInterval = 0.5
+    // reset image view if image url url is different
+    // and set alpha to 0 for fade in animation
+    if imageViewUrl != book?.getImageUrl() {
+      imageView?.alpha = 0.0
+      imageView?.image = nil
+    }
+    
+    // MARK: Images
+    Async.background { [weak self, weak book] in
       
-      // MARK: Images
-      if book != nil && book!.hasImageUrl() {
-        imageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
-          Async.background { [weak self] in
+      var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.imageView?.frame.size, fitMode: .Crop)
+      
+      Async.main { [weak self] in
         
-            // NOTE: correct way to handle memory management with toucan
-            // init toucan and pass in the arguments directly in the parameter headers
-            // do the resizing in the background
-            var toucan1: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size)
-            
-            Async.main { [weak self] in
-              
-              // set the image view's image
-              self?.imageView?.image = toucan1?.image
-              
-              UIView.animateWithDuration(duration) { [weak self] in
-                self?.imageView?.alpha = 1.0
-              }
-              
-              // deinit toucan
-              toucan1 = nil
-              
-              self?.stopLoading()
-            }
+        if self?.imageView?.image == nil {
+          self?.imageView?.image = toucan?.image
+          UIView.animate { [weak self] in
+            self?.imageView?.alpha = 1.0
           }
         }
-      } else {
         
-        Async.background { [weak self] in
+        toucan = nil
+        
+        if book?.getImageUrl() != nil && self?.imageViewUrl != book?.getImageUrl() {
           
-          var toucan2: Toucan? = Toucan(image: UIImage(named: "book-placeholder")!).resize(self?.imageView?.frame.size)
-          
-          Async.main { [weak self] in
-            self?.imageView?.image = toucan2?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.imageView?.alpha = 1.0
+          UIImageView.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, finished, nsurl in
+            Async.background { [weak self] in
+              
+              // NOTE: correct way to handle memory management with toucan
+              // init toucan and pass in the arguments directly in the parameter headers
+              // do the resizing in the background
+              var toucan: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size, fitMode: .Crop)
+              
+              Async.main { [weak self] in
+                
+                self?.imageViewUrl = nsurl.URLString
+                
+                // set the image view's image
+                self?.imageView?.image = toucan?.image
+                
+                UIView.animate { [weak self] in
+                  self?.imageView?.alpha = 1.0
+                }
+                
+                // deinit toucan
+                toucan = nil
+              }
             }
-            
-            toucan2 = nil
-            
-            self?.stopLoading()
           }
         }
       }
+    }
     
     Async.background { [weak self] in
     

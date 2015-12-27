@@ -13,7 +13,7 @@ import SwiftyJSON
 
 public class SearchUserController {
   
-  public let model = SearchUserModel()
+  public let model = SearchUserModel.sharedInstance()
   
   private var refrainTimer: NSTimer?
   
@@ -26,8 +26,6 @@ public class SearchUserController {
   
   public func searchSchool(query: String?) {
     guard let queryString = createQueryString(query) where !model.shouldRefrainFromCallingServer else { return }
-    
-    log.debug(queryString)
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -70,6 +68,6 @@ public class SearchUserController {
       return nil
     }
     let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
-    return "\(ServerUrl.Local.getValue())/user?q=\(queryString)&limit=10"
+    return "\(ServerUrl.Staging.getValue())/user?q=\(queryString)&limit=10"
   }
 }

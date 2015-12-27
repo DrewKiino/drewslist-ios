@@ -47,7 +47,10 @@ public class DLTableView: UITableView {
     registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
     
     // MARK: Search Users
-    registerClass(UserCell.self, forHeaderFooterViewReuseIdentifier: "UserCell")
+    registerClass(UserCell.self, forCellReuseIdentifier: "UserCell")
+    
+    // MARK: Edit Listing
+    registerClass(EditListingCell.self, forCellReuseIdentifier: "EditListingCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false

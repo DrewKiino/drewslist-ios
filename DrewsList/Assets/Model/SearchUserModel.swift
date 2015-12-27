@@ -11,6 +11,12 @@ import Signals
 
 public class SearchUserModel {
   
+  private struct Singleton {
+    private static let searchUserModel = SearchUserModel()
+  }
+  
+  public class func sharedInstance() -> SearchUserModel { return Singleton.searchUserModel }
+  
   public let _searchString = Signal<String?>()
   public var searchString: String? { didSet { _searchString => searchString } }
   

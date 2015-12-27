@@ -36,6 +36,14 @@ public class ListViewContainer: UIViewController {
   private func setupSelf() {
     
     view.backgroundColor = .whiteColor()
+    
+    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
+    item.setTitleTextAttributes([
+      NSFontAttributeName: UIFont.asapRegular(16),
+      NSForegroundColorAttributeName: UIColor.whiteColor()
+    ], forState: .Normal)
+
+    navigationItem.rightBarButtonItem = item
   }
   
   private func setupListView() {
@@ -65,6 +73,10 @@ public class ListViewContainer: UIViewController {
     listView?.isUserListing = true
     title = "Your Listing"
     return self
+  }
+  
+  public func editButtonPressed() {
+    navigationController?.pushViewController(EditListingView().setListing(listView?.model.listing), animated: true)
   }
   
   // MARK: Realm Functions
