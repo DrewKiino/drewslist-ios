@@ -9,16 +9,11 @@
 import Foundation
 import UIKit
 import Signals
-<<<<<<< HEAD
-import Toucan
 import TextFieldEffects
 import KMPlaceholderTextView
 import SwiftyButton
 import Async
-=======
-import Async
 import SwiftDate
->>>>>>> master
 
 public class DLTableView: UITableView {
   
@@ -29,13 +24,11 @@ public class DLTableView: UITableView {
   
   private func setupSelf() {
     
-<<<<<<< HEAD
     // MARK: Settings Cells
     registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
-=======
+    
     // MARK: User Profile 
     registerClass(UserProfileListView.self, forCellReuseIdentifier: "UserProfileListView")
->>>>>>> master
     
     // MARK: Regular Static View Cell
     registerClass(PaddingCell.self, forCellReuseIdentifier: "PaddingCell")
@@ -915,6 +908,59 @@ public class ChangeImageCell: DLTableViewCell {
     let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
     pressGesture.minimumPressDuration = 0.01
     addGestureRecognizer(pressGesture)
+  }
+  
+  public func setupUser(user: User?){
+    guard let user = user else { return }
+    
+    let duration: NSTimeInterval = 0.2
+    
+    // MARK: Images
+    if user.image != nil {
+      
+      profileImgView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+        Async.background { [weak self] in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
+          
+          Async.main { [weak self] in
+            
+            self?.profileImgView?.alpha = 0.0
+            
+            // set the image view's image
+            self?.profileImgView?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.profileImgView?.alpha = 1.0
+            }
+            
+            // deinit toucan
+            toucan = nil
+          }
+        }
+      }
+    } else {
+      
+      Async.background { [weak self] in
+        
+        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
+        
+        Async.main { [weak self] in
+          
+          self?.profileImgView?.alpha = 0.0
+          
+          self?.profileImgView?.image = toucan?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.profileImgView?.alpha = 1.0
+          }
+          
+          toucan = nil
+        }
+      }
+    }
   }
   
   private func setupLabel() {

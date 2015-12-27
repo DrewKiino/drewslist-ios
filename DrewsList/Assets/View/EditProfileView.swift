@@ -17,27 +17,29 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
   
-  public override func viewWillAppear(animated: Bool) {
-    controller.readRealmUser()
-  }
   
-  public override func viewWillDisappear(animated: Bool) {
-    controller.writeRealmUser()
-  }
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     setupDataBinding()
     setUpTableView()
+    
+  }
+  
+  public override func viewWillAppear(animated: Bool) {
+    controller.readRealmUser()
+    print(model.user?.image)
+  }
+  
+  public override func viewWillDisappear(animated: Bool) {
+    controller.writeRealmUser()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     tableView?.fillSuperview()
   }
-  
-  
   
   // MARK: setup view functions
   
@@ -87,15 +89,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     switch (indexPath.row) {
       case 0:
         if let cell = tableView.dequeueReusableCellWithIdentifier("ChangeImageCell", forIndexPath: indexPath) as? ChangeImageCell {
-//          guard let user = model.user where user._id != nil != nil else { break }
           cell.label?.text = "Change Picture"
           cell.label?.textColor = UIColor.lightGrayColor()
           cell.label?.font = UIFont.asapRegular(14)
-          
        
-          ///////////////
-          //cell.setupUserImage(model.user)
-          ///////////////
+          cell.setupUser(model.user)
           
           cell._didSelectCell.listen( self ) { [weak self] bool in
             self?.presentImagePicker()
