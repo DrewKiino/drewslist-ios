@@ -27,7 +27,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
   private var searchBarImageView: UIImageView?
   
   //  School List
-  private var tableView: UITableView?
+  private var tableView: DLTableView?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -125,11 +125,9 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   private func setupTableView() {
-    tableView = UITableView()
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+    tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
-    //    tableView?.separatorColor = .clearColor()
     view.addSubview(tableView!)
   }
   
@@ -171,40 +169,102 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     
     let duration: NSTimeInterval = 0.7
     
-    let cell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
-    cell.textLabel?.text = model.users[indexPath.row].getName()
-    cell.textLabel?.font = .asapRegular(12)
-    cell.textLabel?.adjustsFontSizeToFitWidth = true
-    cell.textLabel?.minimumScaleFactor = 0.5
-    cell.imageView?.dl_setImageFromUrl(model.users[indexPath.row].image) { [weak cell] image, error, cache, url in
-      Async.background { [weak cell] in
-            log.debug("mark2")
-        // NOTE: correct way to handle memory management with toucan
-        // init toucan and pass in the arguments directly in the parameter headers
-        // do the resizing in the background
-        var toucan: Toucan? = Toucan(image: image).resize(cell?.imageView?.frame.size, fitMode: .Crop)
-        
-        Async.main { [weak cell] in
-            log.debug("mark3")
-          
-          cell?.imageView?.alpha = 0.0
-          
-          cell?.imageView?.image = toucan?.image
-          
-          UIView.animateWithDuration(duration) { [weak cell] in
-            log.debug(cell?.frame.size)
-            cell?.imageView?.alpha = 1.0
-          }
-          
-          // deinit toucan
-          toucan = nil
-        }
-      }
+    if let cell = tableView.dequeueReusableCellWithIdentifier("UserCell", forIndexPath: indexPath) as? UserCell {
+      return cell
     }
-    return cell
+//    cell.textLabel?.text = model.users[indexPath.row].getName()
+//    cell.textLabel?.font = .asapRegular(12)
+//    cell.textLabel?.adjustsFontSizeToFitWidth = true
+//    cell.textLabel?.minimumScaleFactor = 0.5
+//    cell.imageView?.dl_setImageFromUrl(model.users[indexPath.row].image) { [weak cell] image, error, cache, url in
+//      Async.background { [weak cell] in
+//        // NOTE: correct way to handle memory management with toucan
+//        // init toucan and pass in the arguments directly in the parameter headers
+//        // do the resizing in the background
+//        var toucan: Toucan? = Toucan(image: image).resize(cell?.imageView?.frame.size, fitMode: .Crop)
+//        
+//        Async.main { [weak cell] in
+//          
+//          cell?.imageView?.alpha = 0.0
+//          
+//          cell?.imageView?.image = toucan?.image
+//          
+//          UIView.animateWithDuration(duration) { [weak cell] in
+//            log.debug(cell?.frame.size)
+//            cell?.imageView?.alpha = 1.0
+//          }
+//          
+//          // deinit toucan
+//          toucan = nil
+//        }
+//      }
+//    }
+    return DLTableViewCell()
   }
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     model.user = model.users[indexPath.row]
   }
 }
+
+public class UserCell: DLTableViewCell {
+  
+  public var profileImageView: UIImageView?
+  public var usernameLabel: UILabel?
+  
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupProfileImageView()
+    setupUsernameLabel()
+    
+    profileImageView?.anchorAndFillEdge(.Left, xPad: 2, yPad: 2, otherSize: 36)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+  }
+  
+  private func setupProfileImageView() {
+    profileImageView = UIImageView()
+    addSubview(profileImageView!)
+  }
+  
+  private func setupUsernameLabel() {
+    usernameLabel = UILabel()
+    addSubview(usernameLabel!)
+  }
+  
+  
+  public func setUser(user: User?) {
+    guard let user = user else { return }
+    
+    
+    
+    
+    
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

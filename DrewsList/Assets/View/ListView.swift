@@ -250,7 +250,7 @@ public class ListerProfileViewCell: DLTableViewCell {
 //    backgroundColor = .whiteColor()
 //  }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
   }
   
@@ -407,7 +407,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     
     backgroundColor = .whiteColor()
   }

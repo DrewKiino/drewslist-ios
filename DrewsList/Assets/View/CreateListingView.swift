@@ -390,7 +390,7 @@ public class ToggleCell: DLTableViewCell {
     super.layoutSubviews()
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
     hideBothTopAndBottomBorders()
   }
@@ -535,7 +535,7 @@ public class TripleToggleCell: DLTableViewCell {
     rightToggleButton?.setImage(rightToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
     hideBothTopAndBottomBorders()
   }
@@ -679,7 +679,7 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
     hideBothTopAndBottomBorders()
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
   }
   
@@ -754,7 +754,7 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
     inputTextView?.anchorAndFillEdge(.Top, xPad: 14, yPad: 16, otherSize: bounds.height - 16)
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
     hideBothTopAndBottomBorders()
   }
@@ -828,7 +828,7 @@ public class BigButtonCell: DLTableViewCell {
     buttonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
   }
   
-  private func setupSelf() {
+  public override func setupSelf() {
     backgroundColor = .whiteColor()
   }
   

@@ -46,6 +46,9 @@ public class DLTableView: UITableView {
     // MARK: List Feed Cells
     registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
     
+    // MARK: Search Users
+    registerClass(UserCell.self, forHeaderFooterViewReuseIdentifier: "UserCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()
@@ -84,7 +87,7 @@ public class DLTableViewCell: UITableViewCell {
     separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 0.5)
   }
   
-  private func setupSelf() {
+  public func setupSelf() {
     backgroundColor = .clearColor()
     
     topBorder.backgroundColor = UIColor.tableViewNativeSeparatorColor().CGColor
@@ -158,7 +161,7 @@ public class PaddingCell: DLTableViewCell {
     super.init(coder: aDecoder)
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     
     showBothTopAndBottomBorders()
@@ -208,7 +211,7 @@ public class TitleCell: DLTableViewCell {
     super.layoutSubviews()
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
   }
@@ -259,7 +262,7 @@ public class FullTitleCell: DLTableViewCell {
     
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
@@ -334,7 +337,7 @@ public class SwitchCell: DLTableViewCell {
     
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
