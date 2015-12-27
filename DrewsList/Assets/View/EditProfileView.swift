@@ -29,7 +29,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   public override func viewWillAppear(animated: Bool) {
     controller.readRealmUser()
-    print(model.user?.image)
   }
   
   public override func viewWillDisappear(animated: Bool) {
@@ -72,7 +71,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     picker.delegate = self
     picker.sourceType = .PhotoLibrary
     picker.allowsEditing = false
-    //self.navigationController?.pushViewController(picker, animated: true)
     presentViewController(picker, animated: true, completion: nil)
   }
   
@@ -157,8 +155,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     picker: UIImagePickerController,
     didFinishPickingMediaWithInfo info: [String : AnyObject])
   {
-    // expecting image here?
-    // model.profileImage = image
+    if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+      model.profileImage = pickedImage
+    }
+   // TODO: change image from image picker to server URL
+    dismissViewControllerAnimated(true, completion: nil)
   }
   
   public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
