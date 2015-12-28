@@ -657,7 +657,7 @@ public class SliderCell: DLTableViewCell {
     case right
   }
  
-  private let container = UIView?()
+  private var container = UIView?()
   private var slider = UISlider?()
   private var leftFace = UIImageView?()
   private var middleFace = UIImageView?()
@@ -675,37 +675,42 @@ public class SliderCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    slider?.anchorAndFillEdge(.Left, xPad: 14, yPad: 50, otherSize: 380)
-    leftFace?.alignAndFill(align: .UnderMatchingLeft, relativeTo: slider!, padding: 14)
-    leftFace?.anchorInCorner(.BottomLeft, xPad: 14, yPad: 14, width: 25, height: 25)
-    middleFace?.alignAndFill(align: .UnderCentered, relativeTo: slider!, padding: 14)
+    container?.anchorToEdge(.Left, padding: 14, width: self.bounds.width, height: 150)
+    slider?.anchorAndFillEdge(.Left, xPad: 14, yPad: 50, otherSize: 360)
+    leftFace?.anchorInCorner(.BottomLeft, xPad: 0, yPad: 0, width: 25, height: 25)
+    leftFace?.align(.UnderMatchingLeft, relativeTo: slider!, padding: 0, width: 25, height: 25)
     middleFace?.anchorInCenter(width: 25, height: 25)
-    rightFace?.alignAndFill(align: .UnderMatchingRight, relativeTo: slider!, padding: 14)
-    rightFace?.anchorInCorner(.BottomRight, xPad: 14, yPad: 14, width: 25, height: 25)
+    middleFace?.align(.UnderCentered, relativeTo: slider!, padding: 0, width: 25, height: 25)
+    rightFace?.anchorInCorner(.BottomRight, xPad: 0, yPad: 0, width: 25, height: 25)
+    rightFace?.align(.UnderMatchingRight, relativeTo: slider!, padding: 0, width: 25, height: 25)
   }
   
   public func setupSlider() {
+    container = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: 150))
     slider = UISlider(frame: self.bounds)
     slider!.minimumValue = 0
+    slider!.minimumTrackTintColor = UIColor.juicyOrange()
     slider!.maximumValue = 2
+    slider!.maximumTrackTintColor = UIColor.juicyOrange()
     slider!.setValue(1.0, animated: false)
     slider!.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
-    addSubview(slider!)
+    container!.addSubview(slider!)
   }
   
   public func setupFaces() {
     leftFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition1")).image)
     leftFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
-    addSubview(leftFace!)
-    
+    container?.addSubview(leftFace!)
+  
     middleFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition2")).image)
     middleFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
-    addSubview(leftFace!)
+    container?.addSubview(middleFace!)
 
     rightFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition3")).image)
     rightFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
-    addSubview(rightFace!)
+    container?.addSubview(rightFace!)
     
+    addSubview(container!)
   }
   
   public func sliderChanged(sender: UISlider) {
