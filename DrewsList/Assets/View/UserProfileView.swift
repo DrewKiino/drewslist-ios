@@ -416,7 +416,10 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
       
       // if the offset is greater than 64, then call the server to update the user object in the model
-      if offset >= 128 && model.shouldRefrainFromCallingServer == false { controller.getUserFromServer() }
+      if offset >= 128 && model.shouldRefrainFromCallingServer == false {
+        controller.readRealmUser()
+        controller.getUserFromServer()
+      }
     }
   }
   

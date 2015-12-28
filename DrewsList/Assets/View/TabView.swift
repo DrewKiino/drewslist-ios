@@ -26,6 +26,7 @@ public class TabView: UITabBarController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupDataBinding()
     setupCommunityTab()
     setupChatView()
     setupISBNScannerView()
@@ -41,6 +42,13 @@ public class TabView: UITabBarController {
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     checkIfUserIsLoggedIn()
+  }
+  
+  private func setupDataBinding() {
+    model._shouldLogout.removeAllListeners()
+    model._shouldLogout.listen(self) { [weak self] bool in
+      if bool == true { self?.presentViewController(LoginView(), animated: false, completion: nil) }
+    }
   }
   
   private func setupViewControllers() {

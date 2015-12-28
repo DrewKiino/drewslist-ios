@@ -270,6 +270,10 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       isbn = nil
     }
   }
+  
+  public override func prefersStatusBarHidden() -> Bool {
+    return true
+  }
 }
 
 public class DiscoveredBarCodeView: UIView {
