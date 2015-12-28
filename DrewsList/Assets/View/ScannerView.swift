@@ -64,7 +64,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       else { return }
     
     topView.groupInCorner(group: .Horizontal, views: [helpButton], inCorner: .TopLeft, padding: 20, width: 48, height: 48)
-    topView.groupInCorner(group: .Horizontal, views: [searchButton], inCorner: .TopRight, padding: 20, width: 48, height: 48)
+    topView.groupInCorner(group: .Horizontal, views: [searchButton], inCorner: .BottomRight, padding: 20, width: 48, height: 48)
     helpButton.setImage(Toucan(image: helpImage).resize(helpButton.frame.size).image, forState: .Normal)
     searchButton.setImage(Toucan(image: searchImage).resize(searchButton.frame.size).image, forState: .Normal)
   }
@@ -252,6 +252,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
         let view = view,
         let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
         else { return }
+      print(identifiedBorder)
       
       identifiedBorder.drawBorder(identifiedCorners)
       identifiedBorder.frame = transformed.bounds
