@@ -17,10 +17,11 @@ private extension UITableViewRowAnimation {
 }
 
 
-public class AccountSettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public class AccountSettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource{
   
   private let controller = AccountSettingsController()
   private var model: AccountSettingsModel { get { return controller.getModel() } }
+
   
   private var tableView: DLTableView?
   
@@ -45,6 +46,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
+    title = "Account Setting"
   }
   
   private func setupTableView() {
@@ -59,13 +61,13 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
       case 9: return 100
-      case 10: return 0
+      case 12: return 0
       default: return 48
     }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 11
+    return 12
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -114,7 +116,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.titleButton?.setTitle("Log in with Facebook", forState: .Normal)
+        cell.titleButton?.setTitle("FaceBook Coming Soon", forState: .Normal)
         cell._didSelectCell.listen(self) { bool in
           log.debug(bool)
         }
@@ -137,11 +139,39 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
           log.debug(bool)
           cell?.toggleSwitch()
         }
-        
+        cell.hideSeparatorLine()
         return cell
       }
       break
     case 9:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as? SwitchCell {
+         cell.titleLabel?.text = "Email Notificiations"
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak cell] bool in
+          log.debug(bool)
+          cell?.toggleSwitch()
+        }
+        cell.hideSeparatorLine()
+        return cell
+      }
+      break
+    case 10:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as?
+        PaddingCell { cell.paddingLabel?.text = "Deactivation of Account"
+          return cell
+      }
+      break
+      //need to DBG UIFontView
+    case 11:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
+        cell.textLabel?.text = "Deactivate Account"
+        cell._didSelectCell.listen(self) { bool in
+          log.debug(bool)
+      }
+      return cell
+      }
+      break
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBottomBorder()
         return cell
@@ -162,10 +192,20 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   func configure() {
     title = "Account Settings"
-    tableView?.contentInset.bottom = 30
+    tableView?.contentInset.bottom = 40
   }
+
   
-  private func setupPushPermissions(view: UIView) {
+  
+  
+  
+  
+  
+
+  
+  
+  private func setupPushPermissions() {
+    controller.permissionsAppear()
   }
   
   private func setupEmailPermissions(view: UIView) {
