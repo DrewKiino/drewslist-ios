@@ -41,7 +41,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     headerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
     headerTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
     cancelButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
-    //    chooseButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
+    //chooseButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
     
     searchBarContainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: headerView!, padding: 0, height: 36)
     searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 48)

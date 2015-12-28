@@ -8,11 +8,8 @@
 
 import UIKit
 import Signals
-<<<<<<< HEAD
-//
-=======
 import RealmSwift
->>>>>>> master
+
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
@@ -32,9 +29,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
-<<<<<<< HEAD
+
     // init the root view
-    let tabView = LoginView()
+    let tabView = TabView()
     
     /*
     * Use this code to get the bounds of the screen
@@ -52,9 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // commit change
     window!.makeKeyAndVisible()
-=======
     setupRootView()
->>>>>>> master
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
@@ -109,8 +104,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-//    var tabView: TabView? = TabView()
-    var tabView: SearchUserView? = SearchUserView()
+    //var tabView: TabView? = TabView()
+    var tabView: AccountSettingsView? = AccountSettingsView()
     
     /*
     * Use this code to get the bounds of the screen
