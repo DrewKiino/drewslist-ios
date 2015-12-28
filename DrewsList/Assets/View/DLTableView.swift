@@ -821,6 +821,8 @@ public class BookViewCell: DLTableViewCell {
   
   public var bookView: BookView?
   
+  public let _cellPressed = Signal<Bool>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupBookView()
@@ -844,19 +846,24 @@ public class BookViewCell: DLTableViewCell {
   public func setBook(book: Book?) {
     bookView?.setBook(book)
   }
+  
+  public func cellPressed() {
+    _cellPressed => true
+  }
 }
 
 public class ListFeedCell: DLTableViewCell {
   
   public var listView: ListView?
   
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupListView()
-  }
+  public let _cellPressed = Signal<Bool>()
   
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupListView()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
   }
   
   public override func layoutSubviews() {
@@ -869,6 +876,10 @@ public class ListFeedCell: DLTableViewCell {
     listView = ListView()
     listView?.tableView?.scrollEnabled = false
     addSubview(listView!)
+  }
+  
+  public func cellPressed() {
+    _cellPressed => true
   }
 }
 

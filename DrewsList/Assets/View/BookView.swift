@@ -46,7 +46,9 @@ public class BookView: UIView {
     setupSelf()
   }
   
-  public func setBook(book: Book?) { controller.model.book = book }
+  public func setBook(book: Book?) {
+    controller.model.book = book
+  }
   
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
   
@@ -160,22 +162,26 @@ public class BookView: UIView {
     }
     
     // MARK: Images
-    Async.background { [weak self, weak book] in
-      
-      var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.imageView?.frame.size, fitMode: .Crop)
-      
-      Async.main { [weak self] in
+//    Async.background { [weak self, weak book] in
+//      
+//      var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.imageView?.frame.size, fitMode: .Crop)
+//      
+//      Async.main { [weak self] in
+    
+//        if self?.imageView?.image == nil && self?.imageViewUrl != "book-placeholder" {
+//          
+//          self?.imageView?.image = toucan?.image
+//          
+//          self?.imageViewUrl = "book-placeholder"
+//          
+//          UIView.animate { [weak self] in
+//            self?.imageView?.alpha = 1.0
+//          }
+//        }
         
-        if self?.imageView?.image == nil {
-          self?.imageView?.image = toucan?.image
-          UIView.animate { [weak self] in
-            self?.imageView?.alpha = 1.0
-          }
-        }
-        
-        toucan = nil
-        
-        if book?.getImageUrl() != nil && self?.imageViewUrl != book?.getImageUrl() {
+//        toucan = nil
+    
+        if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
           
           UIImageView.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, finished, nsurl in
             Async.background { [weak self] in
@@ -202,8 +208,8 @@ public class BookView: UIView {
             }
           }
         }
-      }
-    }
+//      }
+//    }
     
     Async.background { [weak self] in
     

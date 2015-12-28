@@ -241,8 +241,12 @@ public class UserCell: DLTableViewCell {
       
       Async.main { [weak self] in
         
-        if self?.profileImageView?.image == nil { self?.profileImageView?.image = toucan?.image }
-      
+        // if image is nil, set the place holder for now
+        if self?.profileImageView?.image == nil {
+          self?.profileImageView?.image = toucan?.image
+          self?.profileImageUrl = "profile-placeholder"
+        }
+        
         toucan = nil
         
         if user?.image != nil && self?.profileImageUrl != user?.image {
