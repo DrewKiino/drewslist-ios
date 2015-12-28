@@ -25,6 +25,9 @@
 		4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE51C27623900CECCC6 /* EditProfileModel.swift */; };
 		4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE71C27624000CECCC6 /* EditProfileController.swift */; };
 		4F966CEC1C27C32A00CECCC6 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */; };
+		4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A041C309B3200091408 /* BookProfileView.swift */; };
+		4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A061C309B4500091408 /* BookProfileModel.swift */; };
+		4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A081C309B5600091408 /* BookProfileController.swift */; };
 		C7F93448B98F7A7B0B0069F7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */; };
 		EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF51C1E4DC80088ACBF /* ListView.swift */; };
@@ -135,6 +138,9 @@
 		4F966CE51C27623900CECCC6 /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
 		4F966CE71C27624000CECCC6 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		4FCF2A041C309B3200091408 /* BookProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileView.swift; sourceTree = "<group>"; };
+		4FCF2A061C309B4500091408 /* BookProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileModel.swift; sourceTree = "<group>"; };
+		4FCF2A081C309B5600091408 /* BookProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileController.swift; sourceTree = "<group>"; };
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		94B265067F38D8EFF1135126 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetAlert.swift; sourceTree = "<group>"; };
@@ -331,6 +337,7 @@
 				EE3D67A61C2BF72800299F34 /* SearchSchoolModel.swift */,
 				EE53E75E1C2D00DB00A32613 /* TabModel.swift */,
 				EEC3E04C1C2DFE3200D7843C /* SearchUserModel.swift */,
+				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -360,6 +367,7 @@
 				EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */,
 				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
 				EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */,
+				4FCF2A041C309B3200091408 /* BookProfileView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -384,6 +392,7 @@
 				EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */,
 				EE53E75C1C2D00C900A32613 /* TabController.swift */,
 				EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */,
+				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -774,6 +783,7 @@
 				EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */,
 				EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */,
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
+				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
 				EEE2AA061C28A1930093DB46 /* AccountSettingView2.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
@@ -810,6 +820,7 @@
 				EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */,
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
+				4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
 				EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */,
@@ -828,6 +839,7 @@
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
 				EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
+				4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
 				4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
