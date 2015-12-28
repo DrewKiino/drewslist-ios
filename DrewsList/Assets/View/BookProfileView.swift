@@ -68,40 +68,31 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 5
+    return 3
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     let cell : UITableViewCell = UITableViewCell()
     
-//    switch (indexPath.row) {
-//    case 0:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("ChangeImageCell", forIndexPath: indexPath) as? ChangeImageCell {
-//        cell.label?.text = "Change Picture"
-//        cell.label?.textColor = UIColor.lightGrayColor()
-//        cell.label?.font = UIFont.asapRegular(14)
-//        
-//        cell.setupUser(model.user)
-//        
-//        cell._didSelectCell.listen( self ) { [weak self] bool in
-//          self?.presentImagePicker()
-//        }
-//        return cell
-//      }
-//      break;
-//    case 1:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-//        cell.inputTextField?.text = model.user?.firstName
-//        cell.inputTextField?.textColor = UIColor.lightGrayColor()
-//        cell.inputTextField?.font = UIFont.asapRegular(14)
-//        cell._inputTextFieldString.listen(self) { [weak self] string in
-//          self?.controller.setFirstName(string)
-//        }
-//        return cell
-//      }
-//      break;
-//      
+    switch (indexPath.row) {
+    case 0:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+        cell.titleLabel?.text = model.book?.authors.first?.name
+        cell.titleLabel?.font = UIFont.asapItalic(12)
+        return cell
+      }
+      break;
+    case 1:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+        cell.titleLabel?.text = model.book?.title
+        cell.titleLabel?.font = UIFont.asapBold(20)
+        return cell
+      }
+      break;
+      
 //    case 2:
 //      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
 //        cell.inputTextField?.text = model.user?.lastName
@@ -125,28 +116,42 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
 //        return cell
 //      }
 //      break;
-//    case 4:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-//        cell.backgroundColor = UIColor.whiteColor()
-//        cell.hideBothTopAndBottomBorders()
-//        cell.selectionStyle = .None
-//        return cell
-//      }
-//      break;
-//    default:
-//      break;
-//    }
-//    
+    case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.backgroundColor = UIColor.whiteColor()
+        cell.hideBothTopAndBottomBorders()
+        cell.selectionStyle = .None
+        return cell
+      }
+      break;
+    default:
+      break;
+    }
+    
     cell.textLabel?.textColor = UIColor.lightGrayColor()
     cell.textLabel?.font = UIFont.asapRegular(14)
     return cell
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    if (indexPath.row == 4){
-      return screen.height
-    } else {
-      return screen.height / 15
+//    if (indexPath.row == 0){
+//      return screen.height / 3
+//    } else {
+//      return screen.height / 15
+//    }
+    
+    switch (indexPath.row) {
+    case 0:
+      return screen.height / 35
+      break;
+//    case 1:
+//      break;
+//    case 2:
+//      break;
+    default:
+      return screen.height / 30
+      break;
+    
     }
   }
   

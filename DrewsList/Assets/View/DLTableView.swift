@@ -24,6 +24,9 @@ public class DLTableView: UITableView {
   
   private func setupSelf() {
     
+    // MARK: Book Cells
+    registerClass(BookDetailCell.self, forCellReuseIdentifier: "BookDetailCell")
+ 
     // MARK: Settings Cells
     registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
     
@@ -872,7 +875,34 @@ public class ListFeedCell: DLTableViewCell {
   }
 }
 
-
+public class BookDetailCell: DLTableViewCell {
+  
+  public var authorsLabel: UILabel?
+//  public var 
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.fillSuperview()
+  }
+  
+  private func setupView() {
+    
+    view = UIView()
+    
+    addSubview(view!)
+  }
+}
 
 
 public class ChangeImageCell: DLTableViewCell {
