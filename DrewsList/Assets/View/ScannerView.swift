@@ -10,7 +10,6 @@ import UIKit
 import AVFoundation
 import Neon
 import Async
-import Toucan
 
 public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
   

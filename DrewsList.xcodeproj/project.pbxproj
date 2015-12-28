@@ -346,15 +346,12 @@
 				3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */,
 				EE3D67A61C2BF72800299F34 /* SearchSchoolModel.swift */,
 				EEC3E04C1C2DFE3200D7843C /* SearchUserModel.swift */,
-<<<<<<< HEAD
 				399971DB1C14D15A008C30FC /* SignUpModel.swift */,
 				EE53E75E1C2D00DB00A32613 /* TabModel.swift */,
 				EED779E41C151DF800D172BE /* UserProfileListingModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE67C1591C30B05C00AC60DB /* SearchBookModel.swift */,
-=======
 				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
->>>>>>> integrate/profile-settings
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -381,15 +378,12 @@
 				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
 				EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */,
 				EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */,
-<<<<<<< HEAD
 				4F18A07D1C275D75006169F5 /* SettingsView.swift */,
 				399971D91C14CF0A008C30FC /* SignUpView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				EE67C1571C30B05700AC60DB /* SearchBookView.swift */,
-=======
 				4FCF2A041C309B3200091408 /* BookProfileView.swift */,
->>>>>>> integrate/profile-settings
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -411,15 +405,12 @@
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */,
 				EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */,
-<<<<<<< HEAD
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EE53E75C1C2D00C900A32613 /* TabController.swift */,
 				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
-=======
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
->>>>>>> integrate/profile-settings
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -811,11 +802,8 @@
 				EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */,
 				EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */,
 				3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */,
-<<<<<<< HEAD
 				EE2824CF1C30A43000969E74 /* EditListingView.swift in Sources */,
-=======
 				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
->>>>>>> integrate/profile-settings
 				EEE2AA061C28A1930093DB46 /* AccountSettingView2.swift in Sources */,
 				EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,

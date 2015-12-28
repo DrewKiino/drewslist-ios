@@ -53,7 +53,8 @@ public class TabView: UITabBarController {
     // set view controllers
     viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
     
-    selectedIndex = 2
+    // make the scanner view the main view
+//    selectedIndex = 2
     
     // dealloc reference view controllers
     communityView = nil
