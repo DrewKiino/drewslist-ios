@@ -40,6 +40,7 @@ public class DLTableView: UITableView {
     registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
     registerClass(ToggleCell.self, forCellReuseIdentifier: "ToggleCell")
     registerClass(TripleToggleCell.self, forCellReuseIdentifier: "TripleToggleCell")
+    registerClass(SliderCell.self, forCellReuseIdentifier: "SliderCell")
     
     registerClass(InputTextFieldCell.self, forCellReuseIdentifier: "InputTextFieldCell")
     registerClass(InputTextViewCell.self, forCellReuseIdentifier: "InputTextViewCell")

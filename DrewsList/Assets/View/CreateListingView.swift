@@ -210,24 +210,24 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       }
       break
     case 7:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("TripleToggleCell", forIndexPath: indexPath) as? TripleToggleCell {
-        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        cell._didSelectCell.removeAllListeners()
-        cell._didSelectCell.listen(self) { [weak self] toggle in
-          switch toggle {
-          case .Left:
-            self?.model.listing?.condition = "1"
-            return
-          case .Middle:
-            self?.model.listing?.condition = "2"
-            return
-          case .Right:
-            self?.model.listing?.condition = "3"
-            return
-          }
-        }
+      if let cell = tableView.dequeueReusableCellWithIdentifier("SliderCell", forIndexPath: indexPath) as? SliderCell {
+//        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//        cell._didSelectCell.removeAllListeners()
+//        cell._didSelectCell.listen(self) { [weak self] toggle in
+//          switch toggle {
+//          case .Left:
+//            self?.model.listing?.condition = "1"
+//            return
+//          case .Middle:
+//            self?.model.listing?.condition = "2"
+//            return
+//          case .Right:
+//            self?.model.listing?.condition = "3"
+//            return
+//          }
+//        }
         return cell
       }
       break
@@ -648,6 +648,75 @@ public class TripleToggleCell: DLTableViewCell {
   }
 }
 
+public class SliderCell: DLTableViewCell {
+  
+  // Could add toggle to switch highlight
+  public enum Toggle {
+    case left
+    case middle
+    case right
+  }
+ 
+  private var container = UIView?()
+  private var slider = UISlider?()
+  private var leftFace = UIImageView?()
+  private var middleFace = UIImageView?()
+  private var rightFace = UIImageView?()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSlider()
+    setupFaces()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    container?.anchorToEdge(.Left, padding: 14, width: self.bounds.width, height: 150)
+    slider?.anchorAndFillEdge(.Left, xPad: 14, yPad: 50, otherSize: 360)
+    leftFace?.anchorInCorner(.BottomLeft, xPad: 0, yPad: 0, width: 25, height: 25)
+    leftFace?.align(.UnderMatchingLeft, relativeTo: slider!, padding: 0, width: 25, height: 25)
+    middleFace?.anchorInCenter(width: 25, height: 25)
+    middleFace?.align(.UnderCentered, relativeTo: slider!, padding: 0, width: 25, height: 25)
+    rightFace?.anchorInCorner(.BottomRight, xPad: 0, yPad: 0, width: 25, height: 25)
+    rightFace?.align(.UnderMatchingRight, relativeTo: slider!, padding: 0, width: 25, height: 25)
+  }
+  
+  public func setupSlider() {
+    container = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: 150))
+    slider = UISlider(frame: self.bounds)
+    slider!.minimumValue = 0
+    slider!.minimumTrackTintColor = UIColor.juicyOrange()
+    slider!.maximumValue = 2
+    slider!.maximumTrackTintColor = UIColor.juicyOrange()
+    slider!.setValue(1.0, animated: false)
+    slider!.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+    container!.addSubview(slider!)
+  }
+  
+  public func setupFaces() {
+    leftFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition1")).image)
+    leftFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(leftFace!)
+  
+    middleFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition2")).image)
+    middleFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(middleFace!)
+
+    rightFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition3")).image)
+    rightFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(rightFace!)
+    
+    addSubview(container!)
+  }
+  
+  public func sliderChanged(sender: UISlider) {
+    slider!.value = roundf(slider!.value)
+  }
+}
 
 public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
