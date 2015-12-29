@@ -38,6 +38,7 @@ public class DLTableView: UITableView {
     registerClass(TitleCell.self, forCellReuseIdentifier: "TitleCell")
     registerClass(FullTitleCell.self, forCellReuseIdentifier: "FullTitleCell")
     registerClass(SwitchCell.self, forCellReuseIdentifier: "SwitchCell")
+    registerClass(ImageCell.self, forCellReuseIdentifier: "ImageCell")
     
     // MARK: Create Listing View Cells
     registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
@@ -421,6 +422,32 @@ public class SwitchCell: DLTableViewCell {
       if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
     }
   }
+}
+
+public class ImageCell: DLTableViewCell {
+  
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 8)
+  }
+  
+  private func setupView() {
+    view = UIView()
+    addSubview(view!)
+  }
+  
 }
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
