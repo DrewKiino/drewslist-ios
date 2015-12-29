@@ -339,7 +339,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     signupButton?.addSubview(signupButtonIndicator!)
     
     signupButtonLabel = UILabel()
-    signupButtonLabel?.text =  "Signup"
+    signupButtonLabel?.text =  "Sign up"
     signupButtonLabel?.textAlignment = .Center
     signupButtonLabel?.textColor = .whiteColor()
     signupButtonLabel?.font = .asapRegular(12)
@@ -356,7 +356,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     loginOption?.titleLabel?.font = .asapRegular(10)
     loginOption?.setTitleColor(.whiteColor(), forState: .Normal)
     loginOption?.setTitle("Login", forState: .Normal)
-    loginOption?.contentHorizontalAlignment = .Left
+    loginOption?.contentHorizontalAlignment = .Center
     loginOption?.addTarget(self, action: "loginButtonPressed", forControlEvents: .TouchUpInside)
     optionsContrainer?.addSubview(loginOption!)
   }
