@@ -51,7 +51,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     Pscope.headerLabel.text = "Hey Book Worm!"
     Pscope.bodyLabel.text = "Do you Want Notifications From Drew's List? "
     Pscope.addPermission(NotificationsPermission(), message: "Do you want Push & Email Notification Enabled?")
-    Pscope.addPermission(LocationWhileInUsePermission(), message: "Do you want to Integrate your Facebook")
+    Pscope.addPermission(ContactsPermission(), message: "Do you want to Integrate your Facebook")
     
     
     //Show Dialog and Callbacks
@@ -62,6 +62,22 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         
         
       })
+    
+    
+    //Unified Permission API
+    func checkNotification() {
+      switch PermissionScope().statusNotifications(){
+      case .Unknown:
+        // ask
+        PermissionScope().requestNotifications()
+      case .Unauthorized, .Disabled:
+        // bummer
+        return
+      case .Authorized:
+        // thanks!
+        return
+      }
+    }
     
 
 
