@@ -266,12 +266,10 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
   }
   
   private override func setupSelf() {
     super.setupSelf()
-    
     backgroundColor = .whiteColor()
   }
   
