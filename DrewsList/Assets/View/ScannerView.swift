@@ -21,6 +21,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   public var identifiedBorder: DiscoveredBarCodeView?
   public var shouldResetTimer = true
   public var session: AVCaptureSession?
+  
+  private var focusImageView: UIImageView?
 
   private var topView: UIView?
   private var helpButton: UIButton?
@@ -37,6 +39,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     setupTopView()
     setupHelpButton()
     setupSearchButton()
+    setupFocusImageView()
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -55,17 +58,15 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    guard let helpButton = helpButton,
-      let searchButton = searchButton,
-      let topView = topView,
-      let helpImage = UIImage(named: "help-button"),
-      let searchImage = UIImage(named: "search-button")
-      else { return }
+  
+    topView?.groupInCorner(group: .Horizontal, views: [searchButton!], inCorner: .BottomRight, padding: 20, width: 48, height: 48)
+    helpButton?.setImage(Toucan(image: UIImage(named: "help-button")).resize(helpButton!.frame.size).image, forState: .Normal)
+    searchButton?.setImage(Toucan(image: UIImage(named: "search-button")).resize(searchButton!.frame.size).image, forState: .Normal)
     
-    topView.groupInCorner(group: .Horizontal, views: [helpButton], inCorner: .TopLeft, padding: 20, width: 48, height: 48)
-    topView.groupInCorner(group: .Horizontal, views: [searchButton], inCorner: .BottomRight, padding: 20, width: 48, height: 48)
-    helpButton.setImage(Toucan(image: helpImage).resize(helpButton.frame.size).image, forState: .Normal)
-    searchButton.setImage(Toucan(image: searchImage).resize(searchButton.frame.size).image, forState: .Normal)
+    focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
+    focusImageView?.center = CGPointMake(CGRectGetMidX(previewLayer!.frame), CGRectGetMidY(previewLayer!.frame))
+
+    focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image
   }
 
     // MARK: Setup
@@ -100,6 +101,11 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     searchButton?.layer.zPosition = 1.0
     searchButton?.addTarget(self, action: "searchButtonSelected", forControlEvents:  .TouchUpInside)
     topView?.addSubview(searchButton!)
+  }
+  
+  private func setupFocusImageView() {
+    focusImageView = UIImageView()
+    view.addSubview(focusImageView!)
   }
   
   public func toggleHelp() {
@@ -242,6 +248,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     return translatedPoints
   }
   
+  private var x: UIView?
+  
   public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
     for data in metadataObjects {
       
@@ -251,14 +259,17 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
         let view = view,
         let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
         else { return }
-      print(identifiedBorder)
       
-      identifiedBorder.drawBorder(identifiedCorners)
-      identifiedBorder.frame = transformed.bounds
-      identifiedBorder.alpha = 0.5
-      identifiedBorder.hidden = false
+//      identifiedBorder.drawBorder(identifiedCorners)
+//      identifiedBorder.frame = transformed.bounds
+//      identifiedBorder.alpha = 0.5
+//      identifiedBorder.hidden = false
       
-      resetTimer()
+//      resetTimer()
+      
+      UIView.animate { [weak self] in
+        self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
+      }
       
       // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
       var isbn: String? = metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }.first?.stringValue

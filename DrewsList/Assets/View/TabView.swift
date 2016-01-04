@@ -53,7 +53,7 @@ public class TabView: UITabBarController {
   
   private func setupViewControllers() {
     
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-1")).resize(CGSize(width: 24, height: 24))
     testView.tabBarItem = UITabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
 //    viewControllers = [userProfileView!, scannerView!, communityTab!, chatView!]
@@ -73,31 +73,31 @@ public class TabView: UITabBarController {
   }
   
   private func setupCommunityTab() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-1")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-1")).resize(CGSize(width: 24, height: 24))
     communityView?.tabBarItem = UITabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
   }
   
   private func setupChatView() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-4")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-4")).resize(CGSize(width: 24, height: 24))
     chatView?.tabBarItem = UITabBarItem(title: "Chat", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
   }
   
   private func setupISBNScannerView() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-3")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-3")).resize(CGSize(width: 24, height: 24))
     scannerView?.tabBarItem = UITabBarItem(title: "Scanner", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
   }
   
   private func setupActivityView() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-2")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-2")).resize(CGSize(width: 24, height: 24))
     activityView?.tabBarItem = UITabBarItem(title: "Activity", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
   }
   
   private func setupUserProfileView() {
-    var toucan: Toucan? = Toucan(image: UIImage(named: "TabBarIcons-5")).resize(CGSize(width: 24, height: 24))
+    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-5")).resize(CGSize(width: 24, height: 24))
     userProfileView?.tabBarItem = UITabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
   }
