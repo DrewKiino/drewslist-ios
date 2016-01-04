@@ -24,6 +24,9 @@ public class DLTableView: UITableView {
   
   private func setupSelf() {
     
+    // MARK: Book Cells
+    registerClass(BookDetailCell.self, forCellReuseIdentifier: "BookDetailCell")
+ 
     // MARK: Settings Cells
     registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
     
@@ -35,6 +38,7 @@ public class DLTableView: UITableView {
     registerClass(TitleCell.self, forCellReuseIdentifier: "TitleCell")
     registerClass(FullTitleCell.self, forCellReuseIdentifier: "FullTitleCell")
     registerClass(SwitchCell.self, forCellReuseIdentifier: "SwitchCell")
+    registerClass(ImageCell.self, forCellReuseIdentifier: "ImageCell")
     
     // MARK: Create Listing View Cells
     registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
@@ -269,12 +273,10 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
   }
   
   public override func setupSelf() {
     super.setupSelf()
-    
     backgroundColor = .whiteColor()
   }
   
@@ -425,6 +427,32 @@ public class SwitchCell: DLTableViewCell {
       if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
     }
   }
+}
+
+public class ImageCell: DLTableViewCell {
+  
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 8)
+  }
+  
+  private func setupView() {
+    view = UIView()
+    addSubview(view!)
+  }
+  
 }
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -890,7 +918,34 @@ public class ListFeedCell: DLTableViewCell {
   }
 }
 
-
+public class BookDetailCell: DLTableViewCell {
+  
+  public var authorsLabel: UILabel?
+//  public var 
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.fillSuperview()
+  }
+  
+  private func setupView() {
+    
+    view = UIView()
+    
+    addSubview(view!)
+  }
+}
 
 
 public class ChangeImageCell: DLTableViewCell {
