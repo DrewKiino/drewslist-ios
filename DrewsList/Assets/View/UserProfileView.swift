@@ -340,7 +340,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   // MARK: Button Action
   
   public func settingsButtonPressed(){
-    rootView?.navigationController?.pushViewController(SettingsView(), animated: true)
+//    rootView?.navigationController?.pushViewController(SettingsView(), animated: true)
   }
   
   // MARK: Table View Delegates
