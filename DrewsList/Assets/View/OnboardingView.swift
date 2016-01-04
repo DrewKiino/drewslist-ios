@@ -130,7 +130,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   public func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
     let currentIndex =  self.myViewControllers.indexOf(viewController)! + 1
     if currentIndex >= self.myViewControllers.count { return nil }
-    
     let currentView = self.myViewControllers[currentIndex]
     
     // clean subviews
