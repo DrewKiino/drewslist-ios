@@ -227,7 +227,6 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     model._listings.removeAllListeners()
     model._listings.listen(self) { [weak self] listings in
       self?.tableView?.reloadData()
-      self?.hideLoadingScreen()
     }
     
     model._listType.removeAllListeners()
@@ -235,6 +234,10 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       self?.model.listings.removeAll(keepCapacity: false)
       self?.controller.getListingsFromServer(0, listType: listType)
     }
+    
+//    model._shouldRefrainFromCallingServer.removeAllListeners()
+//    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+//    }
   }
   
   private func setupTableView() {
@@ -255,21 +258,29 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       
       return 325 + (height < 100 ? height : 100)
       
-    } else  { return 275 }
+    } else if indexPath.row < model.listings.count { return 275 }
+      
+    else { return 48 }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return model.listings.count
+    if model.listings.count > 0 { return model.listings.count + 1 }
+    else { return 0 }
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell {
+    if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
+      cell.showTopBorder()
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
         self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
       }
+      return cell
+      
+    } else if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+      cell.titleButton?.setTitle("Test", forState: .Normal)
       return cell
     }
     
@@ -278,9 +289,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
     guard let tableView = tableView else { return }
-    if tableView.contentOffset.y >= (tableView.contentSize.height - frame.size.height) &&
-        frame.height > 0 && controller.getModel().shouldLockView == false && controller.getModel().shouldRefrainFromCallingServer == false
-    {
+    if tableView.contentOffset.y >= (tableView.contentSize.height - frame.size.height) && frame.height > 0 {
       // user has scrolled to the bottom!
       // begin getting more data
       controller.getListingsFromServer(model.listings.count, listType: model.listType)

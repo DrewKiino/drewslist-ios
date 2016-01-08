@@ -13,7 +13,6 @@ import TextFieldEffects
 import Neon
 
 import SwiftyButton
-import Former
 
 
 final class DynamicHeightCell: UITableViewCell {

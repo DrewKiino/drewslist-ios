@@ -6,8 +6,8 @@
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
+/*
 import Foundation
-import Former
 import RealmSwift
 
 public class SettingsView: FormViewController {
@@ -18,6 +18,7 @@ public class SettingsView: FormViewController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    
     tableView.scrollEnabled = false
     
     let editProfileRow = LabelRowFormer<FormLabelCell>()
@@ -102,12 +103,12 @@ public class SettingsView: FormViewController {
   }
   
   private func disableRowSelected(rowFormer: RowFormer) {
-    guard let disableRow = rowFormer as? LabelRowFormer<FormLabelCell> else { return }
-    self.former.deselect(true)
-    self.former[1...2].flatMap { $0.rowFormers }.forEach { $0.enabled = !enabled }
-    disableRow.text = (enabled ? "Enable" : "Disable") + " All Cells"
-    disableRow.update()
-    self.enabled = !self.enabled
+//    guard let disableRow = rowFormer as? LabelRowFormer<FormLabelCell> else { return }
+//    self.former.deselect(true)
+//    self.former[1...2].flatMap { $0.rowFormers }.forEach { $0.enabled = !enabled }
+//    disableRow.text = (enabled ? "Enable" : "Disable") + " All Cells"
+//    disableRow.update()
+//    self.enabled = !self.enabled
   }
   
   
@@ -121,3 +122,5 @@ public class SettingsView: FormViewController {
 
 
 
+
+*/

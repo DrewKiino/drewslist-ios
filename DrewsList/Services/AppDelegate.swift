@@ -28,6 +28,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
+    // init the root view
+    let tabView = LoginView()
+    
+    /*
+    * Use this code to get the bounds of the screen
+    *
+    *       UIScreen.mainScreen().bounds
+    *
+    */
+    tabView.view.frame = UIScreen.mainScreen().bounds
+    
+    // set the window to match the screen's bounds
+    window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    
+    // set the root view as the window's root view
+    window!.rootViewController = tabView
+    
+    // commit change
+    window!.makeKeyAndVisible()
+    
     setupRootView()
     
     // on foreground, reset the badge number
@@ -83,8 +103,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-//    var tabView: TabView? = TabView()
-    var tabView: BookProfileView? = BookProfileView()
+    var tabView: TabView? = TabView()
+//    var tabView: SearchBookView? = SearchBookView()
+//    var tabView: SearchUserView? = SearchUserView()
     
     /*
     * Use this code to get the bounds of the screen

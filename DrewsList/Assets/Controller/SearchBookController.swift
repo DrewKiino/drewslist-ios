@@ -1,8 +1,8 @@
 //
-//  SearchUserController.swift
+//  SearchBookController.swift
 //  DrewsList
 //
-//  Created by Andrew Aquino on 12/25/15.
+//  Created by Andrew Aquino on 12/27/15.
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
@@ -11,21 +11,21 @@ import RealmSwift
 import Alamofire
 import SwiftyJSON
 
-public class SearchUserController {
+public class SearchBookController {
   
-  public let model = SearchUserModel.sharedInstance()
+  public let model = SearchBookModel.sharedInstance()
   
   private var refrainTimer: NSTimer?
   
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-      self?.searchSchool(string)
+//      self?.searchSchool()
     }
   }
   
-  public func searchSchool(query: String?) {
-    guard let queryString = createQueryString(query) where !model.shouldRefrainFromCallingServer else { return }
+  public func searchSchool() {
+    guard let queryString = createQueryString(model.searchString) where !model.shouldRefrainFromCallingServer else { return }
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -37,11 +37,15 @@ public class SearchUserController {
       if let error = error {
         log.error(error)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
-        var users: [User]? = []
-        for json in jsonArray { users?.append(User(json: json)) }
-        self?.model.users.removeAll(keepCapacity: false)
-        self?.model.users = users!
-        users = nil
+        
+        var books: [Book]? = []
+        
+        for json in jsonArray { books?.append(Book(json: json)) }
+        
+        self?.model.books.removeAll(keepCapacity: false)
+        self?.model.books = books!
+        
+        books = nil
       }
       
       // create a throttler
@@ -63,11 +67,21 @@ public class SearchUserController {
   }
   
   private func createQueryString(string: String?) -> String? {
-    guard let string = string where string.characters.count > 0 else {
-      model.users.removeAll(keepCapacity: false)
-      return nil
+    if let string = string where string.characters.count > 0 {
+      
+      if model.lastSearchString == string { return nil }
+      
+      model.lastSearchString = string
+      
+      var queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
+      
+      if queryString.hasSuffix("+") { queryString = String(queryString.characters.dropLast())         }
+      
+      return "\(ServerUrl.Local.getValue())/book/search?query=\(queryString)"
     }
-    let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
-    return "\(ServerUrl.Staging.getValue())/user?q=\(queryString)&limit=10"
+    
+    model.books.removeAll(keepCapacity: false)
+    
+    return nil
   }
 }
