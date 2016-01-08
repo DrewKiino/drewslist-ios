@@ -43,14 +43,14 @@ public class Book: Mappable {
   public let _ISBN13 = Signal<String?>()
   public var ISBN13: String? { didSet { _ISBN13 => ISBN13 } }
   
-  public let _pageCount = Signal<String?>()
-  public var pageCount: String? { didSet { _pageCount => pageCount } }
+  public let _pageCount = Signal<Int?>()
+  public var pageCount: Int? { didSet { _pageCount => pageCount } }
   
   public let _categories = Signal<String?>()
   public var categories: String? { didSet { _categories => categories } }
   
-  public let _averageRating = Signal<String?>()
-  public var averageRating: String? { didSet { _averageRating => averageRating } }
+  public let _averageRating = Signal<Double?>()
+  public var averageRating: Double? { didSet { _averageRating => averageRating } }
   
   public let _maturityRating = Signal<String?>()
   public var maturityRating: String? { didSet { _maturityRating => maturityRating } }
@@ -90,7 +90,10 @@ public class Book: Mappable {
   public let _bestSellerListing = Signal<String?>()
   public var bestSellerListing: String? { didSet { _bestSellerListing => bestSellerListing } }
   
+  
   public init() {}
+  
+  public init(_id: String?) { self._id = _id }
   
   public init(json: JSON) {
     if let json = json.dictionaryObject {
@@ -98,9 +101,7 @@ public class Book: Mappable {
     }
   }
   
-  public required init?(_ map: Map) {
-  
-  }
+  public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
     _id             <- map["_id"]
