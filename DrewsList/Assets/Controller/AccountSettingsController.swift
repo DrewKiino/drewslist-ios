@@ -22,8 +22,7 @@ public class AccountSettingsController {
 
   private let Pscope = PermissionScope()
   
-  
-  public init () {
+   public init () {
     initilize_Pscope()
   }
   

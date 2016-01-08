@@ -20,13 +20,13 @@ public class BookProfileController {
   private var view: BookProfileView?
   
   public func viewDidLoad() {
+    
+    log.debug(model.book)
     getBookFromServer()
   }
   
   public func setBookID(bookID: String?){
-    let book = Book()
-    model.book = book
-    model.book?._id = bookID
+    model.book = Book(_id: bookID)
   }
   
   public func getBookFromServer() {
@@ -41,6 +41,8 @@ public class BookProfileController {
         if let error = error {
           log.error(error)
         } else if let data = data, let json: JSON! = JSON(data: data) {
+          
+          log.debug(json)
           
           // create and  user object
           self?.model.book = Book(json: json)

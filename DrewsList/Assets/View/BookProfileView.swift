@@ -15,7 +15,11 @@ import Cosmos
 public class BookProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
 // FIXME: DEBUGGING
+<<<<<<< HEAD
   var messageArray:String = ""
+=======
+//  var messageArray:[String] = []
+>>>>>>> origin/integrate/Book-Profile
   
   private let controller = BookProfileController()
   private var model: BookProfileModel { get { return controller.model } }
@@ -25,9 +29,14 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    // MARK: Fixtures
+    // setup controller's databinding
+    setBook(Book(_id: "5689af1c9ee2ef1f0000097f"))
+    
     setUpTableView()
     setupDataBinding()
- 
+    
+    controller.viewDidLoad()
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -51,7 +60,11 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     tableView?.dataSource = self
     tableView?.rowHeight = UITableViewAutomaticDimension
     
+<<<<<<< HEAD
     
+=======
+//    messageArray = ["hSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt sliuyfg lsaiugf liasugf liausgdfliuasgdfliuasg fliuasgd lfiugsadl fiugasdlfiu gaslidhfb lisadhbcl agsydclbsydlichabsfygerlivuhs ligysdli fygsdli fgisy  isgd i ysd iyg isgd ilusdg lisdliugds liugsd liugsd liudg liugsd lfiugsd liugsdf liusdgf liusagf liusagl fiusdglf iusgl fiugsdli ufgalsidu fglisudg flisdug fliusdg fliusdg fliusgd fliugsd fliugsf liusdgf liusg."]
+>>>>>>> origin/integrate/Book-Profile
     
     
     
@@ -68,10 +81,13 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       self?.tableView!.rowHeight = UITableViewAutomaticDimension
       self?.tableView!.reloadData()
     }
+<<<<<<< HEAD
     // setup controller's databinding
     controller.setBookID("5689af1c9ee2ef1f00000976")
     controller.getBookFromServer()
     //messageArray = (model.book?.description)!
+=======
+>>>>>>> origin/integrate/Book-Profile
   }
   
   public func setBook(book: Book?) {
@@ -86,7 +102,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+<<<<<<< HEAD
     let cell : UITableViewCell = UITableViewCell()
+=======
+>>>>>>> origin/integrate/Book-Profile
     
     switch (indexPath.row) {
     case 0:
@@ -119,6 +138,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       break;
       
     case 2:
+<<<<<<< HEAD
       if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
         cell.backgroundColor = .whiteColor()
         let view = CosmosView()
@@ -133,6 +153,25 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         view.anchorAndFillEdge(.Left, xPad: screen.width / 30, yPad: 0, otherSize: 150)
         cell.addSubview(view)
 
+=======
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
+        
+        // if book's average rating exists, display
+        if let rating = model.book?.averageRating {
+          
+          cell.backgroundColor = .whiteColor()
+          let view = CosmosView()
+          view.rating = rating
+          view.settings.fillMode = .Precise
+          view.settings.borderColorEmpty = .juicyOrange()
+          view.settings.colorFilled = .juicyOrange()
+          view.anchorAndFillEdge(.Left, xPad: screen.width / 30, yPad: 0, otherSize: 150)
+          cell.addSubview(view)
+          
+        // else, display nothing or whichever you think is best for UX
+        } else {}
+        
+>>>>>>> origin/integrate/Book-Profile
         return cell
       }
       break;
@@ -215,6 +254,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         ////////////
         let pageCountLabel = UILabel()
         pageCountLabel.textColor = .sexyGray()
+<<<<<<< HEAD
         var pageCount = ""
         if model.book?.pageCount != nil {
           pageCount = (model.book?.pageCount)!
@@ -224,6 +264,16 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         mutstring5 = NSMutableAttributedString(string: pageCountString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
         mutstring5.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 12, length: pageCount.characters.count))
         pageCountLabel.attributedText = mutstring5
+=======
+        
+        if let pageCount = model.book?.pageCount {
+          let pageCountString = "Page Count: \(pageCount)"
+          var mutstring5 = NSMutableAttributedString()
+          mutstring5 = NSMutableAttributedString(string: pageCountString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
+          mutstring5.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 12, length: String(pageCount).characters.count))
+          pageCountLabel.attributedText = mutstring5
+        }
+>>>>>>> origin/integrate/Book-Profile
         
         ////////////
         let categoriesLabel = UILabel()
@@ -261,7 +311,9 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       }
       break;
     case 5:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell,
+          let description = model.book?.description
+      {
         cell.backgroundColor = .whiteColor()
         //cell.showSeparatorLine()
         cell.hideBothTopAndBottomBorders()
@@ -272,11 +324,14 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         //descriptionLabel.textAlignment = .Center
         descriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         descriptionLabel.textColor = .sexyGray()
+<<<<<<< HEAD
         
         var description = ""
         if model.book?.description != nil {
           description = (model.book?.description)!
         }
+=======
+>>>>>>> origin/integrate/Book-Profile
         
         let descriptionString = "Description\n" + description
         var mutstring = NSMutableAttributedString()
@@ -357,9 +412,9 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       break;
     }
     
-    cell.textLabel?.textColor = UIColor.lightGrayColor()
-    cell.textLabel?.font = UIFont.asapRegular(14)
-    return cell
+//    cell.textLabel?.textColor = UIColor.lightGrayColor()
+//    cell.textLabel?.font = UIFont.asapRegular(14)
+    return DLTableViewCell()
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -375,12 +430,17 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       return height + screen.width / 30 * 6
     case 5:
       // FIXME: DEBUGGING model.description instead of messageArray[1]
+<<<<<<< HEAD
       var description = ""
       if model.book?.description != nil {
         description = (model.book?.description)!
       } else { description = "Description of Book!" }
       let height:CGFloat = self.calculateHeightForString(description)
       return height
+=======
+      if let string = model.book?.description, let height: CGFloat! = self.calculateHeightForString(string) { return height }
+      return screen.height / 10
+>>>>>>> origin/integrate/Book-Profile
     case 6:
       return screen.height / 15
     case 7:
