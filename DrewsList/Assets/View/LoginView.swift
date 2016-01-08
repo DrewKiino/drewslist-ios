@@ -245,7 +245,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     signUpOption?.titleLabel?.font = .asapRegular(10)
     signUpOption?.setTitleColor(.whiteColor(), forState: .Normal)
     signUpOption?.setTitle("Sign-Up", forState: .Normal)
-    signUpOption?.contentHorizontalAlignment = .Left
+    signUpOption?.contentHorizontalAlignment = .Right
     signUpOption?.addTarget(self, action: "signupButtonPressed", forControlEvents: .TouchUpInside)
     optionsContrainer?.addSubview(signUpOption!)
     
@@ -253,7 +253,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     forgotPasswordOption?.titleLabel?.font = .asapRegular(10)
     forgotPasswordOption?.setTitleColor(.whiteColor(), forState: .Normal)
     forgotPasswordOption?.setTitle("|\tForgot Password?", forState: .Normal)
-    forgotPasswordOption?.contentHorizontalAlignment = .Left
+    forgotPasswordOption?.contentHorizontalAlignment = .Center
     optionsContrainer?.addSubview(forgotPasswordOption!)
   }
 

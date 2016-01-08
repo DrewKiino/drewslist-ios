@@ -85,6 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
 //    var tabView: TabView? = TabView()
     var tabView: BookProfileView? = BookProfileView()
+//    var tabView: SearchUserView? = SearchUserView()
     
     /*
     * Use this code to get the bounds of the screen

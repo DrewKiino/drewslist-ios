@@ -120,7 +120,7 @@ public class SignUpController {
           // create and  user object
           self?.model.user = User(json: json)
           // write user object to realm
-          self?.writeRealmUser()
+          self?.overwriteRealmUser()
         }
       }
       
@@ -144,5 +144,5 @@ public class SignUpController {
   public func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   // this one deletes all prior users
   // we should only have one user in database, and that should be the current user
-  public func writeRealmUser(){ try! Realm().write { try! Realm().deleteAll(); try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
+  public func overwriteRealmUser(){ try! Realm().write { try! Realm().deleteAll(); try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
 }
