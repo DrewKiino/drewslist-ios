@@ -107,7 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     //var tabView: TabView? = TabView()
-    var tabView: CommunityFeedView? = CommunityFeedView()
+    var tabView: CreateListingView? = CreateListingView()
     
     /*
     * Use this code to get the bounds of the screen

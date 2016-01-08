@@ -19,8 +19,6 @@ import Contacts
 import PermissionScope
 
 
-
-
 private extension UITableViewRowAnimation {
   
   static func names() -> [String] { return ["None", "Fade", "Right", "Left", "Top", "Bottom", "Middle", "Automatic"] }
@@ -64,6 +62,8 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       })
     
     
+    
+    
     //Unified Permission API
     func checkNotification() {
       switch PermissionScope().statusNotifications(){
@@ -79,8 +79,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       }
     }
     
-
-
     setupSelf()
     setupTableView()
     tableView?.fillSuperview()
