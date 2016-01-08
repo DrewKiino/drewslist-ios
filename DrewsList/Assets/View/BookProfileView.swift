@@ -15,7 +15,7 @@ import Cosmos
 public class BookProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
 // FIXME: DEBUGGING
-  var messageArray:[String] = []
+  var messageArray:String = ""
   
   private let controller = BookProfileController()
   private var model: BookProfileModel { get { return controller.model } }
@@ -51,7 +51,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     tableView?.dataSource = self
     tableView?.rowHeight = UITableViewAutomaticDimension
     
-    messageArray = ["hSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt sliuyfg lsaiugf liasugf liausgdfliuasgdfliuasg fliuasgd lfiugsadl fiugasdlfiu gaslidhfb lisadhbcl agsydclbsydlichabsfygerlivuhs ligysdli fygsdli fgisy  isgd i ysd iyg isgd ilusdg lisdliugds liugsd liugsd liudg liugsd lfiugsd liugsdf liusdgf liusagf liusagl fiusdglf iusgl fiugsdli ufgalsidu fglisudg flisdug fliusdg fliusdg fliusgd fliugsd fliugsf liusdgf liusg."]
+    
     
     
     
@@ -69,8 +69,9 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       self?.tableView!.reloadData()
     }
     // setup controller's databinding
-    controller.setBookID("56728eafa0e9851f007e7850")
+    controller.setBookID("5689af1c9ee2ef1f00000976")
     controller.getBookFromServer()
+    //messageArray = (model.book?.description)!
   }
   
   public func setBook(book: Book?) {
@@ -85,7 +86,6 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    
     let cell : UITableViewCell = UITableViewCell()
     
     switch (indexPath.row) {
@@ -94,6 +94,14 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         cell.titleLabel?.fillSuperview(left: screen.width / 25, right: 0, top: 10, bottom: 0)
         if model.book?.authors.first?.name != nil {
           cell.titleLabel?.text = model.book?.authors.first?.name
+          print(model.book?.authors.first?.name)
+          print(model.book?.title)
+          print(model.book?.publisher)
+          print(model.book?.publishedDate)
+          print(model.book?.ISBN13)
+          print(model.book?.pageCount)
+          print(model.book?.description)
+      
         } else { cell.titleLabel?.text = "Author"}
         cell.titleLabel?.font = .asapItalic(12)
         return cell
@@ -114,7 +122,11 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
         cell.backgroundColor = .whiteColor()
         let view = CosmosView()
-        view.rating = 3.3
+        
+        if model.book?.averageRating != nil {
+          view.rating = Double((model.book?.averageRating)!)!
+        } else { view.rating = 0.0}
+        
         view.settings.fillMode = .Precise
         view.settings.borderColorEmpty = .juicyOrange()
         view.settings.colorFilled = .juicyOrange()
@@ -146,17 +158,28 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         let isbnLabel = UILabel()
         isbnLabel.textColor = .sexyGray()
         // TODO: add model information, replace dummy data
-        let isbn = "XX-XXXX-XXXX"
+        
+        var isbn = ""
+        if model.book?.ISBN13 != nil {
+          isbn = (model.book?.ISBN13)!
+        }
+        
+        //let isbn = "XX-XXXX-XXXX"
         let isbnString = "ISBN(S): " + isbn
         var mutstring = NSMutableAttributedString()
         mutstring = NSMutableAttributedString(string: isbnString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
         mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 9, length: isbn.characters.count))
         isbnLabel.attributedText = mutstring
         
-        ////////////
+        // TODO: take out (no cover status?)
         let coverLabel = UILabel()
         coverLabel.textColor = .sexyGray()
+     
         let cover = "Hardcover"
+//        if model.book? != nil {
+//          isbn = (model.book?.ISBN13)!
+//        } else { isbn = "" }
+        
         let coverString = "Cover: " + cover
         var mutstring2 = NSMutableAttributedString()
         mutstring2 = NSMutableAttributedString(string: coverString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
@@ -166,7 +189,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         ////////////
         let editionLabel = UILabel()
         editionLabel.textColor = .sexyGray()
-        let edition = "12"
+        var edition = ""
+        if model.book?.edition != nil {
+          edition = (model.book?.edition)!
+        }
         let editionString = "Edition: " + edition
         var mutstring3 = NSMutableAttributedString()
         mutstring3 = NSMutableAttributedString(string: editionString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
@@ -176,7 +202,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         ////////////
         let publisherLabel = UILabel()
         publisherLabel.textColor = .sexyGray()
-        let publisher = "Some Publisher!!"
+        var publisher = ""
+        if model.book?.publisher != nil {
+          publisher = (model.book?.publisher)!
+        }
         let publisherString = "Publisher: " + publisher
         var mutstring4 = NSMutableAttributedString()
         mutstring4 = NSMutableAttributedString(string: publisherString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
@@ -186,7 +215,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         ////////////
         let pageCountLabel = UILabel()
         pageCountLabel.textColor = .sexyGray()
-        let pageCount = "117"
+        var pageCount = ""
+        if model.book?.pageCount != nil {
+          pageCount = (model.book?.pageCount)!
+        }
         let pageCountString = "Page Count: " + pageCount
         var mutstring5 = NSMutableAttributedString()
         mutstring5 = NSMutableAttributedString(string: pageCountString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
@@ -206,7 +238,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         ////////////
         let ratingLabel = UILabel()
         ratingLabel.textColor = .sexyGray()
-        let rating = "General"
+        var rating = ""
+        if model.book?.maturityRating != nil {
+          rating = (model.book?.maturityRating)!
+        }
         let ratingString = "Rating: " + rating
         var mutstring7 = NSMutableAttributedString()
         mutstring7 = NSMutableAttributedString(string: ratingString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
@@ -237,7 +272,11 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         //descriptionLabel.textAlignment = .Center
         descriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         descriptionLabel.textColor = .sexyGray()
-        let description = "hSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt sliuyfg lsaiugf liasugf liausgdfliuasgdfliuasg fliuasgd lfiugsadl fiugasdlfiu gaslidhfb lisadhbcl agsydclbsydlichabsfygerlivuhs ligysdli fygsdli fgisy  isgd i ysd iyg isgd ilusdg lisdliugds liugsd liugsd liudg liugsd lfiugsd liugsdf liusdgf liusagf liusagl fiusdglf iusgl fiugsdli ufgalsidu fglisudg flisdug fliusdg fliusdg fliusgd fliugsd fliugsf liusdgf liusg."
+        
+        var description = ""
+        if model.book?.description != nil {
+          description = (model.book?.description)!
+        }
         
         let descriptionString = "Description\n" + description
         var mutstring = NSMutableAttributedString()
@@ -336,7 +375,11 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       return height + screen.width / 30 * 6
     case 5:
       // FIXME: DEBUGGING model.description instead of messageArray[1]
-      let height:CGFloat = self.calculateHeightForString(messageArray[0])
+      var description = ""
+      if model.book?.description != nil {
+        description = (model.book?.description)!
+      } else { description = "Description of Book!" }
+      let height:CGFloat = self.calculateHeightForString(description)
       return height
     case 6:
       return screen.height / 15
