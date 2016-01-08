@@ -65,7 +65,6 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   private func setupDataBinding() {
     // setup view's databinding
     model._book.listen(self) { [weak self] book in
-//       print(self?.model.book?.title)
       self?.tableView!.rowHeight = UITableViewAutomaticDimension
       self?.tableView!.reloadData()
     }
@@ -295,7 +294,6 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       break;
     case 9:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        //cell.showSeparatorLine()
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
         
