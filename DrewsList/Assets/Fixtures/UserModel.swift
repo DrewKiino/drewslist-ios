@@ -99,6 +99,9 @@ public class RealmUser: Object {
   dynamic var school: String?
   dynamic var image: String?
   
+  // chat history
+  let chatHistory = List<ChatHistory>()
+  
   public override static func primaryKey() -> String? {
     return "_id"
   }
@@ -127,4 +130,13 @@ public class RealmUser: Object {
     return user
   }
   
+}
+
+public class ChatHistory: Object {
+  
+  dynamic var _id: String?
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
 }

@@ -39,7 +39,10 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   }
   
   private func setupDataBinding() {
-    
+    model._user.removeAllListeners()
+    model._user.listen(self) { [weak self] user in
+      log.debug(user)
+    }
   }
   
   public override func viewDidAppear(animated: Bool) {
