@@ -292,6 +292,14 @@ extension UIImageView {
       completionHandler?(image, error, cache, url)
     }
   }
+  
+  public class func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionWithFinishedBlock?) {
+    guard let url = url, let nsurl = NSURL(string: url) else { return }
+    SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+    }) { (image, error, cache, finished, nsurl) -> Void in
+      if image != nil && finished == true { completionHandler?(image, error, cache, finished, nsurl) }
+    }
+  }
 }
 
 extension NSAttributedString {

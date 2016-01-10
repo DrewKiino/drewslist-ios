@@ -21,8 +21,16 @@ public class EditProfileController {
     user.lastName = "Mowers"
     user.username = "KasperSeas"
     model.user = user
-    
+  }
   
+  public func setupDataBinding() {
+    model._profileImage.listen(self) { [weak self] image in
+     self?.updateUserInServer()
+    }
+  }
+  
+  private func updateUserInServer() {
+    
   }
   
   public func setFirstName(string: String?) {
@@ -37,21 +45,6 @@ public class EditProfileController {
     model.user?.username = string
   }
   
-  public func readRealmUser(){
-    // fixture _id
-    // should be taken from 'NSUserDefaults' instead
-    let realm = try! Realm()
-    if let realmUser = realm.objectForPrimaryKey(RealmUser.self, key: "56728e4ea0e9851f007e784e") {
-      model.user = realmUser.getUser()
-    }
-  }
-  
-  public func writeRealmUser(){
-    let realmUser = RealmUser()
-    realmUser.setRealmUser(model.user)
-    let realm = try! Realm()
-    try! realm.write {
-      realm.add(realmUser, update: true)
-    }
-  }
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
 }

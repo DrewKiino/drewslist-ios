@@ -27,7 +27,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
   private var searchBarImageView: UIImageView?
   
   //  School List
-  private var tableView: UITableView?
+  private var tableView: DLTableView?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -125,11 +125,9 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   private func setupTableView() {
-    tableView = UITableView()
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+    tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
-    //    tableView?.separatorColor = .clearColor()
     view.addSubview(tableView!)
   }
   
@@ -169,42 +167,134 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    let duration: NSTimeInterval = 0.7
-    
-    let cell = tableView.dequeueReusableCellWithIdentifier("UITableViewCell", forIndexPath: indexPath)
-    cell.textLabel?.text = model.users[indexPath.row].getName()
-    cell.textLabel?.font = .asapRegular(12)
-    cell.textLabel?.adjustsFontSizeToFitWidth = true
-    cell.textLabel?.minimumScaleFactor = 0.5
-    cell.imageView?.dl_setImageFromUrl(model.users[indexPath.row].image) { [weak cell] image, error, cache, url in
-      Async.background { [weak cell] in
-            log.debug("mark2")
-        // NOTE: correct way to handle memory management with toucan
-        // init toucan and pass in the arguments directly in the parameter headers
-        // do the resizing in the background
-        var toucan: Toucan? = Toucan(image: image).resize(cell?.imageView?.frame.size, fitMode: .Crop)
-        
-        Async.main { [weak cell] in
-            log.debug("mark3")
-          
-          cell?.imageView?.alpha = 0.0
-          
-          cell?.imageView?.image = toucan?.image
-          
-          UIView.animateWithDuration(duration) { [weak cell] in
-            log.debug(cell?.frame.size)
-            cell?.imageView?.alpha = 1.0
-          }
-          
-          // deinit toucan
-          toucan = nil
-        }
-      }
+    if let cell = tableView.dequeueReusableCellWithIdentifier("UserCell", forIndexPath: indexPath) as? UserCell {
+      cell.setUser(model.users[indexPath.row])
+      return cell
     }
-    return cell
+    return DLTableViewCell()
   }
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     model.user = model.users[indexPath.row]
   }
 }
+
+public class UserCell: DLTableViewCell {
+  
+  public var profileImageView: UIImageView?
+  public var profileImageUrl: String?
+  
+  public var usernameLabel: UILabel?
+  public var schoolLabel: UILabel?
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupProfileImageView()
+    setupUsernameLabel()
+    setupSchoolLabel()
+    
+    profileImageView?.anchorToEdge(.Left, padding: 4, width: 36, height: 36)
+    usernameLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: profileImageView!, padding: 4, height: 12)
+    schoolLabel?.alignAndFillWidth(align: .UnderMatchingLeft, relativeTo: usernameLabel!, padding: 0, height: 12)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+  }
+  
+  private func setupProfileImageView() {
+    profileImageView = UIImageView()
+    addSubview(profileImageView!)
+  }
+  
+  private func setupUsernameLabel() {
+    usernameLabel = UILabel()
+    usernameLabel?.font = .asapRegular(12)
+    usernameLabel?.adjustsFontSizeToFitWidth = true
+    usernameLabel?.minimumScaleFactor = 0.5
+    addSubview(usernameLabel!)
+  }
+  
+  private func setupSchoolLabel() {
+    schoolLabel = UILabel()
+    schoolLabel?.font = .asapRegular(10)
+    schoolLabel?.textColor = .sexyGray()
+    schoolLabel?.adjustsFontSizeToFitWidth = true
+    schoolLabel?.minimumScaleFactor = 0.5
+    addSubview(schoolLabel!)
+  }
+  
+  
+  public func setUser(user: User?) {
+    guard let user = user else { return }
+    
+    usernameLabel?.text = user.getName()
+    schoolLabel?.text = user.school
+    
+    if profileImageUrl != user.image { profileImageView?.image = nil }
+    
+    // MARK: Images
+    Async.background { [weak self, weak user ] in
+      
+      var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+      
+      Async.main { [weak self] in
+        
+        // if image is nil, set the place holder for now
+        if self?.profileImageView?.image == nil {
+          self?.profileImageView?.image = toucan?.image
+          self?.profileImageUrl = "profile-placeholder"
+        }
+        
+        toucan = nil
+        
+        if user?.image != nil && self?.profileImageUrl != user?.image {
+          
+          UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image, error, cache, finished, nsurl in
+            Async.background { [weak self] in
+              
+              // NOTE: correct way to handle memory management with toucan
+              // init toucan and pass in the arguments directly in the parameter headers
+              // do the resizing in the background
+              var toucan: Toucan? = Toucan(image: image).resize(self?.profileImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+          
+              Async.main { [weak self] in
+                
+                self?.profileImageUrl = nsurl.URLString
+                
+                // set the image view's image
+                self?.profileImageView?.image = toucan?.image
+                
+                // deinit toucan
+                toucan = nil
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

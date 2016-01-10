@@ -35,11 +35,11 @@ pod 'Neon'
 pod 'TextFieldEffects'
 pod 'SwiftyButton'
 pod 'Gifu'
-pod 'Former'
 pod 'NVActivityIndicatorView'
 pod 'LTMorphingLabel'
 pod 'CWStatusBarNotification'
 pod 'KMPlaceholderTextView'
+pod 'Cosmos'
 
 # pubsub libs
 pod 'Signals'

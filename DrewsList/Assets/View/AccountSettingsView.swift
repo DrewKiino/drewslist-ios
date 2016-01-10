@@ -212,8 +212,8 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       }
       break
     case 10:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as?
-        PaddingCell { cell.paddingLabel?.text = "Deactivation of Account"
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Deactivation of Account"
           return cell
       }
       break

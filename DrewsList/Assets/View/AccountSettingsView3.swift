@@ -6,6 +6,7 @@
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
+/*
 import UIKit
 import Former
 
@@ -184,3 +185,5 @@ public class AccountSettingsView3: FormViewController {
 
 
 
+
+*/

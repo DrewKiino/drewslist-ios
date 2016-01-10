@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 import Signals
+import TextFieldEffects
+import KMPlaceholderTextView
+import SwiftyButton
 import Async
 import SwiftDate
 
@@ -21,6 +24,12 @@ public class DLTableView: UITableView {
   
   private func setupSelf() {
     
+    // MARK: Book Cells
+    registerClass(BookDetailCell.self, forCellReuseIdentifier: "BookDetailCell")
+ 
+    // MARK: Settings Cells
+    registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
+    
     // MARK: User Profile 
     registerClass(UserProfileListView.self, forCellReuseIdentifier: "UserProfileListView")
     
@@ -29,11 +38,13 @@ public class DLTableView: UITableView {
     registerClass(TitleCell.self, forCellReuseIdentifier: "TitleCell")
     registerClass(FullTitleCell.self, forCellReuseIdentifier: "FullTitleCell")
     registerClass(SwitchCell.self, forCellReuseIdentifier: "SwitchCell")
+    registerClass(ImageCell.self, forCellReuseIdentifier: "ImageCell")
     
     // MARK: Create Listing View Cells
     registerClass(BookViewCell.self, forCellReuseIdentifier: "BookViewCell")
     registerClass(ToggleCell.self, forCellReuseIdentifier: "ToggleCell")
     registerClass(TripleToggleCell.self, forCellReuseIdentifier: "TripleToggleCell")
+    registerClass(SliderCell.self, forCellReuseIdentifier: "SliderCell")
     
     registerClass(InputTextFieldCell.self, forCellReuseIdentifier: "InputTextFieldCell")
     registerClass(InputTextViewCell.self, forCellReuseIdentifier: "InputTextViewCell")
@@ -45,6 +56,12 @@ public class DLTableView: UITableView {
     
     // MARK: List Feed Cells
     registerClass(ListFeedCell.self, forCellReuseIdentifier: "ListFeedCell")
+    
+    // MARK: Search Users
+    registerClass(UserCell.self, forCellReuseIdentifier: "UserCell")
+    
+    // MARK: Edit Listing
+    registerClass(EditListingCell.self, forCellReuseIdentifier: "EditListingCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false
@@ -84,7 +101,7 @@ public class DLTableViewCell: UITableViewCell {
     separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 0.5)
   }
   
-  private func setupSelf() {
+  public func setupSelf() {
     backgroundColor = .clearColor()
     
     topBorder.backgroundColor = UIColor.tableViewNativeSeparatorColor().CGColor
@@ -158,7 +175,7 @@ public class PaddingCell: DLTableViewCell {
     super.init(coder: aDecoder)
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     
     showBothTopAndBottomBorders()
@@ -208,7 +225,7 @@ public class TitleCell: DLTableViewCell {
     super.layoutSubviews()
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
   }
@@ -256,12 +273,10 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
-    
     backgroundColor = .whiteColor()
   }
   
@@ -334,7 +349,7 @@ public class SwitchCell: DLTableViewCell {
     
   }
   
-  private override func setupSelf() {
+  public override func setupSelf() {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
@@ -412,6 +427,32 @@ public class SwitchCell: DLTableViewCell {
       if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
     }
   }
+}
+
+public class ImageCell: DLTableViewCell {
+  
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 8)
+  }
+  
+  private func setupView() {
+    view = UIView()
+    addSubview(view!)
+  }
+  
 }
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -815,6 +856,8 @@ public class BookViewCell: DLTableViewCell {
   
   public var bookView: BookView?
   
+  public let _cellPressed = Signal<Bool>()
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupBookView()
@@ -838,19 +881,24 @@ public class BookViewCell: DLTableViewCell {
   public func setBook(book: Book?) {
     bookView?.setBook(book)
   }
+  
+  public func cellPressed() {
+    _cellPressed => true
+  }
 }
 
 public class ListFeedCell: DLTableViewCell {
   
   public var listView: ListView?
   
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupListView()
-  }
+  public let _cellPressed = Signal<Bool>()
   
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupListView()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
   }
   
   public override func layoutSubviews() {
@@ -864,11 +912,221 @@ public class ListFeedCell: DLTableViewCell {
     listView?.tableView?.scrollEnabled = false
     addSubview(listView!)
   }
+  
+  public func cellPressed() {
+    _cellPressed => true
+  }
+}
+
+public class BookDetailCell: DLTableViewCell {
+  
+  public var authorsLabel: UILabel?
+//  public var 
+  public var view: UIView?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupView()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    view?.fillSuperview()
+  }
+  
+  private func setupView() {
+    
+    view = UIView()
+    
+    addSubview(view!)
+  }
 }
 
 
-
-
+public class ChangeImageCell: DLTableViewCell {
+  
+  public var label: UILabel?
+  //public var profileImg: UIImage?
+  public var profileImgT: Toucan?
+  public var profileImgView: UIImageView?
+  
+  public let _didSelectCell = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    layoutSubviews()
+    setupLabel()
+    setupProfileImgView()
+    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+    //profileImgView?.anchorToEdge(.Right, padding: 0, width: 10, height: 10)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    hideBothTopAndBottomBorders()
+  }
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    backgroundColor = .whiteColor()
+    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
+    pressGesture.minimumPressDuration = 0.01
+    addGestureRecognizer(pressGesture)
+  }
+  
+  public func setupUser(user: User?){
+    guard let user = user else { return }
+    
+    let duration: NSTimeInterval = 0.2
+    
+    // MARK: Images
+    if user.image != nil {
+      
+      profileImgView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+        Async.background { [weak self] in
+          // NOTE: correct way to handle memory management with toucan
+          // init toucan and pass in the arguments directly in the parameter headers
+          // do the resizing in the background
+          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
+          
+          Async.main { [weak self] in
+            
+            self?.profileImgView?.alpha = 0.0
+            
+            // set the image view's image
+            self?.profileImgView?.image = toucan?.image
+            
+            UIView.animateWithDuration(duration) { [weak self] in
+              self?.profileImgView?.alpha = 1.0
+            }
+            
+            // deinit toucan
+            toucan = nil
+          }
+        }
+      }
+    } else {
+      
+      Async.background { [weak self] in
+        
+        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
+        
+        Async.main { [weak self] in
+          
+          self?.profileImgView?.alpha = 0.0
+          
+          self?.profileImgView?.image = toucan?.image
+          
+          UIView.animateWithDuration(duration) { [weak self] in
+            self?.profileImgView?.alpha = 1.0
+          }
+          
+          toucan = nil
+        }
+      }
+    }
+  }
+  
+  private func setupLabel() {
+    label = UILabel()
+    label?.textColor = .blackColor()
+    label?.font = .asapRegular(16)
+    addSubview(label!)
+  }
+  
+  private func setupProfileImgView(){
+    profileImgView = UIImageView()
+    let arrowImgT = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(CGSize(width: frame.width/20, height: frame.width/20))
+    let arrowImgView = UIImageView()
+    arrowImgView.image = arrowImgT.image
+    let profileImg = UIImage(named: "profile-placeholder")
+    profileImgT = Toucan(image: profileImg).resize(CGSize(width: frame.width/10, height: frame.width/10)).maskWithEllipse()
+    profileImgView?.image = profileImgT?.image
+    //profileImgView?.backgroundColor = UIColor.redColor()
+    addSubview(arrowImgView)
+    addSubview(profileImgView!)
+    profileImgView?.anchorToEdge(.Right, padding: 0, width: frame.width/10, height: frame.width/10)
+    arrowImgView.align(.ToTheRightCentered, relativeTo: profileImgView!, padding: frame.width/20, width: frame.width/20, height: frame.width/20)
+  
+  }
+  
+  public func select() { _didSelectCell => true }
+  
+  public func pressed(sender: UILongPressGestureRecognizer) {
+    if (sender.state == .Began) {
+      backgroundColor = .sweetBeige()
+    } else if (sender.state == .Ended){
+      backgroundColor = .whiteColor()
+      if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
+    }
+  }
+  
+//  public func setupUserImage(user : User?){
+//  
+//    profileImgView?.alpha = 0.0
+//    
+//    Async.background { [weak self, weak user] in
+//      guard let user = user else { return }
+//      
+//      let duration: NSTimeInterval = 0.5
+//      
+//      // MARK: Images
+//      if user.image != nil {
+//        
+//        self?.profileImgView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+//          // NOTE: correct way to handle memory management with toucan
+//          // init toucan and pass in the arguments directly in the parameter headers
+//          // do the resizing in the background
+//          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImgView?.frame.size).maskWithEllipse()
+//          
+//          Async.main { [weak self] in
+//            
+//            // set the image view's image
+//            self?.profileImgView?.image = toucan?.image
+//            
+//            // stop the loading animation
+//            //self?.view.hideLoadingScreen()
+//            
+//            // animate
+//            UIView.animateWithDuration(duration) { [weak self] in
+//              self?.profileImgView?.alpha = 1.0
+//            }
+//            
+//            // deinit toucan
+//            toucan = nil
+//          }
+//        }
+//      } else {
+//        
+//        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
+//        
+//        Async.main { [weak self] in
+//          
+//          self?.profileImgView?.image = toucan?.image
+//          
+//          // stop the loading animation
+//          //self?.view.hideLoadingScreen()
+//          
+//          UIView.animateWithDuration(duration) { [weak self] in
+//            self?.profileImgView?.alpha = 1.0
+//          }
+//          
+//          toucan = nil
+//        }
+//      }
+//  
+//  }
+//}
+}
 
 
 
