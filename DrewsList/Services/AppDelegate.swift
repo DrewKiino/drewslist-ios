@@ -83,8 +83,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-//    var tabView: TabView? = TabView()
-    var tabView: BookProfileView? = BookProfileView()
+    var tabView: TabView? = TabView()
+//    var tabView: BookProfileView? = BookProfileView()
 //    var tabView: SearchUserView? = SearchUserView()
     
     /*
