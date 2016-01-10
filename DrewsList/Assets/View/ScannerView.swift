@@ -260,13 +260,6 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
         let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
         else { return }
       
-//      identifiedBorder.drawBorder(identifiedCorners)
-//      identifiedBorder.frame = transformed.bounds
-//      identifiedBorder.alpha = 0.5
-//      identifiedBorder.hidden = false
-      
-//      resetTimer()
-      
       UIView.animate { [weak self] in
         self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
       }
