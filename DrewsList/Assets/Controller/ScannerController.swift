@@ -28,12 +28,15 @@ public class ScannerController: NSObject {
     // then using the builder pattern, chain a response call after
     .response { [weak self] req, res, data, error in
       
+      log.debug(req?.URLString)
+      
       // unwrap error and check if it exists
       if let error = error {
         log.error(error)
         // use JSON library to jsonify the results ( NSData => JSON )
         // since the results is an array of objects, we get the first name
       } else if let data = data, let json = JSON(data: data).array?.first {
+        
         self?.model.book = Book(json: json)
       }
       
