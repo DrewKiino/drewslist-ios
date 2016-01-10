@@ -35,10 +35,11 @@ public class Sockets {
   public class func sharedInstance() -> Sockets { return Singleton.socket }
   public class func getSessionCount() -> Int { return Singleton.sessionCount }
   
-  
   public let _session_id = Signal<String?>()
   public var session_id: String? = nil { didSet { _session_id => session_id } }
   public let socket = Sockets.new()
+  
+  private var disconnectHandler: (() -> Void)? = nil
   
   public func connect(execute: (() -> Void)? = nil) {
     // reset all handlers
@@ -63,18 +64,21 @@ public class Sockets {
     socket.on("disconnect") { [weak self] data, socket in
       log.info("disconnected from server.")
       self?.socket.removeAllHandlers()
+      self?.disconnectHandler?()
+      self?.disconnectHandler = nil
     }
-    socket.on("connectCallback") { [unowned self] data, socket in
+    socket.on("connectCallback") { [weak self] data, socket in
       guard let jsonArray = JSON(data).array else { return }
       for json in jsonArray {
         if let response = json["response"].string {
           
           // set session id and publish
-          self.session_id = response
+          self?.session_id = response
           
-          if let session_id = self.session_id {
+          if let session_id = self?.session_id {
             log.info("session ID: \(session_id)")
           }
+          
         } else if let error = json["error"].string {
           log.debug(error)
         }
@@ -88,7 +92,7 @@ public class Sockets {
   
   public class func new() -> SocketIOClient {
     let socket = SocketIOClient(
-      socketURL: ServerUrl.Staging.getValue(),
+      socketURL: ServerUrl.Local.getValue(),
       options: [
         .Log(false),
         .ForcePolling(false),
@@ -131,7 +135,10 @@ public class Sockets {
     }
   }
 
-  public func disconnect() { socket.disconnect() }
+  public func disconnect(execute: (() -> Void)? = nil) {
+    disconnectHandler = execute
+    socket.disconnect()
+  }
   
   public func onConnect(execute: () -> Void) {
     socket.on("connect") { data, socket in

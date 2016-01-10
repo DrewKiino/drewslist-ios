@@ -36,7 +36,7 @@ public class BookProfileController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/book", parameters: [ "_id": book_id ], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Local.getValue() + "/book", parameters: [ "_id": book_id ], encoding: .URL)
       .response { [weak self] req, res, data, error in
         
         if let error = error {
