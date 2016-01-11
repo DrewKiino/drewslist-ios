@@ -12,17 +12,24 @@ import Neon
 
 public class ActivityFeedView: DLNavigationController {
   
+  private let controller = ActivityFeedController()
+  private var model: ActivityFeedModel { get { return controller.model } }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .whiteColor()
-    
     setRootViewTitle("Activity")
+    setupSelf()
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
     view.showComingSoonScreen()
+  }
+  
+  private func setupSelf() {
+    
+    view.backgroundColor = .whiteColor()
   }
 }

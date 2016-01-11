@@ -12,6 +12,7 @@ import Signals
 import PromiseKit
 import SwiftyJSON
 import Alamofire
+import RealmSwift
 
 public enum ServerUrl {
   case Local
@@ -34,6 +35,15 @@ public class Sockets {
   
   public class func sharedInstance() -> Sockets { return Singleton.socket }
   public class func getSessionCount() -> Int { return Singleton.sessionCount }
+  
+  // MARK: Realm Functions
+  
+  private var user: User?
+  
+  private func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { user = realmUser.getUser() } }
+  private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) } }
+  
+  // MARK: Socket Functions
   
   public let _session_id = Signal<String?>()
   public var session_id: String? = nil { didSet { _session_id => session_id } }
@@ -67,7 +77,7 @@ public class Sockets {
       self?.disconnectHandler?()
       self?.disconnectHandler = nil
     }
-    socket.on("connectCallback") { [weak self] data, socket in
+    socket.on("connect.response") { [weak self] data, socket in
       guard let jsonArray = JSON(data).array else { return }
       for json in jsonArray {
         if let response = json["response"].string {
@@ -79,6 +89,19 @@ public class Sockets {
             log.info("session ID: \(session_id)")
           }
           
+          // if user is already logged in
+          // set online status to
+          self?.readRealmUser()
+          
+          if let user = self?.user, let user_id = user._id {
+            self?.socket.emit("setOnlineStatus", [
+              "user_id": user_id,
+              "online": true
+            ])
+//            self?.socket.emit(<#T##event: String##String#>, <#T##items: AnyObject...##AnyObject#>)
+          }
+          
+          
         } else if let error = json["error"].string {
           log.debug(error)
         }
@@ -86,6 +109,16 @@ public class Sockets {
     }
     socket.on("dataReady") { data, socket in
       log.debug(data)
+    }
+    socket.on("setOnlineStatus.response") { [weak self] data, socket in
+      guard let jsonArray = JSON(data).array else { return }
+      for json in jsonArray {
+        if let response = json["response"].bool {
+          if let user_id = self?.user?._id where response == true {
+            log.info("\(user_id): ONLINE")
+          }
+        }
+      }
     }
     socket.connect()
   }
@@ -137,6 +170,7 @@ public class Sockets {
 
   public func disconnect(execute: (() -> Void)? = nil) {
     disconnectHandler = execute
+    socket.removeAllHandlers()
     socket.disconnect()
   }
   

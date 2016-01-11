@@ -93,7 +93,7 @@ public class SignUpController {
     
     Alamofire.request(
       .POST,
-      ServerUrl.Local.getValue() + "/user",
+      ServerUrl.Staging.getValue() + "/user",
       parameters: [
         "firstName": firstName,
         "lastName": lastName,

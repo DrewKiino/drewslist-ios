@@ -29,7 +29,7 @@ public class LoginController {
     
     Alamofire.request(
       .POST,
-      ServerUrl.Local.getValue() + "/user/authenticateWithLocalAuth",
+      ServerUrl.Staging.getValue() + "/user/authenticateWithLocalAuth",
       parameters: [
         "email": email,
         "password": password

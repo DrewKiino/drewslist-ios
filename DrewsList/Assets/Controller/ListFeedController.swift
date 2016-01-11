@@ -17,7 +17,7 @@ public class ListFeedController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = ServerUrl.Local.getValue() + "/listing"
+  private let serverUrl = ServerUrl.Staging.getValue() + "/listing"
   
   public init() {}
   

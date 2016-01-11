@@ -72,9 +72,10 @@ public class ChatController {
       }
       
       self?.unsubscribeBlock?()
+      self?.unsubscribeBlock = nil
     }
     
-    socket.on("setOnlineStatusCallback") { json in
+    socket.on("setOnlineStatus.response") { json in
       if let response = json["response"].bool {
         log.info("online status set to: \(response)")
       } else if let error = json["error"].string {
@@ -98,7 +99,7 @@ public class ChatController {
     }
     
     // subscribe to the server chat framework's messages callback
-    socket.on("checkForMessagesCallback") { json in
+    socket.on("checkForMessages.response") { json in
       if let messages = json["response"].array {
         for message in messages {
           guard let newMessage = IncomingMessage(json: message).toJSQMessage()
@@ -114,7 +115,7 @@ public class ChatController {
     }
     
     // subscribe to the server chat framework's broadcast callback
-    socket.on("broadcastCallback") { [unowned self] json in
+    socket.on("broadcast.response") { [unowned self] json in
       // broadcast to listenres that the message sent was unsuccessful
       if let error = json["error"].string {
         self.didSendMessage => false
@@ -211,16 +212,17 @@ public class ChatController {
   }
   
   public func connectToServer() {
-    socket.connect { [weak self] in
-      self?.setupSockets()
-      self?.subscribe()
-    }
+//    socket.connect { [weak self] in
+//      self?.setupSockets()
+//      self?.subscribe()
+//    }
+    setupSockets()
+    subscribe()
   }
   
   public func disconnectFromServer() {
     unsubscribe { [weak self] in
-      self?.socket.disconnect()
-      self?.unsubscribeBlock = nil
+//      self?.socket.disconnect()
     }
   }
 }
