@@ -10,11 +10,13 @@ import Foundation
 import UIKit
 import SDWebImage
 import Async
+import Signals
 
 public class BookView: UIView {
   
-  private let controller = BookController()
+  public let _cellPressed = Signal<Bool>()
   
+  private let controller = BookController()
   
   public var attributesContainer: UIView?
   
@@ -77,6 +79,12 @@ public class BookView: UIView {
     layer.shadowRadius = 2
     layer.masksToBounds = true
     clipsToBounds = false
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "pressed"))
+  }
+  
+  public func pressed() {
+    _cellPressed => true
   }
   
   private func setupImageView() {

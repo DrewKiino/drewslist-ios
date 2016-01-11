@@ -150,6 +150,10 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
       self?.controller.readRealmUser()
       self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user), animated: true)
     }
+    middlePage?._bookProfilePressed.removeAllListeners()
+    middlePage?._bookProfilePressed.listen(self) { [weak self] book in
+      self?.pushViewController(BookProfileView().setBook(book), animated: true)
+    }
     scrollView?.addSubview(middlePage!)
     
     rightPage = UIView()

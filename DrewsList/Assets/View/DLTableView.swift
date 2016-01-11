@@ -26,6 +26,7 @@ public class DLTableView: UITableView {
     
     // MARK: Book Cells
     registerClass(BookDetailCell.self, forCellReuseIdentifier: "BookDetailCell")
+    registerClass(LabelCell.self, forCellReuseIdentifier: "LabelCell")
  
     // MARK: Settings Cells
     registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
@@ -202,6 +203,85 @@ public class PaddingCell: DLTableViewCell {
   
   public func alignTextLeft() {
     paddingLabel?.textAlignment = .Left
+  }
+}
+
+public class LabelCell: DLTableViewCell {
+  
+  public var label: UILabel?
+  public var title: String?
+  public var subTitle: String?
+  private var fullTitle: String?
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    hideBothTopAndBottomBorders()
+    super.backgroundColor = .whiteColor()
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    //label?.anchorAndFillEdge(.Left, xPad: 14, yPad: 4, otherSize: 300)
+    
+    //label?.fillSuperview()
+    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+    
+  }
+  
+  private func setupLabel() {
+    label = UILabel()
+    label?.textColor = .sexyGray()
+    label?.textAlignment = .Left
+    //label?.font = .asapRegular(12)
+    label?.adjustsFontSizeToFitWidth = true
+    label?.minimumScaleFactor = 0.1
+    addSubview(label!)
+    
+    label?.backgroundColor = .whiteColor()
+    
+    
+  }
+  
+  public func setLabelTitle(title: String){
+    self.title = title
+  }
+  
+  public func setLabelSubTitle(subTitle: String){
+    self.subTitle = subTitle
+  }
+  
+  public func setLabelFullTitle(){
+    if let title = title, subTitle = subTitle {
+      fullTitle = title + subTitle
+      var mutstring = NSMutableAttributedString()
+      mutstring = NSMutableAttributedString(string: fullTitle!, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
+      mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title.characters.count, length: subTitle.characters.count))
+      label?.attributedText = mutstring
+    } else {
+      title = ":"
+      subTitle = ""
+      fullTitle = title! + subTitle!
+      var mutstring = NSMutableAttributedString()
+      mutstring = NSMutableAttributedString(string: fullTitle!, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
+      mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
+      label?.attributedText = mutstring
+ 
+    }
+  
+  }
+  
+  public func alignTextLeft() {
+    label?.textAlignment = .Left
   }
 }
 
@@ -878,6 +958,10 @@ public class BookViewCell: DLTableViewCell {
   
   private func setupBookView() {
     bookView = BookView()
+    bookView?._cellPressed.removeAllListeners()
+    bookView?._cellPressed.listen(self) { [weak self] bool in
+      if bool == true { self?._cellPressed.fire(bool) }
+    }
     addSubview(bookView!)
   }
   
