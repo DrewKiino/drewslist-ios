@@ -27,7 +27,6 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   private func setupSelf() {
     view.backgroundColor = UIColor.whiteColor()
-    
     setRootViewTitle("Chat")
   }
   

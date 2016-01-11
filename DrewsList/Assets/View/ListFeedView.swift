@@ -235,9 +235,10 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       self?.controller.getListingsFromServer(0, listType: listType)
     }
     
-//    model._shouldRefrainFromCallingServer.removeAllListeners()
-//    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-//    }
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == false { self?.hideLoadingScreen() }
+    }
   }
   
   private func setupTableView() {
@@ -264,23 +265,20 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if model.listings.count > 0 { return model.listings.count + 1 }
-    else { return 0 }
+//    if model.listings.count > 0 { return model.listings.count + 1 }
+//    else { return 0 }
+    return model.listings.count
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
-      cell.showTopBorder()
+      cell.showBottomBorder()
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
         self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
       }
-      return cell
-      
-    } else if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-      cell.titleButton?.setTitle("Test", forState: .Normal)
       return cell
     }
     
