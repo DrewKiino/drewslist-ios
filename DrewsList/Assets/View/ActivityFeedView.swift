@@ -37,7 +37,9 @@ public class ActivityFeedView: DLNavigationController {
   private func setupDataBinding() {
     model._activity.removeAllListeners()
     model._activity.listen(self) { [weak self] activity in
-      self?.view.displayNotification(activity)
+      self?.view.displayNotification(activity) { [weak self] in
+        log.debug("mark")
+      }
     }
   }
 }

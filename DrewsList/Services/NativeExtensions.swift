@@ -235,13 +235,17 @@ extension UIView {
     }
   }
   
-  public func displayNotification(text: String?) {
+  public func displayNotification(text: String?, onTap: (() -> Void)? = nil) {
     guard let text = text else { return }
     
     var notification: CWStatusBarNotification! = CWStatusBarNotification()
     notification.notificationAnimationInStyle = .Bottom
     notification.notificationAnimationOutStyle = .Bottom
     notification.notificationStyle = .StatusBarNotification
+    notification.notificationTappedBlock = { [weak notification] in
+      if notification?.notificationIsDismissing == false { notification?.dismissNotification() }
+      onTap?()
+    }
 
     var label: UILabel! = UILabel(frame: CGRectMake(0, 0, screen.width, 64))
     label.text = text
@@ -250,11 +254,12 @@ extension UIView {
     label.textColor = .whiteColor()
     label.backgroundColor = .bareBlue()
     
-    notification.displayNotificationWithView(label, forDuration: 3.0)
+    notification.displayNotificationWithView(label, forDuration: 5.0)
     
-    notification = nil
-    label = nil
-    
+    NSTimer.after(5.0) {
+      notification = nil
+      label = nil
+    }
   }
   
   public func displayLoadingNotification() {
