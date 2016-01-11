@@ -250,6 +250,7 @@ extension UIView {
     label.textColor = .whiteColor()
     label.backgroundColor = .bareBlue()
     
+    notification.dismissNotification()
     notification.displayNotificationWithView(label, forDuration: 3.0)
     
     notification = nil

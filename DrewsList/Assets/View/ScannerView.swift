@@ -260,12 +260,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
         let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
         else { return }
       
-<<<<<<< HEAD
-      UIView.animate { [weak self] in
-=======
       UIView.animate { [weak self, weak transformed] in
         guard let transformed = transformed else { return }
->>>>>>> integrate/chat-with-list-view
         self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
       }
       
