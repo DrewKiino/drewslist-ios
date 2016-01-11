@@ -43,6 +43,9 @@ public class Book: Mappable {
   public let _ISBN13 = Signal<String?>()
   public var ISBN13: String? { didSet { _ISBN13 => ISBN13 } }
   
+  public let _binding = Signal<String?>()
+  public var binding: String? { didSet { _binding => binding } }
+  
   public let _pageCount = Signal<Int?>()
   public var pageCount: Int? { didSet { _pageCount => pageCount } }
   
@@ -115,6 +118,7 @@ public class Book: Mappable {
     edition         <- map["edition"]
     ISBN10          <- map["ISBN_10"]
     ISBN13          <- map["ISBN_13"]
+    binding         <- map["binding"]
     pageCount       <- map["pageCount"]
     categories      <- map["categories"]
     averageRating   <- map["averageRating"]

@@ -21,7 +21,6 @@ public class BookProfileController {
   
   public func viewDidLoad() {
     
-    log.debug(model.book)
     getBookFromServer()
   }
   
@@ -42,7 +41,6 @@ public class BookProfileController {
           log.error(error)
         } else if let data = data, let json: JSON! = JSON(data: data) {
           
-          log.debug(json)
           
           // create and  user object
           self?.model.book = Book(json: json)
