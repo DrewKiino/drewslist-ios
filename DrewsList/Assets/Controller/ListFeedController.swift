@@ -17,7 +17,7 @@ public class ListFeedController {
   
   private var refrainTimer: NSTimer?
   
-  private let serverUrl = ServerUrl.Local.getValue() + "/listing"
+  private let serverUrl = ServerUrl.Default.getValue() + "/listing"
   
   public init() {}
   
@@ -38,7 +38,7 @@ public class ListFeedController {
         log.error(error)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
-        // for each listing in the JSON response, append it to the listings array 
+        // for each listing in the JSON response, append it to the listings array
         // in the list feed model
         for json in jsonArray { self?.model.listings.append(Listing(json: json)) }
       }

@@ -10,25 +10,32 @@ import Foundation
 import UIKit
 import Signals
 import Cosmos
+import Async
 
 
 public class BookProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-// FIXME: DEBUGGING
-//  var messageArray:[String] = []
-  
   private let controller = BookProfileController()
   private var model: BookProfileModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
+  
+//  init(bookID: String) {
+//    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
+//  }
+//
+//  required public init?(coder aDecoder: NSCoder) {
+//      fatalError("init(coder:) has not been implemented")
+//  }
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     // MARK: Fixtures
     // setup controller's databinding
-    setBook(Book(_id: "5689af1c9ee2ef1f0000097f"))
-    
+//    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
+//    setBook(Book(_id: "5689af1c9ee2ef1f00000976"))
+
     setUpTableView()
     setupDataBinding()
     
@@ -56,11 +63,6 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     tableView?.dataSource = self
     tableView?.rowHeight = UITableViewAutomaticDimension
     
-//    messageArray = ["hSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt sliuyfg lsaiugf liasugf liausgdfliuasgdfliuasg fliuasgd lfiugsadl fiugasdlfiu gaslidhfb lisadhbcl agsydclbsydlichabsfygerlivuhs ligysdli fygsdli fgisy  isgd i ysd iyg isgd ilusdg lisdliugds liugsd liugsd liudg liugsd lfiugsd liugsdf liusdgf liusagf liusagl fiusdglf iusgl fiugsdli ufgalsidu fglisudg flisdug fliusdg fliusdg fliusgd fliugsd fliugsf liusdgf liusg."]
-    
-    
-    
-    
     view.addSubview(tableView!)
   }
   
@@ -73,20 +75,24 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       self?.tableView!.rowHeight = UITableViewAutomaticDimension
       self?.tableView!.reloadData()
     }
+    // setup controller's databinding
+    controller.getBookFromServer()
   }
   
-  public func setBook(book: Book?) {
-    guard let book = book else { return }
-    model.book = book
+  public func setBook(book: Book?) -> Self {
+    if let book = book { model.book = book }
+    return self
   }
   
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 12
+    return 18
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    
+   // let cell : UITableViewCell = UITableViewCell()
     
     switch (indexPath.row) {
     case 0:
@@ -94,6 +100,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         cell.titleLabel?.fillSuperview(left: screen.width / 25, right: 0, top: 10, bottom: 0)
         if model.book?.authors.first?.name != nil {
           cell.titleLabel?.text = model.book?.authors.first?.name
+          print(model.book?.authors.first?.name)
+          print(model.book?.title)
+          print(model.book?.largeImage)
+      
         } else { cell.titleLabel?.text = "Author"}
         cell.titleLabel?.font = .asapItalic(12)
         return cell
@@ -109,24 +119,20 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-      
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
-        
-        // if book's average rating exists, display
+        let view = CosmosView()
         if let rating = model.book?.averageRating {
-          
-          cell.backgroundColor = .whiteColor()
-          let view = CosmosView()
           view.rating = rating
-          view.settings.fillMode = .Precise
-          view.settings.borderColorEmpty = .juicyOrange()
-          view.settings.colorFilled = .juicyOrange()
-          view.anchorAndFillEdge(.Left, xPad: screen.width / 30, yPad: 0, otherSize: 150)
-          cell.addSubview(view)
-          
-        // else, display nothing or whichever you think is best for UX
-        } else {}
+        } else {
+          view.rating = 0.0
+        }
+        cell.backgroundColor = .whiteColor()
+        view.settings.fillMode = .Precise
+        view.settings.borderColorEmpty = .juicyOrange()
+        view.settings.colorFilled = .juicyOrange()
+        view.anchorAndFillEdge(.Left, xPad: screen.width / 30, yPad: 0, otherSize: 150)
+        cell.addSubview(view)
         
         return cell
       }
@@ -135,9 +141,66 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
         cell.backgroundColor = .whiteColor()
         let bookImageView = UIImageView()
-        let bookImage = Toucan(image: UIImage(named: "book-placeholder"))
-          .resize(CGSize(width: cell.frame.height * (2 / 3), height: cell.frame.height), fitMode: Toucan.Resize.FitMode.Clip).image
-        bookImageView.image = bookImage
+        let duration: NSTimeInterval = 0.2
+        if let bookImg = model.book?.largeImage {
+          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
+            Async.background { [weak self] in
+              // NOTE: correct way to handle memory management with toucan
+              // init toucan and pass in the arguments directly in the parameter headers
+              // do the resizing in the background
+              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
+              Async.main { [weak self] in
+                bookImageView.alpha = 0.0
+                bookImageView.image = toucan?.image
+                UIView.animateWithDuration(duration) { [weak self] in
+                  bookImageView.alpha = 1.0
+                }
+                toucan = nil
+              }
+            }
+          }
+        } else if let bookImg = model.book?.mediumImage {
+          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
+            Async.background { [weak self] in
+              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
+              Async.main { [weak self] in
+                bookImageView.alpha = 0.0
+                bookImageView.image = toucan?.image
+                UIView.animateWithDuration(duration) { [weak self] in
+                  bookImageView.alpha = 1.0
+                }
+                toucan = nil
+              }
+            }
+          }
+        } else if let bookImg = model.book?.smallImage {
+          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
+            Async.background { [weak self] in
+              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
+              Async.main { [weak self] in
+                bookImageView.alpha = 0.0
+                bookImageView.image = toucan?.image
+                UIView.animateWithDuration(duration) { [weak self] in
+                  bookImageView.alpha = 1.0
+                }
+                toucan = nil
+              }
+            }
+          }
+        } else {
+          Async.background { [weak self] in
+            var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(bookImageView.frame.size, fitMode: .Crop)
+            Async.main { [weak self] in
+              bookImageView.alpha = 0.0
+              bookImageView.image = toucan?.image
+              UIView.animateWithDuration(duration) { [weak self] in
+                bookImageView.alpha = 1.0
+              }
+              toucan = nil
+            }
+          }
+        }
+        
         cell.addSubview(bookImageView)
         bookImageView.anchorInCenter(width: cell.frame.height * (2 / 3), height: cell.frame.height)
 
@@ -145,124 +208,101 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       }
       break;
     case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.backgroundColor = .whiteColor()
-        cell.showSeparatorLine()
-        cell.hideBothTopAndBottomBorders()
-        ////////////
-        let isbnLabel = UILabel()
-        isbnLabel.textColor = .sexyGray()
-        // TODO: add model information, replace dummy data
-        let isbn = "XX-XXXX-XXXX"
-        let isbnString = "ISBN(S): " + isbn
-        var mutstring = NSMutableAttributedString()
-        mutstring = NSMutableAttributedString(string: isbnString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 9, length: isbn.characters.count))
-        isbnLabel.attributedText = mutstring
-        
-        ////////////
-        let coverLabel = UILabel()
-        coverLabel.textColor = .sexyGray()
-        let cover = "Hardcover"
-        let coverString = "Cover: " + cover
-        var mutstring2 = NSMutableAttributedString()
-        mutstring2 = NSMutableAttributedString(string: coverString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring2.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 7, length: cover.characters.count))
-        coverLabel.attributedText = mutstring2
-        
-        ////////////
-        let editionLabel = UILabel()
-        editionLabel.textColor = .sexyGray()
-        let edition = "12"
-        let editionString = "Edition: " + edition
-        var mutstring3 = NSMutableAttributedString()
-        mutstring3 = NSMutableAttributedString(string: editionString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring3.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 9, length: edition.characters.count))
-        editionLabel.attributedText = mutstring3
-        
-        ////////////
-        let publisherLabel = UILabel()
-        publisherLabel.textColor = .sexyGray()
-        let publisher = "Some Publisher!!"
-        let publisherString = "Publisher: " + publisher
-        var mutstring4 = NSMutableAttributedString()
-        mutstring4 = NSMutableAttributedString(string: publisherString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring4.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 11, length: publisher.characters.count))
-        publisherLabel.attributedText = mutstring4
-        
-        ////////////
-        let pageCountLabel = UILabel()
-        pageCountLabel.textColor = .sexyGray()
-        
-        if let pageCount = model.book?.pageCount {
-          let pageCountString = "Page Count: \(pageCount)"
-          var mutstring5 = NSMutableAttributedString()
-          mutstring5 = NSMutableAttributedString(string: pageCountString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-          mutstring5.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 12, length: String(pageCount).characters.count))
-          pageCountLabel.attributedText = mutstring5
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("ISBN: ")
+        if let isbn = model.book?.ISBN13 {
+          cell.setLabelSubTitle(isbn)
+        } else {
+          cell.setLabelSubTitle("")
         }
-        
-        ////////////
-        let categoriesLabel = UILabel()
-        categoriesLabel.textColor = .sexyGray()
-        let categories = "0"
-        let categoriesString = "Categories: " + categories
-        var mutstring6 = NSMutableAttributedString()
-        mutstring6 = NSMutableAttributedString(string: categoriesString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring6.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 12, length: categories.characters.count))
-        categoriesLabel.attributedText = mutstring6
-        
-        ////////////
-        let ratingLabel = UILabel()
-        ratingLabel.textColor = .sexyGray()
-        let rating = "General"
-        let ratingString = "Rating: " + rating
-        var mutstring7 = NSMutableAttributedString()
-        mutstring7 = NSMutableAttributedString(string: ratingString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring7.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 8, length: rating.characters.count))
-        ratingLabel.attributedText = mutstring7
-        
-        let labels = [isbnLabel, coverLabel, editionLabel, publisherLabel, pageCountLabel, categoriesLabel, ratingLabel]
-        
-        for label in labels {
-          cell.addSubview(label)
-        }
-        
-        cell.groupInCorner(group: .Vertical, views: [isbnLabel, coverLabel, editionLabel, publisherLabel, pageCountLabel, categoriesLabel, ratingLabel], inCorner: .TopLeft, padding: screen.width / 30, width: screen.width, height: screen.height / 40)
-      
-        cell.selectionStyle = .None
+        cell.setLabelFullTitle()
         return cell
       }
       break;
     case 5:
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell,
-          let description = model.book?.description
-      {
-        cell.backgroundColor = .whiteColor()
-        //cell.showSeparatorLine()
-        cell.hideBothTopAndBottomBorders()
-        ////////////
-        let descriptionLabel = UILabel()
-        descriptionLabel.numberOfLines = 0
-        
-        //descriptionLabel.textAlignment = .Center
-        descriptionLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        descriptionLabel.textColor = .sexyGray()
-        
-        let descriptionString = "Description\n" + description
-        var mutstring = NSMutableAttributedString()
-        mutstring = NSMutableAttributedString(string: descriptionString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-        mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: 11, length: description.characters.count))
-        descriptionLabel.attributedText = mutstring
-        
-        cell.addSubview(descriptionLabel)
-        descriptionLabel.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
-        cell.selectionStyle = .None
-        
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Binding: ")
+        if let binding = model.book?.binding {
+          cell.setLabelSubTitle(binding)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
         return cell
       }
       break;
     case 6:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Edition: ")
+        if let edition = model.book?.edition {
+          cell.setLabelSubTitle(edition)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+        
+      }
+      break;
+    case 7:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Publisher: ")
+        if let publisher = model.book?.publisher {
+          cell.setLabelSubTitle(publisher)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+        
+      }
+      break;
+    case 8:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Page Count: ")
+        if let pageCount = model.book?.pageCount {
+          cell.setLabelSubTitle("\(pageCount)")
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+      }
+      break;
+    case 9:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Categories: ")
+        if let categories = model.book?.categories {
+          cell.setLabelSubTitle(categories)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+        
+      }
+      break;
+    case 10:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Rating: ")
+        if let rating = model.book?.maturityRating {
+          cell.setLabelSubTitle(rating)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+        
+      }
+      break;
+      
+    case 11:
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{
+        cell.label?.numberOfLines = 0
+        cell.setLabelTitle("Description: ")
+        
+        if let description = model.book?.description {
+          cell.setLabelSubTitle(description)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+      }
+      break;
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         cell.showSeparatorLine()
         cell.hideBothTopAndBottomBorders()
@@ -270,7 +310,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         cell.titleButton?.setTitle("Read Reviews ", forState: .Normal)
         cell.titleButton?.setTitleColor(.juicyOrange(), forState: .Normal)
         cell.titleButton?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-        cell.rightImageView?.frame = CGRectMake(cell.frame.width-cell.frame.height * (1 / 2), cell.frame.height * (3 / 8), cell.frame.height * (1 / 4), cell.frame.height * (1 / 4))
+        cell.rightImageView?.frame = CGRectMake(cell.frame.width-cell.frame.height * (1 / 2), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3))
         cell.rightImageView?.image = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(cell.rightImageView?.frame.size, fitMode: .Clip).image
         cell._didSelectCell.listen(self){ [weak self] bool in
           // FIXME: Go to Reviews
@@ -279,7 +319,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 7:
+    case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showSeparatorLine()
         cell.hideBothTopAndBottomBorders()
@@ -288,7 +328,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 8:
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.hideBothTopAndBottomBorders()
         
@@ -302,7 +342,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 9:
+    case 15:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
@@ -310,7 +350,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 10:
+    case 16:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.hideBothTopAndBottomBorders()
         
@@ -324,15 +364,25 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
+    case 17:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.hideBothTopAndBottomBorders()
+        cell.backgroundColor = .whiteColor()
+        
+        return cell
+      }
+      break;
     default:
       break;
-    }
+    
     
 //    cell.textLabel?.textColor = UIColor.lightGrayColor()
 //    cell.textLabel?.font = UIFont.asapRegular(14)
-    return DLTableViewCell()
   }
+    return DLTableViewCell()
+    }
   
+
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch (indexPath.row) {
     case 0:
@@ -340,24 +390,24 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     case 3:
       return screen.height / 3
     case 4:
-      // FIXME: DEBUGGING add model data string to label strings
-      let string = "ISBN(S): \nCover: \nEdition: \nPublisher: \nPage Count: \nCategories: \nRating: \n"
-      let height:CGFloat = self.calculateHeightForString(string)
-      return height + screen.width / 30 * 6
+      return screen.height / 25
     case 5:
-      // FIXME: DEBUGGING model.description instead of messageArray[1]
+      return screen.height / 25
+    case 11:
       if let string = model.book?.description, let height: CGFloat! = self.calculateHeightForString(string) { return height }
       return screen.height / 10
-    case 6:
-      return screen.height / 15
-    case 7:
+    case 12:
+      return screen.height / 20
+    case 13:
       return screen.height / 40
-    case 8:
+    case 14: // Wish List Button
       return screen.height / 15
-    case 9:
+    case 15:
+      return screen.height / 40
+    case 16: // Sell Button
+      return screen.height / 15
+    case 17:
       return screen.height / 50
-    case 10:
-      return screen.height / 15
     default:
       return screen.height / 25
     }
@@ -365,8 +415,12 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   
   func calculateHeightForString(inString:String) -> CGFloat{
     let mutstring = NSMutableAttributedString(string: inString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-    let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(300.0,CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
+    let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(400.0,CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
     return rect.height
+  }
+  
+  public func presentCreateListingView(book: Book?) {
+    presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
   }
   
 }

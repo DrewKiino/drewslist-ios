@@ -63,7 +63,7 @@ public class CreateListingController {
     // make the request following the server's route pattern
     Alamofire.request(
       .POST,
-      "\(ServerUrl.Local.getValue())/user/listBook",
+      "\(ServerUrl.Default.getValue())/user/listBook",
       parameters: [
         "user_id": user_id,
         "book_id": book_id,

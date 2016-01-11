@@ -235,14 +235,36 @@ extension UIView {
     }
   }
   
-  public func displayNotification(text: String) {
+  public func displayNotification(text: String?) {
+    guard let text = text else { return }
     
-    let notification = CWStatusBarNotification()
+    var notification: CWStatusBarNotification! = CWStatusBarNotification()
     notification.notificationAnimationInStyle = .Bottom
     notification.notificationAnimationOutStyle = .Bottom
     notification.notificationStyle = .StatusBarNotification
 
-    let loadingLabel = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
+    var label: UILabel! = UILabel(frame: CGRectMake(0, 0, screen.width, 64))
+    label.text = text
+    label.textAlignment = .Center
+    label.font = UIFont.asapBold(12)
+    label.textColor = .whiteColor()
+    label.backgroundColor = .bareBlue()
+    
+    notification.displayNotificationWithView(label, forDuration: 3.0)
+    
+    notification = nil
+    label = nil
+  }
+  
+  public func displayLoadingNotification() {
+    guard let text: String! = "" else { return }
+      
+    var notification: CWStatusBarNotification! = CWStatusBarNotification()
+    notification.notificationAnimationInStyle = .Bottom
+    notification.notificationAnimationOutStyle = .Bottom
+    notification.notificationStyle = .StatusBarNotification
+    
+    var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
     loadingLabel.text = text
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(12)
@@ -261,6 +283,9 @@ extension UIView {
     }
     
     notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
+    
+    notification = nil
+    loadingLabel = nil
   }
   
   public func showComingSoonScreen() {

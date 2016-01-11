@@ -61,8 +61,14 @@ public class TabView: UITabBarController {
     // set view controllers
     viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
     
+    // first initialize both the chat history view and activity feed view
+    selectedIndex = 1
+    selectedIndex = 3
     // make the scanner view the main view
 //    selectedIndex = 2
+    
+    // fixture view
+    selectedIndex = 0
     
     // dealloc reference view controllers
     communityView = nil
