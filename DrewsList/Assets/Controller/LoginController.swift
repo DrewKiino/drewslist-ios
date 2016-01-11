@@ -29,7 +29,7 @@ public class LoginController {
     
     Alamofire.request(
       .POST,
-      ServerUrl.Staging.getValue() + "/user/authenticateWithLocalAuth",
+      ServerUrl.Default.getValue() + "/user/authenticateWithLocalAuth",
       parameters: [
         "email": email,
         "password": password
@@ -59,6 +59,8 @@ public class LoginController {
             self?.model.user = User(json: json)
             // write user object to realm
             self?.writeRealmUser()
+            // set user online status to true
+            Sockets.sharedInstance().setOnlineStatus(true)
           }
         }
         

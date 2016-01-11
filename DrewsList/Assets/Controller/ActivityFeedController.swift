@@ -18,7 +18,13 @@ public class ActivityFeedController {
     setupSockets()
   }
   
+  
   private func setupSockets() {
+    socket._message.removeListener(self)
+    socket._message.listen(self) { [weak self] json in
+      if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["identifier"].string == "activity" && self?.socket.isCurrentlyInChat == false {
+        self?.model.activity = "\(username): \(message)"
+      }
+    }
   }
-
 }

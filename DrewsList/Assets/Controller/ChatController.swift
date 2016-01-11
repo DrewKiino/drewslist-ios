@@ -34,8 +34,27 @@ public class ChatController {
   // variables
   private var unsubscribeBlock: (() -> Void)?
   
+  public func viewDidAppear() {
+    
+    connectToServer()
+    
+    socket.isCurrentlyInChat = true
+  }
+  
+  public func viewWillDisappear() {
+    
+    disconnectFromServer()
+    
+    socket.isCurrentlyInChat = false
+  }
+  
   public init() {
+    setupSelf()
     setupDataBinding()
+  }
+  
+  private func setupSelf() {
+    model.session_id = socket.session_id
   }
   
   private func setupDataBinding() {
@@ -75,29 +94,6 @@ public class ChatController {
       self?.unsubscribeBlock = nil
     }
     
-    socket.on("setOnlineStatus.response") { json in
-      if let response = json["response"].bool {
-        log.info("online status set to: \(response)")
-      } else if let error = json["error"].string {
-        log.debug(error)
-      }
-    }
-    
-    socket.on("disconnect") { [unowned self] json in
-      // negate the session id in the model
-      self.model.session_id = nil
-    }
-    
-    // subscribe to broadcasts done by the server
-    socket.on("message") { [unowned self] json in
-      guard let newMessage = IncomingMessage(json: json).toJSQMessage() else { return }
-      log.verbose(newMessage.text)
-      // append the broadcast to the model's messages array
-      self.model.messages.append(newMessage)
-      // broadcast to all listeners that a message was received
-      self.didReceiveMessage => true
-    }
-    
     // subscribe to the server chat framework's messages callback
     socket.on("checkForMessages.response") { json in
       if let messages = json["response"].array {
@@ -128,6 +124,16 @@ public class ChatController {
           log.info(response)
         }
       }
+    }
+    
+    // subscribe to broadcasts done by the server
+    socket._message.removeListener(self)
+    socket._message.listen(self) { [weak self] json in
+      guard let newMessage = IncomingMessage(json: json["message"]).toJSQMessage() where json["identifier"].string == self?.model.room_id else { return }
+      // append the broadcast to the model's messages array
+      self?.model.messages.append(newMessage)
+      // broadcast to all listeners that a message was received
+      self?.didReceiveMessage.fire(true)
     }
   }
   
@@ -216,13 +222,17 @@ public class ChatController {
 //      self?.setupSockets()
 //      self?.subscribe()
 //    }
+    // setup sockets
     setupSockets()
+    // subscribe user to chat room
     subscribe()
   }
   
   public func disconnectFromServer() {
+    
     unsubscribe { [weak self] in
 //      self?.socket.disconnect()
+      // set flag
     }
   }
 }

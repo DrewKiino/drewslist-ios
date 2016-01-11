@@ -63,6 +63,9 @@ public class DLTableView: UITableView {
     // MARK: Edit Listing
     registerClass(EditListingCell.self, forCellReuseIdentifier: "EditListingCell")
     
+    // MARK: Chat History
+    registerClass(ChatHistoryCell.self, forCellReuseIdentifier: "ChatHistoryCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()

@@ -17,10 +17,12 @@ import RealmSwift
 public enum ServerUrl {
   case Local
   case Staging
+  case Default
   public func getValue() -> String {
     switch self {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
+    case .Default: return "https://drewslist-staging.herokuapp.com"
     }
   }
 }
@@ -48,6 +50,9 @@ public class Sockets {
   public let _session_id = Signal<String?>()
   public var session_id: String? = nil { didSet { _session_id => session_id } }
   public let socket = Sockets.new()
+  public var isCurrentlyInChat: Bool = false
+  
+  public let _message = Signal<JSON>()
   
   private var disconnectHandler: (() -> Void)? = nil
   
@@ -55,9 +60,6 @@ public class Sockets {
     // reset all handlers
     socket.removeAllHandlers()
     // subscribe to default streams
-    socket.on("message") { data, socket in
-      log.debug(data)
-    }
     socket.on("error") { data, socket in
       log.error(data)
     }
@@ -66,10 +68,8 @@ public class Sockets {
       execute?()
     }
     socket.on("reconnect") { data, socket in
-      log.debug(data)
     }
     socket.on("reconnectAttempt") { data, socket in
-      log.debug(data)
     }
     socket.on("disconnect") { [weak self] data, socket in
       log.info("disconnected from server.")
@@ -89,18 +89,7 @@ public class Sockets {
             log.info("session ID: \(session_id)")
           }
           
-          // if user is already logged in
-          // set online status to
-          self?.readRealmUser()
-          
-          if let user = self?.user, let user_id = user._id {
-            self?.socket.emit("setOnlineStatus", [
-              "user_id": user_id,
-              "online": true
-            ])
-//            self?.socket.emit(<#T##event: String##String#>, <#T##items: AnyObject...##AnyObject#>)
-          }
-          
+          self?.setOnlineStatus(true)
           
         } else if let error = json["error"].string {
           log.debug(error)
@@ -116,16 +105,21 @@ public class Sockets {
         if let response = json["response"].bool {
           if let user_id = self?.user?._id where response == true {
             log.info("\(user_id): ONLINE")
+          } else if let user_id = self?.user?._id where response == false {
+            log.info("\(user_id): OFFLINE")
           }
         }
       }
+    }
+    socket.on("message") { [weak self] data, socket in
+      if let json = JSON(data).array?.first { self?._message.fire(json) }
     }
     socket.connect()
   }
   
   public class func new() -> SocketIOClient {
     let socket = SocketIOClient(
-      socketURL: ServerUrl.Local.getValue(),
+      socketURL: ServerUrl.Default.getValue(),
       options: [
         .Log(false),
         .ForcePolling(false),
@@ -184,7 +178,12 @@ public class Sockets {
     return socket.status.description == "Connected" ? true : false
   }
   
+  public func off(event: String) {
+    socket.off(event)
+  }
+  
   public func on(event: String, execute: (JSON -> Void)) {
+    socket.off(event)
     socket.on(event) { data, socket in
       if let json = JSON(data).array?.first { execute(json) }
     }
@@ -203,6 +202,19 @@ public class Sockets {
       socket.emit(event, object)
     } else if forceConnection {
       connect() { [unowned self] in self.socket.emit(event, object) }
+    }
+  }
+  
+  public func setOnlineStatus(bool: Bool) {
+    // if user is already logged in
+    // set online status to
+    readRealmUser()
+    
+    if let user = user, let user_id = user._id {
+      socket.emit("setOnlineStatus", [
+        "user_id": user_id,
+        "online": bool
+      ])
     }
   }
 }

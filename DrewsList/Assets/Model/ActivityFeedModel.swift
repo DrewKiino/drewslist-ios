@@ -7,7 +7,11 @@
 //
 
 import Foundation
+import Signals
 
 public class ActivityFeedModel {
+  
+  public let _activity = Signal<String?>()
+  public var activity: String? { didSet { _activity => activity } }
   
 }
