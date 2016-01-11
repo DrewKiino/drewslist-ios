@@ -955,6 +955,10 @@ public class BookViewCell: DLTableViewCell {
   
   private func setupBookView() {
     bookView = BookView()
+    bookView?._cellPressed.removeAllListeners()
+    bookView?._cellPressed.listen(self) { [weak self] bool in
+      if bool == true { self?._cellPressed.fire(bool) }
+    }
     addSubview(bookView!)
   }
   

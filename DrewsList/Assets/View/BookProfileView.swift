@@ -20,12 +20,20 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
   
+//  init(bookID: String) {
+//    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
+//  }
+//
+//  required public init?(coder aDecoder: NSCoder) {
+//      fatalError("init(coder:) has not been implemented")
+//  }
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     // MARK: Fixtures
     // setup controller's databinding
-    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
+//    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
 //    setBook(Book(_id: "5689af1c9ee2ef1f00000976"))
 
     setUpTableView()
@@ -71,9 +79,9 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     controller.getBookFromServer()
   }
   
-  public func setBook(book: Book?) {
-    guard let book = book else { return }
-    model.book = book
+  public func setBook(book: Book?) -> Self {
+    if let book = book { model.book = book }
+    return self
   }
   
   // MARK: UITableView Classes
@@ -409,6 +417,10 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     let mutstring = NSMutableAttributedString(string: inString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
     let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(400.0,CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
     return rect.height
+  }
+  
+  public func presentCreateListingView(book: Book?) {
+    presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
   }
   
 }

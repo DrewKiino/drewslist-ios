@@ -25,6 +25,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
+  public let _bookProfilePressed = Signal<Book?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -120,6 +121,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     saleListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
       self?._chatButtonPressed.fire(listing)
     }
+    saleListFeedView?._bookProfilePressed.removeAllListeners()
+    saleListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
+      self?._bookProfilePressed.fire(book)
+    }
     scrollView?.addSubview(saleListFeedView!)
     saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
@@ -129,6 +134,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     wishListFeedView?.setListType("buying")
     wishListFeedView?._chatButtonPressed.removeAllListeners()
     wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+    }
+    wishListFeedView?._bookProfilePressed.removeAllListeners()
+    wishListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
+      self?._bookProfilePressed.fire(book)
     }
     scrollView?.addSubview(wishListFeedView!)
     wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
@@ -204,6 +213,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
+  public let _bookProfilePressed = Signal<Book?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -278,6 +288,12 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
         self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
+      }
+      cell.listView?._bookProfilePressed.removeAllListeners()
+      cell.listView?._bookProfilePressed.listen(self) { [weak self] book in
+        log.debug(book?._id)
+        //self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
+        self?._bookProfilePressed.fire(book)
       }
       return cell
     }
