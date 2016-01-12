@@ -43,7 +43,7 @@ public class TabController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Default.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {

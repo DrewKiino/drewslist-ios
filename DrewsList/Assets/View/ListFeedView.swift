@@ -25,6 +25,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
+  public let _bookProfilePressed = Signal<Book?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -120,6 +121,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     saleListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
       self?._chatButtonPressed.fire(listing)
     }
+    saleListFeedView?._bookProfilePressed.removeAllListeners()
+    saleListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
+      self?._bookProfilePressed.fire(book)
+    }
     scrollView?.addSubview(saleListFeedView!)
     saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
@@ -129,6 +134,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     wishListFeedView?.setListType("buying")
     wishListFeedView?._chatButtonPressed.removeAllListeners()
     wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
+    }
+    wishListFeedView?._bookProfilePressed.removeAllListeners()
+    wishListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
+      self?._bookProfilePressed.fire(book)
     }
     scrollView?.addSubview(wishListFeedView!)
     wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
@@ -204,6 +213,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
+  public let _bookProfilePressed = Signal<Book?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -235,9 +245,10 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       self?.controller.getListingsFromServer(0, listType: listType)
     }
     
-//    model._shouldRefrainFromCallingServer.removeAllListeners()
-//    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-//    }
+    model._shouldRefrainFromCallingServer.removeAllListeners()
+    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
+      if bool == false { self?.hideLoadingScreen() }
+    }
   }
   
   private func setupTableView() {
@@ -264,23 +275,26 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if model.listings.count > 0 { return model.listings.count + 1 }
-    else { return 0 }
+//    if model.listings.count > 0 { return model.listings.count + 1 }
+//    else { return 0 }
+    return model.listings.count
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
-      cell.showTopBorder()
+      cell.showBottomBorder()
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
         self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
       }
-      return cell
-      
-    } else if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-      cell.titleButton?.setTitle("Test", forState: .Normal)
+      cell.listView?._bookProfilePressed.removeAllListeners()
+      cell.listView?._bookProfilePressed.listen(self) { [weak self] book in
+        log.debug(book?._id)
+        //self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
+        self?._bookProfilePressed.fire(book)
+      }
       return cell
     }
     

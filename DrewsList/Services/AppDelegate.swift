@@ -28,26 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
-    // init the root view
-    let tabView = LoginView()
-    
-    /*
-    * Use this code to get the bounds of the screen
-    *
-    *       UIScreen.mainScreen().bounds
-    *
-    */
-    tabView.view.frame = UIScreen.mainScreen().bounds
-    
-    // set the window to match the screen's bounds
-    window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    
-    // set the root view as the window's root view
-    window!.rootViewController = tabView
-    
-    // commit change
-    window!.makeKeyAndVisible()
-    
     setupRootView()
     
     // on foreground, reset the badge number
@@ -55,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // remove the back button
     UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
+    
+    // connect to server
+    Sockets.sharedInstance().connect()
     
     return true
   }
@@ -67,6 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func applicationDidEnterBackground(application: UIApplication) {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // disconnect from server when app backgrounds
+    Sockets.sharedInstance().disconnect()
   }
 
   func applicationWillEnterForeground(application: UIApplication) {
@@ -74,6 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    
+    // connect to server when app enters foreground
+    Sockets.sharedInstance().connect()
   }
 
   func applicationDidBecomeActive(application: UIApplication) {
@@ -82,6 +71,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func applicationWillTerminate(application: UIApplication) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    // disconnect from server when app terminages
+    Sockets.sharedInstance().disconnect()
   }
   
   func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -103,9 +95,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
+<<<<<<< HEAD
     //var tabView: TabView? = TabView()
     var tabView: CommunityFeedView? = CommunityFeedView()
     
+=======
+    var tabView: TabView? = TabView()
+//    var tabView: ActivityFeedView? = ActivityFeedView()
+//    var tabView: SearchUserView? = SearchUserView()
+>>>>>>> a0313c439ef59b57270b98cb97113763efa8b9df
     
     /*
     * Use this code to get the bounds of the screen

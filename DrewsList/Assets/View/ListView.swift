@@ -52,6 +52,12 @@ public class ListViewContainer: UIViewController {
       self?.readRealmUser()
       self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
     }
+    listView?._bookProfilePressed.removeAllListeners()
+    listView?._bookProfilePressed.listen(self) { [weak self] bool in
+      //self?.readRealmUser()
+      print("PRESSED")
+      self?.navigationController?.pushViewController(BookProfileView().setBook(Book(_id: "5692cdab8b12dd1f000ee63c")), animated: true)
+    }
     view.addSubview(listView!)
   }
   
@@ -93,6 +99,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public let _chatButtonPressed = Signal<Bool>()
   public let _callButtonPressed = Signal<Bool>()
+  public let _bookProfilePressed = Signal<Book?>()
   
   public var tableView: DLTableView?
   
@@ -175,11 +182,17 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        
         cell.bookView?.setBook(model.listing?.book)
         model._listing.removeListener(self)
         model._listing.listen(self) { [weak cell] listing in
           cell?.bookView?.setBook(listing?.book)
+        }
+        
+        cell._cellPressed.removeAllListeners()
+        cell._cellPressed.listen(self) { [weak self] bool in
+          if bool == true {
+            self?._bookProfilePressed.fire(self?.model.listing?.book)
+          }
         }
         
         return cell

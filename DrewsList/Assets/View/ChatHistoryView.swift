@@ -17,7 +17,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   private let controller = ChatHistoryController()
   private unowned var model: ChatHistoryModel { get { return controller.model } }
 
-  private var tableView: UITableView?
+  private var tableView: DLTableView?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,19 +27,21 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   private func setupSelf() {
     view.backgroundColor = UIColor.whiteColor()
-    
     setRootViewTitle("Chat")
   }
   
   private func setupTableView() {
-    tableView = UITableView(frame: view.frame)
-    tableView?.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
+    view.addSubview(tableView!)
   }
   
   private func setupDataBinding() {
-    
+    model._user.removeAllListeners()
+    model._user.listen(self) { [weak self] user in
+      log.debug(user)
+    }
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -59,6 +61,30 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   }
 }
 
-public class ChatListViewCell: UITableViewCell {
+public class ChatHistoryCell: DLTableViewCell {
+  
+  
+  
+  
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,11 +12,20 @@ import JSQMessagesViewController
 import ObjectMapper
 import SwiftyJSON
 import SwiftDate
+import RealmSwift
 
-public class ChatModel {
+public class ChatModel: NSObject, NSCoding {
   
   public let _session_id = Signal<String?>()
   public var session_id: String? { didSet { _session_id => session_id } }
+  
+  public var room_id: String? {
+    get {
+      guard let user_id = user?._id, let friend_id = friend?._id
+        else { return nil }
+      return user_id + friend_id
+    }
+  }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
@@ -30,12 +39,31 @@ public class ChatModel {
   public let _pendingMessages = Signal<[JSQMessage]>()
   public var pendingMessages = [JSQMessage]() { didSet { _pendingMessages => pendingMessages } }
   
-  public var room_id: String? {
-    get {
-      guard let user_id = user?._id, let friend_id = friend?._id
-      else { return nil }
-      return user_id + "+" + friend_id
+  // NSData conversion functions
+  public required convenience init(coder decoder: NSCoder) {
+    self.init()
+    
+    if let session_id = decoder.decodeObjectForKey("session_id") as? String { self.session_id = session_id }
+    if  let _id = decoder.decodeObjectForKey("user_id") as? String,
+        let firstName = decoder.decodeObjectForKey("user_firstName") as? String,
+        let lastName = decoder.decodeObjectForKey("user_lastName") as? String,
+        let username = decoder.decodeObjectForKey("user_username") as? String,
+        let image = decoder.decodeObjectForKey("user_image") as? String
+    
+    {
     }
+    if let friend_id = decoder.decodeObjectForKey("friend_id") as? String {
+    }
+    if let messages = decoder.decodeObjectForKey("messages") as? [JSQMessage] { self.messages = messages }
+    if let pendingMessages = decoder.decodeObjectForKey("pendingMessages") as? [JSQMessage] { self.pendingMessages = pendingMessages }
+  }
+  
+  public func encodeWithCoder(coder: NSCoder) {
+    if let session_id = session_id { coder.encodeObject(session_id, forKey: "session_id") }
+//    if let user = user { coder.encodeObject(user, forKey: "user") }
+//    if let friend = friend { coder.encodeObject(friend, forKey: "friend") }
+    coder.encodeObject(messages, forKey: "messages")
+    coder.encodeObject(pendingMessages, forKey: "pendingMessages")
   }
 }
 
@@ -151,5 +179,20 @@ public class OutgoingMessage {
   public func set(text: String) -> Self {
     message = text
     return self
+  }
+}
+
+public class RealmChatModel: Object {
+  
+  dynamic var data: NSData? = nil
+  
+  public convenience init(chatModel: ChatModel) {
+    self.init()
+    data = NSKeyedArchiver.archivedDataWithRootObject(chatModel)
+  }
+  
+  public func toChatModel() -> ChatModel? {
+    if let data = data, let chatModel = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? ChatModel { return chatModel }
+    else { return nil }
   }
 }

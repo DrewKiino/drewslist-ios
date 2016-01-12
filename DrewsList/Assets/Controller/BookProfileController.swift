@@ -20,33 +20,32 @@ public class BookProfileController {
   private var view: BookProfileView?
   
   public func viewDidLoad() {
+    
     getBookFromServer()
   }
   
   public func setBookID(bookID: String?){
-    let book = Book()
-    model.book = book
-    model.book?._id = bookID
+    model.book = Book(_id: bookID)
   }
   
   public func getBookFromServer() {
     guard let book_id = model.book?._id  else { return }
-    
+   
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, ServerUrl.Staging.getValue() + "/book", parameters: [ "_id": book_id ], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Default.getValue() + "/book", parameters: [ "_id": book_id ], encoding: .URL)
       .response { [weak self] req, res, data, error in
-        
         if let error = error {
           log.error(error)
         } else if let data = data, let json: JSON! = JSON(data: data) {
           
+          
           // create and  user object
           self?.model.book = Book(json: json)
         }
-        
+       
         // create a throttler
         // this will disable this controllers server calls for 10 seconds
         self?.refrainTimer?.invalidate()
