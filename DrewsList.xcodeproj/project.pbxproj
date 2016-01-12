@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		16B7748D702503ABF4E8357B /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
+		390389F81C43005900740B49 /* ConfirmTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389F71C43005900740B49 /* ConfirmTransferView.swift */; };
+		390389FA1C4300DC00740B49 /* ConfirmTransferModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */; };
+		390389FC1C4300F900740B49 /* ConfirmTransferController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389FB1C4300F900740B49 /* ConfirmTransferController.swift */; };
 		3960A7F01C233BBD00747C6C /* DynamicHeightCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3960A7EF1C233BBD00747C6C /* DynamicHeightCell.xib */; };
 		399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971D91C14CF0A008C30FC /* SignUpView.swift */; };
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
@@ -126,6 +129,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		390389F71C43005900740B49 /* ConfirmTransferView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferView.swift; sourceTree = "<group>"; };
+		390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferModel.swift; sourceTree = "<group>"; };
+		390389FB1C4300F900740B49 /* ConfirmTransferController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferController.swift; sourceTree = "<group>"; };
 		3960A7EF1C233BBD00747C6C /* DynamicHeightCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DynamicHeightCell.xib; sourceTree = "<group>"; };
 		399971D91C14CF0A008C30FC /* SignUpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
@@ -352,6 +358,7 @@
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE67C1591C30B05C00AC60DB /* SearchBookModel.swift */,
 				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
+				390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -384,6 +391,7 @@
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
 				EE67C1571C30B05700AC60DB /* SearchBookView.swift */,
 				4FCF2A041C309B3200091408 /* BookProfileView.swift */,
+				390389F71C43005900740B49 /* ConfirmTransferView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -411,6 +419,7 @@
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
+				390389FB1C4300F900740B49 /* ConfirmTransferController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -796,6 +805,7 @@
 			files = (
 				EEE2AA091C28A33C0093DB46 /* AccountSettingsController.swift in Sources */,
 				EE67C15A1C30B05C00AC60DB /* SearchBookModel.swift in Sources */,
+				390389FA1C4300DC00740B49 /* ConfirmTransferModel.swift in Sources */,
 				3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */,
 				EE8918C71C1169B500FCF031 /* LoginModel.swift in Sources */,
 				3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */,
@@ -810,6 +820,8 @@
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
 				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
+				390389FC1C4300F900740B49 /* ConfirmTransferController.swift in Sources */,
+				390389F81C43005900740B49 /* ConfirmTransferView.swift in Sources */,
 				EE2824D31C30A43D00969E74 /* EditListingController.swift in Sources */,
 				EEE2AA111C28F8B50093DB46 /* CreateListingView.swift in Sources */,
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
