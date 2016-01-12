@@ -65,7 +65,9 @@ pod 'Onboard'
 # permissions
 pod 'PermissionScope'
 
-
+# authentication libs
+pod 'FBSDKCoreKit'
+pod 'FBSDKLoginKit'
 
 #####################################
 # unit testing
