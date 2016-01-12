@@ -130,9 +130,6 @@ public class ConfirmTransferView: UIViewController, UITableViewDelegate, UITextF
     
   }
   
-  
-  
-
   private func setupTableView() {
     TableView = DLTableView()
     TableView?.delegate = self

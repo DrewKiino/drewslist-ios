@@ -104,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     //var tabView: TabView? = TabView()
-    var tabView: ConfirmTransferView? = ConfirmTransferView()
+    var tabView: CommunityFeedView? = CommunityFeedView()
     
     
     /*
