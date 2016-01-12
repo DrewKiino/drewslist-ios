@@ -29,12 +29,12 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    controller.connectToServer()
+    controller.viewDidAppear()
   }
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    controller.disconnectFromServer()
+    controller.viewWillDisappear()
   }
   
   private func setupSelf() {

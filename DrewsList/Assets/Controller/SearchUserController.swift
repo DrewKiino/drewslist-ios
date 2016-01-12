@@ -68,6 +68,6 @@ public class SearchUserController {
       return nil
     }
     let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
-    return "\(ServerUrl.Local.getValue())/user?q=\(queryString)&limit=10"
+    return "\(ServerUrl.Default.getValue())/user?q=\(queryString)&limit=10"
   }
 }

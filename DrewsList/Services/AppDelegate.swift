@@ -36,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // remove the back button
     UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
     
+    // connect to server
+    Sockets.sharedInstance().connect()
+    
     return true
   }
 
@@ -47,6 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func applicationDidEnterBackground(application: UIApplication) {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // disconnect from server when app backgrounds
+    Sockets.sharedInstance().disconnect()
   }
 
   func applicationWillEnterForeground(application: UIApplication) {
@@ -54,6 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // on foreground, reset the badge number
     UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    
+    // connect to server when app enters foreground
+    Sockets.sharedInstance().connect()
   }
 
   func applicationDidBecomeActive(application: UIApplication) {
@@ -62,6 +71,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func applicationWillTerminate(application: UIApplication) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    // disconnect from server when app terminages
+    Sockets.sharedInstance().disconnect()
   }
   
   func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -84,7 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     var tabView: TabView? = TabView()
-//    var tabView: BookProfileView? = BookProfileView()
+//    var tabView: ActivityFeedView? = ActivityFeedView()
 //    var tabView: SearchUserView? = SearchUserView()
     
     /*

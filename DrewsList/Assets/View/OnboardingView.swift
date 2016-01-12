@@ -36,7 +36,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    setOnboardingAsBeenSeen()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -173,6 +172,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   }
   
   public func skipOnboarding() {
+    setOnboardingAsBeenSeen()
     // dismiss the onboarding view
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }

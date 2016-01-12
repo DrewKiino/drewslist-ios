@@ -77,7 +77,7 @@ public class SearchBookController {
       
       if queryString.hasSuffix("+") { queryString = String(queryString.characters.dropLast())         }
       
-      return "\(ServerUrl.Local.getValue())/book/search?query=\(queryString)"
+      return "\(ServerUrl.Default.getValue())/book/search?query=\(queryString)"
     }
     
     model.books.removeAll(keepCapacity: false)

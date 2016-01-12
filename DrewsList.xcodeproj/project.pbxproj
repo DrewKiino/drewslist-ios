@@ -37,6 +37,8 @@
 		EE07FE331BE11D1E00A10F05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EE07FE311BE11D1E00A10F05 /* LaunchScreen.storyboard */; };
 		EE07FE3E1BE11D1E00A10F05 /* DrewsListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE3D1BE11D1E00A10F05 /* DrewsListTests.swift */; };
 		EE07FE491BE11D1E00A10F05 /* DrewsListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */; };
+		EE1062921C433DE300DAA15E /* ActivityFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1062911C433DE300DAA15E /* ActivityFeedController.swift */; };
+		EE1062941C433DEC00DAA15E /* ActivityFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */; };
 		EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */; };
 		EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */; };
 		EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */; };
@@ -160,6 +162,8 @@
 		EE07FE441BE11D1E00A10F05 /* DrewsListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrewsListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE07FE481BE11D1E00A10F05 /* DrewsListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrewsListUITests.swift; sourceTree = "<group>"; };
 		EE07FE4A1BE11D1E00A10F05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EE1062911C433DE300DAA15E /* ActivityFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedController.swift; sourceTree = "<group>"; };
+		EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedModel.swift; sourceTree = "<group>"; };
 		EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Bold.otf"; sourceTree = "<group>"; };
 		EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-BoldItalic.otf"; sourceTree = "<group>"; };
 		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Italic.otf"; sourceTree = "<group>"; };
@@ -346,6 +350,7 @@
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE67C1591C30B05C00AC60DB /* SearchBookModel.swift */,
 				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
+				EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -405,6 +410,7 @@
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
+				EE1062911C433DE300DAA15E /* ActivityFeedController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -622,6 +628,7 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 2NC533SE3E;
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -805,6 +812,7 @@
 				EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */,
 				EED29A0F1BF533A1009C6D47 /* Sockets.swift in Sources */,
 				3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */,
+				EE1062941C433DEC00DAA15E /* ActivityFeedModel.swift in Sources */,
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
@@ -843,6 +851,7 @@
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
 				EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */,
+				EE1062921C433DE300DAA15E /* ActivityFeedController.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
 				4F966CEC1C27C32A00CECCC6 /* EditProfileView.swift in Sources */,
 				EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */,

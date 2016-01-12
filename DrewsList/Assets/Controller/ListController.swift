@@ -26,7 +26,7 @@ public class ListController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, ServerUrl.Local.getValue() + "/listing", parameters: [ "_id": list_id], encoding: .URL)
+    Alamofire.request(.GET, ServerUrl.Default.getValue() + "/listing", parameters: [ "_id": list_id], encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {
