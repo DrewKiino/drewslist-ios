@@ -108,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     var tabView: TabView? = TabView()
-//    var tabView: ActivityFeedView? = ActivityFeedView()
+//    var tabView: SettingsView? = SettingsView()
 //    var tabView: SearchUserView? = SearchUserView()
     
     /*
@@ -176,5 +176,27 @@ public class UserDefaults: Object {
     return "_id"
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

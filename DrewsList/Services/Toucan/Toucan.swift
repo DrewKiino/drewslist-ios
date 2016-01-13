@@ -73,8 +73,7 @@ public class Toucan : NSObject {
    
    - returns: Self, allowing method chaining
    */
-  @objc
-  public func resizeByClipping(size: CGSize) -> Toucan {
+  public func resizeByClipping(size: CGSize?) -> Toucan {
     self.image = Toucan.Resize.resizeImage(self.image, size: size, fitMode: .Clip)
     return self
   }
@@ -90,8 +89,7 @@ public class Toucan : NSObject {
    
    - returns: Self, allowing method chaining
    */
-  @objc
-  public func resizeByCropping(size: CGSize) -> Toucan {
+  public func resizeByCropping(size: CGSize?) -> Toucan {
     self.image = Toucan.Resize.resizeImage(self.image, size: size, fitMode: .Crop)
     return self
   }

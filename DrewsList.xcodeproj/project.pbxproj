@@ -99,6 +99,8 @@
 		EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E21C151DF200D172BE /* UserProfileListingController.swift */; };
 		EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E41C151DF800D172BE /* UserProfileListingModel.swift */; };
 		EED779E71C15406600D172BE /* BookFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED779E61C15406600D172BE /* BookFeedView.swift */; };
+		EED8BADC1C45E9CE00EDB30D /* PushController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED8BADB1C45E9CE00EDB30D /* PushController.swift */; };
+		EED8BADE1C45E9FF00EDB30D /* PushModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EED8BADD1C45E9FF00EDB30D /* PushModel.swift */; };
 		EEE2AA091C28A33C0093DB46 /* AccountSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */; };
 		EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */; };
 		EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */; };
@@ -224,6 +226,8 @@
 		EED779E21C151DF200D172BE /* UserProfileListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingController.swift; sourceTree = "<group>"; };
 		EED779E41C151DF800D172BE /* UserProfileListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileListingModel.swift; sourceTree = "<group>"; };
 		EED779E61C15406600D172BE /* BookFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookFeedView.swift; sourceTree = "<group>"; };
+		EED8BADB1C45E9CE00EDB30D /* PushController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushController.swift; sourceTree = "<group>"; };
+		EED8BADD1C45E9FF00EDB30D /* PushModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushModel.swift; sourceTree = "<group>"; };
 		EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsController.swift; sourceTree = "<group>"; };
 		EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
 		EEE2AA0E1C28C3B40093DB46 /* DLTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLTableView.swift; sourceTree = "<group>"; };
@@ -351,6 +355,7 @@
 				EE67C1591C30B05C00AC60DB /* SearchBookModel.swift */,
 				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
 				EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */,
+				EED8BADD1C45E9FF00EDB30D /* PushModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -411,6 +416,7 @@
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
 				EE1062911C433DE300DAA15E /* ActivityFeedController.swift */,
+				EED8BADB1C45E9CE00EDB30D /* PushController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -864,6 +870,7 @@
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
 				4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
+				EED8BADC1C45E9CE00EDB30D /* PushController.swift in Sources */,
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,
 				EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */,
 				399971DA1C14CF0A008C30FC /* SignUpView.swift in Sources */,
@@ -876,6 +883,7 @@
 				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
 				EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */,
+				EED8BADE1C45E9FF00EDB30D /* PushModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

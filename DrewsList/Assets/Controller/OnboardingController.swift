@@ -12,6 +12,7 @@ import PermissionScope
 public class OnboardingController {
   
   private let model = OnboardingModel()
+  
   private let pscope = PermissionScope()
   
   public init() {
