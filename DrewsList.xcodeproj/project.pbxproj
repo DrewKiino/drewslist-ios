@@ -360,15 +360,9 @@
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE67C1591C30B05C00AC60DB /* SearchBookModel.swift */,
 				4FCF2A061C309B4500091408 /* BookProfileModel.swift */,
-<<<<<<< HEAD
 				390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */,
-=======
 				EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */,
-<<<<<<< HEAD
 				EED8BADD1C45E9FF00EDB30D /* PushModel.swift */,
-=======
->>>>>>> a0313c439ef59b57270b98cb97113763efa8b9df
->>>>>>> integrate-user-sign-up-login
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -429,15 +423,9 @@
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
-<<<<<<< HEAD
 				390389FB1C4300F900740B49 /* ConfirmTransferController.swift */,
-=======
 				EE1062911C433DE300DAA15E /* ActivityFeedController.swift */,
-<<<<<<< HEAD
 				EED8BADB1C45E9CE00EDB30D /* PushController.swift */,
-=======
->>>>>>> a0313c439ef59b57270b98cb97113763efa8b9df
->>>>>>> integrate-user-sign-up-login
 			);
 			path = Controller;
 			sourceTree = "<group>";
