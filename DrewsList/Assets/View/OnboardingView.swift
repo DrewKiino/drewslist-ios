@@ -3,7 +3,7 @@
 // //RMprallax 
 //
 //  Created by Starflyer on 11/29/15.
-//  Copyright © 2015 abearablecode. All rights reserved.
+//  Copyright © 2015 Totem. All rights reserved.
 ///
 
 import UIKit

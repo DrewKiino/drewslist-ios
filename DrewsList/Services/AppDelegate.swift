@@ -107,9 +107,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
+<<<<<<< HEAD
+    //var tabView: TabView? = TabView()
+    var tabView: CommunityFeedView? = CommunityFeedView()
+    
+=======
     var tabView: TabView? = TabView()
 //    var tabView: SettingsView? = SettingsView()
 //    var tabView: SearchUserView? = SearchUserView()
+>>>>>>> a0313c439ef59b57270b98cb97113763efa8b9df
     
     /*
     * Use this code to get the bounds of the screen

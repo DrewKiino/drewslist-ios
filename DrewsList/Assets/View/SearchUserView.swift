@@ -83,7 +83,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     view.addSubview(headerView!)
     
     headerTitle = UILabel()
-    headerTitle?.text = "Search Users"
+    headerTitle?.text = "Search User"
     headerTitle?.textAlignment = .Center
     headerTitle?.font = UIFont.asapBold(16)
     headerTitle?.textColor = .whiteColor()
