@@ -116,7 +116,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-      case 9: return 100
       case 12: return 0
       default: return 48
     }
@@ -247,7 +246,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   }
   
   func configure() {
-    title = "Account Settings"
+    title = "Account Settingss"
     tableView?.contentInset.bottom = 40
   }
 

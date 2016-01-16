@@ -3,7 +3,7 @@
 // //RMprallax 
 //
 //  Created by Starflyer on 11/29/15.
-//  Copyright © 2015 abearablecode. All rights reserved.
+//  Copyright © 2015 Totem. All rights reserved.
 ///
 
 import UIKit
@@ -14,6 +14,8 @@ import RealmSwift
 
 public class OnboardingView : UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   
+  private let pushController = PushController.sharedInstance()
+  
   private let controller = OnboardingController()
   private let screen = UIScreen.mainScreen().bounds
   private var myViewControllers = Array(count: 2, repeatedValue:UIViewController())
@@ -21,7 +23,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   private var pushPermissionsLaterButton: SwiftyButton?
   private var pushPermissionsAcceptButton: SwiftyButton?
   private var getStartedButton: SwiftyButton?
-  
   
   private let firstPage = UIViewController()
   private let secondPage = UIViewController()

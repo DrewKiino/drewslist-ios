@@ -81,6 +81,11 @@ public class User: Mappable {
     guard let firstName = firstName, let lastName = lastName else { return nil }
     return "\(firstName) \(lastName)"
   }
+  
+  public func set(deviceToken: String?) -> Self {
+    self.deviceToken = deviceToken
+    return self
+  }
 }
 
 public class UserModel {
@@ -98,6 +103,7 @@ public class RealmUser: Object {
   dynamic var username: String?
   dynamic var school: String?
   dynamic var image: String?
+  dynamic var deviceToken: String?
   
   // chat history
   let chatHistory = List<ChatHistory>()
@@ -115,6 +121,7 @@ public class RealmUser: Object {
     username = user.username
     school = user.school
     image = user.image
+    deviceToken = user.deviceToken
     return self
   }
   
@@ -127,9 +134,9 @@ public class RealmUser: Object {
     user.username = username
     user.school = school
     user.image = image
+    user.deviceToken = deviceToken
     return user
   }
-  
 }
 
 public class ChatHistory: Object {
