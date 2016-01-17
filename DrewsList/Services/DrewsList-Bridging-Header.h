@@ -9,5 +9,9 @@
 #ifndef DrewsList_Bridging_Header_h
 #define DrewsList_Bridging_Header_h
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+
 
 #endif /* DrewsList_Bridging_Header_h */
