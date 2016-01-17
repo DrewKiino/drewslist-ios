@@ -13,8 +13,9 @@ import Neon
 import SwiftyButton
 import RealmSwift
 import Async
+import FBSDKLoginKit
 
-public class LoginView: UIViewController, UITextFieldDelegate {
+public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
   
   // good job specifying all the function and variable class scopes!
   
@@ -55,6 +56,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     setupEmailLabel()
     setupLoginButton()
 //    setupOrLabel()
+    setupFBLoginButton()
     setupOptions()
     
     view.showLoadingScreen(0, bgOffset: 64)
@@ -228,6 +230,14 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     containerView?.addSubview(loginButton!)
   }
   
+  private func setupFBLoginButton() {
+    let loginButton = FBSDKLoginButton()
+    loginButton.delegate = self
+    loginButton.frame = CGRectMake(100, 100, 150, 40)
+    loginButton.readPermissions = ["email","user_friends"]
+    self.view.addSubview(loginButton)
+  }
+  
   private func setupOrLabel() {
     orLabel = UILabel()
     orLabel?.text =  "Or"
@@ -353,6 +363,16 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     default: break
     }
     return false
+  }
+  
+  // MARK: Delegates
+  
+  public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+    print("User Logged In")
+  }
+  
+  public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+    print("User Logged Out")
   }
 }
 

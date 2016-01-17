@@ -145,6 +145,7 @@
 		3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerModel.swift; sourceTree = "<group>"; };
 		3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateListingController.swift; sourceTree = "<group>"; };
 		3FB40FA51C025BE500743C74 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
+		3FF6634B1C4C2E0000910E4C /* DrewsList-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DrewsList-Bridging-Header.h"; sourceTree = "<group>"; };
 		4DE6F7F5C96749603F0D75BC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		4F18A07D1C275D75006169F5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4F966CE51C27623900CECCC6 /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
@@ -521,6 +522,7 @@
 				EEA80B231C1287C70058ED0C /* NativeExtensions.swift */,
 				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 				EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */,
+				3FF6634B1C4C2E0000910E4C /* DrewsList-Bridging-Header.h */,
 			);
 			path = Services;
 			sourceTree = "<group>";
