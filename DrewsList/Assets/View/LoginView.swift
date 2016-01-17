@@ -33,6 +33,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   private var loginButtonIndicator: UIActivityIndicatorView?
   private var loginButtonLabel: UILabel?
   private var orLabel: UILabel?
+  private var fbLoginButton: FBSDKLoginButton?
   private var optionsContrainer: UIView?
   private var signUpOption: UIButton?
   private var forgotPasswordOption: UIButton?
@@ -45,7 +46,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
-    
     setupSelf()
     setupDataBinding()
     setupBackgroundImage()
@@ -55,7 +55,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     setupPasswordLabel()
     setupEmailLabel()
     setupLoginButton()
-//    setupOrLabel()
+    setupOrLabel()
     setupFBLoginButton()
     setupOptions()
     
@@ -73,13 +73,15 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
     
-    loginButton?.align(.UnderCentered, relativeTo: passwordField!, padding: 32, width: passwordField!.frame.width, height: 36)
+    loginButton?.align(.UnderCentered, relativeTo: passwordField!, padding: 30, width: passwordField!.frame.width, height: 36)
     loginButtonIndicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
     loginButtonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
     
-    orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 24)
+    orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 12, height: 24)
     
-    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 48)
+    fbLoginButton?.align(.UnderCentered, relativeTo: orLabel!, padding: 18, width: passwordField!.frame.width, height: 36)
+    
+    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: fbLoginButton!, padding: 0, height: 48)
     signUpOption?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 60)
     forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
   }
@@ -231,11 +233,11 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   }
   
   private func setupFBLoginButton() {
-    let loginButton = FBSDKLoginButton()
-    loginButton.delegate = self
-    loginButton.frame = CGRectMake(100, 100, 150, 40)
-    loginButton.readPermissions = ["email","user_friends"]
-    self.view.addSubview(loginButton)
+    fbLoginButton = FBSDKLoginButton()
+    fbLoginButton!.delegate = self
+//    fbLoginButton!.frame = CGRect(x: 100,y: 100,width: 100,height: 100)
+    fbLoginButton!.readPermissions = ["public_profile","email","user_friends"]
+    containerView?.addSubview(fbLoginButton!)
   }
   
   private func setupOrLabel() {
