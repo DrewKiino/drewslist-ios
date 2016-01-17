@@ -53,10 +53,8 @@ public class ListViewContainer: UIViewController {
       self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
     }
     listView?._bookProfilePressed.removeAllListeners()
-    listView?._bookProfilePressed.listen(self) { [weak self] bool in
-      //self?.readRealmUser()
-      print("PRESSED")
-      self?.navigationController?.pushViewController(BookProfileView().setBook(Book(_id: "5692cdab8b12dd1f000ee63c")), animated: true)
+    listView?._bookProfilePressed.listen(self) { [weak self] book in
+      self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
     }
     view.addSubview(listView!)
   }
