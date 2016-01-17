@@ -15,6 +15,8 @@ public class LoginController {
   
   public let model = LoginModel()
   
+  private let userController = UserController()
+  
   private var refrainTimer: NSTimer?
   
   
@@ -32,43 +34,44 @@ public class LoginController {
       ServerUrl.Default.getValue() + "/user/authenticateWithLocalAuth",
       parameters: [
         "email": email,
-        "password": password
+        "password": password,
+        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
       ] as [String: AnyObject],
       encoding: .JSON
-      )
-      .response { [weak self] req, res, data, error in
+    )
+    .response { [weak self] req, res, data, error in
+      
+      if let error = error {
+        log.error(error)
+        self?.model._serverError.fire(true)
         
-        if let error = error {
-          log.error(error)
-          self?.model._serverError.fire(true)
+      } else if let data = data, let json: JSON! = JSON(data: data) {
+        
+        if json["errmsg"].string != nil || json["error"].string != nil {
           
-        } else if let data = data, let json: JSON! = JSON(data: data) {
-          
-          if json["errmsg"].string != nil || json["error"].string != nil {
-            
-            if json["error"].string?.containsString("email") == true {
-              self?.model._isValidEmail.fire(false)
-            } else if json["error"].string?.containsString("password") == true {
-              self?.model._isValidPassword.fire(false)
-            } else {
-              self?.model._serverError.fire(true)
-            }
-            
+          if json["error"].string?.containsString("email") == true {
+            self?.model._isValidEmail.fire(false)
+          } else if json["error"].string?.containsString("password") == true {
+            self?.model._isValidPassword.fire(false)
           } else {
-            // create and  user object
-            self?.model.user = User(json: json)
-            // write user object to realm
-            self?.writeRealmUser()
-            // set user online status to true
-            Sockets.sharedInstance().setOnlineStatus(true)
+            self?.model._serverError.fire(true)
           }
+          
+        } else {
+          // create and  user object
+          self?.model.user = User(json: json)
+          // write user object to realm
+          self?.writeRealmUser()
+          // set user online status to true
+          Sockets.sharedInstance().setOnlineStatus(true)
         }
-        
-        // create a throttler
-        // this will disable this controllers server calls for 10 seconds
-        self?.refrainTimer?.invalidate()
-        self?.refrainTimer = nil
-        self?.model.shouldRefrainFromCallingServer = false
+      }
+      
+      // create a throttler
+      // this will disable this controllers server calls for 10 seconds
+      self?.refrainTimer?.invalidate()
+      self?.refrainTimer = nil
+      self?.model.shouldRefrainFromCallingServer = false
     }
     
     // create a throttler
