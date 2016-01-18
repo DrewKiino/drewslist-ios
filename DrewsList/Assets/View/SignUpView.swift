@@ -144,13 +144,8 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     }
     model._isValidPassword.removeAllListeners()
     model._isValidPassword.listen(self) { [weak self] bool in
-      if bool != true {
-        self?.passwordField?.placeholderLabel.font = .asapRegular(8)
-        self?.passwordField?.placeholder = "Password, at least 8 letters, 1 upper, 1 lower, 1 number, & 1 symbol"
-      } else {
-        self?.passwordField?.placeholderLabel.font = .asapRegular(10.5)
-        self?.passwordField?.placeholder = "Password"
-      }
+      if bool != true { self?.passwordField?.placeholder = "Password, at least 6 characters and 1 number" }
+      else { self?.passwordField?.placeholder = "Password" }
     }
     model._isValidRepassword.removeAllListeners()
     model._isValidRepassword.listen(self) { [weak self] bool in

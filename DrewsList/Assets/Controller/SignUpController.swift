@@ -15,6 +15,7 @@ import SwiftyJSON
 
 public class SignUpController {
   
+  public let userController = UserController()
   public let model =  SignUpModel()
   private var refrainTimer: NSTimer?
 
@@ -100,20 +101,25 @@ public class SignUpController {
         "email": email,
         "password": password,
         "school": school,
-        "state": state
+        "state": state,
+        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
       ] as [String: AnyObject],
       encoding: .JSON
     )
     .response { [weak self] req, res, data, error in
       
       if let error = error {
+        
         log.error(error)
         self?.model._serverError.fire(true)
+        
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
         if json["errmsg"].string != nil || json["error"].string != nil {
           
-          self?.model._serverError.fire(true)
+          log.error(json)
+          
+//          self?.model._serverError.fire(true)
           
         } else {
           

@@ -20,7 +20,7 @@ public class SearchBookController {
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-//      self?.searchSchool()
+      self?.searchSchool()
     }
   }
   

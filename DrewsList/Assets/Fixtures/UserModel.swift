@@ -14,6 +14,13 @@ import RealmSwift
 
 public class User: Mappable {
   
+  // a singleton class of a user
+  // this class is reserved for the main User that is logged in for
+  // all other controllers to access
+  private struct Singleton { private static var user: User? } 
+  public static func sharedUser() -> User? { return Singleton.user }
+
+  
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
@@ -92,6 +99,26 @@ public class UserModel {
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
+}
+
+
+public class UserDefaults: Object {
+  
+  dynamic var _id: String?
+  
+  // onboarding
+  dynamic var didShowOnboarding: Bool = false
+  
+  // school selection
+  dynamic var school: String?
+  dynamic var state: String?
+  
+  // device token
+  dynamic var deviceToken: String?
+  
+  public override static func primaryKey() -> String? {
+    return "_id"
+  }
 }
 
 public class RealmUser: Object {
