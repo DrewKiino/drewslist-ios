@@ -56,10 +56,10 @@ public class TabView: UITabBarController {
     var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-1")).resize(CGSize(width: 24, height: 24))
     testView.tabBarItem = UITabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
-//    viewControllers = [userProfileView!, scannerView!, communityTab!, chatView!]
+    viewControllers = [userProfileView!]
     
     // set view controllers
-    viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
+//    viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
     
     // first initialize both the chat history view and activity feed view
     selectedIndex = 1

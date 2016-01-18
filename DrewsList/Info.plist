@@ -26,33 +26,51 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+      <key>lorempixel.com</key>
+      <dict>
+        <key>NSTemporaryExceptionMinimumTLSVersion</key>
+        <string>TLS.1.2</string>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+      </dict>
 			<key>nearbycolleges.info</key>
 			<dict>
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
-				<string>TLS.1.1</string>
+				<string>TLS.1.2</string>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
-			<key>localhost</key>
+      <key>localhost</key>
+      <dict>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+        <key>NSTemporaryExceptionMinimumTLSVersion</key>
+        <string>TLSv1.2</string>
+      </dict>
+      <key>drewslist-staging.herokuapp.com</key>
 			<dict>
-				<key>NSTemporaryExceptionMinimumTLSVersion</key>
-				<string>TLSv1.1</string>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-			<key>drewslist-staging.herokuapp.com</key>
-			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
-				<string>TLSv1.1</string>
+				<string>TLSv1.2</string>
 			</dict>
+      <key>ecx.images-amazon.com</key>
+      <dict>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+        <key>NSTemporaryExceptionMinimumTLSVersion</key>
+        <string>TLSv1.2</string>
+      </dict>
 			<key>books.google.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -60,7 +78,7 @@
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
-				<string>TLSv1.1</string>
+				<string>TLSv1.2</string>
 			</dict>
 			<key>facebook.com</key>
 			<dict>

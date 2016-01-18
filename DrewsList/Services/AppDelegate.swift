@@ -23,8 +23,8 @@ public enum ServerUrl {
     switch self {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
-//    case .Default: return "http://localhost:1337"
-    case .Default: return "https://drewslist-staging.herokuapp.com"
+    case .Default: return "http://localhost:1337"
+//    case .Default: return "https://drewslist-staging.herokuapp.com"
     }
   }
 }
@@ -123,9 +123,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-    var tabView: TabView? = TabView()
+//    var tabView: TabView? = TabView()
 //    var tabView: SettingsView? = SettingsView()
-//    var tabView: SearchUserView? = SearchUserView()
+    var tabView: UserProfileView? = UserProfileView()
     
     /*
     * Use this code to get the bounds of the screen

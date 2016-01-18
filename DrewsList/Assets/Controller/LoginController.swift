@@ -29,42 +29,30 @@ public class LoginController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(
-      .POST,
-      ServerUrl.Default.getValue() + "/user/authenticateWithLocalAuth",
-      parameters: [
-        "email": email,
-        "password": password,
-        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
-      ] as [String: AnyObject],
-      encoding: .JSON
-    )
-    .response { [weak self] req, res, data, error in
-      
-      if let error = error {
-        log.error(error)
-        self?.model._serverError.fire(true)
-        
-      } else if let data = data, let json: JSON! = JSON(data: data) {
-        
-        if json["errmsg"].string != nil || json["error"].string != nil {
-          
-          if json["error"].string?.containsString("email") == true {
-            self?.model._isValidEmail.fire(false)
-          } else if json["error"].string?.containsString("password") == true {
-            self?.model._isValidPassword.fire(false)
-          } else {
-            self?.model._serverError.fire(true)
-          }
-          
+    Sockets.sharedInstance().emit("authenticateWithLocalAuth", [
+      "email": email,
+      "password": password,
+      "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
+    ] as [String: AnyObject])
+    
+    Sockets.sharedInstance().on("authenticateWithLocalAuth.response") { [weak self] json in
+      if json["errmsg"].string != nil || json["error"].string != nil {
+
+        if json["error"].string?.containsString("email") == true {
+          self?.model._isValidEmail.fire(false)
+        } else if json["error"].string?.containsString("password") == true {
+          self?.model._isValidPassword.fire(false)
         } else {
-          // create and  user object
-          self?.model.user = User(json: json)
-          // write user object to realm
-          self?.writeRealmUser()
-          // set user online status to true
-          Sockets.sharedInstance().setOnlineStatus(true)
+          self?.model._serverError.fire(true)
         }
+
+      } else {
+        // create and  user object
+        self?.model.user = User(json: json)
+        // write user object to realm
+        self?.writeRealmUser()
+        // set user online status to true
+        Sockets.sharedInstance().setOnlineStatus(true)
       }
       
       // create a throttler
@@ -73,6 +61,51 @@ public class LoginController {
       self?.refrainTimer = nil
       self?.model.shouldRefrainFromCallingServer = false
     }
+    
+//    Alamofire.request(
+//      .POST,
+//      ServerUrl.Default.getValue() + "/user/authenticateWithLocalAuth",
+//      parameters: [
+//        "email": email,
+//        "password": password,
+//        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
+//      ] as [String: AnyObject],
+//      encoding: .JSON
+//    )
+//    .response { [weak self] req, res, data, error in
+//      
+//      if let error = error {
+//        log.error(error)
+//        self?.model._serverError.fire(true)
+//        
+//      } else if let data = data, let json: JSON! = JSON(data: data) {
+//        
+//        if json["errmsg"].string != nil || json["error"].string != nil {
+//          
+//          if json["error"].string?.containsString("email") == true {
+//            self?.model._isValidEmail.fire(false)
+//          } else if json["error"].string?.containsString("password") == true {
+//            self?.model._isValidPassword.fire(false)
+//          } else {
+//            self?.model._serverError.fire(true)
+//          }
+//          
+//        } else {
+//          // create and  user object
+//          self?.model.user = User(json: json)
+//          // write user object to realm
+//          self?.writeRealmUser()
+//          // set user online status to true
+//          Sockets.sharedInstance().setOnlineStatus(true)
+//        }
+//      }
+//      
+//      // create a throttler
+//      // this will disable this controllers server calls for 10 seconds
+//      self?.refrainTimer?.invalidate()
+//      self?.refrainTimer = nil
+//      self?.model.shouldRefrainFromCallingServer = false
+//    }
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds

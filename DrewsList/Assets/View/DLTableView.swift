@@ -766,7 +766,6 @@ public class ListCell: UICollectionViewCell {
     
     self.listing = listing
     
-    setBook(listing?.book)
     _setListing(listing)
   }
   
@@ -911,7 +910,8 @@ public class ListCell: UICollectionViewCell {
     
     // MARK: Images
     if book?.hasImageUrl() == true {
-      bookImageView?.dl_setImageFromUrl(book?.largeImage ?? book?.mediumImage ?? book?.smallImage ?? nil) { [weak self] image, error, cache, url in
+      
+      bookImageView?.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, url in
         Async.background { [weak self] in
           // NOTE: correct way to handle memory management with toucan
           // init toucan and pass in the arguments directly in the parameter headers

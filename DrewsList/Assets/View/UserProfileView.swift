@@ -93,7 +93,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    if profileImg?.image == nil { view.showLoadingScreen() }
   }
   
   override public func didReceiveMemoryWarning() {
@@ -233,9 +232,11 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     let duration: NSTimeInterval = 0.2
     
     // MARK: Images
+    
     if user.image != nil {
       
       profileImg?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+        
         Async.background { [weak self] in
           // NOTE: correct way to handle memory management with toucan
           // init toucan and pass in the arguments directly in the parameter headers
