@@ -33,7 +33,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
     SetUpTableView()
     SetUpDataBinding()
-    SetUpHeaderView()
     controller.viewDidLoad()
     
     
