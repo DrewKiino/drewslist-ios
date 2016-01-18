@@ -16,6 +16,12 @@
 		399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DB1C14D15A008C30FC /* SignUpModel.swift */; };
 		399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399971DD1C14D1FF008C30FC /* SignUpController.swift */; };
 		39AD91F21C16DA8700870C39 /* LoginScrollImage-01.png in Resources */ = {isa = PBXBuildFile; fileRef = 39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */; };
+		39B35FF21C4A18D90084007D /* TermPrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B35FF11C4A18D90084007D /* TermPrivacyView.swift */; };
+		39B35FF41C4A18EE0084007D /* TermPrivacyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B35FF31C4A18EE0084007D /* TermPrivacyModel.swift */; };
+		39B35FF61C4A19340084007D /* TermPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B35FF51C4A19340084007D /* TermPrivacyController.swift */; };
+		39FE52251C4C361000FDFDC4 /* DeleteListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FE52241C4C361000FDFDC4 /* DeleteListingView.swift */; };
+		39FE52271C4C362800FDFDC4 /* DeleteListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FE52261C4C362800FDFDC4 /* DeleteListingModel.swift */; };
+		39FE52291C4C364400FDFDC4 /* DeleteListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FE52281C4C364400FDFDC4 /* DeleteListingController.swift */; };
 		3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */; };
 		3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */; };
 		3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */; };
@@ -138,6 +144,12 @@
 		399971DB1C14D15A008C30FC /* SignUpModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
 		399971DD1C14D1FF008C30FC /* SignUpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
 		39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LoginScrollImage-01.png"; sourceTree = "<group>"; };
+		39B35FF11C4A18D90084007D /* TermPrivacyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermPrivacyView.swift; sourceTree = "<group>"; };
+		39B35FF31C4A18EE0084007D /* TermPrivacyModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermPrivacyModel.swift; sourceTree = "<group>"; };
+		39B35FF51C4A19340084007D /* TermPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TermPrivacyController.swift; sourceTree = "<group>"; };
+		39FE52241C4C361000FDFDC4 /* DeleteListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingView.swift; sourceTree = "<group>"; };
+		39FE52261C4C362800FDFDC4 /* DeleteListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingModel.swift; sourceTree = "<group>"; };
+		39FE52281C4C364400FDFDC4 /* DeleteListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingController.swift; sourceTree = "<group>"; };
 		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookController.swift; sourceTree = "<group>"; };
 		3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerController.swift; sourceTree = "<group>"; };
@@ -363,6 +375,8 @@
 				390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */,
 				EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */,
 				EED8BADD1C45E9FF00EDB30D /* PushModel.swift */,
+				39B35FF31C4A18EE0084007D /* TermPrivacyModel.swift */,
+				39FE52261C4C362800FDFDC4 /* DeleteListingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -396,6 +410,8 @@
 				EE67C1571C30B05700AC60DB /* SearchBookView.swift */,
 				4FCF2A041C309B3200091408 /* BookProfileView.swift */,
 				390389F71C43005900740B49 /* ConfirmTransferView.swift */,
+				39B35FF11C4A18D90084007D /* TermPrivacyView.swift */,
+				39FE52241C4C361000FDFDC4 /* DeleteListingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -426,6 +442,8 @@
 				390389FB1C4300F900740B49 /* ConfirmTransferController.swift */,
 				EE1062911C433DE300DAA15E /* ActivityFeedController.swift */,
 				EED8BADB1C45E9CE00EDB30D /* PushController.swift */,
+				39B35FF51C4A19340084007D /* TermPrivacyController.swift */,
+				39FE52281C4C364400FDFDC4 /* DeleteListingController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -643,7 +661,7 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = 2NC533SE3E;
+						DevelopmentTeam = YL9E8RLWV2;
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -810,8 +828,10 @@
 				EEE2AA091C28A33C0093DB46 /* AccountSettingsController.swift in Sources */,
 				EE67C15A1C30B05C00AC60DB /* SearchBookModel.swift in Sources */,
 				390389FA1C4300DC00740B49 /* ConfirmTransferModel.swift in Sources */,
+				39FE52271C4C362800FDFDC4 /* DeleteListingModel.swift in Sources */,
 				3F4CA3AB1C0BE98300CFC84D /* BookModel.swift in Sources */,
 				EE8918C71C1169B500FCF031 /* LoginModel.swift in Sources */,
+				39FE52251C4C361000FDFDC4 /* DeleteListingView.swift in Sources */,
 				3F4CA3B11C0BEB4100CFC84D /* ScannerView.swift in Sources */,
 				EE1B737E1C2377C600BD942C /* DLNavigationController.swift in Sources */,
 				EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */,
@@ -819,6 +839,7 @@
 				EE2824CF1C30A43000969E74 /* EditListingView.swift in Sources */,
 				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
 				EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */,
+				39B35FF61C4A19340084007D /* TermPrivacyController.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
@@ -836,6 +857,7 @@
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
 				EEC3E04B1C2DFE2A00D7843C /* SearchUserView.swift in Sources */,
 				EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */,
+				39B35FF41C4A18EE0084007D /* TermPrivacyModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE3D67A51C2BF72100299F34 /* SearchSchoolController.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
@@ -852,6 +874,7 @@
 				EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */,
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
+				39B35FF21C4A18D90084007D /* TermPrivacyView.swift in Sources */,
 				EE3D67A71C2BF72800299F34 /* SearchSchoolModel.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
@@ -880,6 +903,7 @@
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */,
 				EE4B9D961C11F38B00637458 /* RAMAnimatedTabBarController.swift in Sources */,
+				39FE52291C4C364400FDFDC4 /* DeleteListingController.swift in Sources */,
 				4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
 				EED8BADC1C45E9CE00EDB30D /* PushController.swift in Sources */,

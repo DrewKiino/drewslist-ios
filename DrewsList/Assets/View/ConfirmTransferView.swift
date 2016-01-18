@@ -49,6 +49,7 @@ public class ConfirmTransferView: UIViewController, UITableViewDelegate, UITextF
     Setupself()
     SetUpHeaderView()
     SetUpSearchBar()
+    
   
     
     HeaderView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
