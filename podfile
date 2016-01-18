@@ -7,10 +7,6 @@ use_frameworks!
 
 #####################################
 
-# facebook sdk integration
-# pod 'FBSDKCoreKit'
-# pod 'FBSDKLoginKit'
-
 # socket libs
 pod 'Socket.IO-Client-Swift'
 
