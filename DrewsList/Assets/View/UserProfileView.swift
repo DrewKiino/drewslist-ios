@@ -134,7 +134,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
           self?.scrollView?.panGestureRecognizer.enabled = true
         }
       } else {
-        self?.setUser(self?.model.user)
+//        self?.setUser(self?.model.user)
         self?.bookShelf?.reloadData()
         self?.view.hideLoadingScreen()
       }
