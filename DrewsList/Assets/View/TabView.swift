@@ -110,7 +110,7 @@ public class TabView: UITabBarController {
   
   // MARK: User Auth
   public func checkIfUserIsLoggedIn() {
-    if !controller.checkIfUserIsLoggedIn() { presentViewController(LoginView(), animated: false, completion: nil) }
+    if !controller.checkIfUserIsLoggedIn() && !controller.checkIfUserIsLogginInToFacebook() { presentViewController(LoginView(), animated: false, completion: nil) }
   }
 }
 

@@ -46,6 +46,10 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
+    if FBSDKAccessToken.currentAccessToken() != nil {
+      presentViewController(TabView(), animated: true, completion: nil)
+    }
+    
     setupSelf()
     setupDataBinding()
     setupBackgroundImage()
@@ -371,6 +375,29 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
     print("User Logged In")
+    
+    if error != nil {
+      // Process error
+      print(error)
+    }
+    else if result.isCancelled {
+      // Handle cancellations
+      print("FB login has been cancelled")
+    }
+    else {
+      // Navigate to other view
+      print("Naviating to the new view")
+      let pictureRequest = FBSDKGraphRequest(graphPath: "me/picture?type=large&redirect=false", parameters: nil)
+      pictureRequest.startWithCompletionHandler({
+        (connection, result, error: NSError!) -> Void in
+        if error == nil {
+          print("\(result)")
+        } else {
+          print("\(error)")
+        }
+      })
+      presentViewController(TabView(), animated: true, completion: nil)
+    }
   }
   
   public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
