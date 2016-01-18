@@ -24,16 +24,18 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     setupSelf()
     setupDataBinding()
     setupTableView()
+    
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    view.showComingSoonScreen()
+  }
+  
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
   }
   
   private func setupSelf() {
-    
     view.backgroundColor = .whiteColor()
   }
   
@@ -49,7 +51,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
-    view.addSubview(tableView!)
+    rootView?.view.addSubview(tableView!)
     
     tableView?.fillSuperview()
   }
