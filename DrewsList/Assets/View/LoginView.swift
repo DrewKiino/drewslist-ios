@@ -13,8 +13,9 @@ import Neon
 import SwiftyButton
 import RealmSwift
 import Async
+import FBSDKLoginKit
 
-public class LoginView: UIViewController, UITextFieldDelegate {
+public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
   
   // good job specifying all the function and variable class scopes!
   
@@ -32,6 +33,7 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   private var loginButtonIndicator: UIActivityIndicatorView?
   private var loginButtonLabel: UILabel?
   private var orLabel: UILabel?
+  private var fbLoginButton: FBSDKLoginButton?
   private var optionsContrainer: UIView?
   private var signUpOption: UIButton?
   private var forgotPasswordOption: UIButton?
@@ -44,6 +46,9 @@ public class LoginView: UIViewController, UITextFieldDelegate {
   public override func viewDidLoad() {
       super.viewDidLoad()
     
+    if FBSDKAccessToken.currentAccessToken() != nil {
+      presentViewController(TabView(), animated: true, completion: nil)
+    }
     
     setupSelf()
     setupDataBinding()
@@ -54,7 +59,8 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     setupPasswordLabel()
     setupEmailLabel()
     setupLoginButton()
-//    setupOrLabel()
+    setupOrLabel()
+    setupFBLoginButton()
     setupOptions()
     
     view.showLoadingScreen(0, bgOffset: 64)
@@ -71,13 +77,15 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
     
-    loginButton?.align(.UnderCentered, relativeTo: passwordField!, padding: 32, width: passwordField!.frame.width, height: 36)
+    loginButton?.align(.UnderCentered, relativeTo: passwordField!, padding: 30, width: passwordField!.frame.width, height: 36)
     loginButtonIndicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
     loginButtonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
     
-    orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 24)
+    orLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 12, height: 24)
     
-    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: loginButton!, padding: 0, height: 48)
+    fbLoginButton?.align(.UnderCentered, relativeTo: orLabel!, padding: 18, width: passwordField!.frame.width, height: 36)
+    
+    optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: fbLoginButton!, padding: 0, height: 48)
     signUpOption?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 60)
     forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
   }
@@ -228,6 +236,14 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     containerView?.addSubview(loginButton!)
   }
   
+  private func setupFBLoginButton() {
+    fbLoginButton = FBSDKLoginButton()
+    fbLoginButton!.delegate = self
+//    fbLoginButton!.frame = CGRect(x: 100,y: 100,width: 100,height: 100)
+    fbLoginButton!.readPermissions = ["public_profile","email","user_friends"]
+    containerView?.addSubview(fbLoginButton!)
+  }
+  
   private func setupOrLabel() {
     orLabel = UILabel()
     orLabel?.text =  "Or"
@@ -353,6 +369,39 @@ public class LoginView: UIViewController, UITextFieldDelegate {
     default: break
     }
     return false
+  }
+  
+  // MARK: Delegates
+  
+  public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+    print("User Logged In")
+    
+    if error != nil {
+      // Process error
+      print(error)
+    }
+    else if result.isCancelled {
+      // Handle cancellations
+      print("FB login has been cancelled")
+    }
+    else {
+      // Navigate to other view
+      print("Naviating to the new view")
+      let pictureRequest = FBSDKGraphRequest(graphPath: "me/picture?type=large&redirect=false", parameters: nil)
+      pictureRequest.startWithCompletionHandler({
+        (connection, result, error: NSError!) -> Void in
+        if error == nil {
+          print("\(result)")
+        } else {
+          print("\(error)")
+        }
+      })
+      presentViewController(TabView(), animated: true, completion: nil)
+    }
+  }
+  
+  public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+    print("User Logged Out")
   }
 }
 
