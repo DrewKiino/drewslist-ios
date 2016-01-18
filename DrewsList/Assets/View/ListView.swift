@@ -52,6 +52,7 @@ public class ListViewContainer: UIViewController {
       self?.readRealmUser()
       self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
     }
+    // FIXME: these signal listeners aren't being used??
     listView?._bookProfilePressed.removeAllListeners()
     listView?._bookProfilePressed.listen(self) { [weak self] book in
       self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
@@ -98,6 +99,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   public let _chatButtonPressed = Signal<Bool>()
   public let _callButtonPressed = Signal<Bool>()
   public let _bookProfilePressed = Signal<Book?>()
+  public let _userProfilePressed = Signal<User?>()
   
   public var tableView: DLTableView?
   
@@ -203,6 +205,15 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         model._listing.listen(self) { [weak cell] listing in
           cell?.setListing(listing)
         }
+        cell._userImageViewPressed.removeAllListeners()
+        cell._userImageViewPressed.listen(self) { [weak self] bool in
+          if bool == true {
+            print("pressed2")
+            print(self!.model.user?.lastName)
+            self?._userProfilePressed.fire(self?.model.user)
+            
+          }
+        }
         
         return cell
       }
@@ -233,11 +244,13 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
 public class ListerProfileViewCell: DLTableViewCell {
   
-  private var userImageView: UIImageView?
+  private var userImageView: UIButton?
   private var nameLabel: UILabel?
   private var listTypeLabel: UILabel?
   private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
+  
+  public let _userImageViewPressed = Signal<Bool>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -278,9 +291,11 @@ public class ListerProfileViewCell: DLTableViewCell {
   }
   
   private func setupUserImage() {
-    userImageView = UIImageView()
+    userImageView = UIButton()
+    userImageView?.addTarget(self, action: "userImageViewPressed", forControlEvents: .TouchUpInside)
     addSubview(userImageView!)
   }
+  
   
   private func setupNameLabel() {
     nameLabel = UILabel()
@@ -317,7 +332,7 @@ public class ListerProfileViewCell: DLTableViewCell {
     // MARK: Images
     if user.image != nil {
       
-      userImageView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+      userImageView?.imageView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
         // NOTE: correct way to handle memory management with toucan
         // init toucan and pass in the arguments directly in the parameter headers
         // do the resizing in the background
@@ -326,7 +341,9 @@ public class ListerProfileViewCell: DLTableViewCell {
         Async.main { [weak self] in
           
           // set the image view's image
-          self?.userImageView?.image = toucan?.image
+          
+          //self?.userImageView?.imageView?.image = toucan?.image
+          self?.userImageView?.setImage(toucan?.image, forState: .Normal)
           
           // animate
           UIView.animateWithDuration(duration) { [weak self] in
@@ -343,7 +360,8 @@ public class ListerProfileViewCell: DLTableViewCell {
       
       Async.main { [weak self] in
         
-        self?.userImageView?.image = toucan?.image
+        //self?.userImageView?.imageView?.image = toucan?.image
+        self?.userImageView?.setImage(toucan?.image, forState: .Normal)
         
         UIView.animateWithDuration(duration) { [weak self] in
           self?.userImageView?.alpha = 1.0
@@ -381,6 +399,11 @@ public class ListerProfileViewCell: DLTableViewCell {
         self?.backgroundColor = .clearColor()
         self?.layer.zPosition = 1
     }
+  }
+  
+  public func userImageViewPressed() {
+    print("pressed1")
+    _userImageViewPressed => true
   }
 }
 

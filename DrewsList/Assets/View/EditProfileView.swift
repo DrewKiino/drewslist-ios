@@ -155,7 +155,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       model.profileImage = pickedImage
-      print("PICKED")
     }
    // TODO: change image from image picker to server URL
     dismissViewControllerAnimated(true, completion: nil)

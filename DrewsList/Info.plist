@@ -51,5 +51,76 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+	  <dict>
+	  <key>CFBundleURLSchemes</key>
+	  <array>
+	    <string>fb1556071614683613</string>
+	  </array>
+	  </dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>1556071614683613</string>
+	<key>FacebookDisplayName</key>
+	<string>Drew's List</string>
+	<key>LSApplicationQueriesSchemes</key>
+		<array>
+  <string>fbapi</string>
+  <string>fb-messenger-api</string>
+  <string>fbauth2</string>
+  <string>fbshareextension</string>
+		</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+      <key>drewslist-staging.herokuapp.com</key>
+      <dict>
+        <!--Include to allow subdomains-->
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <!--Include to allow HTTP requests-->
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+        <!--Include to specify minimum TLS version-->
+        <key>NSTemporaryExceptionMinimumTLSVersion</key>
+        <string>TLSv1.1</string>
+      </dict>
+      <key>books.google.com</key>
+      <dict>
+        <!--Include to allow subdomains-->
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <!--Include to allow HTTP requests-->
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+        <!--Include to specify minimum TLS version-->
+        <key>NSTemporaryExceptionMinimumTLSVersion</key>
+        <string>TLSv1.1</string>
+      </dict>
+      <key>facebook.com</key>
+      <dict>
+          <key>NSIncludesSubdomains</key>
+          <true/>
+          <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+          <false/>
+      </dict>
+      <key>fbcdn.net</key>
+      <dict>
+          <key>NSIncludesSubdomains</key>
+          <true/>
+          <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+          <false/>
+      </dict>
+      <key>akamaihd.net</key>
+      <dict>
+          <key>NSIncludesSubdomains</key>
+          <true/>
+          <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+          <false/>
+      </dict>
+    </dict>
+	</dict>
 </dict>
 </plist>

@@ -370,7 +370,9 @@ public class FullTitleCell: DLTableViewCell {
     titleButton?.titleLabel?.font = .asapRegular(16)
     titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
     titleButton?.titleLabel?.minimumScaleFactor = 0.5
-    titleButton?.addTarget(self, action: "select", forControlEvents: .TouchUpInside)
+    titleButton?.addTarget(self, action: "cellPressed:", forControlEvents: .TouchDown)
+    titleButton?.addTarget(self, action: "cellPressReleased:", forControlEvents: .TouchUpOutside)
+    titleButton?.addTarget(self, action: "cellSelected:", forControlEvents: .TouchUpInside)
     addSubview(titleButton!)
   }
   
@@ -380,10 +382,30 @@ public class FullTitleCell: DLTableViewCell {
     addSubview(rightImageView!)
   }
   
-  public func select() {
+  public func cellPressed(sender: UIButton) {
+    backgroundColor = .tableViewNativeSeparatorColor()
+  }
+  
+  public func cellPressReleased(sender: UIButton) {
+    UIView.animate { [weak self] in
+      self?.backgroundColor = .whiteColor()
+    }
+  }
+  
+  public func cellSelected(sender: UIButton) {
+    UIView.animate { [weak self] in
+      self?.backgroundColor = .whiteColor()
+    }
     _didSelectCell => true
   }
   
+  public func hideArrowIcon() {
+    rightImageView?.hidden = true
+  }
+  
+  public func showArrowIcon() {
+    rightImageView?.hidden = false
+  }
 }
 
 public class SwitchCell: DLTableViewCell {

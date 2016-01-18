@@ -6,9 +6,131 @@
 //  Copyright © 2015 Totem. All rights reserved.
 //
 
-/*
 import Foundation
 import RealmSwift
+
+public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+  
+  private var tableView: DLTableView?
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setupSelf()
+    setupTableView()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+  }
+  
+  private func setupSelf() {
+    view.backgroundColor = .whiteColor()
+    title = "Settings"
+  }
+  
+  private func setupTableView() {
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    view.addSubview(tableView!)
+    
+    tableView?.fillSuperview()
+  }
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return 7
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    switch indexPath.row {
+//    case 0:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
+//        cell.hideTopBorder()
+//        return cell
+//      }
+//      break
+    case 0:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+        cell.showTopBorder()
+        cell.titleButton?.setTitle("Edit Profile", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] bool in
+          self?.navigationController?.pushViewController(EditProfileView(), animated: true)
+        }
+        return cell
+      }
+      break
+    case 1:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+        cell.showSeparatorLine()
+        cell.titleButton?.setTitle("Account Settings", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] bool in
+          self?.navigationController?.pushViewController(AccountSettingsView(), animated: true)
+        }
+        return cell
+      }
+      break
+    case 2:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+        cell.showSeparatorLine()
+        cell.titleButton?.setTitle("Help Center", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] bool in
+          log.debug("TODO: show help center view")
+        }
+        return cell
+      }
+      break
+    case 3:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+        cell.showSeparatorLine()
+        cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] bool in
+          log.debug("TODO: show terms and privacy view")
+        }
+        return cell
+      }
+      break
+    case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+        cell.showSeparatorLine()
+        cell.hideArrowIcon()
+        cell.titleButton?.setTitle("Log Out", forState: .Normal)
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] bool in
+          NSTimer.after(0.5) { [weak self] in
+            // deletes the current user, then will log user out.
+            self?.deleteRealmUser()
+            // since the current user does not exist anymore
+            // we ask the tab view to check any current user, since we have no current user
+            // it will present the login screen
+            self?.navigationController?.popToRootViewControllerAnimated(true)
+            if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.checkIfUserIsLoggedIn() }
+          }
+        }
+        cell.showBottomBorder()
+        return cell
+      }
+      break
+    case 7:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
+        cell.hideBottomBorder()
+        return cell
+      }
+      break
+    default: break
+    }
+    return DLTableViewCell()
+  }
+  
+  // this one deletes all prior users, on logout.
+  public func deleteRealmUser(){ try! Realm().write { try! Realm().delete(try! Realm().objects(RealmUser.self)) } }
+}
+
+/*
 
 public class SettingsView: FormViewController {
   
@@ -30,7 +152,6 @@ public class SettingsView: FormViewController {
       }
     }.onSelected { row in
       self.former.deselect(true)
-      self.navigationController?.pushViewController(EditProfileView(), animated: true)
     }
     
     let accountSettingsRow = LabelRowFormer<FormLabelCell>()
@@ -42,7 +163,6 @@ public class SettingsView: FormViewController {
       }
     }.onSelected { [weak self] row in
       self?.former.deselect(true)
-      self?.navigationController?.pushViewController(AccountSettingsView(), animated: true)
     }
     
     let helpCenterRow = LabelRowFormer<FormLabelCell>()
@@ -76,14 +196,6 @@ public class SettingsView: FormViewController {
       }
     }.onSelected { [weak self] row in
       self?.former.deselect(true)
-      
-      // deletes the current user, then will log user out.
-      self?.deleteRealmUser()
-      // since the current user does not exist anymore
-      // we ask the tab view to check any current user, since we have no current user
-      // it will present the login screen
-      self?.navigationController?.popToRootViewControllerAnimated(true)
-      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.checkIfUserIsLoggedIn() }
     }
   
     let blankRow = LabelRowFormer<FormLabelCell>()
@@ -110,10 +222,6 @@ public class SettingsView: FormViewController {
 //    disableRow.update()
 //    self.enabled = !self.enabled
   }
-  
-  
-  // this one deletes all prior users, on logout.
-  public func deleteRealmUser(){ try! Realm().write { try! Realm().delete(try! Realm().objects(RealmUser.self)) } }
 }
 
 
