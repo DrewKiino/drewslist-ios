@@ -30,7 +30,7 @@ public class Sockets {
   private var user: User?
   
   private func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { user = realmUser.getUser() } }
-  private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) } }
+  private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.user), update: true) } }
   
   // MARK: Socket Functions
   

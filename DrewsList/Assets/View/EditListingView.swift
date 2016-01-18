@@ -31,6 +31,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
   
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
+    title = "Edit Your Listing"
   }
   
   private func setupTableView() {
@@ -74,6 +75,7 @@ public class EditListingCell: DLTableViewCell {
     super.layoutSubviews()
     
     bookView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 150)
+    
   }
   
   private func setupBookView() {
