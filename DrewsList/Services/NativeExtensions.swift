@@ -115,29 +115,6 @@ extension String {
     }
     return self
   }
-  
-  public func isValidName() -> Bool {
-    if let _ = try! NSRegularExpression(pattern: ".*[^A-Za-z-].*", options: .CaseInsensitive).firstMatchInString(self, options: .ReportCompletion, range: NSMakeRange(0, self.characters.count)) { return false }
-    return true
-  }
-  
-  public func isValidPassword() -> Bool {
-    if  let _ = self.rangeOfCharacterFromSet(.uppercaseLetterCharacterSet()),
-        let _ = self.rangeOfCharacterFromSet(.lowercaseLetterCharacterSet()),
-        let _ = self.rangeOfCharacterFromSet(.decimalDigitCharacterSet()),
-        let _ = self.rangeOfCharacterFromSet(NSCharacterSet.alphanumericCharacterSet().invertedSet)
-        where self.rangeOfCharacterFromSet(.whitespaceCharacterSet()) == nil && !self.isEmpty
-    {
-      return true
-    }
-    return false
-  }
-  
-  func isValidEmail() -> Bool {
-    let emailRegEx = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-    let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-    return emailTest.evaluateWithObject(self) && !self.isEmpty
-  }
 }
 
 import NVActivityIndicatorView

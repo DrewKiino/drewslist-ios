@@ -15,8 +15,24 @@ import SwiftyJSON
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
 
+public enum ServerUrl {
+  case Local
+  case Staging
+  case Default
+  public func getValue() -> String {
+    switch self {
+    case .Local: return "http://localhost:1337"
+    case .Staging: return "https://drewslist-staging.herokuapp.com"
+//    case .Default: return "http://localhost:1337"
+    case .Default: return "https://drewslist-staging.herokuapp.com"
+    }
+  }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+  
+  private let userController = UserController()
 
   var window: UIWindow?
   
@@ -25,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // figure out if user defaults already exist 
     // if it doesn't, create one and persist it.
-    if readUserDefaults() == nil { writeNewUserDefaults() }
+    if userController.readUserDefaults() == nil { userController.writeNewUserDefaults() }
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
@@ -85,23 +101,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     log.info("deviceToken: \(deviceToken)")
     
-    // get the device token string, then read the current realm user, and update it with the new device token
-    updateUserToServer(writeRealmUser(readRealmUser()?.getUser().set((deviceToken.description as NSString).stringByTrimmingCharactersInSet(NSCharacterSet( charactersInString: "<>")) as String)))
+    let deviceTokenString = (deviceToken.description as NSString).stringByTrimmingCharactersInSet(NSCharacterSet( charactersInString: "<>")) as String
     
+    // set the device token as the default device token in the user defaults
+    userController.updateUserDefaults { defaults in
+      defaults.deviceToken = deviceTokenString
+    }
+    
+    // get the device token string, then read the current realm user, and update it with the new device token
+    userController.updateUserToServer { user in
+      user?.deviceToken = deviceTokenString
+      return user
+    }
   }
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
     
     log.debug(userInfo)
-    
-    // log the push message
-//    if  let aps = userInfo["aps"] as? NSDictionary,
-//        let alert = aps.valueForKey("alert"),
-//        let payload = userInfo["payload"] as? NSDictionary,
-//        let user_id = payload.valueForKey("user_id")
-//    {
-//      log.info("received remote notification from server: \(alert)")
-//    }
   }
   
   private func setupRootView() {
@@ -110,7 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var tabView: DeleteListingView? = DeleteListingView()
     
 //    var tabView: SettingsView? = SettingsView()
-//    var tabView: SearchUserView? = SearchUserView()
+//    var tabView: UserProfileView? = UserProfileView()
     
     /*
     * Use this code to get the bounds of the screen
@@ -129,52 +145,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // commit change
     window?.makeKeyAndVisible()
-  }
-  
-  // MARK: Realm Functions
-  func readUserDefaults() -> UserDefaults? { if let defaults =  try! Realm().objects(UserDefaults.self).first { return defaults } else { return nil } }
-  func writeNewUserDefaults(){ try! Realm().write { try! Realm().delete(Realm().objects(UserDefaults.self)); try! Realm().add(UserDefaults(), update: true) } }
-  
-  // MARK: Realm Functions
-  func readRealmUser() -> RealmUser? { if let realmUser =  try! Realm().objects(RealmUser.self).first { return realmUser } else { return nil } }
-  func writeRealmUser(user: User?) -> User? { if let user = user { try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) }; return user } else { return nil } }
-  
-  // MARK: User Functions
-  func updateUserToServer(user: User?) {
-    guard let user_id = user?._id, let deviceToken = user?.deviceToken else { return }
-    Alamofire.request(
-      .POST,
-      ServerUrl.Default.getValue() + "/user/\(user_id)",
-      parameters: [
-        "deviceToken": deviceToken,
-      ] as [String: AnyObject],
-      encoding: .JSON
-    )
-    .response { [weak self] req, res, data, error in
-      
-      if let error = error {
-        log.error(error)
-      } else if let data = data, let json: JSON! = JSON(data: data) {
-        log.info("server: received device token.")
-      }
-    }
-  }
-}
-
-
-public class UserDefaults: Object {
-  
-  dynamic var _id: String?
-  
-  // onboarding
-  dynamic var didShowOnboarding: Bool = false
-  
-  // school selection
-  dynamic var school: String?
-  dynamic var state: String?
-  
-  public override static func primaryKey() -> String? {
-    return "_id"
   }
 }
 

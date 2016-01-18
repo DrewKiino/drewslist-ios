@@ -14,19 +14,6 @@ import SwiftyJSON
 import Alamofire
 import RealmSwift
 
-public enum ServerUrl {
-  case Local
-  case Staging
-  case Default
-  public func getValue() -> String {
-    switch self {
-    case .Local: return "http://localhost:1337"
-    case .Staging: return "https://drewslist-staging.herokuapp.com"
-    case .Default: return "https://drewslist-staging.herokuapp.com"
-    }
-  }
-}
-
 public class Sockets {
   
   private struct Singleton {
