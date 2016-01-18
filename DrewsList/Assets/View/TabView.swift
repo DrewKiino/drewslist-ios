@@ -61,7 +61,7 @@ public class TabView: UITabBarController {
     
     // set view controllers
     viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
-    
+      
     // first initialize both the chat history view and activity feed view
     selectedIndex = 1
     selectedIndex = 3
