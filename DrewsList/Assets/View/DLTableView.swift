@@ -766,12 +766,12 @@ public class ListCell: UICollectionViewCell {
     
     self.listing = listing
     
-//    _setListing(listing)
+    _setListing(listing)
   }
   
   private func _setListing(listing: Listing?) {
     
-//    setBook(listing?.book)
+    setBook(listing?.book)
     setHighestLister(listing?.highestLister)
     
     // set user price label
@@ -827,35 +827,31 @@ public class ListCell: UICollectionViewCell {
       
       if let image = highestLister.user?.image {
         
-        matchUserImageView?.dl_setImageFromUrl(image) { [weak self] image, error, cache, url in
-          var block: Async!
-          block = Async.background { [weak self] in
-            // NOTE: correct way to handle memory management with toucan
-            // init toucan and pass in the arguments directly in the parameter headers
-            // do the resizing in the background
-            var toucan: Toucan? = Toucan(image: image).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
-            
-            Async.main { [weak self] in
-              
-              // set the image view's image
-              self?.matchUserImageView?.image = toucan?.image
-              
-              UIView.animateWithDuration(duration) { [weak self] in
-                self?.matchUserImageView?.alpha = 1.0
-              }
-              
-              // deinit toucan
-              toucan = nil
-              
-              block.cancel()
-            }
-          }
-        }
+//        matchUserImageView?.dl_setImageFromUrl(image) { [weak self] image, error, cache, url in
+//          Async.background { [weak self] in
+//            // NOTE: correct way to handle memory management with toucan
+//            // init toucan and pass in the arguments directly in the parameter headers
+//            // do the resizing in the background
+//            var toucan: Toucan? = Toucan(image: image).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+//            
+//            Async.main { [weak self] in
+//              
+//              // set the image view's image
+//              self?.matchUserImageView?.image = toucan?.image
+//              
+//              UIView.animateWithDuration(duration) { [weak self] in
+//                self?.matchUserImageView?.alpha = 1.0
+//              }
+//              
+//              // deinit toucan
+//              toucan = nil
+//            }
+//          }
+//        }
       } else {
         
         // image processing done in background
-        var block: Async!
-        block = Async.background { [weak self] in
+        Async.background { [weak self] in
           
           var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
           
@@ -868,13 +864,11 @@ public class ListCell: UICollectionViewCell {
             }
             
             toucan = nil
-            block.cancel()
           }
         }
       }
       
-      var block1: Async!
-      block1 = Async.background { [weak highestLister] in
+      Async.background { [weak highestLister] in
         
         //      let priceMatch: String? = listing?.price != nil ?
         var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Best \(highestLister?.getListTypeText2() ?? "Match"): $\(highestLister?.price ?? "")")
@@ -886,12 +880,10 @@ public class ListCell: UICollectionViewCell {
           self?.matchPriceLabel?.attributedText = coloredString
           
           coloredString = nil
-          block1.cancel()
         }
       }
       
-      var block2: Async!
-      block2 = Async.background { [weak highestLister] in
+      Async.background { [weak highestLister] in
         
         //      let priceMatch: String? = listing?.price != nil ?
         var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Best \(highestLister?.getListTypeText2() ?? "Match"): $\(highestLister?.price ?? "")")
@@ -903,8 +895,6 @@ public class ListCell: UICollectionViewCell {
           self?.matchUserNameLabel?.text = highestLister?.user?.getName()
           
           coloredString = nil
-          
-          block2.cancel()
         }
       }
     }
@@ -922,8 +912,7 @@ public class ListCell: UICollectionViewCell {
     if book?.hasImageUrl() == true {
       
       bookImageView?.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, url in
-        var block: Async!
-        block = Async.background { [weak self] in
+        Async.background { [weak self] in
           // NOTE: correct way to handle memory management with toucan
           // init toucan and pass in the arguments directly in the parameter headers
           // do the resizing in the background
@@ -942,16 +931,12 @@ public class ListCell: UICollectionViewCell {
             
             // deinit toucan
             toucan = nil
-            
-            // cancel background block if it is still running
-            block.cancel()
           }
         }
       }
     } else {
       
-      var block: Async!
-      block = Async.background { [weak self] in
+      Async.background { [weak self] in
         
         var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.bookImageView?.frame.size)
         
@@ -966,8 +951,6 @@ public class ListCell: UICollectionViewCell {
           }
           
           toucan = nil
-          
-          block.cancel()
         }
       }
     }
