@@ -376,13 +376,13 @@ public class ListerProfileViewCell: DLTableViewCell {
         }
       }
       
-      }.main { [weak self] in
-        // not really sure, but the book view covers this view.
-        // so I had to set the z position to go over the book view
-        // then set the background color to clear
-        self?.backgroundColor = .clearColor()
-        self?.layer.zPosition = 1
     }
+      
+    // not really sure, but the book view covers this view.
+    // so I had to set the z position to go over the book view
+    // then set the background color to clear
+    backgroundColor = .clearColor()
+    layer.zPosition = 1
   }
 }
 
@@ -588,11 +588,10 @@ public class ListerAttributesViewCell: DLTableViewCell {
           }
         }
       }
-      
-      }.main { [weak self] in
-        // same things is happening as the view view before this
-        self?.layer.zPosition = 2
     }
+    
+    // same things is happening as the view view before this
+    layer.zPosition = 2
   }
   
   public func chatButtonPressed() {

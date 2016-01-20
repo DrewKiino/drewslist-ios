@@ -827,27 +827,27 @@ public class ListCell: UICollectionViewCell {
       
       if let image = highestLister.user?.image {
         
-//        matchUserImageView?.dl_setImageFromUrl(image) { [weak self] image, error, cache, url in
-//          Async.background { [weak self] in
-//            // NOTE: correct way to handle memory management with toucan
-//            // init toucan and pass in the arguments directly in the parameter headers
-//            // do the resizing in the background
-//            var toucan: Toucan? = Toucan(image: image).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
-//            
-//            Async.main { [weak self] in
-//              
-//              // set the image view's image
-//              self?.matchUserImageView?.image = toucan?.image
-//              
-//              UIView.animateWithDuration(duration) { [weak self] in
-//                self?.matchUserImageView?.alpha = 1.0
-//              }
-//              
-//              // deinit toucan
-//              toucan = nil
-//            }
-//          }
-//        }
+        matchUserImageView?.dl_setImageFromUrl(image) { [weak self] image, error, cache, url in
+          Async.background { [weak self] in
+            // NOTE: correct way to handle memory management with toucan
+            // init toucan and pass in the arguments directly in the parameter headers
+            // do the resizing in the background
+            var toucan: Toucan? = Toucan(image: image).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+            
+            Async.main { [weak self] in
+              
+              // set the image view's image
+              self?.matchUserImageView?.image = toucan?.image
+              
+              UIView.animateWithDuration(duration) { [weak self] in
+                self?.matchUserImageView?.alpha = 1.0
+              }
+              
+              // deinit toucan
+              toucan = nil
+            }
+          }
+        }
       } else {
         
         // image processing done in background
