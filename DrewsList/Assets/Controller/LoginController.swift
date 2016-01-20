@@ -36,6 +36,7 @@ public class LoginController {
     ] as [String: AnyObject])
     
     Sockets.sharedInstance().on("authenticateWithLocalAuth.response") { [weak self] json in
+      
       if json["errmsg"].string != nil || json["error"].string != nil {
 
         if json["error"].string?.containsString("email") == true {
