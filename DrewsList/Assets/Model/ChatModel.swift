@@ -30,9 +30,15 @@ public class ChatModel: NSObject, NSCoding {
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
   
+  public let _user_image = Signal<UIImage?>()
+  public var user_image: UIImage? { didSet { _user_image => user_image } }
+  
   public let _friend = Signal<User?>()
   public var friend: User? { didSet { _friend => friend } }
   
+  public let _friend_image = Signal<UIImage?>()
+  public var friend_image: UIImage? { didSet { _friend_image => friend_image } }
+
   public let _messages = Signal<[JSQMessage]>()
   public var messages = [JSQMessage]() { didSet { _messages => messages } }
   
@@ -116,6 +122,9 @@ public class OutgoingMessage {
   public let _friend_id = Signal<String?>()
   public var friend_id: String? { didSet { _friend_id => friend_id } }
   
+  public let _friend_image = Signal<String?>()
+  public var friend_image: String? { didSet { _friend_image => friend_image } }
+
   public let _friend_username = Signal<String?>()
   public var friend_username: String? { didSet { _friend_username => friend_username } }
   
@@ -134,6 +143,7 @@ public class OutgoingMessage {
     username: String,
     friend_id: String,
     friend_username: String,
+    friend_image: String,
     message: String,
     session_id: String,
     room_id: String
@@ -142,6 +152,7 @@ public class OutgoingMessage {
     self.username = username
     self.friend_id = friend_id
     self.friend_username = friend_username
+    self.friend_image = friend_image
     self.message = message
     self.session_id = session_id
     self.room_id = room_id
@@ -167,6 +178,8 @@ public class OutgoingMessage {
       "user_id": user_id,
       "username": username,
       "friend_id": friend_id,
+      // friend image is optional
+      "friend_image": friend_image ?? "",
       "friend_username": friend_username,
       "session_id": session_id,
       "room_id": room_id,
@@ -196,3 +209,4 @@ public class RealmChatModel: Object {
     else { return nil }
   }
 }
+

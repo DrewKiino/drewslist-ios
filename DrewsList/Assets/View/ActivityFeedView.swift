@@ -24,7 +24,6 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     setupSelf()
     setupDataBinding()
     setupTableView()
-    
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -42,7 +41,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   private func setupDataBinding() {
     model._activity.removeAllListeners()
     model._activity.listen(self) { [weak self] activity in
-      self?.view.displayNotification(activity) { [weak self] in
+      self?.view.displayNotification(activity?.message) { [weak self] in
       }
     }
   }

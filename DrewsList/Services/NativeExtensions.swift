@@ -303,11 +303,22 @@ extension UIImageView {
     }
   }
   
-  public class func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionWithFinishedBlock?) {
+  public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
     }) { (image, error, cache, finished, nsurl) -> Void in
-      if image != nil && finished == true { completionHandler?(image, error, cache, finished, nsurl) }
+      if let size = size {
+        Async.background {
+          var toucan: Toucan? = Toucan(image: image).resize(size, fitMode: .Crop)
+          if maskWithEllipse == true { toucan?.maskWithEllipse() }
+          Async.main {
+            block(image: toucan?.image)
+            toucan = nil
+          }
+        }
+      } else {
+        block(image: image)
+      }
     }
   }
 }

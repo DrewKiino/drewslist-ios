@@ -67,6 +67,9 @@ public class DLTableView: UITableView {
     // MARK: Chat History
     registerClass(ChatHistoryCell.self, forCellReuseIdentifier: "ChatHistoryCell")
     
+    // MARK: Activity Feed
+    registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()

@@ -191,7 +191,9 @@ public class BookView: UIView {
     
         if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
           
-          UIImageView.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, finished, nsurl in
+          imageViewUrl = book?.getImageUrl()
+          
+          UIImageView.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image in
             Async.background { [weak self] in
               
               // NOTE: correct way to handle memory management with toucan
@@ -201,7 +203,6 @@ public class BookView: UIView {
               
               Async.main { [weak self] in
                 
-                self?.imageViewUrl = nsurl.URLString
                 
                 // set the image view's image
                 self?.imageView?.image = toucan?.image

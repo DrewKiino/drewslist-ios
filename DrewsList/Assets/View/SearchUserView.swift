@@ -251,7 +251,9 @@ public class UserCell: DLTableViewCell {
         
         if user?.image != nil && self?.profileImageUrl != user?.image {
           
-          UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image, error, cache, finished, nsurl in
+          self?.profileImageUrl = user?.image
+          
+          UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image in
             Async.background { [weak self] in
               
               // NOTE: correct way to handle memory management with toucan
@@ -260,8 +262,6 @@ public class UserCell: DLTableViewCell {
               var toucan: Toucan? = Toucan(image: image).resize(self?.profileImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
           
               Async.main { [weak self] in
-                
-                self?.profileImageUrl = nsurl.URLString
                 
                 // set the image view's image
                 self?.profileImageView?.image = toucan?.image
