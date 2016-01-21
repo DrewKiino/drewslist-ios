@@ -119,11 +119,11 @@ public class OutgoingMessage {
   public let _username = Signal<String?>()
   public var username: String? { didSet { _username => username } }
   
+  public let _user_image = Signal<String?>()
+  public var user_image: String? { didSet { _user_image => user_image } }
+  
   public let _friend_id = Signal<String?>()
   public var friend_id: String? { didSet { _friend_id => friend_id } }
-  
-  public let _friend_image = Signal<String?>()
-  public var friend_image: String? { didSet { _friend_image => friend_image } }
 
   public let _friend_username = Signal<String?>()
   public var friend_username: String? { didSet { _friend_username => friend_username } }
@@ -141,18 +141,18 @@ public class OutgoingMessage {
   public init(
     user_id: String,
     username: String,
+    user_image: String,
     friend_id: String,
     friend_username: String,
-    friend_image: String,
     message: String,
     session_id: String,
     room_id: String
   ) {
     self.user_id = user_id
     self.username = username
+    self.user_image = user_image
     self.friend_id = friend_id
     self.friend_username = friend_username
-    self.friend_image = friend_image
     self.message = message
     self.session_id = session_id
     self.room_id = room_id
@@ -179,7 +179,7 @@ public class OutgoingMessage {
       "username": username,
       "friend_id": friend_id,
       // friend image is optional
-      "friend_image": friend_image ?? "",
+      "user_image": user_image ?? "",
       "friend_username": friend_username,
       "session_id": session_id,
       "room_id": room_id,

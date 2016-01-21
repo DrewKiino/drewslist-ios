@@ -169,56 +169,12 @@ public class BookView: UIView {
       imageView?.image = nil
     }
     
-    // MARK: Images
-//    Async.background { [weak self, weak book] in
-//      
-//      var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.imageView?.frame.size, fitMode: .Crop)
-//      
-//      Async.main { [weak self] in
-    
-//        if self?.imageView?.image == nil && self?.imageViewUrl != "book-placeholder" {
-//          
-//          self?.imageView?.image = toucan?.image
-//          
-//          self?.imageViewUrl = "book-placeholder"
-//          
-//          UIView.animate { [weak self] in
-//            self?.imageView?.alpha = 1.0
-//          }
-//        }
-        
-//        toucan = nil
-    
-        if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
-          
-          imageViewUrl = book?.getImageUrl()
-          
-          UIImageView.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image in
-            Async.background { [weak self] in
-              
-              // NOTE: correct way to handle memory management with toucan
-              // init toucan and pass in the arguments directly in the parameter headers
-              // do the resizing in the background
-              var toucan: Toucan? = Toucan(image: image).resize(self?.imageView?.frame.size, fitMode: .Crop)
-              
-              Async.main { [weak self] in
-                
-                
-                // set the image view's image
-                self?.imageView?.image = toucan?.image
-                
-                UIView.animate { [weak self] in
-                  self?.imageView?.alpha = 1.0
-                }
-                
-                // deinit toucan
-                toucan = nil
-              }
-            }
-          }
-        }
-//      }
-//    }
+    if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
+      
+      imageViewUrl = book?.getImageUrl()
+      
+      imageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
+    }
     
     Async.background { [weak self] in
     

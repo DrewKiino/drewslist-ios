@@ -187,10 +187,9 @@ public class ChatController {
     return OutgoingMessage(
       user_id: _id,
       username: name,
+      user_image: model.user?.image ?? "",
       friend_id: friend_id,
       friend_username: friendName,
-      // friend image is optional
-      friend_image: model.friend?.image ?? "",
       message: text,
       session_id: session_id,
       room_id: room_id
