@@ -33,6 +33,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
     SetUpTableView()
     SetUpDataBinding()
+    SetUpHeaderView()
     controller.viewDidLoad()
     
     
@@ -254,19 +255,19 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return Cell
         
       }
-      break;
-    case 8:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle(" ")
-        if let pageCount = model.book?.pageCount {
-          cell.setLabelSubTitle("\(pageCount)")
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-      }
-      break;
-    case 9:
+//      break;
+//    case 8:
+//      
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+//        cell.setLabelTitle(" ")
+//        if let pageCount = model.book?.pageCount {
+//          cell.setLabelSubTitle("\(pageCount)")
+//        } else { cell.setLabelSubTitle("")}
+//        cell.setLabelFullTitle()
+//        return cell
+//      }
+//      break;
+//    case 9:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
         cell.setLabelTitle("Categories: ")
@@ -278,18 +279,18 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         
       }
       break;
-    case 10:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Rating: ")
-        if let rating = model.book?.maturityRating {
-          cell.setLabelSubTitle(rating)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-        
-      }
-      break;
+//    case 10:
+//      
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+//        cell.setLabelTitle("Rating: ")
+//        if let rating = model.book?.maturityRating {
+//          cell.setLabelSubTitle(rating)
+//        } else { cell.setLabelSubTitle("")}
+//        cell.setLabelFullTitle()
+//        return cell
+//        
+//      }
+//      break;
       
     case 11:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{
