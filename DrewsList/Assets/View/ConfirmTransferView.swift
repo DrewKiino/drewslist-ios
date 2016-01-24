@@ -314,7 +314,7 @@ public class ConfirmTransferCell: DLTableViewCell {
       UsernameLabel?.text = user.getName()
       SchoolLabel?.text = user.school
       
-      if ProfileImageURL != user.image { ProfileImageView?.image = nil }
+      if ProfileImageURL != user.imageUrl { ProfileImageView?.image = nil }
       
       // Mark: images
       Async.background { [ weak self, weak user] in
@@ -334,11 +334,11 @@ public class ConfirmTransferCell: DLTableViewCell {
         toucan = nil
           
           
-          if user?.image != nil && self?.ProfileImageURL != user?.image {
+          if user?.imageUrl != nil && self?.ProfileImageURL != user?.imageUrl {
             
-            self?.ProfileImageURL = user?.image
+            self?.ProfileImageURL = user?.imageUrl
             
-            UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image in
+            UIImageView.dl_setImageFromUrl(user?.imageUrl) { [weak self] image in
               Async.background { [weak self] in
                 
                 // NOTE: correct way to handle memory management with toucan

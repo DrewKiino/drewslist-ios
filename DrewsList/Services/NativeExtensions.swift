@@ -312,34 +312,62 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
-    guard let url = url, let nsurl = NSURL(string: url) else { return }
-    SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
-    }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-      Async.background {
+  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+    Async.background { [weak self] in
+      
+      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: .Crop)
+      
+      if maskWithEllipse == true { toucan?.maskWithEllipse() }
+      
+      Async.main { [weak self] in
         
-        var toucan: Toucan? = Toucan(image: image).resize(size ?? self?.frame.size, fitMode: .Crop)
+        if animated == true { self?.alpha = 0.0 }
         
-        if maskWithEllipse == true { toucan?.maskWithEllipse() }
+        if let block = block {
+          block(image: toucan?.image)
+        } else {
+          self?.image = toucan?.image
+        }
         
-        Async.main { [weak self] in
-          
-          if animated == true { self?.alpha = 0.0 }
-          
-          if let block = block {
-            block(image: toucan?.image)
-          } else {
-            self?.image = toucan?.image
-            log.debug(toucan?.image)
+        if animated == true {
+          UIView.animateWithDuration(0.7) { [weak self] in
+            self?.alpha = 1.0
           }
+        }
+        
+        toucan = nil
+      }
+    }
+  }
+  
+  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+    if let url = url, let nsurl = NSURL(string: url) {
+      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
+        Async.background { [weak self] in
           
-          if animated == true {
-            UIView.animateWithDuration(0.7) { [weak self] in
-              self?.alpha = 1.0
+          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: .Crop)
+          
+          if maskWithEllipse == true { toucan?.maskWithEllipse() }
+          
+          Async.main { [weak self] in
+            
+            if animated == true { self?.alpha = 0.0 }
+            
+            if let block = block {
+              block(image: toucan?.image)
+            } else {
+              self?.image = toucan?.image
             }
+            
+            if animated == true {
+              UIView.animateWithDuration(0.7) { [weak self] in
+                self?.alpha = 1.0
+              }
+            }
+            
+            toucan = nil
           }
-          
-          toucan = nil
         }
       }
     }
@@ -358,6 +386,9 @@ extension UIImageView {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
     }) { (image, error, cache, finished, nsurl) -> Void in
+      
+      log.debug("mark")
+      
       if let size = size {
         Async.background {
           var toucan: Toucan? = Toucan(image: image).resize(size, fitMode: .Crop)

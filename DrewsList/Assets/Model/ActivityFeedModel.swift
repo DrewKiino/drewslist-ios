@@ -18,13 +18,14 @@ public enum ActivityType {
 
 public class ActivityFeedModel {
   
+  private struct Singleton { private static let activityFeedModel = ActivityFeedModel() }
+  public class func sharedInstance() -> ActivityFeedModel { return Singleton.activityFeedModel }
+  
   public let _activity = Signal<Activity?>()
   public var activity: Activity? { didSet { _activity => activity } }
   
   public let _activities = Signal<[Activity]>()
-  public var activities: [Activity] = [] { didSet { _activity => activities.first; _activities => activities } }
-}
-
+  public var activities: [Activity] = [] { didSet { _activity => activities.first; _activities => activities } } } 
 public class Activity {
   
   public let _message = Signal<JSON?>()

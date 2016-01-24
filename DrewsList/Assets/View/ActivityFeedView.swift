@@ -39,7 +39,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupDataBinding() {
-    model._activity.removeAllListeners()
+    model._activity.removeListener(self)  
     model._activity.listen(self) { [weak self] activity in
       // show the notification
       self?.view.displayNotification(activity?.message?["message"].string) { [weak self] in
@@ -69,7 +69,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
-      cell.setActivity(model.activities[indexPath.row])
+//      cell.setActivity(model.activities[indexPath.row])
+      cell.activity = model.activities[indexPath.row]
       cell.showBottomBorder()
       return cell
     }
@@ -84,6 +85,8 @@ public class ActivityCell: DLTableViewCell {
   public var middleContainer: UIView?
   public var activityLabel: UILabel?
   public var timestampLabel: UILabel?
+  
+  public var activity: Activity?
   
   public override func setupSelf() {
     super.setupSelf()
@@ -103,6 +106,8 @@ public class ActivityCell: DLTableViewCell {
     middleContainer?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftImageView!, padding: 4, width: frame.width - 48 - 40)
     activityLabel?.anchorAndFillEdge(.Top, xPad: 4, yPad: 4, otherSize: 30)
     timestampLabel?.alignAndFill(align: .UnderMatchingLeft, relativeTo: activityLabel!, padding: 0)
+    
+    setActivity(activity)
   }
   
   private func setupLeftImageView() {
@@ -134,9 +139,10 @@ public class ActivityCell: DLTableViewCell {
     middleContainer?.addSubview(timestampLabel!)
   }
   
-  public func setActivity(activity: Activity) {
+  public func setActivity(activity: Activity?) {
+    guard let activity = activity else { return }
     
-    leftImageView?.dl_setImageFromUrl(activity.leftImage, maskWithEllipse: true)
+    leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     
     activityLabel?.attributedText = activity.getMessage()
     

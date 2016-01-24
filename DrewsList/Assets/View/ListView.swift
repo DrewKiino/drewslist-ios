@@ -330,9 +330,9 @@ public class ListerProfileViewCell: DLTableViewCell {
     let duration: NSTimeInterval = 0.5
     
     // MARK: Images
-    if user.image != nil {
+    if user.imageUrl != nil {
       
-      UIImageView.dl_setImageFromUrl(user.image, size: userImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
+      UIImageView.dl_setImageFromUrl(user.imageUrl, size: userImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
 
         self?.userImageView?.setImage(image, forState: .Normal)
         
@@ -368,14 +368,14 @@ public class ListerProfileViewCell: DLTableViewCell {
       // NOTE: DONT FORGET THESE CODES OMFG
       // converts the date strings sent from the server to local time strings
       if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
-        let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2)
+        let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1)
       {
         let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
         coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
         
         Async.main { [weak self] in
           self?.listDateTitle?.attributedText = coloredString
-          self?.listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? "\(relativeString) ago" : "just now"
+          self?.listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? relativeString : "just now"
         }
       }
       
