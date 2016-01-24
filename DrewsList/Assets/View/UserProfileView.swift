@@ -13,7 +13,6 @@ import SDWebImage
 import Signals
 import Async
 
-
 public class UserProfileViewContainer: DLNavigationController {
   
   public var userProfileView: UserProfileView?
@@ -23,8 +22,6 @@ public class UserProfileViewContainer: DLNavigationController {
     
     setupSelf()
     setupProfileView()
-    
-    //userProfileView?.fillSuperview()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -41,6 +38,7 @@ public class UserProfileViewContainer: DLNavigationController {
     rootView = userProfileView
     setViewControllers([rootView!], animated: false)
     setRootViewTitle("Profile")
+    log.debug(rootView)
   }
   
   public func setList_id(list_id: String?) -> Self {
