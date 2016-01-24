@@ -33,9 +33,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     
     // MARK: Fixtures
     // setup controller's databinding
-//    setBook(Book(_id: "5692cdab8b12dd1f000ee63c"))
-//    setBook(Book(_id: "5689af1c9ee2ef1f00000976"))
-
+    title = "Book Profile"
     setUpTableView()
     setupDataBinding()
     
@@ -303,6 +301,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         cell.button?.setTitle("Add Book to Wishlist", forState: .Normal)
         cell._onPressed.listen(self) { [weak self] bool in
           // FIXME: Add book to wishlist
+          self?.presentCreateListingView(self?.model.book)
         }
         return cell
       }
@@ -315,21 +314,21 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
+//    case 16:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+//        cell.hideBothTopAndBottomBorders()
+//        
+//        cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
+//        cell.button?.buttonColor = .juicyOrange()
+//        cell.button?.cornerRadius = 4
+//        cell.button?.setTitle("Sell This Book", forState: .Normal)
+//        cell._onPressed.listen(self) { [weak self] bool in
+//          // FIXME: Add book to Sell List
+//        }
+//        return cell
+//      }
+//      break;
     case 16:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
-        cell.hideBothTopAndBottomBorders()
-        
-        cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
-        cell.button?.buttonColor = .juicyOrange()
-        cell.button?.cornerRadius = 4
-        cell.button?.setTitle("Sell This Book", forState: .Normal)
-        cell._onPressed.listen(self) { [weak self] bool in
-          // FIXME: Add book to Sell List
-        }
-        return cell
-      }
-      break;
-    case 17:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
@@ -369,9 +368,9 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       return screen.height / 15
     case 15:
       return screen.height / 40
-    case 16: // Sell Button
-      return screen.height / 15
-    case 17:
+//    case 16: // Sell Button
+//      return screen.height / 15
+    case 16:
       return screen.height / 50
     default:
       return screen.height / 25
