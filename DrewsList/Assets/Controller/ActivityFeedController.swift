@@ -22,18 +22,21 @@ public class ActivityFeedController {
     socket._message.removeListener(self)
     socket._message.listen(self) { [weak self] json in
       // parse the message sent from the server
+      log.debug(json)
       
       // check if the message is a chat
-      if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["identifier"].string == "CHAT" && self?.socket.isCurrentlyInChat == false {
-        self?.model.activity = "\(username): \(message)"
-        
-      // else check if the message is a transfer request
-      } else if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["identifier"].string == "TRANSFER_REQUEST" {
-          self?.model.activity = "\(username): \(message)"
+      if json["type"].string == "CHAT" && self?.socket.isCurrentlyInChat == false {
+        self?.model.activities.insert(Activity(
+          message: json["message"],
+          timestamp: json["message"]["createdAt"].string,
+          type: json["type"].string,
+          leftImage: json["message"]["friend_image"].string,
+          rightImage: nil
+        ), atIndex: 0)
         
       // else check if the message is a alert saying that you have a potential buyer/seller 'match'
-      } else if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["identifier"].string == "LIST_MATCH" {
-        self?.model.activity = "\(username): \(message)"
+      } else if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["type"].string == "LIST_MATCH" {
+//        self?.model.activity = "\(username): \(message)"
       }
     }
   }

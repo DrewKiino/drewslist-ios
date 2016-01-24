@@ -156,9 +156,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     return cell
   }
   
-  public func imagePickerController(
-    picker: UIImagePickerController,
-    didFinishPickingMediaWithInfo info: [String : AnyObject])
+  public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
   {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       model.profileImage = pickedImage

@@ -42,11 +42,13 @@ public class ChatView: JSQMessagesViewController {
     title = model.friend?.getName()
     // hide attachment button
     inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+    
   }
   
   private func setupDataBinding() {
     model._friend.removeAllListeners()
     model._friend.listen(self) { [weak self] friend in
+      log.debug("mark")
       self?.title = friend?.getName()
     }
     // set and listen for changes in the user's username
@@ -90,12 +92,13 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
-    return model.messages[indexPath.row].senderId == senderId ?
-      outgoingBubble : incomingBubble
+    return model.messages[indexPath.row].senderId == senderId ? outgoingBubble : incomingBubble
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-    return nil
+    return model.messages[indexPath.row].senderId == senderId ?
+      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
+      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
   }
   
   public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

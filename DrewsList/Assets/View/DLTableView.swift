@@ -67,6 +67,9 @@ public class DLTableView: UITableView {
     // MARK: Chat History
     registerClass(ChatHistoryCell.self, forCellReuseIdentifier: "ChatHistoryCell")
     
+    // MARK: Activity Feed
+    registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()
@@ -827,27 +830,8 @@ public class ListCell: UICollectionViewCell {
       
       if let image = highestLister.user?.image {
         
-        matchUserImageView?.dl_setImageFromUrl(image) { [weak self] image, error, cache, url in
-          Async.background { [weak self] in
-            // NOTE: correct way to handle memory management with toucan
-            // init toucan and pass in the arguments directly in the parameter headers
-            // do the resizing in the background
-            var toucan: Toucan? = Toucan(image: image).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
-            
-            Async.main { [weak self] in
-              
-              // set the image view's image
-              self?.matchUserImageView?.image = toucan?.image
-              
-              UIView.animateWithDuration(duration) { [weak self] in
-                self?.matchUserImageView?.alpha = 1.0
-              }
-              
-              // deinit toucan
-              toucan = nil
-            }
-          }
-        }
+        matchUserImageView?.dl_setImageFromUrl(image, maskWithEllipse: true, animated: true)
+
       } else {
         
         // image processing done in background
@@ -911,29 +895,8 @@ public class ListCell: UICollectionViewCell {
     // MARK: Images
     if book?.hasImageUrl() == true {
       
-      bookImageView?.dl_setImageFromUrl(book?.getImageUrl()) { [weak self] image, error, cache, url in
-        Async.background { [weak self] in
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.bookImageView?.frame.size)
-          
-          Async.main { [weak self] in
-            
-            // set the image view's image
-            self?.bookImageView?.image = toucan?.image
-            
-            if self?.bookImageView?.image != nil { self?.bookImageView?.layer.shadowColor = UIColor.darkGrayColor().CGColor }
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.bookImageView?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
-        }
-      }
+      bookImageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
+      
     } else {
       
       Async.background { [weak self] in
@@ -1100,29 +1063,8 @@ public class ChangeImageCell: DLTableViewCell {
     // MARK: Images
     if user.image != nil {
       
-      profileImgView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
-        Async.background { [weak self] in
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
-          
-          Async.main { [weak self] in
-            
-            self?.profileImgView?.alpha = 0.0
-            
-            // set the image view's image
-            self?.profileImgView?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.profileImgView?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
-        }
-      }
+      profileImgView?.dl_setImageFromUrl(user.image, maskWithEllipse: true, animated: true)
+      
     } else {
       
       Async.background { [weak self] in

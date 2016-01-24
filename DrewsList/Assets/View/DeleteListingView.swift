@@ -33,6 +33,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
     SetUpTableView()
     SetUpDataBinding()
+    SetUpHeaderView()
     controller.viewDidLoad()
     
     
@@ -179,72 +180,34 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         Cell.backgroundColor = .whiteColor()
         let BookImageView = UIImageView()
         let duration: NSTimeInterval = 0.2
-        if let bookImage = model.book?.largeImage {
-          BookImageView.dl_setImageFromUrl(bookImage) { [weak self] image, error, cache, url in
-            Async.background { [weak self] in
-              // NOTE: correct way to handle memory management with toucan
-              // init toucan and pass in the arguments directly in the parameter headers
-              // do the resizing in the background
-              var toucan: Toucan? = Toucan(image: image).resize(BookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                BookImageView.alpha = 0.0
-                BookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  BookImageView.alpha = 1.0
-                }
-                toucan = nil
-        }
-      }
-    }
-        }  else if let BookImage = model.book?.mediumImage {
-          BookImageView.dl_setImageFromUrl(BookImage) { [weak self] image, error, cache, url in
-            Async.background { [ weak self] in
-              var toucan: Toucan? = Toucan(image: image).resize(BookImageView.frame.size, fitMode: .Crop)
-              Async.main{ [ weak self] in
-                BookImageView.alpha = 0.0
-                BookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  BookImageView.alpha = 1.0
-        }
-                toucan = nil
-                
-                
-              }
-            }
-          }
-        } else if let BookImage = model.book?.smallImage {
-          BookImageView.dl_setImageFromUrl(BookImage) { [weak self] image, error, cache, url in
-            Async.background { [weak self] in
-              var toucan: Toucan? = Toucan(image: image).resize(BookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                BookImageView.alpha = 0.0
-                BookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  BookImageView.alpha = 1.0
-                }
-                toucan = nil
-              }
-            }
-          }
-          } else {
-            Async.background { [ weak self] in
-              var toucan: Toucan?  = Toucan (image: UIImage(named: "book-placeholder")).resize(BookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                BookImageView.alpha = 0.0
-                BookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [ weak self] in
-                  BookImageView.alpha = 1.0
-                }
-                toucan = nil
-              }
-          }
-        }
         
-          Cell.addSubview(BookImageView)
-          BookImageView.anchorInCenter(width: Cell.frame.height * (2/3) , height: Cell.frame.height)
+        if let url = model.book?.getImageUrl() {
+          BookImageView.dl_setImageFromUrl(url, size: BookImageView.frame.size) { [weak self] image in
+            BookImageView.alpha = 0.0
+            BookImageView.image = image
+            UIView.animateWithDuration(duration) { [weak self] in
+              BookImageView.alpha = 1.0
+            }
+          }
+        } else {
           
-          return Cell
+          Async.background { [ weak self] in
+            var toucan: Toucan?  = Toucan (image: UIImage(named: "book-placeholder")).resize(BookImageView.frame.size, fitMode: .Crop)
+            Async.main { [weak self] in
+              BookImageView.alpha = 0.0
+              BookImageView.image = toucan?.image
+              UIView.animateWithDuration(duration) { [ weak self] in
+                BookImageView.alpha = 1.0
+              }
+              toucan = nil
+            }
+          }
+        }
+      
+        Cell.addSubview(BookImageView)
+        BookImageView.anchorInCenter(width: Cell.frame.height * (2/3) , height: Cell.frame.height)
         
+        return Cell
       }
       break;
     case 4:
@@ -292,19 +255,19 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return Cell
         
       }
-      break;
-    case 8:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle(" ")
-        if let pageCount = model.book?.pageCount {
-          cell.setLabelSubTitle("\(pageCount)")
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-      }
-      break;
-    case 9:
+//      break;
+//    case 8:
+//      
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+//        cell.setLabelTitle(" ")
+//        if let pageCount = model.book?.pageCount {
+//          cell.setLabelSubTitle("\(pageCount)")
+//        } else { cell.setLabelSubTitle("")}
+//        cell.setLabelFullTitle()
+//        return cell
+//      }
+//      break;
+//    case 9:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
         cell.setLabelTitle("Categories: ")
@@ -316,18 +279,18 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         
       }
       break;
-    case 10:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Rating: ")
-        if let rating = model.book?.maturityRating {
-          cell.setLabelSubTitle(rating)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-        
-      }
-      break;
+//    case 10:
+//      
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+//        cell.setLabelTitle("Rating: ")
+//        if let rating = model.book?.maturityRating {
+//          cell.setLabelSubTitle(rating)
+//        } else { cell.setLabelSubTitle("")}
+//        cell.setLabelFullTitle()
+//        return cell
+//        
+//      }
+//      break;
       
     case 11:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{

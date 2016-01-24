@@ -336,7 +336,9 @@ public class ConfirmTransferCell: DLTableViewCell {
           
           if user?.image != nil && self?.ProfileImageURL != user?.image {
             
-            UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image, error, cache, finished, nsurl in
+            self?.ProfileImageURL = user?.image
+            
+            UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image in
               Async.background { [weak self] in
                 
                 // NOTE: correct way to handle memory management with toucan
@@ -346,29 +348,17 @@ public class ConfirmTransferCell: DLTableViewCell {
                 
                 Async.main { [weak self] in
                   
-                  self?.ProfileImageURL = nsurl.URLString
-                  
                   // set the image view's image
                   self?.ProfileImageView?.image = toucan?.image
                   
                   // deinit toucan
                   toucan = nil
-
-            
-            
+                }
+              }
+            }
+          }
+        }
+      }
     }
-    
-      
-   }
-  
   }
-}
-}
-}
-}
-}
-
-
-  
-  
 }

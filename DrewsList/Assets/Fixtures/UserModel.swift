@@ -11,6 +11,7 @@ import Signals
 import ObjectMapper
 import SwiftyJSON
 import RealmSwift
+import Async
 
 public class User: Mappable {
   
