@@ -105,7 +105,7 @@ public class DLTableViewCell: UITableViewCell {
     topBorder.frame = CGRectMake(0, 0, bounds.size.width, 0.5)
     bottomBorder.frame = CGRectMake(0, bounds.size.height - 1, bounds.size.width, 1)
     
-    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 0.5)
+    separatorLine.frame = CGRectMake(14, bounds.size.height, bounds.size.width - 1, 0.5)
   }
   
   public func setupSelf() {

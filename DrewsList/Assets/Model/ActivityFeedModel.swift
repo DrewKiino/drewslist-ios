@@ -62,6 +62,18 @@ public class Activity {
   public func getMessage() -> NSMutableAttributedString? {
     switch type {
     case .Chat:
+      return NSMutableAttributedString(string: (message?["message"].string ?? ""), attributes: [
+        NSFontAttributeName: UIFont.asapRegular(12),
+        NSForegroundColorAttributeName: UIColor.blackColor()
+      ])
+    case .None: break
+    }
+    return nil
+  }
+  
+  public func getDetailedMessage(modifier: String? = nil) -> NSMutableAttributedString? {
+    switch type {
+    case .Chat:
       let attributedString = NSMutableAttributedString(string: (message?["friend_username"].string ?? ""), attributes: [
         NSFontAttributeName: UIFont.asapBold(12),
         NSForegroundColorAttributeName: UIColor.bareBlue()
@@ -77,7 +89,7 @@ public class Activity {
 //        NSForegroundColorAttributeName: UIColor.sexyGray()
 //      ])
       
-      let attributedString4 = NSMutableAttributedString(string: "'" + (message?["message"].string ?? "") + "'", attributes: [
+      let attributedString4 = NSMutableAttributedString(string: "'" + (modifier ?? (message?["message"].string ?? "")) + "'", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])

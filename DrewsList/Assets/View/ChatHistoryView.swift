@@ -56,10 +56,6 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     }
   }
   
-  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 52
-  }
-  
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return model.chatModels.count
   }
@@ -68,7 +64,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     if  let cell = tableView.dequeueReusableCellWithIdentifier("ChatHistoryCell") as? ChatHistoryCell {
       let user = model.chatModels[indexPath.row].user
       let friend = model.chatModels[indexPath.row].friend
-      cell.showBottomBorder()
+      cell.showSeparatorLine()
       return cell
     }
     return DLTableViewCell()
@@ -95,10 +91,11 @@ public class ChatHistoryCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    title?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: screen.width - 100, height: 16)
+    leftImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 36, height: 36)
+    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 4, width: screen.width - 100, height: 16)
     arrow?.anchorInCorner(.TopRight, xPad: 4, yPad: 6, width: 12, height: 12)
-    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 56, height: 16)
-    message?.alignAndFill(align: .UnderMatchingLeft, relativeTo: title!, padding: 4)
+    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 48, height: 16)
+    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 4, height: 24)
     
     setupFixtures()
   }
@@ -117,7 +114,8 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupTimestamp() {
     timestamp = UILabel()
-    timestamp?.font = UIFont.asapRegular(12)
+    timestamp?.font = UIFont.asapRegular(10)
+    timestamp?.textColor = .sexyGray()
     timestamp?.numberOfLines = 1
     addSubview(timestamp!)
   }
@@ -136,6 +134,7 @@ public class ChatHistoryCell: DLTableViewCell {
   }
   
   private func setupFixtures() {
+    leftImageView?.dl_setImageFromUrl("http://orig06.deviantart.net/b682/f/2013/135/4/3/profile_picture_by_mellodydoll_stock-d65fbf8.jpg", placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     title?.text = "Mary Jane"
     timestamp?.text = "11:00 AM"
     arrow?.dl_setImage(UIImage(named: "Icon-GreyChevron"))

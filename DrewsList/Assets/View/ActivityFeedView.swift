@@ -63,10 +63,6 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     return model.activities.count
   }
   
-  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 56
-  }
-  
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
 //      cell.setActivity(model.activities[indexPath.row])
@@ -95,7 +91,7 @@ public class ActivityCell: DLTableViewCell {
     setupRightImageView()
     setupMiddleContainer()
     setupActivityLabel()
-    setupTimestampLabel()
+//    setupTimestampLabel()
   }
   
   public override func layoutSubviews() {
@@ -104,7 +100,8 @@ public class ActivityCell: DLTableViewCell {
     leftImageView?.anchorToEdge(.Left, padding: 4, width: 36, height: 36)
     rightImageView?.anchorToEdge(.Right, padding: 4, width: 36, height: 36)
     middleContainer?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftImageView!, padding: 4, width: frame.width - 48 - 40)
-    activityLabel?.anchorAndFillEdge(.Top, xPad: 4, yPad: 4, otherSize: 30)
+//    activityLabel?.anchorAndFillEdge(.Top, xPad: 4, yPad: 4, otherSize: 30)
+    activityLabel?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: middleContainer!.width - 8, height: 30)
     timestampLabel?.alignAndFill(align: .UnderMatchingLeft, relativeTo: activityLabel!, padding: 0)
     
     setActivity(activity)
@@ -144,13 +141,18 @@ public class ActivityCell: DLTableViewCell {
     
     leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     
-    activityLabel?.attributedText = activity.getMessage()
-    
-    let attributedString = NSMutableAttributedString(string: (activity.message?["createdAt"].string?.toRelativeString() ?? ""), attributes: [
+    var attributedString = activity.getDetailedMessage()
+    let attributedString2 = NSMutableAttributedString(string: ((activity.getMessage()?.string.characters.count ?? 0) < 6 ? "\n" : " ") + (activity.message?["createdAt"].string?.toRelativeString() ?? ""), attributes: [
       NSFontAttributeName: UIFont.asapRegular(12),
       NSForegroundColorAttributeName: UIColor.sexyGray()
     ])
     
-    timestampLabel?.attributedText = attributedString
+    if let message = activity.getMessage() where activity.getMessage()?.string.characters.count > 30 {
+      attributedString = activity.getDetailedMessage(message.string.stringByPaddingToLength(30, withString: message.string, startingAtIndex: 0) + "...")
+    }
+    
+    attributedString?.appendAttributedString(attributedString2)
+    
+    activityLabel?.attributedText = attributedString
   }
 }
