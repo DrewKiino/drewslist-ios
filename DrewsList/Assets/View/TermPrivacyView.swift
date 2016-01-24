@@ -26,6 +26,7 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
   private var BackButton: UIButton?
   private var HeaderTitle: UILabel?
   private var TermPriLabel: UILabel!
+  var label = UILabel(frame: CGRectMake(500, 500, 400, 81))
   
   
   public override func viewDidLoad() {
@@ -42,14 +43,21 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
     BackButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
     
     TableView?.alignAndFill(align: .UnderCentered, relativeTo: HeaderView!, padding: 0)
-  
+    
+    
+    
+    label.center = CGPointMake(160, 284)
+    label.textAlignment = NSTextAlignment.Center
+    label.textColor = UIColor.blueColor()
+    label.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Hello Ispumspisum"
+    self.view.addSubview(label)
     
   }
   
   
   private func SetUpSelf() {
     view.backgroundColor = .whiteColor()
-    
+   
   }
   
   private func SetUpHeaderView() {
@@ -64,7 +72,7 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
     HeaderView?.addSubview(HeaderTitle!)
     
     BackButton = UIButton()
-    BackButton?.setTitle("Back", forState: .Normal)
+    BackButton?.setTitle("", forState: .Normal)
     BackButton?.titleLabel?.font = UIFont.asapBold(12)
     HeaderView?.addSubview(BackButton!)
     
@@ -81,14 +89,14 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
 //    TermPriLabel?.font = UIFont.boldSystemFontOfSize(15)
 //    TermPriLabel?.textColor = UIColor.whiteColor()
 //    TermPriLabel?.numberOfLines = 0
-//    view.addSubview(TermPriLabel!)
+//    view.addSubview(TermPriLabel)
 //    
 //    
 //    
 //  }
-//  
-//  
-//  
+  
+  
+  
   
   
   
