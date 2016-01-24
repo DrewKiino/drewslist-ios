@@ -38,7 +38,6 @@ public class UserProfileViewContainer: DLNavigationController {
     rootView = userProfileView
     setViewControllers([rootView!], animated: false)
     setRootViewTitle("Profile")
-    log.debug(rootView)
   }
   
   public func setList_id(list_id: String?) -> Self {
