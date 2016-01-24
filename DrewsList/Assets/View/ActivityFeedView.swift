@@ -69,9 +69,28 @@ public class ActivityCell: DLTableViewCell {
   
   public var leftImageView: UIImageView?
   public var rightImageView: UIImageView?
-  public var activityLabeL: UILabel?
+  public var activityLabel: UILabel?
   
   public override func setupSelf() {
     super.setupSelf()
+    
+    setupLeftImageView()
+    setupRightImageView()
+    setupActivityLabel()
+  }
+  
+  private func setupLeftImageView() {
+    leftImageView = UIImageView()
+    addSubview(leftImageView!)
+  }
+  
+  private func setupRightImageView() {
+    rightImageView = UIImageView()
+    addSubview(rightImageView!)
+  }
+  
+  private func setupActivityLabel() {
+    activityLabel = UILabel()
+    addSubview(activityLabel!)
   }
 }

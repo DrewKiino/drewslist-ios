@@ -21,7 +21,7 @@ public class UserProfileController {
   
   public func viewDidLoad() {
     readRealmUser()
-    getUserFromServer()
+//    getUserFromServer()
   }
   
   public func getUserFromServer() {
@@ -56,7 +56,7 @@ public class UserProfileController {
     // just in case the doesn't ever respond...
     refrainTimer?.invalidate()
     refrainTimer = nil
-    refrainTimer = NSTimer.after(60.0) { [weak self] in
+    refrainTimer = NSTimer.after(3.0) { [weak self] in
       // disable loading screen
       self?.model.shouldRefrainFromCallingServer = false
     }

@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 import RealmSwift
+import FBSDKLoginKit
 
 public class TabController {
   
@@ -34,6 +35,16 @@ public class TabController {
     // if we already have a user, attempt to call the server to update the current user
     // if not show login view
     } else { return false }
+  }
+  
+  public func checkIfUserIsLogginInToFacebook() -> Bool {
+    if FBSDKAccessToken.currentAccessToken() != nil {
+      print("User logged into FB")
+      return true
+    } else {
+      print("User is not logged into FB")
+      return false
+    }
   }
   
   public func getUserFromServer() {

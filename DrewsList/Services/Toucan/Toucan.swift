@@ -606,15 +606,16 @@ public class Toucan : NSObject {
     static func drawImageWithClosure(size size: CGSize?, closure: (size: CGSize, context: CGContext) -> ()) -> UIImage? {
       var _closure: ((size: CGSize, context: CGContext) -> ())? = closure
       var _size: CGSize? = size
+      var _image: UIImage?
       UIGraphicsBeginImageContextWithOptions(_size!, false, 0)
       if let context = UIGraphicsGetCurrentContext() {
         _closure?(size: _size!, context: context)
-        return UIGraphicsGetImageFromCurrentImageContext()
+        _image = UIGraphicsGetImageFromCurrentImageContext()
       }
       UIGraphicsEndImageContext()
       _size = nil
       _closure = nil
-      return nil
+      return _image
     }
   }
 }
