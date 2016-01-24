@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28B3DFBDECB7F69A7819CDAC /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		390389F81C43005900740B49 /* ConfirmTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389F71C43005900740B49 /* ConfirmTransferView.swift */; };
 		390389FA1C4300DC00740B49 /* ConfirmTransferModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */; };
 		390389FC1C4300F900740B49 /* ConfirmTransferController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390389FB1C4300F900740B49 /* ConfirmTransferController.swift */; };
@@ -34,7 +35,10 @@
 		4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A041C309B3200091408 /* BookProfileView.swift */; };
 		4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A061C309B4500091408 /* BookProfileModel.swift */; };
 		4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A081C309B5600091408 /* BookProfileController.swift */; };
+<<<<<<< HEAD
 		69C059934EF1052D34354EB7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
+=======
+>>>>>>> integrate-user-sign-up-login
 		EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */; };
 		EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF51C1E4DC80088ACBF /* ListView.swift */; };
 		EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF71C1E4DCC0088ACBF /* ListModel.swift */; };
@@ -135,6 +139,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		323EF8DFD514AB477EF9F75F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		390389F71C43005900740B49 /* ConfirmTransferView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferView.swift; sourceTree = "<group>"; };
 		390389F91C4300DC00740B49 /* ConfirmTransferModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferModel.swift; sourceTree = "<group>"; };
 		390389FB1C4300F900740B49 /* ConfirmTransferController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmTransferController.swift; sourceTree = "<group>"; };
@@ -164,7 +169,11 @@
 		4FCF2A061C309B4500091408 /* BookProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileModel.swift; sourceTree = "<group>"; };
 		4FCF2A081C309B5600091408 /* BookProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileController.swift; sourceTree = "<group>"; };
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+<<<<<<< HEAD
 		8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+=======
+		E457EB75A9891C4ADDDAC187 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+>>>>>>> integrate-user-sign-up-login
 		EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetAlert.swift; sourceTree = "<group>"; };
 		EE007AF51C1E4DC80088ACBF /* ListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		EE007AF71C1E4DCC0088ACBF /* ListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListModel.swift; sourceTree = "<group>"; };
@@ -258,7 +267,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< HEAD
 				69C059934EF1052D34354EB7 /* Pods.framework in Frameworks */,
+=======
+				28B3DFBDECB7F69A7819CDAC /* Pods.framework in Frameworks */,
+>>>>>>> integrate-user-sign-up-login
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,11 +292,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+<<<<<<< HEAD
 		83498E3606F1812375705163 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				4A35E42C995D771093243E74 /* Pods.debug.xcconfig */,
 				8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */,
+=======
+		B7D52A8EAF1F6B811B54E7C4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E457EB75A9891C4ADDDAC187 /* Pods.debug.xcconfig */,
+				323EF8DFD514AB477EF9F75F /* Pods.release.xcconfig */,
+>>>>>>> integrate-user-sign-up-login
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -296,7 +317,12 @@
 				EE07FE471BE11D1E00A10F05 /* DrewsListUITests */,
 				FE0642FB75D7FCC6A3A6833B /* Frameworks */,
 				EE07FE261BE11D1E00A10F05 /* Products */,
+<<<<<<< HEAD
 				83498E3606F1812375705163 /* Pods */,
+=======
+				39AD91F11C16DA8700870C39 /* LoginScrollImage-01.png */,
+				B7D52A8EAF1F6B811B54E7C4 /* Pods */,
+>>>>>>> integrate-user-sign-up-login
 			);
 			sourceTree = "<group>";
 		};
@@ -592,12 +618,21 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE07FE4D1BE11D1E00A10F05 /* Build configuration list for PBXNativeTarget "DrewsList" */;
 			buildPhases = (
+<<<<<<< HEAD
 				48C1D09526B521109B28ED92 /* Check Pods Manifest.lock */,
 				EE07FE211BE11D1E00A10F05 /* Sources */,
 				EE07FE221BE11D1E00A10F05 /* Frameworks */,
 				EE07FE231BE11D1E00A10F05 /* Resources */,
 				E01A5EFFF748A1C93F4093A5 /* Embed Pods Frameworks */,
 				236EFC1DF51D13C2BADBE6A3 /* Copy Pods Resources */,
+=======
+				E2C837B240F0DD76C6C12F2A /* Check Pods Manifest.lock */,
+				EE07FE211BE11D1E00A10F05 /* Sources */,
+				EE07FE221BE11D1E00A10F05 /* Frameworks */,
+				EE07FE231BE11D1E00A10F05 /* Resources */,
+				32AB509C36C6A6BE10A9660A /* Embed Pods Frameworks */,
+				6B6C756E93573E09BF2BA239 /* Copy Pods Resources */,
+>>>>>>> integrate-user-sign-up-login
 			);
 			buildRules = (
 			);
@@ -656,7 +691,11 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
+<<<<<<< HEAD
 						DevelopmentTeam = 2NC533SE3E;
+=======
+						DevelopmentTeam = YL9E8RLWV2;
+>>>>>>> integrate-user-sign-up-login
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -722,7 +761,30 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+<<<<<<< HEAD
 		236EFC1DF51D13C2BADBE6A3 /* Copy Pods Resources */ = {
+=======
+		32AB509C36C6A6BE10A9660A /* Embed Pods Frameworks */ = {
+>>>>>>> integrate-user-sign-up-login
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+<<<<<<< HEAD
+		48C1D09526B521109B28ED92 /* Check Pods Manifest.lock */ = {
+=======
+		6B6C756E93573E09BF2BA239 /* Copy Pods Resources */ = {
+>>>>>>> integrate-user-sign-up-login
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -737,7 +799,11 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		48C1D09526B521109B28ED92 /* Check Pods Manifest.lock */ = {
+<<<<<<< HEAD
+		E01A5EFFF748A1C93F4093A5 /* Embed Pods Frameworks */ = {
+=======
+		E2C837B240F0DD76C6C12F2A /* Check Pods Manifest.lock */ = {
+>>>>>>> integrate-user-sign-up-login
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -750,21 +816,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		E01A5EFFF748A1C93F4093A5 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1002,7 +1053,11 @@
 		};
 		EE07FE4E1BE11D1E00A10F05 /* Debug */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< HEAD
 			baseConfigurationReference = 4A35E42C995D771093243E74 /* Pods.debug.xcconfig */;
+=======
+			baseConfigurationReference = E457EB75A9891C4ADDDAC187 /* Pods.debug.xcconfig */;
+>>>>>>> integrate-user-sign-up-login
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1019,7 +1074,11 @@
 		};
 		EE07FE4F1BE11D1E00A10F05 /* Release */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< HEAD
 			baseConfigurationReference = 8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */;
+=======
+			baseConfigurationReference = 323EF8DFD514AB477EF9F75F /* Pods.release.xcconfig */;
+>>>>>>> integrate-user-sign-up-login
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
