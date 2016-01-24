@@ -30,9 +30,15 @@ public class ChatModel: NSObject, NSCoding {
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
   
+  public let _user_image = Signal<UIImage?>()
+  public var user_image: UIImage? { didSet { _user_image => user_image } }
+  
   public let _friend = Signal<User?>()
   public var friend: User? { didSet { _friend => friend } }
   
+  public let _friend_image = Signal<UIImage?>()
+  public var friend_image: UIImage? { didSet { _friend_image => friend_image } }
+
   public let _messages = Signal<[JSQMessage]>()
   public var messages = [JSQMessage]() { didSet { _messages => messages } }
   
@@ -113,9 +119,12 @@ public class OutgoingMessage {
   public let _username = Signal<String?>()
   public var username: String? { didSet { _username => username } }
   
+  public let _user_image = Signal<String?>()
+  public var user_image: String? { didSet { _user_image => user_image } }
+  
   public let _friend_id = Signal<String?>()
   public var friend_id: String? { didSet { _friend_id => friend_id } }
-  
+
   public let _friend_username = Signal<String?>()
   public var friend_username: String? { didSet { _friend_username => friend_username } }
   
@@ -132,6 +141,7 @@ public class OutgoingMessage {
   public init(
     user_id: String,
     username: String,
+    user_image: String,
     friend_id: String,
     friend_username: String,
     message: String,
@@ -140,6 +150,7 @@ public class OutgoingMessage {
   ) {
     self.user_id = user_id
     self.username = username
+    self.user_image = user_image
     self.friend_id = friend_id
     self.friend_username = friend_username
     self.message = message
@@ -167,6 +178,8 @@ public class OutgoingMessage {
       "user_id": user_id,
       "username": username,
       "friend_id": friend_id,
+      // friend image is optional
+      "user_image": user_image ?? "",
       "friend_username": friend_username,
       "session_id": session_id,
       "room_id": room_id,
@@ -196,3 +209,4 @@ public class RealmChatModel: Object {
     else { return nil }
   }
 }
+

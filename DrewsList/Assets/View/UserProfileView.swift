@@ -281,28 +281,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     if user.image != nil {
       
-      profileImg?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+      profileImg?.dl_setImageFromUrl(user.image, size: profileImg?.frame.size, maskWithEllipse: true) { [weak self] image in
         
-        Async.background { [weak self] in
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
-          
-          Async.main { [weak self] in
-            
-            self?.profileImg?.alpha = 0.0
-            
-            // set the image view's image
-            self?.profileImg?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.profileImg?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
+        self?.profileImg?.alpha = 0.0
+        self?.profileImg?.image = image
+        
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.profileImg?.alpha = 1.0
         }
       }
     } else {
@@ -328,27 +313,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     if user.bgImage != nil {
       
-      bgViewTop?.dl_setImageFromUrl(user.bgImage) { [weak self] image, error, cache, url in
-        Async.background { [weak self] in
-          
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.bgViewTop?.frame.size, fitMode: .Crop)
-          
-          Async.main { [weak self] in
-            
-            self?.bgViewTop?.alpha = 0.0
-            
-            self?.bgViewTop?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.bgViewTop?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
+      bgViewTop?.dl_setImageFromUrl(user.bgImage, size: bgViewTop?.frame.size) { [weak self] image in
+        self?.bgViewTop?.alpha = 0.0
+        self?.bgViewTop?.image = image
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.bgViewTop?.alpha = 1.0
         }
       }
     } else {

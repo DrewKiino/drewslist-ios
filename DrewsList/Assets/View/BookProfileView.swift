@@ -140,58 +140,23 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         cell.backgroundColor = .whiteColor()
         let bookImageView = UIImageView()
         let duration: NSTimeInterval = 0.2
-        if let bookImg = model.book?.largeImage {
-          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
-            Async.background { [weak self] in
-              // NOTE: correct way to handle memory management with toucan
-              // init toucan and pass in the arguments directly in the parameter headers
-              // do the resizing in the background
-              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                bookImageView.alpha = 0.0
-                bookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  bookImageView.alpha = 1.0
-                }
-                toucan = nil
-              }
-            }
-          }
-        } else if let bookImg = model.book?.mediumImage {
-          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
-            Async.background { [weak self] in
-              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                bookImageView.alpha = 0.0
-                bookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  bookImageView.alpha = 1.0
-                }
-                toucan = nil
-              }
-            }
-          }
-        } else if let bookImg = model.book?.smallImage {
-          bookImageView.dl_setImageFromUrl(bookImg) { [weak self] image, error, cache, url in
-            Async.background { [weak self] in
-              var toucan: Toucan? = Toucan(image: image).resize(bookImageView.frame.size, fitMode: .Crop)
-              Async.main { [weak self] in
-                bookImageView.alpha = 0.0
-                bookImageView.image = toucan?.image
-                UIView.animateWithDuration(duration) { [weak self] in
-                  bookImageView.alpha = 1.0
-                }
-                toucan = nil
-              }
+        
+        if let url = model.book?.getImageUrl() {
+          bookImageView.dl_setImageFromUrl(url, size: bookImageView.frame.size) { [weak self] image in
+            bookImageView.alpha = 0.0
+            bookImageView.image = image
+            UIView.animateWithDuration(duration) { [weak self] in
+              bookImageView.alpha = 1.0
             }
           }
         } else {
-          Async.background { [weak self] in
-            var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(bookImageView.frame.size, fitMode: .Crop)
+          
+          Async.background { [ weak self] in
+            var toucan: Toucan?  = Toucan (image: UIImage(named: "book-placeholder")).resize(bookImageView.frame.size, fitMode: .Crop)
             Async.main { [weak self] in
               bookImageView.alpha = 0.0
               bookImageView.image = toucan?.image
-              UIView.animateWithDuration(duration) { [weak self] in
+              UIView.animateWithDuration(duration) { [ weak self] in
                 bookImageView.alpha = 1.0
               }
               toucan = nil
@@ -393,7 +358,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     case 5:
       return screen.height / 25
     case 11:
-      if let string = model.book?.description, let height: CGFloat! = self.calculateHeightForString(string) { return height }
+      if let string = model.book?.description, let height: CGFloat! = string.height(400) { return height }
       return screen.height / 10
     case 12:
       return screen.height / 20
@@ -410,12 +375,6 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     default:
       return screen.height / 25
     }
-  }
-  
-  func calculateHeightForString(inString:String) -> CGFloat{
-    let mutstring = NSMutableAttributedString(string: inString, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-    let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(400.0,CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
-    return rect.height
   }
   
   public func presentCreateListingView(book: Book?) {

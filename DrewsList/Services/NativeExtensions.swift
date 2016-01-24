@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import PromiseKit
 import Async
+import SwiftDate
 
 extension UIColor {
   
@@ -114,6 +115,27 @@ extension String {
       }
     }
     return self
+  }
+  
+  public func toRelativeString() -> String! {
+    // NOTE: DONT FORGET THESE CODES OMFG
+    // converts the date strings sent from the server to local time strings
+    return 60.seconds.ago > toDateFromISO8601() ? "\(toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2) ?? "") ago" : "just now"
+  }
+  
+  
+  func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{
+    var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
+    let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
+    mutstring = nil
+    return rect.height
+  }
+}
+
+extension NSMutableAttributedString {
+  
+  func height(width: CGFloat) -> CGFloat {
+    return boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil ).height
   }
 }
 
@@ -290,24 +312,64 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionBlock?) {
+  public func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
-    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
-      .CacheMemoryOnly,
-      .ContinueInBackground,
-//      .ProgressiveDownload,
-      .AvoidAutoSetImage,
-      .LowPriority
-    ]) { image, error, cache, url in
-      completionHandler?(image, error, cache, url)
+    SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+    }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
+      Async.background {
+        
+        var toucan: Toucan? = Toucan(image: image).resize(size ?? self?.frame.size, fitMode: .Crop)
+        
+        if maskWithEllipse == true { toucan?.maskWithEllipse() }
+        
+        Async.main { [weak self] in
+          
+          if animated == true { self?.alpha = 0.0 }
+          
+          if let block = block {
+            block(image: toucan?.image)
+          } else {
+            self?.image = toucan?.image
+            log.debug(toucan?.image)
+          }
+          
+          if animated == true {
+            UIView.animateWithDuration(0.7) { [weak self] in
+              self?.alpha = 1.0
+            }
+          }
+          
+          toucan = nil
+        }
+      }
     }
+//    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
+//      .CacheMemoryOnly,
+//      .ContinueInBackground,
+//      .ProgressiveDownload,
+//      .AvoidAutoSetImage,
+//      .LowPriority
+//    ]) { image, error, cache, url in
+//      completionHandler?(image, error, cache, url)
+//    }
   }
   
-  public class func dl_setImageFromUrl(url: String?, completionHandler: SDWebImageCompletionWithFinishedBlock?) {
+  public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
     }) { (image, error, cache, finished, nsurl) -> Void in
-      if image != nil && finished == true { completionHandler?(image, error, cache, finished, nsurl) }
+      if let size = size {
+        Async.background {
+          var toucan: Toucan? = Toucan(image: image).resize(size, fitMode: .Crop)
+          if maskWithEllipse == true { toucan?.maskWithEllipse() }
+          Async.main {
+            block(image: toucan?.image)
+            toucan = nil
+          }
+        }
+      } else {
+        block(image: image)
+      }
     }
   }
 }

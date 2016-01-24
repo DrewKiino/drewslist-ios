@@ -58,6 +58,20 @@ public class ChatController {
   }
   
   private func setupDataBinding() {
+    model._user.removeAllListeners()
+    model._user.listen(self) { [weak self] user in
+      // on setup, download the user's avatar
+      UIImageView.dl_setImageFromUrl(user?.image, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
+        self?.model.user_image = image
+      }
+    }
+    model._friend.removeAllListeners()
+    model._friend.listen(self) { [weak self] friend in
+      // on setup, download the friend's avatar
+      UIImageView.dl_setImageFromUrl(friend?.image, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
+        self?.model.friend_image = image
+      }
+    }
     socket._session_id.removeAllListeners()
     socket._session_id.listen(self) { [weak self] session_id in
       self?.model.session_id = session_id
@@ -141,7 +155,7 @@ public class ChatController {
     guard let message = createOutgoingMessage(text),
           let jsqMessage = message.toJSQMessage(),
           let json = message.toJSON()
-          where !text.isEmpty
+          where !text.isEmpty && socket.isConnected() == true
           else { return }
     
     model.pendingMessages.append(jsqMessage)
@@ -173,6 +187,7 @@ public class ChatController {
     return OutgoingMessage(
       user_id: _id,
       username: name,
+      user_image: model.user?.image ?? "",
       friend_id: friend_id,
       friend_username: friendName,
       message: text,

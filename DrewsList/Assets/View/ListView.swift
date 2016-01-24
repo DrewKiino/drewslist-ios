@@ -332,26 +332,13 @@ public class ListerProfileViewCell: DLTableViewCell {
     // MARK: Images
     if user.image != nil {
       
-      userImageView?.imageView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
-        // NOTE: correct way to handle memory management with toucan
-        // init toucan and pass in the arguments directly in the parameter headers
-        // do the resizing in the background
-        var toucan: Toucan? = Toucan(image: image).resize(self?.userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
+      UIImageView.dl_setImageFromUrl(user.image, size: userImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
+
+        self?.userImageView?.setImage(image, forState: .Normal)
         
-        Async.main { [weak self] in
-          
-          // set the image view's image
-          
-          //self?.userImageView?.imageView?.image = toucan?.image
-          self?.userImageView?.setImage(toucan?.image, forState: .Normal)
-          
-          // animate
-          UIView.animateWithDuration(duration) { [weak self] in
-            self?.userImageView?.alpha = 1.0
-          }
-          
-          // deinit toucan
-          toucan = nil
+        // animate
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.userImageView?.alpha = 1.0
         }
       }
     } else {
