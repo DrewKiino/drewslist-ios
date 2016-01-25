@@ -25,6 +25,7 @@ public class ChatView: JSQMessagesViewController {
     super.viewDidLoad()
     setupSelf()
     setupDataBinding()
+    controller.viewDidLoad()
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -48,7 +49,6 @@ public class ChatView: JSQMessagesViewController {
   private func setupDataBinding() {
     model._friend.removeAllListeners()
     model._friend.listen(self) { [weak self] friend in
-      log.debug("mark")
       self?.title = friend?.getName()
     }
     // set and listen for changes in the user's username

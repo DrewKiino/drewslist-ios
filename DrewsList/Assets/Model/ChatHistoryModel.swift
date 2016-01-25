@@ -11,8 +11,8 @@ import Signals
 
 public class ChatHistoryModel {
   
-  public let _chat = Signal<[ChatModel]>()
-  public var chat = [ChatModel]() { didSet { _chat => chat } }
+  public let _chatModels = Signal<[ChatModel]>()
+  public var chatModels = [ChatModel]() { didSet { _chatModels => chatModels } }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }

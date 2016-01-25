@@ -232,7 +232,7 @@ public class UserCell: DLTableViewCell {
     usernameLabel?.text = user.getName()
     schoolLabel?.text = user.school
     
-    if profileImageUrl != user.image { profileImageView?.image = nil }
+    if profileImageUrl != user.imageUrl { profileImageView?.image = nil }
     
     // MARK: Images
     Async.background { [weak self, weak user ] in
@@ -249,11 +249,11 @@ public class UserCell: DLTableViewCell {
         
         toucan = nil
         
-        if user?.image != nil && self?.profileImageUrl != user?.image {
+        if user?.imageUrl != nil && self?.profileImageUrl != user?.imageUrl {
           
-          self?.profileImageUrl = user?.image
+          self?.profileImageUrl = user?.imageUrl
           
-          UIImageView.dl_setImageFromUrl(user?.image) { [weak self] image in
+          UIImageView.dl_setImageFromUrl(user?.imageUrl) { [weak self] image in
             Async.background { [weak self] in
               
               // NOTE: correct way to handle memory management with toucan
