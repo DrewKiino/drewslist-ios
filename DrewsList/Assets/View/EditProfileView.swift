@@ -22,6 +22,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupSelf()
     setupDataBinding()
     setUpTableView()
     
@@ -72,6 +73,10 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     picker.sourceType = .PhotoLibrary
     picker.allowsEditing = false
     presentViewController(picker, animated: true, completion: nil)
+  }
+  
+  private func setupSelf() {
+    title = "Edit Profile"
   }
   
   // MARK: UITableView Classes

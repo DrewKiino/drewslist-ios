@@ -22,10 +22,10 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
   
   
   
-  //NavView
-  private var HeaderView: UIView?
-  private var BackButton: UIButton?
-  private var HeaderTitle: UILabel?
+//  //NavView
+//  private var HeaderView: UIView?
+//  private var BackButton: UIButton?
+//  private var HeaderTitle: UILabel?
 
 
   public override func viewDidLoad() {
@@ -82,25 +82,25 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
   }
   
   
-  public func SetUpHeaderView() {
-    HeaderView = UIView()
-    HeaderView?.backgroundColor = .soothingBlue()
-    view.addSubview(HeaderView!)
-    
-    HeaderTitle = UILabel()
-    HeaderTitle?.text = "Your Listing"
-    HeaderTitle?.font = UIFont.asapBold(16)
-    HeaderTitle?.textColor = .whiteColor()
-    HeaderView?.addSubview(HeaderTitle!)
-    
-    BackButton = UIButton()
-    BackButton?.setTitle("Back", forState: .Normal)
-    BackButton?.titleLabel?.font = UIFont.asapRegular(16)
-    HeaderView?.addSubview(BackButton!)
-    
-
-    
-  }
+//  public func SetUpHeaderView() {
+//    HeaderView = UIView()
+//    HeaderView?.backgroundColor = .soothingBlue()
+//    view.addSubview(HeaderView!)
+//    
+//    HeaderTitle = UILabel()
+//    HeaderTitle?.text = "Your Listing"
+//    HeaderTitle?.font = UIFont.asapBold(16)
+//    HeaderTitle?.textColor = .whiteColor()
+//    HeaderView?.addSubview(HeaderTitle!)
+//    
+//    BackButton = UIButton()
+//    BackButton?.setTitle("Back", forState: .Normal)
+//    BackButton?.titleLabel?.font = UIFont.asapRegular(16)
+//    HeaderView?.addSubview(BackButton!)
+//    
+//
+//    
+//  }
   
   
   
@@ -360,9 +360,14 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         cell.button?.buttonColor = .juicyOrange()
         cell.button?.cornerRadius = 4
         cell.button?.setTitle("Delete This Book", forState: .Normal)
+        cell._onPressed.removeAllListeners()
         cell._onPressed.listen(self) { [weak self] bool in
-          // FIXME: Add book to Sell List
+          NSTimer.after(0.5) { [weak self] in
+          self?.delete(Book)
+          }
+          // FIXME: Add book to Delete this book
         }
+        cell.showBottomBorder()
         return cell
       }
       break;
