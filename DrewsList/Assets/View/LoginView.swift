@@ -46,7 +46,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
-    if FBSDKAccessToken.currentAccessToken() != nil {
+    if let _ = FBSDKAccessToken.currentAccessToken() {
       presentViewController(TabView(), animated: true, completion: nil)
     }
     
@@ -239,7 +239,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   private func setupFBLoginButton() {
     fbLoginButton = FBSDKLoginButton()
     fbLoginButton!.delegate = self
-//    fbLoginButton!.frame = CGRect(x: 100,y: 100,width: 100,height: 100)
     fbLoginButton!.readPermissions = ["public_profile","email","user_friends"]
     containerView?.addSubview(fbLoginButton!)
   }
@@ -374,30 +373,20 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   // MARK: Delegates
   
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-    print("User Logged In")
-    
-    if error != nil {
+    if let error = error {
       // Process error
-      print(error)
+      print("Login Button Error: \(error)")
     }
     else if result.isCancelled {
       // Handle cancellations
       print("FB login has been cancelled")
     }
     else {
+      print("User is logged in")
       // Navigate to other view
       print("Naviating to the new view")
-      let pictureRequest = FBSDKGraphRequest(graphPath: "me/picture?type=large&redirect=false", parameters: nil)
-      pictureRequest.startWithCompletionHandler({
-        (connection, result, error: NSError!) -> Void in
-        if error == nil {
-          print("\(result)")
-        } else {
-          print("\(error)")
-        }
-      })
       presentViewController(TabView(), animated: true, completion: nil)
-    }
+      }
   }
   
   public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
