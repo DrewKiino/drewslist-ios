@@ -33,7 +33,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
     SetUpTableView()
     SetUpDataBinding()
-    SetUpHeaderView()
     controller.viewDidLoad()
     
     
@@ -82,27 +81,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
   }
   
   
-//  public func SetUpHeaderView() {
-//    HeaderView = UIView()
-//    HeaderView?.backgroundColor = .soothingBlue()
-//    view.addSubview(HeaderView!)
-//    
-//    HeaderTitle = UILabel()
-//    HeaderTitle?.text = "Your Listing"
-//    HeaderTitle?.font = UIFont.asapBold(16)
-//    HeaderTitle?.textColor = .whiteColor()
-//    HeaderView?.addSubview(HeaderTitle!)
-//    
-//    BackButton = UIButton()
-//    BackButton?.setTitle("Back", forState: .Normal)
-//    BackButton?.titleLabel?.font = UIFont.asapRegular(16)
-//    HeaderView?.addSubview(BackButton!)
-//    
-//
-//    
-//  }
-  
-  
   
   
   
@@ -112,6 +90,10 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
   }
   
+  public func setListing(listing: Listing?) ->  Self {
+    if let listing = listing { model.listing = listing }
+    return self
+  }
 
   
   
@@ -255,19 +237,19 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return Cell
         
       }
-//      break;
-//    case 8:
-//      
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-//        cell.setLabelTitle(" ")
-//        if let pageCount = model.book?.pageCount {
-//          cell.setLabelSubTitle("\(pageCount)")
-//        } else { cell.setLabelSubTitle("")}
-//        cell.setLabelFullTitle()
-//        return cell
-//      }
-//      break;
-//    case 9:
+      break;
+    case 8:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Pages:")
+        if let pageCount = model.book?.pageCount {
+          cell.setLabelSubTitle("\(pageCount)")
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+      }
+      break;
+    case 9:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
         cell.setLabelTitle("Categories: ")
@@ -279,18 +261,18 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         
       }
       break;
-//    case 10:
-//      
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-//        cell.setLabelTitle("Rating: ")
-//        if let rating = model.book?.maturityRating {
-//          cell.setLabelSubTitle(rating)
-//        } else { cell.setLabelSubTitle("")}
-//        cell.setLabelFullTitle()
-//        return cell
-//        
-//      }
-//      break;
+    case 10:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.setLabelTitle("Rating: ")
+        if let rating = model.book?.maturityRating {
+          cell.setLabelSubTitle(rating)
+        } else { cell.setLabelSubTitle("")}
+        cell.setLabelFullTitle()
+        return cell
+        
+      }
+      break;
       
     case 11:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{
@@ -358,7 +340,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         
         cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
         cell.button?.buttonColor = .juicyOrange()
-        cell.button?.cornerRadius = 4
+        cell.button?.cornerRadius = 1
         cell.button?.setTitle("Delete This Book", forState: .Normal)
         cell._onPressed.removeAllListeners()
         cell._onPressed.listen(self) { [weak self] bool in
