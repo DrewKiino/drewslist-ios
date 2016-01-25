@@ -31,6 +31,17 @@ public enum ServerUrl {
   }
 }
 
+private var _fbLoginManager: FBSDKLoginManager?
+
+var fbLoginManager: FBSDKLoginManager {
+get {
+  if _fbLoginManager == nil {
+    _fbLoginManager = FBSDKLoginManager()
+  }
+  return _fbLoginManager!
+}
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
@@ -144,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     *
     *       UIScreen.mainScreen().bounds
     *
-    */
+  */
     tabView?.view.frame = UIScreen.mainScreen().bounds
     
     // set the window to match the screen's bounds
