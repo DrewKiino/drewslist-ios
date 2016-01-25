@@ -156,7 +156,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     }
     middlePage?._userImagePressed.removeAllListeners()
     middlePage?._userImagePressed.listen(self) { [weak self] user in
-      self?.pushViewController(UserProfileView().setUser(user), animated: true)
+      self?.pushViewController(UserProfileView().setUser(user, isOtherUser: true), animated: true)
 
     }
     scrollView?.addSubview(middlePage!)

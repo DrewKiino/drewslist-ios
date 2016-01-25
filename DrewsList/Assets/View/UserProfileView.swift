@@ -32,8 +32,8 @@ public class UserProfileViewContainer: DLNavigationController {
   }
   
   private func setupProfileView() {
-    userProfileView = UserProfileView()
-    print(userProfileView?.model.user?.lastName)
+    userProfileView = UserProfileView().setIsOtherUser(false)
+    
     setRootViewController(userProfileView)
     //rootView = userProfileView
     setViewControllers([rootView!], animated: false)
@@ -57,7 +57,6 @@ public class UserProfileViewContainer: DLNavigationController {
 
 
 public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
-  
   // NOTE:
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
   
@@ -178,8 +177,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
           self?.scrollView?.panGestureRecognizer.enabled = true
         }
       } else {
-        print("SET USER in DATA BINDING")
-        self?.setUser(self?.model.user)
+        self?.setUser(self?.model.user, isOtherUser: self?.isOtherUser)
         self?.bookShelf?.reloadData()
         self?.view.hideLoadingScreen()
       }
@@ -189,11 +187,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   // MARK: UI Setup
   
   public func setupSelf() {
-    isOtherUser = false
-    print("setup self")
-    print(isOtherUser)
+    if model.user == nil{
+      controller.readRealmUser()
+      isOtherUser = false
+    } else {
+      isOtherUser = true
+    }
+    controller.changeOtherUserBoolean(isOtherUser)
+    controller.getUserFromServer()
     
-    controller.viewDidLoad()
   }
   
   public func setupScrollView(){
@@ -251,15 +253,18 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   private func setupButtons() {
-    
-    let myImage = UIImage(named: "Icon-SettingsGear")
-    let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
-    
-    let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
-    
-    //settingsButton.action
-    // TODO: check if user is self
-    self.navigationItem.rightBarButtonItem = settingsButton
+    if let isOtherUser = self.isOtherUser {
+      if (!isOtherUser){
+        let myImage = UIImage(named: "Icon-SettingsGear")
+        let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
+        
+        let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+        
+        //settingsButton.action
+        // TODO: check if user is self
+        self.navigationItem.rightBarButtonItem = settingsButton
+      }
+    }
   }
   
   private func setupExtraViews() {
@@ -271,17 +276,21 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
   }
   
-  public func setUser(user: User?) -> Self {
+  public func setIsOtherUser(isOtherUser: Bool?) -> Self {
+    self.isOtherUser = isOtherUser
+    return self
+  }
+  
+  public func setUser(user: User?, isOtherUser: Bool?) -> Self {
     // fixture
-    
     guard let user = user else { return self}
     // Check if incoming set user is the current user or is another user
     if(user._id != model.user?._id) {
-      isOtherUser = true
+      //self.isOtherUser = is
       model.user = user
-    } else {
-      isOtherUser = false
     }
+    self.isOtherUser = isOtherUser
+    controller.changeOtherUserBoolean(isOtherUser)
     
     let duration: NSTimeInterval = 0.2
     
@@ -441,6 +450,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
       
       // if the offset is greater than 64, then call the server to update the user object in the model
+      // Refresh
       if offset >= 128 && model.shouldRefrainFromCallingServer == false {
         if let isOtherUser = isOtherUser {
           if !isOtherUser{ controller.readRealmUser() }
