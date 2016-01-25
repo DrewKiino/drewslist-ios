@@ -37,6 +37,10 @@ public class DLNavigationController: UINavigationController {
     setViewControllers([rootView!], animated: false)
   }
   
+  public func setRootViewController(rootViewController: UIViewController?) {
+    rootView = rootViewController
+  }
+
   public func setRootViewTitle(title: String?) {
     rootView?.title = title
   }

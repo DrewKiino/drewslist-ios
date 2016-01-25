@@ -20,8 +20,16 @@ public class UserProfileController {
   private var view: UserProfileView?
   
   public func viewDidLoad() {
-    readRealmUser()
-//    getUserFromServer()
+    print("Controller did load")
+    print(view?.isOtherUser)
+    if let isOtherUser = view?.isOtherUser {
+      if(!isOtherUser){
+        print("READING REALM")
+        readRealmUser()
+      }
+    }
+    getUserFromServer()
+    
   }
   
   public func getUserFromServer() {

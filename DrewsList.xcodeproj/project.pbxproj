@@ -28,6 +28,7 @@
 		3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */; };
 		3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA51C025BE500743C74 /* Atlantis.swift */; };
 		4F18A07E1C275D75006169F5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18A07D1C275D75006169F5 /* SettingsView.swift */; };
+		4F8AC9E61C55B8C100B18AF3 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */; };
 		4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE51C27623900CECCC6 /* EditProfileModel.swift */; };
 		4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE71C27624000CECCC6 /* EditProfileController.swift */; };
 		4F966CEC1C27C32A00CECCC6 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */; };
@@ -93,7 +94,6 @@
 		EE8918C71C1169B500FCF031 /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918C51C1169B500FCF031 /* LoginModel.swift */; };
 		EE8918C81C1169B500FCF031 /* UserProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918C61C1169B500FCF031 /* UserProfileModel.swift */; };
 		EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918C91C1169BA00FCF031 /* LoginController.swift */; };
-		EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */; };
 		EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */; };
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
@@ -157,6 +157,7 @@
 		3FB40FA51C025BE500743C74 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
 		4A35E42C995D771093243E74 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		4F18A07D1C275D75006169F5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
 		4F966CE51C27623900CECCC6 /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
 		4F966CE71C27624000CECCC6 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
 		4F966CEB1C27C32A00CECCC6 /* EditProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
@@ -229,7 +230,6 @@
 		EE8918C51C1169B500FCF031 /* LoginModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		EE8918C61C1169B500FCF031 /* UserProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileModel.swift; sourceTree = "<group>"; };
 		EE8918C91C1169BA00FCF031 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
-		EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
 		EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
@@ -436,12 +436,12 @@
 				EE1B737B1C236FE500BD942C /* ListFeedController.swift */,
 				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
 				EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */,
+				4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */,
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */,
 				EEC3E04E1C2DFE3800D7843C /* SearchUserController.swift */,
 				399971DD1C14D1FF008C30FC /* SignUpController.swift */,
 				EE53E75C1C2D00C900A32613 /* TabController.swift */,
-				EE8918CA1C1169BA00FCF031 /* UserProfileController.swift */,
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
 				4FCF2A081C309B5600091408 /* BookProfileController.swift */,
@@ -793,7 +793,6 @@
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
-				EE8918CC1C1169BA00FCF031 /* UserProfileController.swift in Sources */,
 				390389FC1C4300F900740B49 /* ConfirmTransferController.swift in Sources */,
 				390389F81C43005900740B49 /* ConfirmTransferView.swift in Sources */,
 				EE2824D31C30A43D00969E74 /* EditListingController.swift in Sources */,
@@ -849,6 +848,7 @@
 				EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */,
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
+				4F8AC9E61C55B8C100B18AF3 /* UserProfileController.swift in Sources */,
 				EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */,
