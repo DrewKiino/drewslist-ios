@@ -7,38 +7,46 @@
 //
 
 import Foundation
+import RealmSwift
 
 public class ChatHistoryController {
   
   private let socket = Sockets.sharedInstance()
   
   public let model = ChatHistoryModel()
-  private let AFModel = ActivityFeedModel.sharedInstance()
+  private let _didUpdateChat = ActivityFeedController.shared_didUpdateChat()
   
   public init() {
+    setupSelf()
     setupDataBinding()
     setupSockets()
   }
   
-  public func viewDidAppear() {
-    let chatModel = ChatModel()
-    chatModel.user = User().set(firstName: "Melanie", lastName: "Iglesias").set(imageUrl: "http://orig06.deviantart.net/b682/f/2013/135/4/3/profile_picture_by_mellodydoll_stock-d65fbf8.jpg")
-    chatModel.friend = User().set(firstName: "Bobby", lastName: "Hill").set(imageUrl: "http://img08.deviantart.net/9d6c/i/2012/253/4/d/2012_id_by_density_stock-d5e8sph.jpg")
-    model.chatModels.append(chatModel)
+  private func setupSelf() {
   }
   
-  public func setupDataBinding() {
-    AFModel._activity.removeListener(self)
-    AFModel._activity.listen(self) { activity in
+  public func viewDidAppear() {
+    loadChatHistory()
+  }
+  
+  private func setupDataBinding() {
+    _didUpdateChat.removeListener(self)
+    _didUpdateChat.listen(self) { [weak self] bool in
+      self?.loadChatHistory()
     }
   }
   
   private func setupSockets() {
     socket._message.removeListener(self)
     socket._message.listen(self) { [weak self] json in
-      if let message = json["message"].dictionaryObject where json["identifier"].string == "activity" && self?.socket.isCurrentlyInChat == false {
-        
-      }
     }
   }
+  
+  public func loadChatHistory() {
+    model.chatModels = try! Realm().objects(RealmChatHistory.self).map { $0.getChatModel() }
+  }
+  
+  // MARK: Realm Functions
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
 }

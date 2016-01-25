@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Neon
 import SDWebImage
+import Signals
 
 public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITableViewDataSource {
   
@@ -48,7 +49,6 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   private func setupDataBinding() {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      log.debug(user)
     }
     model._chatModels.removeAllListeners()
     model._chatModels.listen(self) { [weak self] models in
@@ -62,9 +62,13 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if  let cell = tableView.dequeueReusableCellWithIdentifier("ChatHistoryCell") as? ChatHistoryCell {
-      let user = model.chatModels[indexPath.row].user
-      let friend = model.chatModels[indexPath.row].friend
+      cell.chatModel = model.chatModels[indexPath.row]
       cell.showSeparatorLine()
+      cell._cellPressed.removeAllListeners()
+      cell._cellPressed.listen(self) { [weak self] chatModel in
+        self?.controller.readRealmUser()
+        self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
+      }
       return cell
     }
     return DLTableViewCell()
@@ -79,8 +83,15 @@ public class ChatHistoryCell: DLTableViewCell {
   public var arrow: UIImageView?
   public var message: UILabel?
   
+  public var chatModel: ChatModel?
+  
+  public let _cellPressed = Signal<ChatModel?>()
+  
   public override func setupSelf() {
     super.setupSelf()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+    
     setupLeftImageView()
     setupTitle()
     setupTimestamp()
@@ -97,7 +108,7 @@ public class ChatHistoryCell: DLTableViewCell {
     timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 48, height: 16)
     message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 4, height: 24)
     
-    setupFixtures()
+    set(chatModel: chatModel)
   }
   
   private func setupLeftImageView() {
@@ -133,14 +144,25 @@ public class ChatHistoryCell: DLTableViewCell {
     addSubview(message!)
   }
   
-  private func setupFixtures() {
-    leftImageView?.dl_setImageFromUrl("http://orig06.deviantart.net/b682/f/2013/135/4/3/profile_picture_by_mellodydoll_stock-d65fbf8.jpg", placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
-    title?.text = "Mary Jane"
-    timestamp?.text = "11:00 AM"
+  public func cellPressed() {
+    _cellPressed => chatModel
+  }
+  
+  public func set(chatModel chatModel: ChatModel?) {
+    guard let chatModel = chatModel else { return }
+    
     arrow?.dl_setImage(UIImage(named: "Icon-GreyChevron"))
-    message?.text = "Bacon ipsum dolor amet turducken bresaola doner ham hock t-bone leberkas capicola salami drumstick porchetta cow ground round pig. Pork loin shank kielbasa sirloin tenderloin tri-tip. Tongue shankle chicken ham drumstick meatball landjaeger jerky corned beef. Strip steak short loin drumstick meatball meatloaf tongue capicola chuck pork kielbasa frankfurter pork belly cow swine pig. Biltong chicken boudin andouille pork. Drumstick venison kielbasa chicken prosciutto landjaeger pork belly picanha."
+    
+    leftImageView?.dl_setImageFromUrl(chatModel.friend?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+    
+    title?.text = chatModel.friend?.getName()
+    
+    timestamp?.text = chatModel.messages.last?.date.dl_toRelativeString()
+    
+    message?.text = chatModel.messages.last?.text
   }
 }
+
 
 
 

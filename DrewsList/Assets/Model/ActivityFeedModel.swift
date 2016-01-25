@@ -18,14 +18,17 @@ public enum ActivityType {
 
 public class ActivityFeedModel {
   
-  private struct Singleton { private static let activityFeedModel = ActivityFeedModel() }
-  public class func sharedInstance() -> ActivityFeedModel { return Singleton.activityFeedModel }
-  
   public let _activity = Signal<Activity?>()
   public var activity: Activity? { didSet { _activity => activity } }
   
   public let _activities = Signal<[Activity]>()
-  public var activities: [Activity] = [] { didSet { _activity => activities.first; _activities => activities } } } 
+  public var activities: [Activity] = [] { didSet { _activity => activities.first; _activities => activities } }
+  
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+}
+
+
 public class Activity {
   
   public let _message = Signal<JSON?>()
@@ -57,6 +60,10 @@ public class Activity {
       case "CHAT": return ActivityType.Chat
       default: return ActivityType.None
     }
+  }
+  
+  public func getUser() -> User? {
+    return User().set(_id: message?["friend_id"].string).set(username: message?["friend_username"].string).set(imageUrl: message?["friend_image"].string)
   }
   
   public func getMessage() -> NSMutableAttributedString? {

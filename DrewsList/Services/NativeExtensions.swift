@@ -100,6 +100,15 @@ extension UIFont {
   }
 }
 
+extension NSDate {
+  
+  public func dl_toRelativeString() -> String! {
+    // NOTE: DONT FORGET THESE CODES OMFG
+    // converts the date strings sent from the server to local time strings
+    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+  }
+}
+
 extension String {
   
   public func convertToOrdinal() -> String {
@@ -120,9 +129,8 @@ extension String {
   public func toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > toDateFromISO8601() ? "\(toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2) ?? "") ago" : "just now"
+    return 60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
   }
-  
   
   func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{
     var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
@@ -370,7 +378,7 @@ extension UIImageView {
           }
         }
       }
-    }
+    } else { dl_setImage(placeholder) }
 //    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
 //      .CacheMemoryOnly,
 //      .ContinueInBackground,
@@ -386,9 +394,6 @@ extension UIImageView {
     guard let url = url, let nsurl = NSURL(string: url) else { return }
     SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
     }) { (image, error, cache, finished, nsurl) -> Void in
-      
-      log.debug("mark")
-      
       if let size = size {
         Async.background {
           var toucan: Toucan? = Toucan(image: image).resize(size, fitMode: .Crop)

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Neon
+import Signals
 
 public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UITableViewDelegate {
   
@@ -68,6 +69,13 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
 //      cell.setActivity(model.activities[indexPath.row])
       cell.activity = model.activities[indexPath.row]
       cell.showBottomBorder()
+      cell._containerPressed.removeAllListeners()
+      cell._containerPressed.listen(self) { [weak self] activity in
+        if let activity = activity {
+          self?.controller.readRealmUser()
+          self?.pushViewController(ChatView().setUsers(self?.model.user, friend: activity.getUser()), animated: true)
+        }
+      }
       return cell
     }
     return DLTableViewCell()
@@ -83,6 +91,8 @@ public class ActivityCell: DLTableViewCell {
   public var timestampLabel: UILabel?
   
   public var activity: Activity?
+  
+  public var _containerPressed = Signal<Activity?>()
   
   public override func setupSelf() {
     super.setupSelf()
@@ -119,6 +129,7 @@ public class ActivityCell: DLTableViewCell {
   
   private func setupMiddleContainer() {
     middleContainer = UIView()
+    middleContainer?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "containerPressed"))
     addSubview(middleContainer!)
   }
   
@@ -154,5 +165,9 @@ public class ActivityCell: DLTableViewCell {
     attributedString?.appendAttributedString(attributedString2)
     
     activityLabel?.attributedText = attributedString
+  }
+  
+  public func containerPressed() {
+    _containerPressed => activity
   }
 }

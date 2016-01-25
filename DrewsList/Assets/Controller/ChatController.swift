@@ -267,7 +267,7 @@ public class ChatController {
   private func saveChatHistory() {
     let realm = try! Realm()
     realm.beginWrite()
-    realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id), update: true)
+    realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id, user: model.user, friend: model.friend), update: true)
     try! realm.commitWrite()
   }
 }

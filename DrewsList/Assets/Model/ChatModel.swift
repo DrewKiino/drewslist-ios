@@ -19,13 +19,7 @@ public class ChatModel: NSObject {
   public let _session_id = Signal<String?>()
   public var session_id: String? { didSet { _session_id => session_id } }
   
-  public var room_id: String? {
-    get {
-      guard let user_id = user?._id, let friend_id = friend?._id
-        else { return nil }
-      return user_id + friend_id
-    }
-  }
+  public var room_id: String? { get { return [(user?._id ?? ""), (friend?._id ?? "")].sort().reduce(nil) { ($0 ?? "") + $1 ?? "" } } }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
@@ -45,6 +39,25 @@ public class ChatModel: NSObject {
   public let _pendingMessages = Signal<[JSQMessage]>()
   public var pendingMessages = [JSQMessage]() { didSet { _pendingMessages => pendingMessages } }
   
+  public func set(user user: User?) -> Self {
+    self.user = user
+    return self
+  }
+  
+  public func set(friend friend: User?) -> Self {
+    self.friend = friend
+    return self
+  }
+  
+  public func set(messages messages: [JSQMessage]) -> Self {
+    self.messages = messages
+    return self
+  }
+  
+  public func set(pendingMessages pendingMessages: [JSQMessage]) -> Self {
+    self.pendingMessages = pendingMessages
+    return self
+  }
 }
 
 public class IncomingMessage: Mappable {
@@ -61,8 +74,8 @@ public class IncomingMessage: Mappable {
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
-  public init(json: JSON) {
-    if let json = json.dictionaryObject {
+  public init(json: JSON?) {
+    if let json = json?.dictionaryObject {
       mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
     }
   }
@@ -174,12 +187,25 @@ public class RealmChatHistory: Object {
   dynamic var room_id: String? = ""
   dynamic var messagesData: NSData?
   dynamic var pendingMessagesData: NSData?
+  dynamic var user: RealmUser?
+  dynamic var friend: RealmUser?
   
-  public convenience init(messages: [JSQMessage], pendingMessages: [JSQMessage], room_id: String?) {
+  public convenience init(messages: [JSQMessage], pendingMessages: [JSQMessage], room_id: String?, user: User?, friend: User?) {
     self.init()
     self.messagesData = NSKeyedArchiver.archivedDataWithRootObject(messages)
     self.pendingMessagesData = NSKeyedArchiver.archivedDataWithRootObject(pendingMessages)
     self.room_id = room_id
+    self.user = RealmUser().setRealmUser(user)
+    self.friend = RealmUser().setRealmUser(friend)
+  }
+  
+  public func append(message: JSQMessage?) -> Self {
+    if let message = message {
+      var messages = getMessages()
+      messages.append(message)
+      self.messagesData = NSKeyedArchiver.archivedDataWithRootObject(messages)
+    }
+    return self
   }
   
   public func getMessages() -> [JSQMessage] {
@@ -194,6 +220,10 @@ public class RealmChatHistory: Object {
   
   public override static func primaryKey() -> String? {
     return "room_id"
+  }
+  
+  public func getChatModel() -> ChatModel {
+    return ChatModel().set(messages: getMessages()).set(pendingMessages: getPendingMessages()).set(user: user?.getUser()).set(friend: friend?.getUser())
   }
 }
 
