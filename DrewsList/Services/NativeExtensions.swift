@@ -100,6 +100,15 @@ extension UIFont {
   }
 }
 
+extension NSDate {
+  
+  public func dl_toRelativeString() -> String! {
+    // NOTE: DONT FORGET THESE CODES OMFG
+    // converts the date strings sent from the server to local time strings
+    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+  }
+}
+
 extension String {
   
   public func convertToOrdinal() -> String {
@@ -120,9 +129,8 @@ extension String {
   public func toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > toDateFromISO8601() ? "\(toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 2) ?? "") ago" : "just now"
+    return 60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
   }
-  
   
   func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{
     var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
@@ -312,37 +320,65 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
-    guard let url = url, let nsurl = NSURL(string: url) else { return }
-    SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
-    }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-      Async.background {
+  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+    Async.background { [weak self] in
+      
+      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: .Crop)
+      
+      if maskWithEllipse == true { toucan?.maskWithEllipse() }
+      
+      Async.main { [weak self] in
         
-        var toucan: Toucan? = Toucan(image: image).resize(size ?? self?.frame.size, fitMode: .Crop)
+        if animated == true { self?.alpha = 0.0 }
         
-        if maskWithEllipse == true { toucan?.maskWithEllipse() }
-        
-        Async.main { [weak self] in
-          
-          if animated == true { self?.alpha = 0.0 }
-          
-          if let block = block {
-            block(image: toucan?.image)
-          } else {
-            self?.image = toucan?.image
-            log.debug(toucan?.image)
-          }
-          
-          if animated == true {
-            UIView.animateWithDuration(0.7) { [weak self] in
-              self?.alpha = 1.0
-            }
-          }
-          
-          toucan = nil
+        if let block = block {
+          block(image: toucan?.image)
+        } else {
+          self?.image = toucan?.image
         }
+        
+        if animated == true {
+          UIView.animateWithDuration(0.7) { [weak self] in
+            self?.alpha = 1.0
+          }
+        }
+        
+        toucan = nil
       }
     }
+  }
+  
+  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+    if let url = url, let nsurl = NSURL(string: url) {
+      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
+        Async.background { [weak self] in
+          
+          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: .Crop)
+          
+          if maskWithEllipse == true { toucan?.maskWithEllipse() }
+          
+          Async.main { [weak self] in
+            
+            if animated == true { self?.alpha = 0.0 }
+            
+            if let block = block {
+              block(image: toucan?.image)
+            } else {
+              self?.image = toucan?.image
+            }
+            
+            if animated == true {
+              UIView.animateWithDuration(0.7) { [weak self] in
+                self?.alpha = 1.0
+              }
+            }
+            
+            toucan = nil
+          }
+        }
+      }
+    } else { dl_setImage(placeholder) }
 //    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
 //      .CacheMemoryOnly,
 //      .ContinueInBackground,

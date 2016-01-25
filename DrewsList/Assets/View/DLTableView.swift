@@ -105,7 +105,7 @@ public class DLTableViewCell: UITableViewCell {
     topBorder.frame = CGRectMake(0, 0, bounds.size.width, 0.5)
     bottomBorder.frame = CGRectMake(0, bounds.size.height - 1, bounds.size.width, 1)
     
-    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 0.5)
+    separatorLine.frame = CGRectMake(14, bounds.size.height, bounds.size.width - 1, 0.5)
   }
   
   public func setupSelf() {
@@ -828,7 +828,7 @@ public class ListCell: UICollectionViewCell {
       
       let duration: NSTimeInterval = 0.2
       
-      if let image = highestLister.user?.image {
+      if let image = highestLister.user?.imageUrl {
         
         matchUserImageView?.dl_setImageFromUrl(image, maskWithEllipse: true, animated: true)
 
@@ -1061,9 +1061,9 @@ public class ChangeImageCell: DLTableViewCell {
     let duration: NSTimeInterval = 0.2
     
     // MARK: Images
-    if user.image != nil {
+    if user.imageUrl != nil {
       
-      profileImgView?.dl_setImageFromUrl(user.image, maskWithEllipse: true, animated: true)
+      profileImgView?.dl_setImageFromUrl(user.imageUrl, maskWithEllipse: true, animated: true)
       
     } else {
       
@@ -1131,9 +1131,9 @@ public class ChangeImageCell: DLTableViewCell {
 //      let duration: NSTimeInterval = 0.5
 //      
 //      // MARK: Images
-//      if user.image != nil {
+//      if user.imageUrl != nil {
 //        
-//        self?.profileImgView?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+//        self?.profileImgView?.dl_setImageFromUrl(user.imageUrl) { [weak self] image, error, cache, url in
 //          // NOTE: correct way to handle memory management with toucan
 //          // init toucan and pass in the arguments directly in the parameter headers
 //          // do the resizing in the background

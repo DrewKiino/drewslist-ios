@@ -40,8 +40,11 @@ public class User: Mappable {
   public let _school = Signal<String?>()
   public var school: String? { didSet { _school => school } }
   
-  public let _image = Signal<String?>()
-  public var image: String? { didSet { _image => image } }
+  public let _imageUrl = Signal<String?>()
+  public var imageUrl: String? { didSet { _imageUrl => imageUrl } }
+  
+  public let _image = Signal<UIImage?>()
+  public var image: UIImage? { didSet { _image => image } }
   
   public let _bgImage = Signal<String?>()
   public var bgImage : String? { didSet { _bgImage => bgImage } }
@@ -86,12 +89,33 @@ public class User: Mappable {
   }
   
   public func getName() -> String? {
-    guard let firstName = firstName, let lastName = lastName else { return nil }
+    guard let firstName = firstName, let lastName = lastName else { return username }
     return "\(firstName) \(lastName)"
   }
   
-  public func set(deviceToken: String?) -> Self {
+  public func set(deviceToken deviceToken: String?) -> Self {
     self.deviceToken = deviceToken
+    return self
+  }
+  
+  public func set(_id _id: String?) -> Self {
+    self._id = _id
+    return self
+  }
+  
+  public func set(username username: String?) -> Self {
+    self.username = username
+    return self
+  }
+  
+  public func set(firstName firstName: String?, lastName: String?) -> Self {
+    self.firstName = firstName
+    self.lastName = lastName
+    return self
+  }
+  
+  public func set(imageUrl imageUrl: String?) -> Self {
+    self.imageUrl = imageUrl
     return self
   }
 }
@@ -130,11 +154,10 @@ public class RealmUser: Object {
   dynamic var lastName: String?
   dynamic var username: String?
   dynamic var school: String?
-  dynamic var image: String?
+  dynamic var imageUrl: String?
   dynamic var deviceToken: String?
   
-  // chat history
-  let chatHistory = List<ChatHistory>()
+  dynamic var image: NSData?
   
   public override static func primaryKey() -> String? {
     return "_id"
@@ -148,8 +171,11 @@ public class RealmUser: Object {
     lastName = user.lastName
     username = user.username
     school = user.school
-    image = user.image
+    imageUrl = user.imageUrl
     deviceToken = user.deviceToken
+    
+    if let image = user.image { self.image = UIImagePNGRepresentation(image) }
+    
     return self
   }
   
@@ -161,17 +187,11 @@ public class RealmUser: Object {
     user.lastName = lastName
     user.username = username
     user.school = school
-    user.image = image
+    user.imageUrl = imageUrl
     user.deviceToken = deviceToken
+    
+    if let data = image { user.image = UIImage(data: data) }
+    
     return user
-  }
-}
-
-public class ChatHistory: Object {
-  
-  dynamic var _id: String?
-  
-  public override static func primaryKey() -> String? {
-    return "_id"
   }
 }

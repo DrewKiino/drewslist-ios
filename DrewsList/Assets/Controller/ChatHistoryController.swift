@@ -7,28 +7,46 @@
 //
 
 import Foundation
+import RealmSwift
 
 public class ChatHistoryController {
   
   private let socket = Sockets.sharedInstance()
   
   public let model = ChatHistoryModel()
+  private let _didUpdateChat = ActivityFeedController.shared_didUpdateChat()
   
   public init() {
+    setupSelf()
     setupDataBinding()
     setupSockets()
   }
   
-  public func setupDataBinding() {
+  private func setupSelf() {
   }
   
+  public func viewDidAppear() {
+    loadChatHistory()
+  }
+  
+  private func setupDataBinding() {
+    _didUpdateChat.removeListener(self)
+    _didUpdateChat.listen(self) { [weak self] bool in
+      self?.loadChatHistory()
+    }
+  }
   
   private func setupSockets() {
     socket._message.removeListener(self)
     socket._message.listen(self) { [weak self] json in
-      if let message = json["message"].dictionaryObject where json["identifier"].string == "activity" && self?.socket.isCurrentlyInChat == false {
-        
-      }
     }
   }
+  
+  public func loadChatHistory() {
+    model.chatModels = try! Realm().objects(RealmChatHistory.self).map { $0.getChatModel() }
+  }
+  
+  // MARK: Realm Functions
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
 }

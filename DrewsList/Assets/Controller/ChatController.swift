@@ -12,6 +12,7 @@ import Signals
 import JSQMessagesViewController
 import SwiftyJSON
 import SwiftyTimer
+import RealmSwift
 
 public class ChatController {
   
@@ -22,7 +23,7 @@ public class ChatController {
   //  https://drewslist.herokuapp.com
   
   // MVC
-  public let model = ChatModel()
+  public var model = ChatModel()
   
   public let socket = Sockets.sharedInstance()
   
@@ -34,17 +35,18 @@ public class ChatController {
   // variables
   private var unsubscribeBlock: (() -> Void)?
   
+  public func viewDidLoad() {
+    loadChatHistory()
+  }
+  
   public func viewDidAppear() {
-    
     connectToServer()
-    
     socket.isCurrentlyInChat = true
   }
   
   public func viewWillDisappear() {
-    
+    saveChatHistory()
     disconnectFromServer()
-    
     socket.isCurrentlyInChat = false
   }
   
@@ -61,14 +63,14 @@ public class ChatController {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
       // on setup, download the user's avatar
-      UIImageView.dl_setImageFromUrl(user?.image, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
+      UIImageView.dl_setImageFromUrl(user?.imageUrl, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
         self?.model.user_image = image
       }
     }
     model._friend.removeAllListeners()
     model._friend.listen(self) { [weak self] friend in
       // on setup, download the friend's avatar
-      UIImageView.dl_setImageFromUrl(friend?.image, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
+      UIImageView.dl_setImageFromUrl(friend?.imageUrl, size: CGSizeMake(24, 24), maskWithEllipse: true) { [weak self] image in
         self?.model.friend_image = image
       }
     }
@@ -187,7 +189,7 @@ public class ChatController {
     return OutgoingMessage(
       user_id: _id,
       username: name,
-      user_image: model.user?.image ?? "",
+      user_image: model.user?.imageUrl ?? "",
       friend_id: friend_id,
       friend_username: friendName,
       message: text,
@@ -249,5 +251,23 @@ public class ChatController {
 //      self?.socket.disconnect()
       // set flag
     }
+  }
+  
+  private func loadChatHistory() {
+    if let room_id = model.room_id {
+      let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
+      model.messages = chatHistory?.getMessages() ?? model.messages
+      model.pendingMessages = chatHistory?.getPendingMessages() ?? model.pendingMessages
+      log.info("loaded \(model.messages.count) messages from Realm")
+      log.info("loaded \(model.pendingMessages.count) messages from Realm")
+      didReceiveMessage => true
+    }
+  }
+  
+  private func saveChatHistory() {
+    let realm = try! Realm()
+    realm.beginWrite()
+    realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id, user: model.user, friend: model.friend), update: true)
+    try! realm.commitWrite()
   }
 }
