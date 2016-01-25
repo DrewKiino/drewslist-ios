@@ -23,7 +23,11 @@ public class ActivityFeedModel {
   
   public let _activities = Signal<[Activity]>()
   public var activities: [Activity] = [] { didSet { _activity => activities.first; _activities => activities } }
+  
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
 }
+
 
 public class Activity {
   
@@ -58,7 +62,23 @@ public class Activity {
     }
   }
   
+  public func getUser() -> User? {
+    return User().set(_id: message?["friend_id"].string).set(username: message?["friend_username"].string).set(imageUrl: message?["friend_image"].string)
+  }
+  
   public func getMessage() -> NSMutableAttributedString? {
+    switch type {
+    case .Chat:
+      return NSMutableAttributedString(string: (message?["message"].string ?? ""), attributes: [
+        NSFontAttributeName: UIFont.asapRegular(12),
+        NSForegroundColorAttributeName: UIColor.blackColor()
+      ])
+    case .None: break
+    }
+    return nil
+  }
+  
+  public func getDetailedMessage(modifier: String? = nil) -> NSMutableAttributedString? {
     switch type {
     case .Chat:
       let attributedString = NSMutableAttributedString(string: (message?["friend_username"].string ?? ""), attributes: [
@@ -76,7 +96,7 @@ public class Activity {
 //        NSForegroundColorAttributeName: UIColor.sexyGray()
 //      ])
       
-      let attributedString4 = NSMutableAttributedString(string: "'" + (message?["message"].string ?? "") + "'", attributes: [
+      let attributedString4 = NSMutableAttributedString(string: "'" + (modifier ?? (message?["message"].string ?? "")) + "'", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Neon
 import SDWebImage
+import Signals
 
 public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITableViewDataSource {
   
@@ -22,7 +23,15 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupSelf()
+    setupDataBinding()
     setupTableView()
+    
+    tableView?.fillSuperview()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    controller.viewDidAppear()
   }
   
   private func setupSelf() {
@@ -34,40 +43,126 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
-    view.addSubview(tableView!)
+    rootView?.view.addSubview(tableView!)
   }
   
   private func setupDataBinding() {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      log.debug(user)
+    }
+    model._chatModels.removeAllListeners()
+    model._chatModels.listen(self) { [weak self] models in
+      self?.tableView?.reloadData()
     }
   }
   
-  public override func viewDidAppear(animated: Bool) {
-    super.viewDidAppear(animated)
-  }
-  
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return model.chat.count
+    return model.chatModels.count
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCellWithIdentifier("cell"),
-          let _ = model.chat[indexPath.row].user,
-          let _ = model.chat[indexPath.row].friend
-          else { return UITableViewCell() }
-    return cell
+    if  let cell = tableView.dequeueReusableCellWithIdentifier("ChatHistoryCell") as? ChatHistoryCell {
+      cell.chatModel = model.chatModels[indexPath.row]
+      cell.showSeparatorLine()
+      cell._cellPressed.removeAllListeners()
+      cell._cellPressed.listen(self) { [weak self] chatModel in
+        self?.controller.readRealmUser()
+        self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
+      }
+      return cell
+    }
+    return DLTableViewCell()
   }
 }
 
 public class ChatHistoryCell: DLTableViewCell {
   
+  public var leftImageView: UIImageView?
+  public var title: UILabel?
+  public var timestamp: UILabel?
+  public var arrow: UIImageView?
+  public var message: UILabel?
   
+  public var chatModel: ChatModel?
   
+  public let _cellPressed = Signal<ChatModel?>()
   
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+    
+    setupLeftImageView()
+    setupTitle()
+    setupTimestamp()
+    setupArrow()
+    setupMessage()
+  }
   
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    leftImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 36, height: 36)
+    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 4, width: screen.width - 100, height: 16)
+    arrow?.anchorInCorner(.TopRight, xPad: 4, yPad: 6, width: 12, height: 12)
+    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 48, height: 16)
+    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 4, height: 24)
+    
+    set(chatModel: chatModel)
+  }
+  
+  private func setupLeftImageView() {
+    leftImageView = UIImageView()
+    addSubview(leftImageView!)
+  }
+  
+  private func setupTitle() {
+    title = UILabel()
+    title?.font = UIFont.asapRegular(12)
+    title?.numberOfLines = 1
+    addSubview(title!)
+  }
+  
+  private func setupTimestamp() {
+    timestamp = UILabel()
+    timestamp?.font = UIFont.asapRegular(10)
+    timestamp?.textColor = .sexyGray()
+    timestamp?.numberOfLines = 1
+    addSubview(timestamp!)
+  }
+  
+  private func setupArrow() {
+    arrow = UIImageView()
+    addSubview(arrow!)
+  }
+  
+  private func setupMessage() {
+    message = UILabel()
+    message?.font = UIFont.asapRegular(10)
+    message?.textColor = .sexyGray()
+    message?.numberOfLines = 2
+    addSubview(message!)
+  }
+  
+  public func cellPressed() {
+    _cellPressed => chatModel
+  }
+  
+  public func set(chatModel chatModel: ChatModel?) {
+    guard let chatModel = chatModel else { return }
+    
+    arrow?.dl_setImage(UIImage(named: "Icon-GreyChevron"))
+    
+    leftImageView?.dl_setImageFromUrl(chatModel.friend?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+    
+    title?.text = chatModel.friend?.getName()
+    
+    timestamp?.text = chatModel.messages.last?.date.dl_toRelativeString()
+    
+    message?.text = chatModel.messages.last?.text
+  }
 }
+
 
 
 

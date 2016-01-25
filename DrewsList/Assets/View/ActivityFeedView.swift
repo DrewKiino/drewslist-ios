@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Neon
+import Signals
 
 public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UITableViewDelegate {
   
@@ -39,7 +40,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupDataBinding() {
-    model._activity.removeAllListeners()
+    model._activity.removeListener(self)  
     model._activity.listen(self) { [weak self] activity in
       // show the notification
       self?.view.displayNotification(activity?.message?["message"].string) { [weak self] in
@@ -63,14 +64,18 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     return model.activities.count
   }
   
-  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 56
-  }
-  
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
-      cell.setActivity(model.activities[indexPath.row])
+//      cell.setActivity(model.activities[indexPath.row])
+      cell.activity = model.activities[indexPath.row]
       cell.showBottomBorder()
+      cell._containerPressed.removeAllListeners()
+      cell._containerPressed.listen(self) { [weak self] activity in
+        if let activity = activity {
+          self?.controller.readRealmUser()
+          self?.pushViewController(ChatView().setUsers(self?.model.user, friend: activity.getUser()), animated: true)
+        }
+      }
       return cell
     }
     return DLTableViewCell()
@@ -85,6 +90,10 @@ public class ActivityCell: DLTableViewCell {
   public var activityLabel: UILabel?
   public var timestampLabel: UILabel?
   
+  public var activity: Activity?
+  
+  public var _containerPressed = Signal<Activity?>()
+  
   public override func setupSelf() {
     super.setupSelf()
     
@@ -92,7 +101,7 @@ public class ActivityCell: DLTableViewCell {
     setupRightImageView()
     setupMiddleContainer()
     setupActivityLabel()
-    setupTimestampLabel()
+//    setupTimestampLabel()
   }
   
   public override func layoutSubviews() {
@@ -101,8 +110,11 @@ public class ActivityCell: DLTableViewCell {
     leftImageView?.anchorToEdge(.Left, padding: 4, width: 36, height: 36)
     rightImageView?.anchorToEdge(.Right, padding: 4, width: 36, height: 36)
     middleContainer?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftImageView!, padding: 4, width: frame.width - 48 - 40)
-    activityLabel?.anchorAndFillEdge(.Top, xPad: 4, yPad: 4, otherSize: 30)
+//    activityLabel?.anchorAndFillEdge(.Top, xPad: 4, yPad: 4, otherSize: 30)
+    activityLabel?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: middleContainer!.width - 8, height: 30)
     timestampLabel?.alignAndFill(align: .UnderMatchingLeft, relativeTo: activityLabel!, padding: 0)
+    
+    setActivity(activity)
   }
   
   private func setupLeftImageView() {
@@ -117,6 +129,7 @@ public class ActivityCell: DLTableViewCell {
   
   private func setupMiddleContainer() {
     middleContainer = UIView()
+    middleContainer?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "containerPressed"))
     addSubview(middleContainer!)
   }
   
@@ -134,17 +147,27 @@ public class ActivityCell: DLTableViewCell {
     middleContainer?.addSubview(timestampLabel!)
   }
   
-  public func setActivity(activity: Activity) {
+  public func setActivity(activity: Activity?) {
+    guard let activity = activity else { return }
     
-    leftImageView?.dl_setImageFromUrl(activity.leftImage, maskWithEllipse: true)
+    leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     
-    activityLabel?.attributedText = activity.getMessage()
-    
-    let attributedString = NSMutableAttributedString(string: (activity.message?["createdAt"].string?.toRelativeString() ?? ""), attributes: [
+    var attributedString = activity.getDetailedMessage()
+    let attributedString2 = NSMutableAttributedString(string: ((activity.getMessage()?.string.characters.count ?? 0) < 6 ? "\n" : " ") + (activity.message?["createdAt"].string?.toRelativeString() ?? ""), attributes: [
       NSFontAttributeName: UIFont.asapRegular(12),
       NSForegroundColorAttributeName: UIColor.sexyGray()
     ])
     
-    timestampLabel?.attributedText = attributedString
+    if let message = activity.getMessage() where activity.getMessage()?.string.characters.count > 30 {
+      attributedString = activity.getDetailedMessage(message.string.stringByPaddingToLength(30, withString: message.string, startingAtIndex: 0) + "...")
+    }
+    
+    attributedString?.appendAttributedString(attributedString2)
+    
+    activityLabel?.attributedText = attributedString
+  }
+  
+  public func containerPressed() {
+    _containerPressed => activity
   }
 }
