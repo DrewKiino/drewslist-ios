@@ -13,7 +13,53 @@ import SDWebImage
 import Signals
 import Async
 
-public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
+
+public class UserProfileViewContainer: DLNavigationController {
+  
+  public var userProfileView: UserProfileView?
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setupSelf()
+    setupProfileView()
+    
+    //userProfileView?.fillSuperview()
+  }
+  
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+  }
+  
+  private func setupSelf() {
+  }
+  
+  private func setupProfileView() {
+    //view.addSubview(userProfileView)
+    userProfileView = UserProfileView()
+    userProfileView!.view.backgroundColor = .redColor()
+    rootView = userProfileView
+    setViewControllers([rootView!], animated: false)
+    setRootViewTitle("Profile")
+  }
+  
+  public func setList_id(list_id: String?) -> Self {
+   return self
+  }
+  
+  public func isUserListing() -> Self {
+    //listView?.isUserListing = true
+    title = "Your Listing"
+    return self
+  }
+  
+  
+  // MARK: Realm Functions
+  
+}
+
+
+public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // NOTE:
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
@@ -145,7 +191,6 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
   
   public func setupSelf() {
     controller.viewDidLoad()
-    setRootViewTitle("Profile")
   }
   
   public func setupScrollView(){
@@ -154,7 +199,7 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     scrollView?.delegate = self
     scrollView?.backgroundColor = UIColor.whiteColor()
     scrollView?.showsVerticalScrollIndicator = false
-    rootView?.view.addSubview(scrollView!)
+    self.view.addSubview(scrollView!)
   }
   
   public func setupBGView(){
@@ -210,7 +255,8 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
     
     //settingsButton.action
-    rootView?.navigationItem.rightBarButtonItem = settingsButton
+    // TODO: check if user is self
+    self.navigationItem.rightBarButtonItem = settingsButton
   }
   
   private func setupExtraViews() {
@@ -222,12 +268,12 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     }
   }
   
-  public func setUser(user: User?) {
+  public func setUser(user: User?) -> Self{
     
     // fixture
 //    user?.description = "Bacon ipsum dolor amet kielbasa bacon landjaeger brisket venison fatback. Sausage pork flank, hamburger bresaola cupim sirloin swine pastrami pig leberkas brisket. Prosciutto sirloin venison bresaola meatloaf swine landjaeger, shankle turkey shoulder. Spare ribs strip steak salami venison kielbasa pancetta prosciutto turducken beef ham hock shank tri-tip brisket tenderloin. Bresaola shankle pork chop, short loin jerky brisket strip steak frankfurter ground round. Tri-tip t-bone jowl tail pancetta. Prosciutto tail filet mignon, kevin pork chop tenderloin pork belly jowl beef ribs. Shank strip steak t-bone flank, ham cow porchetta pork loin spare ribs short ribs bresaola rump capicola. Strip steak salami picanha ball tip, ground round beef doner. Ham hock pig prosciutto, sirloin tri-tip flank kielbasa swine short loin beef jerky picanha filet mignon meatball. T-bone prosciutto brisket tongue, spare ribs tail salami corned beef. Turkey spare ribs shoulder frankfurter tail boudin. Frankfurter andouille sirloin ball tip beef ribs kevin brisket tongue corned beef ham hock t-bone cupim. Picanha leberkas bacon, ground round tongue short loin kevin meatloaf pork loin shankle cow jowl. Swine t-bone kielbasa andouille sausage, ball tip boudin jowl hamburger meatball ground round biltong. Tongue tenderloin frankfurter short ribs ball tip turkey cow alcatra. Pork loin ham hock bresaola short ribs porchetta, bacon corned beef. Venison cow drumstick, hamburger kielbasa prosciutto beef. Meatloaf shoulder chuck short ribs ball tip bacon turkey t-bone cow tongue capicola swine venison. Pork frankfurter alcatra spare ribs jerky landjaeger. Short ribs turkey ham meatball. Pork frankfurter brisket, sirloin shankle short loin beef prosciutto spare ribs porchetta sausage. Doner leberkas swine, pig beef kevin salami pancetta t-bone. Frankfurter corned beef ham pig shoulder meatball biltong. Turducken pork loin jowl beef jerky filet mignon meatball flank corned beef meatloaf venison brisket."
     
-    guard let user = user else { return }
+    guard let user = user else { return self}
     
     let duration: NSTimeInterval = 0.2
     
@@ -235,28 +281,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     if user.image != nil {
       
-      profileImg?.dl_setImageFromUrl(user.image) { [weak self] image, error, cache, url in
+      profileImg?.dl_setImageFromUrl(user.image, size: profileImg?.frame.size, maskWithEllipse: true) { [weak self] image in
         
-        Async.background { [weak self] in
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
-          
-          Async.main { [weak self] in
-            
-            self?.profileImg?.alpha = 0.0
-            
-            // set the image view's image
-            self?.profileImg?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.profileImg?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
+        self?.profileImg?.alpha = 0.0
+        self?.profileImg?.image = image
+        
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.profileImg?.alpha = 1.0
         }
       }
     } else {
@@ -282,27 +313,11 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     if user.bgImage != nil {
       
-      bgViewTop?.dl_setImageFromUrl(user.bgImage) { [weak self] image, error, cache, url in
-        Async.background { [weak self] in
-          
-          // NOTE: correct way to handle memory management with toucan
-          // init toucan and pass in the arguments directly in the parameter headers
-          // do the resizing in the background
-          var toucan: Toucan? = Toucan(image: image).resize(self?.bgViewTop?.frame.size, fitMode: .Crop)
-          
-          Async.main { [weak self] in
-            
-            self?.bgViewTop?.alpha = 0.0
-            
-            self?.bgViewTop?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.bgViewTop?.alpha = 1.0
-            }
-            
-            // deinit toucan
-            toucan = nil
-          }
+      bgViewTop?.dl_setImageFromUrl(user.bgImage, size: bgViewTop?.frame.size) { [weak self] image in
+        self?.bgViewTop?.alpha = 0.0
+        self?.bgViewTop?.image = image
+        UIView.animateWithDuration(duration) { [weak self] in
+          self?.bgViewTop?.alpha = 1.0
         }
       }
     } else {
@@ -336,12 +351,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
       self?.profileUsername?.alpha = 1.0
       self?.descriptionTextView?.alpha = 1.0
     }
+    return self
   }
   
   // MARK: Button Action
   
   public func settingsButtonPressed(){
-    rootView?.navigationController?.pushViewController(SettingsView(), animated: true)
+    navigationController?.pushViewController(EditProfileView(), animated: true)
   }
   
   // MARK: Table View Delegates
@@ -397,13 +413,13 @@ public class UserProfileView: DLNavigationController,  UIScrollViewDelegate, UIT
     
     // add databinding to cells
     cell._didSelectListing.removeAllListeners()
-    cell._didSelectListing.listen(self) { [weak self] list_id in
-      self?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(), animated: true)
+    cell._didSelectListing.listen(self) { [weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(), animated: true)
     }
     
     cell._didSelectMatch.removeAllListeners()
-    cell._didSelectMatch.listen(self) { [weak self] list_id in
-      self?.pushViewController(ListViewContainer().setList_id(list_id), animated: true)
+    cell._didSelectMatch.listen(self) { [weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id), animated: true)
     }
     
     return cell

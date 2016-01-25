@@ -21,7 +21,7 @@ public class TabView: UITabBarController {
   var chatView: ChatHistoryView?  = ChatHistoryView()
   var scannerView: ScannerView? = ScannerView()
   var activityView: ActivityFeedView? = ActivityFeedView()
-  var userProfileView: UserProfileView? = UserProfileView()
+  var userProfileView: UserProfileViewContainer? = UserProfileViewContainer()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -31,7 +31,7 @@ public class TabView: UITabBarController {
     setupChatView()
     setupISBNScannerView()
     setupActivityView()
-    setupUserProfileView()
+    setupUserProfileViewContainer()
     setupViewControllers()
     
     tabBar.translucent = false
@@ -61,15 +61,12 @@ public class TabView: UITabBarController {
     
     // set view controllers
     viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
-    
+      
     // first initialize both the chat history view and activity feed view
     selectedIndex = 1
     selectedIndex = 3
-    // make the scanner view the main view
-//    selectedIndex = 2
     
-    // fixture view
-    selectedIndex = 0
+    selectedIndex = 3
     
     // dealloc reference view controllers
     communityView = nil
@@ -103,7 +100,7 @@ public class TabView: UITabBarController {
     toucan = nil
   }
   
-  private func setupUserProfileView() {
+  private func setupUserProfileViewContainer() {
     var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-4")).resize(CGSize(width: 24, height: 24))
     userProfileView?.tabBarItem = UITabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil

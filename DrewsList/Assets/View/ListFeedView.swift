@@ -26,6 +26,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
   public let _bookProfilePressed = Signal<Book?>()
+  public let _userImagePressed = Signal<User?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -125,6 +126,11 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     saleListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
       self?._bookProfilePressed.fire(book)
     }
+    saleListFeedView?._userImagePressed.removeAllListeners()
+    saleListFeedView?._userImagePressed.listen(self) { [weak self] user in
+      print("pressed3")
+      self?._userImagePressed.fire(user)
+    }
     scrollView?.addSubview(saleListFeedView!)
     saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
@@ -138,6 +144,11 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     wishListFeedView?._bookProfilePressed.removeAllListeners()
     wishListFeedView?._bookProfilePressed.listen(self) { [weak self] book in
       self?._bookProfilePressed.fire(book)
+    }
+    wishListFeedView?._userImagePressed.removeAllListeners()
+    wishListFeedView?._userImagePressed.listen(self) { [weak self] user in
+      print("pressed3")
+      self?._userImagePressed.fire(user)
     }
     scrollView?.addSubview(wishListFeedView!)
     wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
@@ -214,6 +225,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
   public let _bookProfilePressed = Signal<Book?>()
+  public let _userImagePressed = Signal<User?>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -294,6 +306,10 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
         log.debug(book?._id)
         //self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
         self?._bookProfilePressed.fire(book)
+      }
+      cell.listView?._userProfilePressed.removeAllListeners()
+      cell.listView?._userProfilePressed.listen(self) { [weak self] user in
+        self?._userImagePressed.fire(user)
       }
       return cell
     }

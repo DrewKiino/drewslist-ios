@@ -147,7 +147,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
     var tabView: TabView? = TabView()
     
-//    var tabView: SettingsView? = SettingsView()
+//    var tabView: ActivityFeedView? = ActivityFeedView()
 //    var tabView: UserProfileView? = UserProfileView()
     
     /*

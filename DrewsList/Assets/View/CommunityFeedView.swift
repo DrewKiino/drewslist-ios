@@ -154,6 +154,12 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePage?._bookProfilePressed.listen(self) { [weak self] book in
       self?.pushViewController(BookProfileView().setBook(book), animated: true)
     }
+    middlePage?._userImagePressed.removeAllListeners()
+    middlePage?._userImagePressed.listen(self) { [weak self] user in
+      
+      self?.pushViewController(UserProfileView(), animated: true)
+
+    }
     scrollView?.addSubview(middlePage!)
     
     rightPage = UIView()
@@ -232,36 +238,4 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
