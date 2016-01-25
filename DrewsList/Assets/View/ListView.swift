@@ -206,12 +206,9 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
           cell?.setListing(listing)
         }
         cell._userImageViewPressed.removeAllListeners()
-        cell._userImageViewPressed.listen(self) { [weak self] bool in
-          if bool == true {
-            print("pressed2")
-            print(self!.model.user?.lastName)
-            self?._userProfilePressed.fire(self?.model.user)
-            
+        cell._userImageViewPressed.listen(self) { [weak self] user in
+          if let user = user {
+            self?._userProfilePressed.fire(user)
           }
         }
         
@@ -249,8 +246,9 @@ public class ListerProfileViewCell: DLTableViewCell {
   private var listTypeLabel: UILabel?
   private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
+  private var cellListing: Listing?
   
-  public let _userImageViewPressed = Signal<Bool>()
+  public let _userImageViewPressed = Signal<User?>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -327,6 +325,7 @@ public class ListerProfileViewCell: DLTableViewCell {
   public func setListing(listing: Listing?) {
     guard let listing = listing, let user = listing.user else { return }
     
+    cellListing = listing
     let duration: NSTimeInterval = 0.5
     
     // MARK: Images
@@ -389,8 +388,8 @@ public class ListerProfileViewCell: DLTableViewCell {
   }
   
   public func userImageViewPressed() {
-    print("pressed1")
-    _userImageViewPressed => true
+    guard let user = cellListing?.user else { return }
+    _userImageViewPressed.fire(user)
   }
 }
 

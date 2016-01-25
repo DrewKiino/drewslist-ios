@@ -13,7 +13,6 @@ import SDWebImage
 import Signals
 import Async
 
-
 public class UserProfileViewContainer: DLNavigationController {
   
   public var userProfileView: UserProfileView?
@@ -23,8 +22,6 @@ public class UserProfileViewContainer: DLNavigationController {
     
     setupSelf()
     setupProfileView()
-    
-    //userProfileView?.fillSuperview()
   }
   
   public override func viewWillLayoutSubviews() {
@@ -35,10 +32,10 @@ public class UserProfileViewContainer: DLNavigationController {
   }
   
   private func setupProfileView() {
-    //view.addSubview(userProfileView)
-    userProfileView = UserProfileView()
-    userProfileView!.view.backgroundColor = .redColor()
-    rootView = userProfileView
+    userProfileView = UserProfileView().setIsOtherUser(false)
+    
+    setRootViewController(userProfileView)
+    //rootView = userProfileView
     setViewControllers([rootView!], animated: false)
     setRootViewTitle("Profile")
   }
@@ -60,7 +57,6 @@ public class UserProfileViewContainer: DLNavigationController {
 
 
 public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource {
-  
   // NOTE:
   // Steven's ISBNScannerView has a great example of correct naming of 'marks'
   
@@ -83,13 +79,14 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public var saleListView: UICollectionView?
   public var wishListView: UICollectionView?
   public var arrow: UIImageView?
+  public var isOtherUser: Bool?
   
   // if you know there are variables that classes outside of this class
   // aren't going to be used, or that unit tests dont need to know about it
   // set them as private
   private let screenSize = UIScreen.mainScreen().bounds
   
-  // references to the view's own controller and model are good candidates for 
+  // references to the view's own controller and model are good candidates for
   // private scoping
   private let controller = UserProfileController()
   private var model: UserProfileModel { get { return controller.getModel() } }
@@ -180,7 +177,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
           self?.scrollView?.panGestureRecognizer.enabled = true
         }
       } else {
-        self?.setUser(self?.model.user)
+        self?.setUser(self?.model.user, isOtherUser: self?.isOtherUser)
         self?.bookShelf?.reloadData()
         self?.view.hideLoadingScreen()
       }
@@ -190,7 +187,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   // MARK: UI Setup
   
   public func setupSelf() {
-    controller.viewDidLoad()
+    if model.user == nil{
+      controller.readRealmUser()
+      isOtherUser = false
+    } else {
+      isOtherUser = true
+    }
+    controller.changeOtherUserBoolean(isOtherUser)
+    controller.getUserFromServer()
+    
   }
   
   public func setupScrollView(){
@@ -248,15 +253,18 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   private func setupButtons() {
-    
-    let myImage = UIImage(named: "Icon-SettingsGear")
-    let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
-    
-    let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
-    
-    //settingsButton.action
-    // TODO: check if user is self
-    self.navigationItem.rightBarButtonItem = settingsButton
+    if let isOtherUser = self.isOtherUser {
+      if (!isOtherUser){
+        let myImage = UIImage(named: "Icon-SettingsGear")
+        let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
+        
+        let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+        
+        //settingsButton.action
+        // TODO: check if user is self
+        self.navigationItem.rightBarButtonItem = settingsButton
+      }
+    }
   }
   
   private func setupExtraViews() {
@@ -268,12 +276,21 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
   }
   
-  public func setUser(user: User?) -> Self{
-    
+  public func setIsOtherUser(isOtherUser: Bool?) -> Self {
+    self.isOtherUser = isOtherUser
+    return self
+  }
+  
+  public func setUser(user: User?, isOtherUser: Bool?) -> Self {
     // fixture
-//    user?.description = "Bacon ipsum dolor amet kielbasa bacon landjaeger brisket venison fatback. Sausage pork flank, hamburger bresaola cupim sirloin swine pastrami pig leberkas brisket. Prosciutto sirloin venison bresaola meatloaf swine landjaeger, shankle turkey shoulder. Spare ribs strip steak salami venison kielbasa pancetta prosciutto turducken beef ham hock shank tri-tip brisket tenderloin. Bresaola shankle pork chop, short loin jerky brisket strip steak frankfurter ground round. Tri-tip t-bone jowl tail pancetta. Prosciutto tail filet mignon, kevin pork chop tenderloin pork belly jowl beef ribs. Shank strip steak t-bone flank, ham cow porchetta pork loin spare ribs short ribs bresaola rump capicola. Strip steak salami picanha ball tip, ground round beef doner. Ham hock pig prosciutto, sirloin tri-tip flank kielbasa swine short loin beef jerky picanha filet mignon meatball. T-bone prosciutto brisket tongue, spare ribs tail salami corned beef. Turkey spare ribs shoulder frankfurter tail boudin. Frankfurter andouille sirloin ball tip beef ribs kevin brisket tongue corned beef ham hock t-bone cupim. Picanha leberkas bacon, ground round tongue short loin kevin meatloaf pork loin shankle cow jowl. Swine t-bone kielbasa andouille sausage, ball tip boudin jowl hamburger meatball ground round biltong. Tongue tenderloin frankfurter short ribs ball tip turkey cow alcatra. Pork loin ham hock bresaola short ribs porchetta, bacon corned beef. Venison cow drumstick, hamburger kielbasa prosciutto beef. Meatloaf shoulder chuck short ribs ball tip bacon turkey t-bone cow tongue capicola swine venison. Pork frankfurter alcatra spare ribs jerky landjaeger. Short ribs turkey ham meatball. Pork frankfurter brisket, sirloin shankle short loin beef prosciutto spare ribs porchetta sausage. Doner leberkas swine, pig beef kevin salami pancetta t-bone. Frankfurter corned beef ham pig shoulder meatball biltong. Turducken pork loin jowl beef jerky filet mignon meatball flank corned beef meatloaf venison brisket."
-    
     guard let user = user else { return self}
+    // Check if incoming set user is the current user or is another user
+    if(user._id != model.user?._id) {
+      //self.isOtherUser = is
+      model.user = user
+    }
+    self.isOtherUser = isOtherUser
+    controller.changeOtherUserBoolean(isOtherUser)
     
     let duration: NSTimeInterval = 0.2
     
@@ -357,7 +374,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   // MARK: Button Action
   
   public func settingsButtonPressed(){
-    navigationController?.pushViewController(EditProfileView(), animated: true)
+    navigationController?.pushViewController(SettingsView(), animated: true)
   }
   
   // MARK: Table View Delegates
@@ -433,8 +450,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       bgViewTop?.frame = CGRectMake(originalBGViewFrame!.origin.x - offset!, originalBGViewFrame!.origin.y - offset!, originalBGViewFrame!.width + (offset! * ratio), originalBGViewFrame!.height + (offset!))
       
       // if the offset is greater than 64, then call the server to update the user object in the model
+      // Refresh
       if offset >= 128 && model.shouldRefrainFromCallingServer == false {
-        controller.readRealmUser()
+        if let isOtherUser = isOtherUser {
+          if !isOtherUser{ controller.readRealmUser() }
+        }
         controller.getUserFromServer()
       }
     }

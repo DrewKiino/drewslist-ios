@@ -128,7 +128,6 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     }
     saleListFeedView?._userImagePressed.removeAllListeners()
     saleListFeedView?._userImagePressed.listen(self) { [weak self] user in
-      print("pressed3")
       self?._userImagePressed.fire(user)
     }
     scrollView?.addSubview(saleListFeedView!)
@@ -147,7 +146,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     }
     wishListFeedView?._userImagePressed.removeAllListeners()
     wishListFeedView?._userImagePressed.listen(self) { [weak self] user in
-      print("pressed3")
+      print("listFeedViewContainer")
       self?._userImagePressed.fire(user)
     }
     scrollView?.addSubview(wishListFeedView!)

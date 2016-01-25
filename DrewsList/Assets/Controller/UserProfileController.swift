@@ -18,10 +18,12 @@ public class UserProfileController {
   private let model = UserProfileModel()
   private var refrainTimer: NSTimer?
   private var view: UserProfileView?
+  private var isOtherUser: Bool?
   
-  public func viewDidLoad() {
-    readRealmUser()
-//    getUserFromServer()
+  public func changeOtherUserBoolean(isOtherUser: Bool?){
+    if let isOtherUser = isOtherUser {
+      self.isOtherUser = isOtherUser
+    }
   }
   
   public func getUserFromServer() {
