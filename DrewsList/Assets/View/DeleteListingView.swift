@@ -103,7 +103,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int)
     ->Int {
-      return 18
+      return 14
       
   }
   
@@ -194,7 +194,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       break;
     case 4:
       if let Cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        Cell.setLabelTitle("ISBN:")
+        Cell.setLabelTitle("Edit Book Listing:")
         if let isbn =  model.book?.ISBN13 {
           Cell.setLabelSubTitle(isbn)
         } else {
@@ -203,107 +203,72 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
          Cell.setLabelFullTitle()
          return Cell
       }
+      
       break;
     case 5:
-      
-      if let Cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        Cell.setLabelTitle("Desired Price: ")
-        if let binding = model.book?.binding {
-          Cell.setLabelSubTitle(binding)
-        } else { Cell.setLabelSubTitle("") }
-        Cell.setLabelFullTitle()
-        return Cell
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+      cell.showSeparatorLine()
+      cell.hideBothTopAndBottomBorders()
+      cell.backgroundColor = .whiteColor()
+        
+      return cell
       }
       break;
     case 6:
-      
-      if let Cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        Cell.setLabelTitle("Edition:")
-        if let edition = model.book?.edition {
-          Cell.setLabelSubTitle(edition)
-        }else { Cell.setLabelSubTitle("")}
-        Cell.setLabelFullTitle()
-        return Cell
-        
+      if let Cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+        Cell.inputTextField?.placeholder = "Edit Price: "
+        Cell.inputTextField?.keyboardType = .DecimalPad
+        Cell._isFirstResponder.removeAllListeners()
+        Cell._isFirstResponder.listen(self) {[ weak self] bool in
+          if let Cell = self?.TableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0))
+          {
+            self?.TableView?.setContentOffset(CGPointMake(0, Cell.frame.origin.y),  animated: true)
+          }
       }
-    case 7:
-      
-      if let Cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        Cell.setLabelTitle("Publisher: ")
-        if let publisher = model.book?.publisher {
-          Cell.setLabelSubTitle(publisher)
-        } else { Cell.setLabelSubTitle("")}
-        Cell.setLabelFullTitle()
+       Cell._inputTextFieldString.removeAllListeners()
+        Cell._inputTextFieldString.listen(self) { [weak self] text in
+          self?.model.listing?.price = text
+       }
         return Cell
-        
+      }
+      break;
+    case 7:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+        cell.inputTextField?.placeholder = "You can edit your book rating here"
+        cell.inputTextField?.keyboardType = .EmailAddress
+        cell._isFirstResponder.removeAllListeners()
+        cell._isFirstResponder.listen(self) {[ weak self] bool  in
+          if let cell = self?.TableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0))
+          {
+            self?.TableView?.setContentOffset(CGPointMake(0, cell.frame.origin.y),  animated: true)
+          }
+        }
+        cell._inputTextFieldString.removeAllListeners()
+        cell._inputTextFieldString.listen(self) { [weak self] text in
+          self?.model.listing?.price = text
+        }
+        return cell
       }
       break;
     case 8:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Pages:")
-        if let pageCount = model.book?.pageCount {
-          cell.setLabelSubTitle("\(pageCount)")
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-      }
-      break;
-    case 9:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Categories: ")
-        if let categories = model.book?.categories {
-          cell.setLabelSubTitle(categories)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-        
-      }
-      break;
-    case 10:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Rating: ")
-        if let rating = model.book?.maturityRating {
-          cell.setLabelSubTitle(rating)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-        
-      }
-      break;
-      
-    case 11:
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{
-        cell.label?.numberOfLines = 0
-        cell.setLabelTitle("Notes: ")
-        
-        if let description = model.book?.description {
-          cell.setLabelSubTitle(description)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-      }
-      break;
-    case 12:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.showSeparatorLine()
-        cell.hideBothTopAndBottomBorders()
-        
-        cell.titleButton?.setTitle("Optional Actions", forState: .Normal)
-        cell.titleButton?.setTitleColor(.juicyOrange(), forState: .Normal)
-        cell.titleButton?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-        cell.rightImageView?.frame = CGRectMake(cell.frame.width-cell.frame.height * (1 / 2), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3))
-        cell.rightImageView?.image = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(cell.rightImageView?.frame.size, fitMode: .Clip).image
-        cell._didSelectCell.listen(self){ [weak self] bool in
-          // FIXME: Go to Reviews
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell{
+        cell.inputTextField?.placeholder = "You can edit notes for your book here "
+        cell._isFirstResponder.removeAllListeners()
+        cell._isFirstResponder.listen(self) {[ weak self ] bool in
+          if let cell = self?.TableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0))
+          {
+            self?.TableView?.setContentOffset(CGPointMake(0, cell.frame.origin.y),  animated: true)
+          }
         }
-        
+        cell._inputTextFieldString.removeAllListeners()
+        cell._inputTextFieldString.listen(self) { [weak self] text in
+          self?.model.listing?.notes = text
+        }
         return cell
       }
-      break;
-    case 13:
+
+    break;
+    case 9:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showSeparatorLine()
         cell.hideBothTopAndBottomBorders()
@@ -312,21 +277,21 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break;
-    case 14:
+    case 10:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.hideBothTopAndBottomBorders()
         
         cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
         cell.button?.buttonColor = .juicyOrange()
         cell.button?.cornerRadius = 4
-        cell.button?.setTitle("Transfer Ownership", forState: .Normal)
+        cell.button?.setTitle("Book Sold ", forState: .Normal)
         cell._onPressed.listen(self) { [weak self] bool in
           // FIXME: Add book to wishlist
         }
         return cell
       }
       break;
-    case 15:
+    case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
@@ -334,7 +299,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break;
-    case 16:
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.hideBothTopAndBottomBorders()
         
@@ -353,7 +318,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break;
-    case 17:
+    case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
@@ -381,20 +346,20 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       return screen.height / 25
     case 5:
       return screen.height / 25
-    case 11:
+    case 7:
       if let string = model.book?.description, let height: CGFloat! = self.calculateHeightForString(string) { return height }
       return screen.height / 10
-    case 12:
+    case 8:
       return screen.height / 20
+    case 9:
+      return screen.height / 40
+    case 10: // Wish List Button
+      return screen.height / 15
+    case 11:
+      return screen.height / 40
+    case 12: // Sell Button
+      return screen.height / 15
     case 13:
-      return screen.height / 40
-    case 14: // Wish List Button
-      return screen.height / 15
-    case 15:
-      return screen.height / 40
-    case 16: // Sell Button
-      return screen.height / 15
-    case 17:
       return screen.height / 50
     default:
       return screen.height / 25

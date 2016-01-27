@@ -22,6 +22,8 @@ public class DeleteListingModel {
   public let _shouldRefrainFromCallingServer = Signal<Bool>()
   public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
   
-
+  public let _serverCallbackFromDeleteListing = Signal<Bool>()
+  public var serverCallbackFromDeletelIsting: Bool = false { didSet { _serverCallbackFromDeleteListing => serverCallbackFromDeletelIsting } }
   
+
 }

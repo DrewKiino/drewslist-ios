@@ -258,7 +258,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     case 10:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
         cell.titleLabel?.text = "Notes"
-        cell.inputTextView?.placeholder = "Want to buy or sell this book as soon as possible? Write your pitch here! Tell future users why you are listing this book. Keep it clean please ;)"
+        cell.inputTextView?.placeholder = "Want to buy or sell this book as soon as possible? Write your pitch here! Tell future users why you are listing this book. Keep it clean please..."
         cell._isFirstResponder.removeAllListeners()
         cell._isFirstResponder.listen(self) { [weak self] bool in
           if let cell = self?.tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 8, inSection: 0)) {
