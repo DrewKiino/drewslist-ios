@@ -36,6 +36,9 @@ public class ChatView: JSQMessagesViewController {
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
     controller.viewWillDisappear()
+    
+    // load the chat history everytime the chat view is dismissed
+    if let view = navigationController as? ChatHistoryView { view.loadChatHistory() }
   }
   
   private func setupSelf() {
@@ -53,12 +56,14 @@ public class ChatView: JSQMessagesViewController {
     }
     // set and listen for changes in the user's username
     senderDisplayName = model.user?.username ?? ""
+    model.user?._username.removeAllListeners()
     model.user?._username.listen(self) { [weak self] username in
       guard let username = username else { return }
       self?.senderDisplayName = username
     }
     // set and listen for changes in the user's _id
     senderId = model.user?._id ?? ""
+    model.user?.__id.removeAllListeners()
     model.user?.__id.listen(self) { [weak self] _id in
       guard let _id = _id else { return }
       self?.senderId = _id
@@ -66,17 +71,24 @@ public class ChatView: JSQMessagesViewController {
     // listen for changes in the 'isSendingMessage'
     // if the controller is currently sending a message,
     // update the UI
+    controller.isSendingMessage.removeAllListeners()
     controller.isSendingMessage.listen(self) { isSending in
     }
     // listen for changes in the 'didSendMessage'
     // if 'isSent' is true, update the UI
+    controller.didSendMessage.removeAllListeners()
     controller.didSendMessage.listen(self) { [weak self] isSent in
       if isSent { self?.finishSendingMessage() }
     }
     // listen for changes in the 'didReceiveMessage'
     // if 'didReceive' is true, update the UI
+    controller.didReceiveMessage.removeAllListeners()
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
       if didReceive { self?.finishReceivingMessage() }
+    }
+    controller.didLoadMessagesFromRealm.removeAllListeners()
+    controller.didLoadMessagesFromRealm.listen(self) { [weak self] didReceive in
+      if didReceive { self?.finishReceivingMessageAnimated(false) }
     }
   }
   

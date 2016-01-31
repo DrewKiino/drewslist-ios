@@ -31,6 +31,7 @@ public class ChatController {
   public let didSendMessage = Signal<Bool>()
   public let didReceiveMessage = Signal<Bool>()
   public let isSendingMessage = Signal<Bool>()
+  public let didLoadMessagesFromRealm = Signal<Bool>()
   
   // variables
   private var unsubscribeBlock: (() -> Void)?
@@ -253,18 +254,19 @@ public class ChatController {
     }
   }
   
-  private func loadChatHistory() {
+  public func loadChatHistory() {
     if let room_id = model.room_id {
       let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
       model.messages = chatHistory?.getMessages() ?? model.messages
       model.pendingMessages = chatHistory?.getPendingMessages() ?? model.pendingMessages
       log.info("loaded \(model.messages.count) messages from Realm")
       log.info("loaded \(model.pendingMessages.count) messages from Realm")
-      didReceiveMessage => true
+      didLoadMessagesFromRealm => true
     }
   }
   
-  private func saveChatHistory() {
+  public func saveChatHistory() {
+    if model.messages.isEmpty { return }
     let realm = try! Realm()
     realm.beginWrite()
     realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id, user: model.user, friend: model.friend), update: true)

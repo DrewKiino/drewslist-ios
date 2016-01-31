@@ -16,7 +16,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   // MVC
   private let controller = ChatHistoryController()
-  private unowned var model: ChatHistoryModel { get { return controller.model } }
+  private var model: ChatHistoryModel { get { return controller.model } }
 
   private var tableView: DLTableView?
   
@@ -72,6 +72,10 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
       return cell
     }
     return DLTableViewCell()
+  }
+  
+  public func loadChatHistory() {
+    controller.loadChatHistory()
   }
 }
 

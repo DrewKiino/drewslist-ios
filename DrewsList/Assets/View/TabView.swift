@@ -111,6 +111,23 @@ public class TabView: UITabBarController {
   public func checkIfUserIsLoggedIn() {
     if !controller.checkIfUserIsLoggedIn() && !controller.checkIfUserIsLogginInToFacebook() { presentViewController(LoginView(), animated: false, completion: nil) }
   }
+  
+  // tab switch functions
+  public class func presentChatView(chatView: ChatView) {
+    // get the chat history view of the tab view
+    if  let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView,
+        let chatHistoryView = (tabView.viewControllers?.filter { $0.isKindOfClass(ChatHistoryView) })?.first as? ChatHistoryView
+    {
+      // dismiss the current view controller
+      tabView.dismissViewControllerAnimated(true, completion: nil)
+      // go to teh selected index
+      tabView.selectedIndex = 1
+      // pop any existing chat views
+      chatHistoryView.popToRootViewControllerAnimated(false)
+      // push the new corresponding chat view
+      chatHistoryView.pushViewController(chatView, animated: false)
+    }
+  }
 }
 
 

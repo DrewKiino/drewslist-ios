@@ -66,14 +66,13 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
-//      cell.setActivity(model.activities[indexPath.row])
       cell.activity = model.activities[indexPath.row]
       cell.showBottomBorder()
       cell._containerPressed.removeAllListeners()
       cell._containerPressed.listen(self) { [weak self] activity in
         if let activity = activity {
           self?.controller.readRealmUser()
-          self?.pushViewController(ChatView().setUsers(self?.model.user, friend: activity.getUser()), animated: true)
+          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.getUser()))
         }
       }
       return cell
