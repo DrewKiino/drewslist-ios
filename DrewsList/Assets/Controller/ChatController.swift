@@ -38,7 +38,6 @@ public class ChatController {
   private var unsubscribeBlock: (() -> Void)?
   
   public func viewDidLoad() {
-//    loadChatHistory()
   }
   
   public func viewDidAppear() {
@@ -47,7 +46,7 @@ public class ChatController {
   }
   
   public func viewWillDisappear() {
-//    saveChatHistory()
+    saveChatHistory()
     disconnectFromServer()
     socket.isCurrentlyInChat = false
   }
@@ -257,11 +256,13 @@ public class ChatController {
       
       json["messages"].array?.forEach { [weak self] json in if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) } }
       
+      self?.loadChatHistory()
+      
       self?.didLoadMessagesFromServer.fire(true)
     }
     
     socket.emit("chat.getChatHistory", [
-      "user_id": model.user?._id ?? "",
+      "user_id": model.friend?._id ?? "",
       "room_id": model.room_id ?? "",
       "skip": 0,
       "paging": 10
@@ -270,11 +271,10 @@ public class ChatController {
   
   public func loadChatHistory() {
     if let room_id = model.room_id {
+      
       let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
-      model.messages = chatHistory?.getMessages() ?? model.messages
-      model.pendingMessages = chatHistory?.getPendingMessages() ?? model.pendingMessages
-      log.info("loaded \(model.messages.count) messages from Realm")
-      log.info("loaded \(model.pendingMessages.count) messages from Realm")
+      if let message = chatHistory?.getMessages().first where model.messages.count > 0 { model.messages[model.messages.count - 1] = message }
+      
       didLoadMessagesFromRealm => true
     }
   }

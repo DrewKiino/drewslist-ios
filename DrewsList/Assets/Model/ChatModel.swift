@@ -192,8 +192,8 @@ public class RealmChatHistory: Object {
   
   public convenience init(messages: [JSQMessage], pendingMessages: [JSQMessage], room_id: String?, user: User?, friend: User?) {
     self.init()
-    self.messagesData = NSKeyedArchiver.archivedDataWithRootObject(messages)
-    self.pendingMessagesData = NSKeyedArchiver.archivedDataWithRootObject(pendingMessages)
+    if let message = messages.last { self.messagesData = NSKeyedArchiver.archivedDataWithRootObject([message]) }
+    if let message = pendingMessages.last { self.pendingMessagesData = NSKeyedArchiver.archivedDataWithRootObject([message]) }
     self.room_id = room_id
     self.user = RealmUser().setRealmUser(user)
     self.friend = RealmUser().setRealmUser(friend)

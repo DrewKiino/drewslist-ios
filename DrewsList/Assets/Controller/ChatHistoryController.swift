@@ -23,6 +23,7 @@ public class ChatHistoryController {
   }
   
   private func setupSelf() {
+    readRealmUser()
   }
   
   public func viewDidAppear() {

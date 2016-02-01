@@ -45,14 +45,6 @@ public class ActivityFeedController {
           rightImage: nil
         ), atIndex: 0)
         
-        // if the user is not already in chat, update the chat history
-        if self?.socket.isCurrentlyInChat == false  {
-          // update chat history
-          self?.updateChat(json)
-          // publish to other subscribers that the AFController has updated a chat
-          self?._didUpdateChat.fire(true)
-        }
-        
         // save current state of activity
         self?.saveActivityFeed()
         
@@ -66,16 +58,6 @@ public class ActivityFeedController {
   // MARK: Realm Functions
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
-  
-  public func updateChat(json: JSON?) {
-    if let room_id = json?["message"]["room_id"].string {
-      let realm = try! Realm()
-      let chatHistory = realm.objectForPrimaryKey(RealmChatHistory.self, key: room_id)
-      realm.beginWrite()
-      chatHistory?.append(IncomingMessage(json: json?["message"]).toJSQMessage())
-      try! realm.commitWrite()
-    }
-  }
   
   public func saveActivityFeed() {
     if model.activities.isEmpty { return }
