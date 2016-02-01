@@ -57,11 +57,11 @@ public class TabView: UITabBarController {
     testView.tabBarItem = UITabBarItem(title: "Test View", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
     
-//    viewControllers = [communityView!]
+//    viewControllers = [searchBookView!]
     
     // set view controllers
     viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
-      
+    
     // first initialize both the chat history view and activity feed view
     selectedIndex = 1
     selectedIndex = 3

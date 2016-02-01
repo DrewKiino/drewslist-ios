@@ -181,7 +181,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   public func search() {
-    controller.searchSchool()
+    controller.searchBook()
   }
   
   // MARK: TextField Delegates
@@ -197,7 +197,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   public func textFieldShouldReturn(textField: UITextField) -> Bool {
-    controller.searchSchool()
+    controller.searchBook()
     resignFirstResponder()
     return false
   }

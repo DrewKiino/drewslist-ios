@@ -198,7 +198,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
   }
   
-  public func setupScrollView(){
+  public func setupScrollView() {
     scrollView = UIScrollView()
     scrollView?.tag = 0
     scrollView?.delegate = self
@@ -207,7 +207,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     self.view.addSubview(scrollView!)
   }
   
-  public func setupBGView(){
+  public func setupBGView() {
     bgView = UIView()
     scrollView?.addSubview(bgView!)
     
@@ -220,12 +220,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     bgView?.addSubview(bgViewBot!)
   }
   
-  public func setupProfileImg(){
+  public func setupProfileImg() {
     profileImg = UIImageView()
     bgView?.addSubview(profileImg!)
   }
   
-  public func setupUsernameLabel(){
+  public func setupUsernameLabel() {
     profileUsername = UILabel()
     profileUsername?.text = model.user?.username
     profileUsername?.font = UIFont.asapBold(24)
