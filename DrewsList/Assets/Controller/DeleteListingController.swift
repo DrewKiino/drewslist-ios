@@ -32,6 +32,14 @@ public class DeleteListingController {
     
   }
   
+  
+  //MARK: Server Methods
+  public func deleteListingFromServer() {
+  
+    
+    
+  }
+  
   public func GetBookFromServer() {
     guard let book_id = model.book?._id else { return }
     

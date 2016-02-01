@@ -145,7 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-    var tabView: DeleteListingView? = DeleteListingView()
+    var tabView: TabView? = TabView()
     
 //    var tabView: ActivityFeedView? = ActivityFeedView()
 //    var tabView: UserProfileView? = UserProfileView()
