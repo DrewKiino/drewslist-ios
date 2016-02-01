@@ -23,7 +23,11 @@ public class ActivityFeedController {
   public let _didUpdateChat = Singleton._didUpdateChat
   
   public init() {
+    setupSelf()
     setupSockets()
+  }
+  
+  private func setupSelf() {
   }
   
   private func setupSockets() {
@@ -49,6 +53,9 @@ public class ActivityFeedController {
           self?._didUpdateChat.fire(true)
         }
         
+        // save current state of activity
+        self?.saveActivityFeed()
+        
       // else check if the message is a alert saying that you have a potential buyer/seller 'match'
       } else if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["type"].string == "LIST_MATCH" {
 //        self?.model.activity = "\(username): \(message)"
@@ -61,11 +68,34 @@ public class ActivityFeedController {
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
   
   public func updateChat(json: JSON?) {
-    guard let room_id = json?["message"]["room_id"].string else { return }
+    if let room_id = json?["message"]["room_id"].string {
+      let realm = try! Realm()
+      let chatHistory = realm.objectForPrimaryKey(RealmChatHistory.self, key: room_id)
+      realm.beginWrite()
+      chatHistory?.append(IncomingMessage(json: json?["message"]).toJSQMessage())
+      try! realm.commitWrite()
+    }
+  }
+  
+  public func saveActivityFeed() {
+    if model.activities.isEmpty { return }
     let realm = try! Realm()
-    let chatHistory = realm.objectForPrimaryKey(RealmChatHistory.self, key: room_id)
     realm.beginWrite()
-    chatHistory?.append(IncomingMessage(json: json?["message"]).toJSQMessage())
+    // erase the database of activities
+    realm.delete(realm.objects(RealmActivity.self))
+    // for each activity in the model's activity array, add it to realm
+    for var i = 0; i < model.activities.count; i++ {
+      // break out of the loop if 20 activites have already been added to realm
+      if i == 20 { break }
+      realm.add(RealmActivity(activity: model.activities[i]))
+    }
     try! realm.commitWrite()
+  }
+  
+  public func loadActivityFeed() {
+    // load the activities
+    if let activities: [Activity]! = (try! Realm().objects(RealmActivity.self).map { $0.getActivity() }) where activities?.isEmpty == false {
+      model.activities = activities
+   }
   }
 }

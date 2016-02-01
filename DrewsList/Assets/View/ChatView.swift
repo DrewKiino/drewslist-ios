@@ -30,12 +30,20 @@ public class ChatView: JSQMessagesViewController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
     controller.viewDidAppear()
+    
+    // show the keyboard
+    keyboardController.textView?.becomeFirstResponder()
   }
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
+    
     controller.viewWillDisappear()
+    
+    // hide the keyboard
+    keyboardController.textView?.resignFirstResponder()
     
     // load the chat history everytime the chat view is dismissed
     if let view = navigationController as? ChatHistoryView { view.loadChatHistory() }
@@ -98,6 +106,8 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func didPressAccessoryButton(sender: UIButton!) {}
+  
+  // MARK: Collection View Delegates
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
     return model.messages[indexPath.row]

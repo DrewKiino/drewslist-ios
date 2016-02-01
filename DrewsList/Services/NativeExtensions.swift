@@ -105,7 +105,7 @@ extension NSDate {
   public func dl_toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "now"
   }
 }
 
@@ -129,7 +129,22 @@ extension String {
   public func toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+    let string = (60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "now")
+    
+    switch string {
+    case let x where x.containsString("yrs"): return string.stringByReplacingOccurrencesOfString("yrs", withString: "y")
+    case let x where x.containsString("yr"): return string.stringByReplacingOccurrencesOfString("yr", withString: "y")
+    case let x where x.containsString("mos"): return string.stringByReplacingOccurrencesOfString("mos", withString: "m")
+    case let x where x.containsString("mo"): return string.stringByReplacingOccurrencesOfString("mo", withString: "m")
+    case let x where x.containsString("wks"): return string.stringByReplacingOccurrencesOfString("wks", withString: "w")
+    case let x where x.containsString("wk"): return string.stringByReplacingOccurrencesOfString("wk", withString: "w")
+    case let x where x.containsString("days"): return string.stringByReplacingOccurrencesOfString("days", withString: "d")
+    case let x where x.containsString("day"): return string.stringByReplacingOccurrencesOfString("day", withString: "d")
+    case let x where x.containsString("hrs"): return string.stringByReplacingOccurrencesOfString("hrs", withString: "h")
+    case let x where x.containsString("hr"): return string.stringByReplacingOccurrencesOfString("hr", withString: "h")
+    case let x where x.containsString("mins"): return string.stringByReplacingOccurrencesOfString("mins", withString: "m")
+    case let x where x.containsString("min"): return string.stringByReplacingOccurrencesOfString("min", withString: "m")
+    default: return string }
   }
   
   func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{

@@ -12,8 +12,23 @@ import RealmSwift
 import SwiftyJSON
 
 public enum ActivityType {
+  
   case Chat
   case None
+  
+  public func getValue() -> String {
+    switch self {
+    case .Chat: return "CHAT"
+    case .None: return "NONE"
+    }
+  }
+  
+  public static func getType(type: String?) -> ActivityType {
+    switch type ?? "" {
+    case "CHAT": return ActivityType.Chat
+    default: return ActivityType.None
+    }
+  }
 }
 
 public class ActivityFeedModel {
@@ -26,6 +41,9 @@ public class ActivityFeedModel {
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
+  
+  public let _badgeCount = Signal<Int>()
+  public var badgeCount: Int = 0 { didSet { _badgeCount => badgeCount } }
 }
 
 
@@ -48,18 +66,12 @@ public class Activity {
   
   public convenience init(message: JSON?, timestamp: String?, type: String?, leftImage: String?, rightImage: String?) {
     self.init()
+    
     self.message = message
     self.timestamp = timestamp
-    self.type = getType(type)
+    self.type = ActivityType.getType(type)
     self.leftImage = leftImage
     self.rightImage = rightImage
-  }
-  
-  private func getType(type: String?) -> ActivityType {
-    switch type ?? "" {
-      case "CHAT": return ActivityType.Chat
-      default: return ActivityType.None
-    }
   }
   
   public func getUser() -> User? {
@@ -91,23 +103,69 @@ public class Activity {
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])
       
-//      let attributedString3 = NSMutableAttributedString(string: " " + (message?["createdAt"].string?.toRelativeString() ?? "") + " ", attributes: [
-//        NSFontAttributeName: UIFont.asapRegular(12),
-//        NSForegroundColorAttributeName: UIColor.sexyGray()
-//      ])
-      
-      let attributedString4 = NSMutableAttributedString(string: "'" + (modifier ?? (message?["message"].string ?? "")) + "'", attributes: [
+      let attributedString3 = NSMutableAttributedString(string: " " + (message?["createdAt"].string?.toRelativeString() ?? "") + "\n", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
-        NSForegroundColorAttributeName: UIColor.blackColor()
+        NSForegroundColorAttributeName: UIColor.sexyGray()
       ])
       
       attributedString.appendAttributedString(attributedString2)
-      attributedString.appendAttributedString(attributedString4)
-//      attributedString.appendAttributedString(attributedString3)
+      attributedString.appendAttributedString(attributedString3)
+      if let message = getMessage() { attributedString.appendAttributedString(message) }
       
     return attributedString
+
     case .None: break
     }
     return nil
   }
 }
+
+public class RealmActivity: Object {
+  
+  dynamic var message: NSData?
+  dynamic var timestamp: String?
+  dynamic var leftImage: String?
+  dynamic var rightImage: String?
+  dynamic var type: String?
+
+  public convenience init(activity: Activity?) {
+    self.init()
+    
+    if let dictionary = activity?.message?.dictionaryObject { message = NSKeyedArchiver.archivedDataWithRootObject(dictionary) }
+    
+    timestamp = activity?.timestamp
+    leftImage = activity?.leftImage
+    rightImage = activity?.rightImage
+    type = activity?.type.getValue()
+    
+//    log.debug(getMessage())
+//    log.debug(leftImage)
+//    log.debug(rightImage)
+//    log.debug(type)
+  }
+  
+  public func getMessage() -> JSON? {
+    if let message = message, let dictionary = NSKeyedUnarchiver.unarchiveObjectWithData(message) as? [String: AnyObject]{ return JSON(dictionary) }
+    else { return nil }
+  }
+  
+  public func getType() -> ActivityType {
+    return ActivityType.getType(type)
+  }
+  
+  public func getActivity() -> Activity {
+    return Activity(message: getMessage(), timestamp: timestamp, type: type, leftImage: leftImage, rightImage: rightImage)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+

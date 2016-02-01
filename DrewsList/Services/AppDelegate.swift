@@ -13,6 +13,7 @@ import Alamofire
 import SwiftyJSON
 import FBSDKCoreKit
 import FBSDKLoginKit
+import Signals
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
