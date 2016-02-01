@@ -32,12 +32,13 @@ public class ChatController {
   public let didReceiveMessage = Signal<Bool>()
   public let isSendingMessage = Signal<Bool>()
   public let didLoadMessagesFromRealm = Signal<Bool>()
+  public let didLoadMessagesFromServer = Signal<Bool>()
   
   // variables
   private var unsubscribeBlock: (() -> Void)?
   
   public func viewDidLoad() {
-    loadChatHistory()
+//    loadChatHistory()
   }
   
   public func viewDidAppear() {
@@ -46,7 +47,7 @@ public class ChatController {
   }
   
   public func viewWillDisappear() {
-    saveChatHistory()
+//    saveChatHistory()
     disconnectFromServer()
     socket.isCurrentlyInChat = false
   }
@@ -111,35 +112,26 @@ public class ChatController {
       self?.unsubscribeBlock = nil
     }
     
-    // subscribe to the server chat framework's messages callback
-    socket.on("checkForMessages.response") { json in
-      if let messages = json["response"].array {
-        for message in messages {
-          guard let newMessage = IncomingMessage(json: message).toJSQMessage()
-            else { return }
-          self.model.messages.append(newMessage)
-          // broadcast to all listeners that a message was received
-          self.didReceiveMessage => true
-          log.verbose(newMessage.text)
-        }
-      } else if let error = json["error"].string {
-        log.debug(error)
-      }
-    }
-    
     // subscribe to the server chat framework's broadcast callback
-    socket.on("broadcast.response") { [unowned self] json in
+    socket.on("chat.broadcast.response") { [unowned self] json in
       // broadcast to listenres that the message sent was unsuccessful
       if let error = json["error"].string {
         self.didSendMessage => false
         log.error(error)
+        
+      // print any warnings
+      } else if let warning = json["warning"].string {
+        log.warning(warning)
+        
       // broadcast to listeners that the message sent was successful
       } else if let response = json["response"].string {
+        
         if !self.model.pendingMessages.isEmpty {
           self.model.pendingMessages.removeLast()
           self.didSendMessage => true
-          log.info(response)
         }
+        
+        log.debug(response)
       }
     }
     
@@ -244,6 +236,8 @@ public class ChatController {
     setupSockets()
     // subscribe user to chat room
     subscribe()
+    // get message history
+    getChatHistoryFromServer()
   }
   
   public func disconnectFromServer() {
@@ -252,6 +246,26 @@ public class ChatController {
 //      self?.socket.disconnect()
       // set flag
     }
+  }
+  
+  public func getChatHistoryFromServer() {
+    
+    model.messages.removeAll(keepCapacity: false)
+    
+    // subscribe to the server chat framework's messages callback
+    socket.on("chat.getChatHistory.response") { [weak self] json in
+      
+      json["messages"].array?.forEach { [weak self] json in if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) } }
+      
+      self?.didLoadMessagesFromServer.fire(true)
+    }
+    
+    socket.emit("chat.getChatHistory", [
+      "user_id": model.user?._id ?? "",
+      "room_id": model.room_id ?? "",
+      "skip": 0,
+      "paging": 10
+    ])
   }
   
   public func loadChatHistory() {

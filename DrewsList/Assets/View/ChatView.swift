@@ -32,9 +32,6 @@ public class ChatView: JSQMessagesViewController {
     super.viewDidAppear(animated)
     
     controller.viewDidAppear()
-    
-    // show the keyboard
-    keyboardController.textView?.becomeFirstResponder()
   }
   
   public override func viewWillDisappear(animated: Bool) {
@@ -42,8 +39,7 @@ public class ChatView: JSQMessagesViewController {
     
     controller.viewWillDisappear()
     
-    // hide the keyboard
-    keyboardController.textView?.resignFirstResponder()
+    hideKeyboard()
     
     // load the chat history everytime the chat view is dismissed
     if let view = navigationController as? ChatHistoryView { view.loadChatHistory() }
@@ -86,7 +82,11 @@ public class ChatView: JSQMessagesViewController {
     // if 'isSent' is true, update the UI
     controller.didSendMessage.removeAllListeners()
     controller.didSendMessage.listen(self) { [weak self] isSent in
-      if isSent { self?.finishSendingMessage() }
+      if isSent {
+        self?.finishSendingMessage()
+        // clear the text view's text
+        self?.keyboardController.textView?.text = nil
+      }
     }
     // listen for changes in the 'didReceiveMessage'
     // if 'didReceive' is true, update the UI
@@ -96,6 +96,10 @@ public class ChatView: JSQMessagesViewController {
     }
     controller.didLoadMessagesFromRealm.removeAllListeners()
     controller.didLoadMessagesFromRealm.listen(self) { [weak self] didReceive in
+      if didReceive { self?.finishReceivingMessageAnimated(false) }
+    }
+    controller.didLoadMessagesFromServer.removeAllListeners()
+    controller.didLoadMessagesFromServer.listen(self) { [weak self] didReceive in
       if didReceive { self?.finishReceivingMessageAnimated(false) }
     }
   }
@@ -134,6 +138,11 @@ public class ChatView: JSQMessagesViewController {
     
     return self
   }
+  
+  // MARK: Show/Hide keyboard functions
+  
+  public func showKeyboard() { keyboardController.textView?.becomeFirstResponder() }
+  public func hideKeyboard() { keyboardController.textView?.resignFirstResponder() }
 }
 
 
