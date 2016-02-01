@@ -28,6 +28,7 @@
 		3F4CA3B51C0BEC2100CFC84D /* CreateListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4CA3B41C0BEC2100CFC84D /* CreateListingController.swift */; };
 		3FB40FA61C025BE500743C74 /* Atlantis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB40FA51C025BE500743C74 /* Atlantis.swift */; };
 		4F18A07E1C275D75006169F5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18A07D1C275D75006169F5 /* SettingsView.swift */; };
+		4F59BAC61C5ED944006F3F31 /* LFTPulseAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59BAC51C5ED944006F3F31 /* LFTPulseAnimation.swift */; };
 		4F8AC9E61C55B8C100B18AF3 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */; };
 		4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE51C27623900CECCC6 /* EditProfileModel.swift */; };
 		4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F966CE71C27624000CECCC6 /* EditProfileController.swift */; };
@@ -157,6 +158,7 @@
 		3FB40FA51C025BE500743C74 /* Atlantis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atlantis.swift; sourceTree = "<group>"; };
 		4A35E42C995D771093243E74 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		4F18A07D1C275D75006169F5 /* SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4F59BAC51C5ED944006F3F31 /* LFTPulseAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LFTPulseAnimation.swift; sourceTree = "<group>"; };
 		4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
 		4F966CE51C27623900CECCC6 /* EditProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileModel.swift; sourceTree = "<group>"; };
 		4F966CE71C27624000CECCC6 /* EditProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileController.swift; sourceTree = "<group>"; };
@@ -279,6 +281,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4F59BAC41C5ED92A006F3F31 /* SwiftPulse */ = {
+			isa = PBXGroup;
+			children = (
+				4F59BAC51C5ED944006F3F31 /* LFTPulseAnimation.swift */,
+			);
+			name = SwiftPulse;
+			sourceTree = "<group>";
+		};
 		83498E3606F1812375705163 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -409,11 +419,11 @@
 				3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */,
 				EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */,
 				EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */,
+				EE67C1571C30B05700AC60DB /* SearchBookView.swift */,
 				4F18A07D1C275D75006169F5 /* SettingsView.swift */,
 				399971D91C14CF0A008C30FC /* SignUpView.swift */,
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
-				EE67C1571C30B05700AC60DB /* SearchBookView.swift */,
 				4FCF2A041C309B3200091408 /* BookProfileView.swift */,
 				390389F71C43005900740B49 /* ConfirmTransferView.swift */,
 				39B35FF11C4A18D90084007D /* TermPrivacyView.swift */,
@@ -538,6 +548,7 @@
 		EE5E669C1BE1626600BCF1DE /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				4F59BAC41C5ED92A006F3F31 /* SwiftPulse */,
 				EE4B44421C2663260069E452 /* Toucan */,
 				EE4B9D921C11F37700637458 /* RAMTabBar */,
 				EE8918AD1C11684500FCF031 /* AppDelegate.swift */,
@@ -656,6 +667,7 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 2NC533SE3E;
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -808,6 +820,7 @@
 				39B35FF41C4A18EE0084007D /* TermPrivacyModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE3D67A51C2BF72100299F34 /* SearchSchoolController.swift in Sources */,
+				4F59BAC61C5ED944006F3F31 /* LFTPulseAnimation.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
 				EE2824D11C30A43600969E74 /* EditListingModel.swift in Sources */,

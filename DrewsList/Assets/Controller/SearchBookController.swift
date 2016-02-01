@@ -20,11 +20,11 @@ public class SearchBookController {
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-      self?.searchSchool()
+      self?.searchBook()
     }
   }
   
-  public func searchSchool() {
+  public func searchBook() {
     guard let queryString = createQueryString(model.searchString) where !model.shouldRefrainFromCallingServer else { return }
     
     // to safeguard against multiple server calls when the server has no more data

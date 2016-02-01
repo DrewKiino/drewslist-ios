@@ -114,10 +114,12 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0, 2, 4, 6, 8: return 24
+    case 0, 2, 4, 6, 9: return 24
     case 1: return 168
-    case 10: return 150
-    case 13: return 400
+    case 7: return screen.height / 15
+    case 8: return 40
+    case 11: return 150
+    case 14: return 400
     default: return 48
     }
   }
@@ -211,34 +213,41 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       break
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SliderCell", forIndexPath: indexPath) as? SliderCell {
-//        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-//        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-//        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-//        cell._didSelectCell.removeAllListeners()
-//        cell._didSelectCell.listen(self) { [weak self] toggle in
-//          switch toggle {
-//          case .Left:
-//            self?.model.listing?.condition = "1"
-//            return
-//          case .Middle:
-//            self?.model.listing?.condition = "2"
-//            return
-//          case .Right:
-//            self?.model.listing?.condition = "3"
-//            return
-//          }
-//        }
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { [weak self] toggle in
+          switch toggle {
+          case .left:
+            print("1")
+            self?.model.listing?.condition = "1"
+            return
+          case .middle:
+            print("2")
+            self?.model.listing?.condition = "2"
+            return
+          case .right:
+            print("3")
+            self?.model.listing?.condition = "3"
+            return
+          }
+        }
         return cell
       }
       break
     case 8:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.alignTextLeft()
+        cell.hideBothTopAndBottomBorders()
+        return cell
+      }
+      break
+    case 9:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Information"
         cell.alignTextLeft()
         return cell
       }
       break
-    case 9:
+    case 10:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
         cell.inputTextField?.placeholder = "Price"
         cell.inputTextField?.keyboardType = .DecimalPad
@@ -255,7 +264,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break
-    case 10:
+    case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
         cell.titleLabel?.text = "Notes"
         cell.inputTextView?.placeholder = "Want to buy or sell this book as soon as possible? Write your pitch here! Tell future users why you are listing this book. Keep it clean please ;)"
@@ -272,7 +281,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break
-    case 11:
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.buttonLabel?.text = "Upload Listing"
         cell._onPressed.removeAllListeners()
@@ -280,7 +289,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break
-    case 13:
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showTopBorder()
         cell.hideBottomBorder()
@@ -504,7 +513,7 @@ public class TripleToggleCell: DLTableViewCell {
   private var rightToggleButton: UIButton?
   private var toggleSelector: UIView?
   private var toggleContainer: UIView?
-  private var toggle: Toggle = .Middle// setting default
+  private var toggle: Toggle = .Middle // setting default
   
   public let _didSelectCell = Signal<Toggle>()
   
@@ -662,9 +671,13 @@ public class SliderCell: DLTableViewCell {
   private var leftFace = UIImageView?()
   private var middleFace = UIImageView?()
   private var rightFace = UIImageView?()
+  private var toggle: Toggle = .middle // setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
+    self.backgroundColor = .whiteColor()
     setupSlider()
     setupFaces()
   }
@@ -675,8 +688,9 @@ public class SliderCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    container?.anchorToEdge(.Left, padding: 14, width: self.bounds.width, height: 150)
-    slider?.anchorAndFillEdge(.Left, xPad: 14, yPad: 50, otherSize: 360)
+    
+    container?.anchorInCenter(width: screen.width, height: screen.height / 12)
+    slider?.fillSuperview(left: 10, right: 10, top: 0, bottom: 0)
     leftFace?.anchorInCorner(.BottomLeft, xPad: 0, yPad: 0, width: 25, height: 25)
     leftFace?.align(.UnderMatchingLeft, relativeTo: slider!, padding: 0, width: 25, height: 25)
     middleFace?.anchorInCenter(width: 25, height: 25)
@@ -686,8 +700,8 @@ public class SliderCell: DLTableViewCell {
   }
   
   public func setupSlider() {
-    container = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: 150))
-    slider = UISlider(frame: self.bounds)
+    container = UIView()
+    slider = UISlider()
     slider!.minimumValue = 0
     slider!.minimumTrackTintColor = UIColor.juicyOrange()
     slider!.maximumValue = 2
@@ -715,7 +729,22 @@ public class SliderCell: DLTableViewCell {
   
   public func sliderChanged(sender: UISlider) {
     slider!.value = roundf(slider!.value)
+    switch slider!.value {
+    case 0:
+      toggle = .left
+      break
+    case 1:
+      toggle = .middle
+      break
+    case 2:
+      toggle = .right
+      break
+    default:
+      break
+    }
+    self._didSelectCell.fire(toggle)
   }
+  
 }
 
 public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
@@ -819,7 +848,6 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
     inputTextView?.anchorAndFillEdge(.Top, xPad: 14, yPad: 16, otherSize: bounds.height - 16)
   }
   
