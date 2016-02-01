@@ -62,7 +62,7 @@ public class DLTableView: UITableView {
     registerClass(UserCell.self, forCellReuseIdentifier: "UserCell")
     
     // MARK: Edit Listing
-    registerClass(EditListingCell.self, forCellReuseIdentifier: "EditListingCell")
+    //registerClass(EditListingCell.self, forCellReuseIdentifier: "EditListingCell")
     
     // MARK: Chat History
     registerClass(ChatHistoryCell.self, forCellReuseIdentifier: "ChatHistoryCell")

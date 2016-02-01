@@ -81,7 +81,7 @@ public class ListViewContainer: UIViewController {
   }
   
   public func editButtonPressed() {
-    navigationController?.pushViewController(EditListingView().setListing(listView?.model.listing), animated: true)
+    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
   }
   
   // MARK: Realm Functions
