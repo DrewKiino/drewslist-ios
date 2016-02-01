@@ -271,11 +271,8 @@ public class ChatController {
   
   public func loadChatHistory() {
     if let room_id = model.room_id {
-      
       let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
       if let message = chatHistory?.getMessages().first where model.messages.count > 0 { model.messages[model.messages.count - 1] = message }
-      
-      didLoadMessagesFromRealm => true
     }
   }
   
