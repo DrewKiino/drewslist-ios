@@ -43,6 +43,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
     rootView?.view.addSubview(tableView!)
   }
   
@@ -54,6 +55,10 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     model._chatModels.listen(self) { [weak self] models in
       self?.tableView?.reloadData()
     }
+  }
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 58
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -106,11 +111,11 @@ public class ChatHistoryCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    leftImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 36, height: 36)
-    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 4, width: screen.width - 100, height: 16)
-    arrow?.anchorInCorner(.TopRight, xPad: 4, yPad: 6, width: 12, height: 12)
-    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 48, height: 16)
-    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 4, height: 24)
+    leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
+    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 8, width: screen.width - 100, height: 16)
+    arrow?.anchorInCorner(.TopRight, xPad: 8, yPad: 12, width: 12, height: 12)
+    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
+    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 24)
     
     set(chatModel: chatModel)
   }
