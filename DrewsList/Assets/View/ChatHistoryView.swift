@@ -80,7 +80,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   }
   
   public func loadChatHistory() {
-    controller.loadChatHistory()
+    controller.loadChatHistoryFromServer()
   }
 }
 

@@ -39,6 +39,8 @@ public class Sockets {
   public let socket = Sockets.new()
   public var isCurrentlyInChat: Bool = false
   
+  public var executionArray: [String: () -> Void]?
+  
   public let _message = Signal<JSON>()
   
   private var disconnectHandler: (() -> Void)? = nil
@@ -50,9 +52,16 @@ public class Sockets {
     socket.on("error") { data, socket in
       log.error(data)
     }
-    socket.on("connect") { data, socket in
+    socket.on("connect") { [weak self] data, socket in
       log.info("connection established.")
+      
       execute?()
+      
+      if let executions = self?.executionArray?.values {
+        for execute in executions {
+          execute()
+        }
+      }
     }
     socket.on("reconnect") { data, socket in
     }
@@ -155,9 +164,11 @@ public class Sockets {
     socket.disconnect()
   }
   
-  public func onConnect(execute: () -> Void) {
-    socket.on("connect") { data, socket in
-      execute()
+  public func onConnect(host: String, execute: () -> Void) {
+    if executionArray != nil {
+      executionArray?.updateValue(execute, forKey: host)
+    } else {
+      executionArray = [host: execute]
     }
   }
   

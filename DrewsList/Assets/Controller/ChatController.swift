@@ -31,7 +31,6 @@ public class ChatController {
   public let didSendMessage = Signal<Bool>()
   public let didReceiveMessage = Signal<Bool>()
   public let isSendingMessage = Signal<Bool>()
-  public let didLoadMessagesFromRealm = Signal<Bool>()
   public let didLoadMessagesFromServer = Signal<Bool>()
   
   // variables
@@ -129,8 +128,6 @@ public class ChatController {
           self.model.pendingMessages.removeLast()
           self.didSendMessage => true
         }
-        
-        log.debug(response)
       }
     }
     
@@ -256,6 +253,9 @@ public class ChatController {
       
       json["messages"].array?.forEach { [weak self] json in if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) } }
       
+      // get teh time stamp of the most recent message
+      self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
+      
       self?.loadChatHistory()
       
       self?.didLoadMessagesFromServer.fire(true)
@@ -272,9 +272,7 @@ public class ChatController {
   public func loadChatHistory() {
     if let room_id = model.room_id {
       let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
-        log.debug(model.messages.last?.date)
-      if let message = chatHistory?.getMessages().first where model.messages.count > 0 {
-        log.debug(message.date)
+      if let message = chatHistory?.getMessages().first where model.messages.count > 0 && model.mostRecentTimestamp == chatHistory?.mostRecentTimestamp {
         model.messages[model.messages.count - 1] = message
       }
     }
@@ -284,7 +282,14 @@ public class ChatController {
     if model.messages.isEmpty { return }
     let realm = try! Realm()
     realm.beginWrite()
-    realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id, user: model.user, friend: model.friend), update: true)
+    realm.add(RealmChatHistory(
+      messages: model.messages,
+      pendingMessages: model.pendingMessages,
+      room_id: model.room_id,
+      user: model.user,
+      friend: model.friend,
+      mostRecentTimestamp: model.mostRecentTimestamp
+    ), update: true)
     try! realm.commitWrite()
   }
 }

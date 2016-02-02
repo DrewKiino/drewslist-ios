@@ -94,13 +94,14 @@ public class ChatView: JSQMessagesViewController {
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
       if didReceive { self?.finishReceivingMessage() }
     }
-    controller.didLoadMessagesFromRealm.removeAllListeners()
-    controller.didLoadMessagesFromRealm.listen(self) { [weak self] didReceive in
-      if didReceive { self?.finishReceivingMessageAnimated(false) }
-    }
     controller.didLoadMessagesFromServer.removeAllListeners()
     controller.didLoadMessagesFromServer.listen(self) { [weak self] didReceive in
-      if didReceive { self?.finishReceivingMessageAnimated(false) }
+      if didReceive {
+        self?.finishReceivingMessageAnimated(false)
+        NSTimer.after(0.01) { [weak self] in
+          self?.scrollToBottomAnimated(false)
+        }
+      }
     }
   }
   
