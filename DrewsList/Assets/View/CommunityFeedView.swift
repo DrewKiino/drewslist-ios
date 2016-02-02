@@ -74,8 +74,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePage?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftPage!, padding: 0, width: screen.width)
     rightPage?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: middlePage!, padding: 0, width: screen.width)
     
-    leftPage?.showComingSoonScreen()
-    rightPage?.showComingSoonScreen()
+    leftPage?.showComingSoonScreen(-25.5)
+    rightPage?.showComingSoonScreen(-25.5)
   }
   
   private func setupSelf() {

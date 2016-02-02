@@ -20,6 +20,7 @@ public class DLNavigationController: UINavigationController {
   }
   
   private func setupSelf() {
+    
     navigationBar.barTintColor = UIColor.soothingBlue()
     navigationBar.tintColor = UIColor.whiteColor()
     
@@ -29,6 +30,8 @@ public class DLNavigationController: UINavigationController {
     ]
     
     navigationBar.translucent = false
+    
+    view.backgroundColor = .whiteColor()
   }
   
   public func setupRootView() {

@@ -318,10 +318,10 @@ extension UIView {
     loadingLabel = nil
   }
   
-  public func showComingSoonScreen() {
+  public func showComingSoonScreen(offset: CGFloat = 0) {
     subviews.forEach { if let view: UILabel? = $0 as? UILabel where $0.tag == 1337 { view?.removeFromSuperview() } }
     
-    let label = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
+    let label = UILabel(frame: CGRectMake(0, offset, frame.width, frame.height))
     label.text = "Coming Soon!"
     label.textAlignment = .Center
     label.font = .asapRegular(16)

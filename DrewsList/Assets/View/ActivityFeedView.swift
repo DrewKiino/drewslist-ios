@@ -22,9 +22,12 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     super.viewDidLoad()
     
     setRootViewTitle("Activity")
-    setupSelf()
-    setupDataBinding()
-    setupTableView()
+//    setupSelf()
+//    setupDataBinding()
+//    setupTableView()
+    
+    // coming soon because activity feed is part of community phase
+    rootView?.view.showComingSoonScreen(-64)
   }
   
   public override func viewDidAppear(animated: Bool) {
