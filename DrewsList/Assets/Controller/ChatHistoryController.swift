@@ -8,13 +8,13 @@
 
 import Foundation
 import RealmSwift
+import Signals
 
 public class ChatHistoryController {
   
   private let socket = Sockets.sharedInstance()
   
   public let model = ChatHistoryModel()
-  private let _didUpdateChat = ActivityFeedController.shared_didUpdateChat()
   
   public init() {
     setupSelf()
@@ -28,6 +28,7 @@ public class ChatHistoryController {
   
   private func setupSockets() {
     socket.onConnect("ChatHistoryController") { [weak self] in
+      self?.readRealmUser()
       self?.loadChatHistoryFromServer()
     }
   }
@@ -37,13 +38,17 @@ public class ChatHistoryController {
   }
   
   private func setupDataBinding() {
-    _didUpdateChat.removeListener(self)
-    _didUpdateChat.listen(self) { [weak self] bool in
+    socket._message.removeListener(self)
+    socket._message.listen(self) { [weak self] json in
+      if json["type"].string == "CHAT" {
+        self?.readRealmUser()
+        self?.loadChatHistoryFromServer() }
     }
   }
   
   public func loadChatHistoryFromServer() {
     socket.on("chatHistory.getChatHistory.response") { [weak self] json in
+      
       if let jsonArray = json.array {
         
         self?.model.chatModels.removeAll(keepCapacity: false)
@@ -72,8 +77,17 @@ public class ChatHistoryController {
             self?.model.chatModels.append(chatModel)
           }
         }
+        
+        // sort the chat model in order of latest message
+        // $0.0 represents the first chat model being compared
+        // $0.1 represents teh second chat model being compared
+        // this type of syntax is called 'inferred' syntax
+        self?.model.chatModels.sortInPlace { return $0.0.messages.last?.date > $0.1.messages.last?.date }
+        // tell the view to update its views
+        self?.model.shouldRefreshViews = true
       }
     }
+    
     socket.emit("chatHistory.getChatHistory", [ "user_id": model.user?._id ?? "" ])
   }
   

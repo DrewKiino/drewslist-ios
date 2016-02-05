@@ -72,6 +72,12 @@ extension UIColor {
   public class func tableViewNativeSeparatorColor() -> UIColor {
     return UIColor(red: 224/255, green: 224/255, blue: 224/255, alpha: 1.0)
   }
+  
+  // MARK: Default native colors 
+  public class func buttonBlue() -> UIColor {
+    return UIColor(red: 15/255, green: 135/255, blue: 255/255, alpha: 1.0)
+  }
+
 }
 
 extension UIFont {
@@ -107,9 +113,13 @@ extension NSDate {
     // converts the date strings sent from the server to local time strings
     return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "now"
   }
+  
+  public func isRecent() -> Bool { return dl_toRelativeString() == "now" }
 }
 
 extension String {
+  
+  public func isRecent() -> Bool { return toRelativeString() == "now" }
   
   public func convertToOrdinal() -> String {
     if  let last = characters.last where Int(String(last)) != nil && self.lowercaseString.rangeOfString("edition") == nil {

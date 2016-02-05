@@ -39,6 +39,8 @@ public class ChatView: JSQMessagesViewController {
     
     controller.viewWillDisappear()
     
+    collectionView?.hidden = true
+    
     hideKeyboard()
     
     // load the chat history everytime the chat view is dismissed
@@ -50,10 +52,15 @@ public class ChatView: JSQMessagesViewController {
     title = model.friend?.getName()
     // hide attachment button
     inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
-    
   }
   
   private func setupDataBinding() {
+    
+    _applicationDidEnterBackground.removeListener(self)
+    _applicationDidEnterBackground.listen(self) { [weak self] bool in
+      self?.collectionView?.hidden = true
+    }
+
     model._friend.removeAllListeners()
     model._friend.listen(self) { [weak self] friend in
       self?.title = friend?.getName()
@@ -75,8 +82,29 @@ public class ChatView: JSQMessagesViewController {
     // listen for changes in the 'isSendingMessage'
     // if the controller is currently sending a message,
     // update the UI
+    controller.willRequestSubscription.removeAllListeners()
+    controller.willRequestSubscription.listen(self) { [weak self] willRequest in
+      if willRequest {
+        // show activity animation on nav bar
+        DLNavigationController.showActivityAnimation(self)
+      }
+    }
+    
+    controller.didReceiveSubscriptionResponse.removeAllListeners()
+    controller.didReceiveSubscriptionResponse.listen(self) { [weak self] didReceive in
+      if didReceive {
+        // show activity animation on nav bar
+        DLNavigationController.hideActivityAnimation(self)
+      }
+    }
+    
     controller.isSendingMessage.removeAllListeners()
-    controller.isSendingMessage.listen(self) { isSending in
+    controller.isSendingMessage.listen(self) { [weak self] isSending in
+      if isSending {
+        self?.disableSendButton()
+        // show activity animation on nav bar
+        DLNavigationController.showActivityAnimation(self)
+      }
     }
     // listen for changes in the 'didSendMessage'
     // if 'isSent' is true, update the UI
@@ -86,6 +114,10 @@ public class ChatView: JSQMessagesViewController {
         self?.finishSendingMessage()
         // clear the text view's text
         self?.keyboardController.textView?.text = nil
+        // allow the user to begin sending again
+        self?.enableSendButton()
+        // hide activity animation on nav bar
+        DLNavigationController.hideActivityAnimation(self)
       }
     }
     // listen for changes in the 'didReceiveMessage'
@@ -94,10 +126,19 @@ public class ChatView: JSQMessagesViewController {
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
       if didReceive { self?.finishReceivingMessage() }
     }
+    controller.didRequestLoadingMessagesFromServer.removeAllListeners()
+    controller.didRequestLoadingMessagesFromServer.listen(self) { [weak self] didRequest in
+      if didRequest {
+      }
+    }
     controller.didLoadMessagesFromServer.removeAllListeners()
     controller.didLoadMessagesFromServer.listen(self) { [weak self] didReceive in
       if didReceive {
+        
+        self?.collectionView?.hidden = false
+        
         self?.finishReceivingMessageAnimated(false)
+      
         NSTimer.after(0.01) { [weak self] in
           self?.scrollToBottomAnimated(false)
         }
@@ -115,7 +156,7 @@ public class ChatView: JSQMessagesViewController {
   // MARK: Collection View Delegates
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
-    return model.messages[indexPath.row]
+    return model.messages.isEmpty ? nil : model.messages[indexPath.row]
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
@@ -139,6 +180,17 @@ public class ChatView: JSQMessagesViewController {
     
     return self
   }
+  
+  public func disableSendButton() {
+    inputToolbar?.contentView?.rightBarButtonItem?.setTitleColor(.sexyGray(), forState: .Normal)
+    inputToolbar?.contentView?.rightBarButtonItem?.userInteractionEnabled = false
+  }
+  
+  public func enableSendButton() {
+    inputToolbar?.contentView?.rightBarButtonItem?.setTitleColor(.buttonBlue(), forState: .Normal)
+    inputToolbar?.contentView?.rightBarButtonItem?.userInteractionEnabled = true
+  }
+  
   
   // MARK: Show/Hide keyboard functions
   

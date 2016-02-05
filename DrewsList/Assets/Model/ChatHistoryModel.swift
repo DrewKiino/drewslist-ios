@@ -20,6 +20,8 @@ public class ChatHistoryModel {
   public let _shouldRefrainFromCallingServer = Signal<Bool>()
   public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
   
-  public init() {
-  }
+  public let _shouldRefreshViews = Signal<Bool>()
+  public var shouldRefreshViews: Bool = false { didSet { _shouldRefreshViews => shouldRefreshViews } }
+  
+  public init() {}
 }

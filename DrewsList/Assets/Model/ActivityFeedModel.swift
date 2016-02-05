@@ -10,6 +10,7 @@ import Foundation
 import Signals
 import RealmSwift
 import SwiftyJSON
+import ObjectMapper
 
 public enum ActivityType {
   
@@ -47,41 +48,62 @@ public class ActivityFeedModel {
 }
 
 
-public class Activity {
+public class Activity: Mappable {
   
-  public let _message = Signal<JSON?>()
-  public var message: JSON? { didSet { _message => message } }
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
   
+  public let _message = Signal<String?>()
+  public var message: String? { didSet { _message => message } }
+  
+  public let _room_id = Signal<String?>()
+  public var room_id: String? { didSet { _room_id => room_id } }
+  
+  public let _session_id = Signal<String?>()
+  public var session_id: String? { didSet { _session_id => session_id } }
+
   public let _timestamp = Signal<String?>()
   public var timestamp: String? { didSet { _timestamp => timestamp } }
   
-  public let _leftImage = Signal<String?>()
-  public var leftImage: String? { didSet { _leftImage => leftImage } }
+  public var leftImage: String? { get { return user?.imageUrl ?? "" } }
 
   public let _rightImage = Signal<String?>()
   public var rightImage: String? { didSet { _rightImage => rightImage } }
   
-  public let _type = Signal<ActivityType>()
-  public var type: ActivityType = .None { didSet { _type => type } }
+  public let _type = Signal<String?>()
+  public var type: String? { didSet { _type => type } }
   
-  public convenience init(message: JSON?, timestamp: String?, type: String?, leftImage: String?, rightImage: String?) {
+  public init() {}
+  
+  public init(json: JSON) {
+    if let json = json.dictionaryObject {
+      mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
+    }
+  }
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    user        <- map["user"]
+    type        <- map["type"]
+    message     <- map["message"]
+    timestamp   <- map["timestamp"]
+    session_id  <- map["session_id"]
+    room_id     <- map["room_id"]
+  }
+  
+  public convenience init(message: String?, timestamp: String?, type: String?) {
     self.init()
     
     self.message = message
     self.timestamp = timestamp
-    self.type = ActivityType.getType(type)
-    self.leftImage = leftImage
-    self.rightImage = rightImage
-  }
-  
-  public func getUser() -> User? {
-    return User().set(_id: message?["friend_id"].string).set(username: message?["friend_username"].string).set(imageUrl: message?["friend_image"].string)
+    self.type = type
   }
   
   public func getMessage() -> NSMutableAttributedString? {
-    switch type {
+    switch ActivityType.getType(type) {
     case .Chat:
-      return NSMutableAttributedString(string: (message?["message"].string ?? ""), attributes: [
+      return NSMutableAttributedString(string: (message ?? ""), attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])
@@ -91,9 +113,9 @@ public class Activity {
   }
   
   public func getDetailedMessage(modifier: String? = nil) -> NSMutableAttributedString? {
-    switch type {
+    switch ActivityType.getType(type) {
     case .Chat:
-      let attributedString = NSMutableAttributedString(string: (message?["friend_username"].string ?? ""), attributes: [
+      let attributedString = NSMutableAttributedString(string: (user?.getName() ?? ""), attributes: [
         NSFontAttributeName: UIFont.asapBold(12),
         NSForegroundColorAttributeName: UIColor.bareBlue()
       ])
@@ -103,7 +125,7 @@ public class Activity {
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])
       
-      let attributedString3 = NSMutableAttributedString(string: " " + (message?["createdAt"].string?.toRelativeString() ?? "") + "\n", attributes: [
+      let attributedString3 = NSMutableAttributedString(string: " " + (timestamp?.toRelativeString() ?? "") + "\n", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.sexyGray()
       ])
@@ -120,43 +142,6 @@ public class Activity {
   }
 }
 
-public class RealmActivity: Object {
-  
-  dynamic var message: NSData?
-  dynamic var timestamp: String?
-  dynamic var leftImage: String?
-  dynamic var rightImage: String?
-  dynamic var type: String?
-
-  public convenience init(activity: Activity?) {
-    self.init()
-    
-    if let dictionary = activity?.message?.dictionaryObject { message = NSKeyedArchiver.archivedDataWithRootObject(dictionary) }
-    
-    timestamp = activity?.timestamp
-    leftImage = activity?.leftImage
-    rightImage = activity?.rightImage
-    type = activity?.type.getValue()
-    
-//    log.debug(getMessage())
-//    log.debug(leftImage)
-//    log.debug(rightImage)
-//    log.debug(type)
-  }
-  
-  public func getMessage() -> JSON? {
-    if let message = message, let dictionary = NSKeyedUnarchiver.unarchiveObjectWithData(message) as? [String: AnyObject]{ return JSON(dictionary) }
-    else { return nil }
-  }
-  
-  public func getType() -> ActivityType {
-    return ActivityType.getType(type)
-  }
-  
-  public func getActivity() -> Activity {
-    return Activity(message: getMessage(), timestamp: timestamp, type: type, leftImage: leftImage, rightImage: rightImage)
-  }
-}
 
 
 

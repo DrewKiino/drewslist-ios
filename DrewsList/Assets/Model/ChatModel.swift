@@ -16,6 +16,9 @@ import RealmSwift
 
 public class ChatModel: NSObject {
   
+  public let _isCurrentlySendingMessage = Signal<Bool>()
+  public var isCurrentlySendingMessage: Bool = false { didSet { _isCurrentlySendingMessage => isCurrentlySendingMessage } }
+  
   public let _session_id = Signal<String?>()
   public var session_id: String? { didSet { _session_id => session_id } }
   
@@ -153,12 +156,11 @@ public class OutgoingMessage {
     self.message = message
     self.session_id = session_id
     self.room_id = room_id
-    self.createdAt = NSDate().toString(.ISO8601)
   }
   
   public func toJSQMessage() -> JSQMessage? {
-    guard let user_id = user_id, let username = username, let message = message, let date = createdAt?.toDateFromISO8601() else { return nil }
-    return JSQMessage(senderId: user_id, senderDisplayName: username, date: date, text: message)
+    guard let user_id = user_id, let username = username, let message = message else { return nil }
+    return JSQMessage(senderId: user_id, senderDisplayName: username, date: NSDate(), text: message)
   }
   
   public func toJSON() -> [String: AnyObject]? {

@@ -13,10 +13,26 @@ public class DLNavigationController: UINavigationController {
   
   public var rootView: UIViewController?
   
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupRootView()
     setupSelf()
+  }
+  
+  public class func showActivityAnimation(view: UIViewController?) {
+    if let view = view {
+      var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+      view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
+      activityView.startAnimating()
+      activityView = nil
+    }
+  }
+  
+  public class func hideActivityAnimation(view: UIViewController?) {
+    if let view = view {
+      view.navigationItem.rightBarButtonItem = nil
+    }
   }
   
   private func setupSelf() {

@@ -44,6 +44,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView?.delegate = self
     tableView?.dataSource = self
     tableView?.backgroundColor = .whiteColor()
+    tableView?.showsVerticalScrollIndicator = true
     rootView?.view.addSubview(tableView!)
   }
   
@@ -51,9 +52,9 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
     }
-    model._chatModels.removeAllListeners()
-    model._chatModels.listen(self) { [weak self] models in
-      self?.tableView?.reloadData()
+    model._shouldRefreshViews.removeAllListeners()
+    model._shouldRefreshViews.listen(self) { [weak self] bool in
+      if bool { self?.tableView?.reloadData() }
     }
   }
   
@@ -74,6 +75,9 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
         self?.controller.readRealmUser()
         self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
       }
+      
+      cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date.isRecent() ?? false) ? .paradiseGray() : .whiteColor()
+      
       return cell
     }
     return DLTableViewCell()

@@ -43,6 +43,9 @@ get {
 }
 }
 
+public let _applicationWillEnterForeground = Signal<Bool>()
+public let _applicationDidEnterBackground = Signal<Bool>()
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
@@ -96,6 +99,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // disconnect from server when app backgrounds
     Sockets.sharedInstance().disconnect()
+    
+    _applicationDidEnterBackground => true
   }
 
   func applicationWillEnterForeground(application: UIApplication) {

@@ -20,64 +20,47 @@ public class ActivityFeedController {
   
   private let socket = Sockets.sharedInstance()
   
-  public let _didUpdateChat = Singleton._didUpdateChat
-  
   public init() {
     setupSelf()
     setupSockets()
   }
   
+  public func viewDidAppear() {
+    getActivityFeedFromServer()
+  }
+  
   private func setupSelf() {
+    readRealmUser()
   }
   
   private func setupSockets() {
+    socket.onConnect("activityFeedController") { [weak self] in
+      self?.readRealmUser()
+      self?.getActivityFeedFromServer()
+    }
     socket._message.removeListener(self)
     socket._message.listen(self) { [weak self] json in
-      // check if the message is a chat
-      if json["type"].string == "CHAT" {
+      self?.readRealmUser()
+      self?.getActivityFeedFromServer()
+    }
+  }
+  
+  public func getActivityFeedFromServer() {
+    socket.on("activityFeed.getActivityHistory.response") { [weak self] json in
+      if let jsonArray = json["activities"].array {
         
-        // append to the list of activities
-        self?.model.activities.insert(Activity(
-          message: json["message"],
-          timestamp: json["message"]["createdAt"].string,
-          type: json["type"].string,
-          leftImage: json["message"]["friend_image"].string,
-          rightImage: nil
-        ), atIndex: 0)
+        self?.model.activities.removeAll(keepCapacity: false)
         
-        // save current state of activity
-        self?.saveActivityFeed()
-        
-      // else check if the message is a alert saying that you have a potential buyer/seller 'match'
-      } else if let message = json["message"]["message"].string, let username = json["message"]["friend_username"].string where json["type"].string == "LIST_MATCH" {
-//        self?.model.activity = "\(username): \(message)"
+        for json in jsonArray {
+          self?.model.activities.append(Activity(json: json))
+        }
       }
     }
+    
+    socket.emit("activityFeed.getActivityHistory", [ "user_id": model.user?._id ?? "" ])
   }
   
   // MARK: Realm Functions
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
-  
-  public func saveActivityFeed() {
-    if model.activities.isEmpty { return }
-    let realm = try! Realm()
-    realm.beginWrite()
-    // erase the database of activities
-    realm.delete(realm.objects(RealmActivity.self))
-    // for each activity in the model's activity array, add it to realm
-    for var i = 0; i < model.activities.count; i++ {
-      // break out of the loop if 20 activites have already been added to realm
-      if i == 20 { break }
-      realm.add(RealmActivity(activity: model.activities[i]))
-    }
-    try! realm.commitWrite()
-  }
-  
-  public func loadActivityFeed() {
-    // load the activities
-    if let activities: [Activity]! = (try! Realm().objects(RealmActivity.self).map { $0.getActivity() }) where activities?.isEmpty == false {
-      model.activities = activities
-   }
-  }
 }

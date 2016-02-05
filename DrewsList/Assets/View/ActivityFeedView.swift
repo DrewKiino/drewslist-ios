@@ -22,28 +22,25 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     super.viewDidLoad()
     
     setRootViewTitle("Activity")
-//    setupSelf()
-//    setupDataBinding()
-//    setupTableView()
-    
-    // coming soon because activity feed is part of community phase
-    rootView?.view.showComingSoonScreen(-64)
+    setupSelf()
+    setupDataBinding()
+    setupTableView()
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    controller.loadActivityFeed()
+    controller.viewDidAppear()
   }
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    
-    controller.saveActivityFeed()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    
+    tableView?.fillSuperview()
   }
   
   private func setupSelf() {
@@ -51,14 +48,6 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupDataBinding() {
-//    model._activity.removeListener(self)  
-//    model._activity.listen(self) { [weak self] activity in
-//      // show the notification
-//      self?.view.displayNotification(activity?.message?["message"].string) { [weak self] in
-//      }
-//      // reload the tableview
-//      self?.tableView?.reloadData()
-//    }
     model._activities.removeAllListeners()
     model._activities.listen(self) { [weak self] activities in
       self?.tableView?.reloadData()
@@ -67,12 +56,11 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
 
   private func setupTableView() {
     tableView = DLTableView()
+    tableView?.showsVerticalScrollIndicator = true
     tableView?.backgroundColor = .whiteColor()
     tableView?.delegate = self
     tableView?.dataSource = self
     rootView?.view.addSubview(tableView!)
-  
-    tableView?.fillSuperview()
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -86,14 +74,17 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
       cell.activity = model.activities[indexPath.row]
-      cell.showBottomBorder()
+      cell.showSeparatorLine()
       cell._containerPressed.removeAllListeners()
       cell._containerPressed.listen(self) { [weak self] activity in
         if let activity = activity {
           self?.controller.readRealmUser()
-          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.getUser()))
+          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.user))
         }
       }
+      
+      cell.backgroundColor = (model.activities[indexPath.row].timestamp ?? "").isRecent() ? .paradiseGray() : .whiteColor()
+      
       return cell
     }
     return DLTableViewCell()
