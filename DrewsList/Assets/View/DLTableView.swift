@@ -109,7 +109,7 @@ public class DLTableViewCell: UITableViewCell {
   }
   
   public func setupSelf() {
-    backgroundColor = .clearColor()
+    backgroundColor = .whiteColor()
     
     topBorder.backgroundColor = UIColor.tableViewNativeSeparatorColor().CGColor
     topBorder.zPosition = 2

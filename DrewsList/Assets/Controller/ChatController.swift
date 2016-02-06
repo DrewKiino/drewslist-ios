@@ -41,6 +41,7 @@ public class ChatController {
   // message history
   public let didRequestLoadingMessagesFromServer = Signal<Bool>()
   public let didLoadMessagesFromServer = Signal<Bool>()
+  public var didPullToRefresh: Bool = false
   
   // variables
   private var unsubscribeBlock: (() -> Void)?
@@ -257,14 +258,19 @@ public class ChatController {
     socket.isCurrentlyInChat = false
   }
   
-  public func getChatHistoryFromServer() {
+  public func getChatHistoryFromServer(skip: Int = 0, paging: Int = 10) {
     
     didRequestLoadingMessagesFromServer => true
     
-    model.messages.removeAll(keepCapacity: false)
+//    model.messages.removeAll(keepCapacity: false)
     
     // subscribe to the server chat framework's messages callback
     socket.on("chat.getChatHistory.response") { [weak self] json in
+      
+      if json["messages"].array?.isEmpty == true {
+        self?.didLoadMessagesFromServer.fire(false)
+        return
+      }
       
       json["messages"].array?.forEach { [weak self] json in if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) } }
       
@@ -279,8 +285,8 @@ public class ChatController {
     socket.emit("chat.getChatHistory", [
       "user_id": model.friend?._id ?? "",
       "room_id": model.room_id ?? "",
-      "skip": 0,
-      "paging": 10
+      "skip": skip,
+      "paging": paging
     ])
   }
   

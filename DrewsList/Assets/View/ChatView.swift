@@ -15,6 +15,8 @@ public class ChatView: JSQMessagesViewController {
   private let controller = ChatController()
   private unowned var model: ChatModel { get { return controller.model } }
   
+  private var refreshControl: UIRefreshControl?
+  
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
     .incomingMessagesBubbleImageWithColor(UIColor(red: 10/255, green: 180/255, blue: 230/255, alpha: 1.0))
@@ -25,6 +27,7 @@ public class ChatView: JSQMessagesViewController {
     super.viewDidLoad()
     setupSelf()
     setupDataBinding()
+    setupRefreshControl()
     controller.viewDidLoad()
   }
   
@@ -133,18 +136,45 @@ public class ChatView: JSQMessagesViewController {
     }
     controller.didLoadMessagesFromServer.removeAllListeners()
     controller.didLoadMessagesFromServer.listen(self) { [weak self] didReceive in
+      
       if didReceive {
         
         self?.collectionView?.hidden = false
         
         self?.finishReceivingMessageAnimated(false)
-      
+        
         NSTimer.after(0.01) { [weak self] in
-          self?.scrollToBottomAnimated(false)
+          if self?.controller.didPullToRefresh == false {
+            
+            self?.scrollToBottomAnimated(false)
+            
+          } else {
+            
+            self?.collectionView?.setContentOffset(CGPointZero, animated: true)
+            
+            self?.controller.didPullToRefresh = false
+          }
         }
       }
+      
+      self?.refreshControl?.endRefreshing()
     }
   }
+  
+  private func setupRefreshControl() {
+    refreshControl = UIRefreshControl()
+    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    collectionView?.addSubview(refreshControl!)
+  }
+  
+  // MARK: UIRefreshControl methods
+  
+  public func refresh(sender: UIRefreshControl) {
+    controller.didPullToRefresh = true
+    controller.getChatHistoryFromServer(model.messages.count, paging: 10)
+  }
+  
+  // MARK: JSQ delegate methods
   
   public override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
     // tell the controller the 'send' button was pressed, then pass in the data
@@ -156,21 +186,30 @@ public class ChatView: JSQMessagesViewController {
   // MARK: Collection View Delegates
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
-    return model.messages.isEmpty ? nil : model.messages[indexPath.row]
+    // NOTE: returning nil here causes a crash
+    // therefore, it is better to return an empty JSQMessage object
+    return model.messages.isEmpty ? JSQMessage(senderId: "", displayName: "", text: "") : model.messages[indexPath.row]
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
-    return model.messages[indexPath.row].senderId == senderId ? outgoingBubble : incomingBubble
+    return model.messages.isEmpty ? nil : model.messages[indexPath.row].senderId == senderId ? outgoingBubble : incomingBubble
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-    return model.messages[indexPath.row].senderId == senderId ?
-      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
-      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
+    return getJSQMessageAvatarImageDataSource(indexPath.row)
+//    return indexPath.row > 0 ?
+//      model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : getJSQMessageAvatarImageDataSource(indexPath.row)
+//    : getJSQMessageAvatarImageDataSource(indexPath.row)
   }
   
   public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return model.messages.count
+  }
+  
+  private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
+    return model.messages.isEmpty ? nil : model.messages[index].senderId == senderId ?
+      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
+      JSQMessagesAvatarImage(avatarImage: model.friend_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
   }
   
   public func setUsers(user: User?, friend: User?) -> Self {

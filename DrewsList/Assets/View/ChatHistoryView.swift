@@ -20,11 +20,14 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
 
   private var tableView: DLTableView?
   
+  private var refreshControl: UIRefreshControl?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupSelf()
     setupDataBinding()
     setupTableView()
+    setupRefreshControl()
     
     tableView?.fillSuperview()
   }
@@ -54,9 +57,31 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     }
     model._shouldRefreshViews.removeAllListeners()
     model._shouldRefreshViews.listen(self) { [weak self] bool in
-      if bool { self?.tableView?.reloadData() }
+      
+      if bool {
+        UIView.animateWithDuration(0.2) { [weak self] in
+          self?.tableView?.reloadData()
+        }
+      }
+    
+      self?.refreshControl?.endRefreshing()
     }
   }
+  
+  private func setupRefreshControl() {
+    refreshControl = UIRefreshControl()
+    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    tableView?.addSubview(refreshControl!)
+  }
+  
+  // MARK: UIRefreshControl methods
+  
+  public func refresh(sender: UIRefreshControl) {
+    controller.readRealmUser()
+    controller.loadChatHistoryFromServer()
+  }
+  
+  // MARK: UITableView delegate methods
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     return 58
