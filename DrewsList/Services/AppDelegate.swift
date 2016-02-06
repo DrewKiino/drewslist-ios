@@ -14,6 +14,7 @@ import SwiftyJSON
 import FBSDKCoreKit
 import FBSDKLoginKit
 import Signals
+import CoreLocation
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
@@ -50,7 +51,7 @@ public let _applicationDidEnterBackground = Signal<Bool>()
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   private let userController = UserController()
-
+  
   var window: UIWindow?
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

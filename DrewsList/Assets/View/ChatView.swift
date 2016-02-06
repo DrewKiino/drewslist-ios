@@ -8,6 +8,7 @@
 
 import Foundation
 import JSQMessagesViewController
+import SwiftDate
 
 public class ChatView: JSQMessagesViewController {
   
@@ -185,6 +186,10 @@ public class ChatView: JSQMessagesViewController {
   
   // MARK: Collection View Delegates
   
+  public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return model.messages.count
+  }
+  
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
     // NOTE: returning nil here causes a crash
     // therefore, it is better to return an empty JSQMessage object
@@ -202,14 +207,48 @@ public class ChatView: JSQMessagesViewController {
 //    : getJSQMessageAvatarImageDataSource(indexPath.row)
   }
   
-  public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return model.messages.count
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+      NSAttributedString(string: getDateString(indexPath.row))
+      : indexPath.row > 0 ?
+        model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+          nil
+          : NSAttributedString(string: getBubbleTopText(indexPath.row))
+        : NSAttributedString(string: getBubbleTopText(indexPath.row))
   }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+    return indexPath.row == (model.messages.count - 1) ?
+      20
+      : indexPath.row > 0 ?
+          model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20
+        : 20
+  }
+  
+//  public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+//    return indexPath.row > 0 ?
+//      model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : NSAttributedString(string: model.messages[indexPath.row].date.dl_toRelativeString() ?? "")
+//    : NSAttributedString(string: model.messages[indexPath.row].date.dl_toRelativeString() ?? "")
+//  }
+//  
+//  public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+//    return indexPath.row > 0 ?
+//      model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 1 : model.messages[indexPath.row].date.isToday() ? 24 : 1
+//      : model.messages[indexPath.row].date.isToday() ? 24 : 1
+//  }
   
   private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
     return model.messages.isEmpty ? nil : model.messages[index].senderId == senderId ?
       JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
       JSQMessagesAvatarImage(avatarImage: model.friend_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
+  }
+  
+  private func getBubbleTopText(index: Int) -> String {
+    return "\(model.messages.isEmpty ? "" : model.messages[index].senderId == model.user?._id ? model.user?.getName() ?? "" : model.friend?.getName() ?? "") (\(getDateString(index)))"
+  }
+  
+  private func getDateString(index: Int) -> String {
+    return model.messages[index].date.dl_toString() ?? ""
   }
   
   public func setUsers(user: User?, friend: User?) -> Self {

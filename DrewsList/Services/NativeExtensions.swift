@@ -115,6 +115,10 @@ extension NSDate {
   }
   
   public func isRecent() -> Bool { return dl_toRelativeString() == "now" }
+  
+  public func dl_toString() -> String? {
+    return toString(.ShortStyle, dateStyle: .ShortStyle, timeStyle: .ShortStyle, inRegion: .LocalRegion())
+  }
 }
 
 extension String {

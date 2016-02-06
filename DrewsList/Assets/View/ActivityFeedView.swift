@@ -53,10 +53,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   private func setupDataBinding() {
     model._activities.removeAllListeners()
     model._activities.listen(self) { [weak self] activities in
-      UIView.animateWithDuration(0.2) { [weak self] in
-        self?.tableView?.reloadData()
-      }
       self?.refreshControl?.endRefreshing()
+      self?.tableView?.reloadData()
     }
   }
 

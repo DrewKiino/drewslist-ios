@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import Signals
 import PromiseKit
 import SwiftyJSON
@@ -114,8 +114,9 @@ public class Sockets {
   }
   
   public class func new() -> SocketIOClient {
+    
     let socket = SocketIOClient(
-      socketURL: ServerUrl.Default.getValue(),
+      socketURL: NSURL(string: ServerUrl.Default.getValue()) ?? NSURL(),
       options: [
         .Log(false),
         .ForcePolling(false),
@@ -127,8 +128,7 @@ public class Sockets {
             NSHTTPCookieValue: UIDevice.currentDevice().identifierForVendor!.UUIDString,
             NSHTTPCookieSecure: true,
             NSHTTPCookieExpires: NSDate(timeIntervalSinceNow: 60)
-            ])!
-          ]
+          ])!]
         )
       ]
     )
