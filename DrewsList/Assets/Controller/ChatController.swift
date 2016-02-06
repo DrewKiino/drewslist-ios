@@ -153,7 +153,7 @@ public class ChatController {
     willRequestSubscription => true
     
     socket.emit(
-      "subscribe",
+      "chat.subscribe",
       [
         "room_id": room_id,
         "user_id": user_id
@@ -165,7 +165,7 @@ public class ChatController {
     guard let room_id = model.room_id, let user_id = model.user?._id else { return }
     
     socket.emit(
-      "unsubscribe",
+      "chat.unsubscribe",
       [
         "room_id": room_id,
         "user_id": user_id
@@ -175,20 +175,10 @@ public class ChatController {
     unsubscribeBlock = completionHandler
   }
   
-  public func setOnlineStatus(user_id: String, online: Bool) {
-    socket.emit(
-      "setOnlineStatus",
-      [
-        "online": online,
-        "user_id": user_id
-      ]
-    )
-  }
-  
   public func connectToServer() {
     
     // subscribe to the server chat framework's connect callback
-    socket.on("subscribe.response") { [weak self] json in
+    socket.on("chat.subscribe.response") { [weak self] json in
       
       if let response = json["response"].string {
         log.info("joined room: \(response)")
@@ -199,7 +189,7 @@ public class ChatController {
       self?.didReceiveSubscriptionResponse.fire(true)
     }
     
-    socket.on("unsubscribe.response") { [weak self] json in
+    socket.on("chat.unsubscribe.response") { [weak self] json in
       if let response = json["response"].string {
         log.info("left room: \(response)")
       } else if let error = json["error"].string {
@@ -244,7 +234,7 @@ public class ChatController {
     // subscribe user to chat room
     subscribe()
     // get message history
-    getChatHistoryFromServer()
+    getChatHistoryFromServer(model.messages.count, paging: 10)
     // publish to all subscribers that the user is in chat view
     socket.isCurrentlyInChat = true
   }
@@ -267,22 +257,27 @@ public class ChatController {
     // subscribe to the server chat framework's messages callback
     socket.on("chat.getChatHistory.response") { [weak self] json in
       
-      if json["messages"].array?.isEmpty == true {
+      if let error = json["error"].string {
+        self?.didLoadMessagesFromServer.fire(false)
+        return log.error(error)
+        
+      } else if json["messages"].array?.isEmpty == true {
         self?.didLoadMessagesFromServer.fire(false)
         return
+        
+      } else {
+        
+        json["messages"].array?.forEach { [weak self] json in
+          if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) }
+        }
+        
+        // get teh time stamp of the most recent message
+        self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
+        
+        self?.loadChatHistory()
+        
+        self?.didLoadMessagesFromServer.fire(true)
       }
-      
-      json["messages"].array?.forEach { [weak self] json in
-        log.debug(json)
-        if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) }
-      }
-      
-      // get teh time stamp of the most recent message
-      self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
-      
-      self?.loadChatHistory()
-      
-      self?.didLoadMessagesFromServer.fire(true)
     }
     
     socket.emit("chat.getChatHistory", [

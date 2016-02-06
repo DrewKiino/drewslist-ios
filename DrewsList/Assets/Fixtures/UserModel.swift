@@ -81,7 +81,7 @@ public class User: Mappable {
     lastName        <- map["lastName"]
     username        <- map["username"]
     school          <- map["school"]
-    image           <- map["image"]
+    imageUrl        <- map["image"]
     bgImage         <- map["bgImage"]
     description     <- map["description"]
     deviceToken     <- map["deviceToken"]

@@ -100,7 +100,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
       cell._containerPressed.listen(self) { [weak self] activity in
         if let activity = activity {
           self?.controller.readRealmUser()
-          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.user))
+          self?.pushViewController(ChatView().setUsers(self?.model.user, friend: activity.user), animated: true)
+//          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.user))
         }
       }
       

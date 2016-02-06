@@ -59,6 +59,7 @@ public class ChatHistoryController {
           
           if let users = json["users"].array {
             for user in users {
+              
               let user = User(json: user["user"])
               
               if user._id != self?.model.user?._id {

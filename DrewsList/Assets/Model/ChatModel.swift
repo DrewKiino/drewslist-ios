@@ -77,11 +77,8 @@ public class IncomingMessage: Mappable {
   public let _message = Signal<String?>()
   public var message: String? { didSet { _message => message } }
   
-  public let _friend_id = Signal<String?>()
-  public var friend_id: String? { didSet { _friend_id => friend_id } }
-  
-  public let _friend_username = Signal<String?>()
-  public var friend_username: String? { didSet { _friend_username => friend_username } }
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
  
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
@@ -95,14 +92,13 @@ public class IncomingMessage: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
+    user            <- map["user"]
     message         <- map["message"]
-    friend_id       <- map["friend_id"]
-    friend_username <- map["friend_username"]
     createdAt       <- map["createdAt"]
   }
   
   public func toJSQMessage() -> JSQMessage? {
-    guard let friend_id = friend_id, let friend_username = friend_username, let message = message, let date = createdAt?.toDateFromISO8601() else { return nil }
+    guard let friend_id = user?._id, let friend_username = user?.getName(), let message = message, let date = createdAt?.toDateFromISO8601() else { return nil }
     return JSQMessage(senderId: friend_id, senderDisplayName: friend_username, date: date, text: message)
   }
   
