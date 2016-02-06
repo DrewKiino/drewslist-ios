@@ -272,7 +272,10 @@ public class ChatController {
         return
       }
       
-      json["messages"].array?.forEach { [weak self] json in if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) } }
+      json["messages"].array?.forEach { [weak self] json in
+        log.debug(json)
+        if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) }
+      }
       
       // get teh time stamp of the most recent message
       self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
