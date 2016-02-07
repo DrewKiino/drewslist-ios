@@ -8,7 +8,6 @@
 
 import Foundation
 import RealmSwift
-import FBSDKLoginKit
 
 public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
@@ -106,7 +105,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
             // deletes the current user, then will log user out.
             self?.deleteRealmUser()
             // log out of facebook if they are logged in
-            FacebookController.sharedInstance().disconnect()
+            FacebookManager.sharedInstance().disconnect()
             // since the current user does not exist anymore
             // we ask the tab view to check any current user, since we have no current user
             // it will present the login screen

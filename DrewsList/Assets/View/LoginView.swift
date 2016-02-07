@@ -371,7 +371,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   }
   
   // MARK: Delegates
-  
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
     if let error = error {
       // Process error
@@ -383,6 +382,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     }
     else {
       print("User is logged in")
+      print("FB Profile URL \(FacebookManager.sharedInstance().getBasicFBUserInfo())")
       // Navigate to other view
       print("Naviating to the new view")
       presentViewController(TabView(), animated: true, completion: nil)
