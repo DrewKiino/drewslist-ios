@@ -33,16 +33,16 @@ public enum ServerUrl {
   }
 }
 
-private var _fbLoginManager: FBSDKLoginManager?
-
-var fbLoginManager: FBSDKLoginManager {
-get {
-  if _fbLoginManager == nil {
-    _fbLoginManager = FBSDKLoginManager()
-  }
-  return _fbLoginManager!
-}
-}
+//private var _fbLoginManager: FBSDKLoginManager?
+//
+//var fbLoginManager: FBSDKLoginManager {
+//get {
+//  if _fbLoginManager == nil {
+//    _fbLoginManager = FBSDKLoginManager()
+//  }
+//  return _fbLoginManager!
+//}
+//}
 
 public let _applicationWillEnterForeground = Signal<Bool>()
 public let _applicationDidEnterBackground = Signal<Bool>()
