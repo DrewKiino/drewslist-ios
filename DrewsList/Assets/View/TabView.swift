@@ -45,7 +45,7 @@ public class TabView: UITabBarController {
     super.viewDidAppear(animated)
     
     if !socket.isConnected() {
-      view.displayStatusNotification("Connecting to server", animated: false)
+      view.displayStatusNotification("Connecting to server")
     }
     
     checkIfUserIsLoggedIn()
@@ -56,7 +56,7 @@ public class TabView: UITabBarController {
       self?.view.dismissStatusNotification(true)
     }
     socket.onReconnectAttempt("TabView") { [weak self] in
-      self?.view.displayStatusNotification("Connecting to server", animated: true)
+      self?.view.displayStatusNotification("Connecting to server")
     }
   }
   
@@ -143,6 +143,11 @@ public class TabView: UITabBarController {
       // push the new corresponding chat view
       chatHistoryView.pushViewController(chatView, animated: false)
     }
+  }
+  
+  public override func tabBar(tabBar: UITabBar, didSelectItem item: UITabBarItem) {
+    // nullify badge count whenver user selects the tab
+    item.badgeValue = nil
   }
 }
 

@@ -959,40 +959,6 @@ public class BookViewCell: DLTableViewCell {
   }
 }
 
-public class ListFeedCell: DLTableViewCell {
-  
-  public var listView: ListView?
-  
-  public let _cellPressed = Signal<Bool>()
-  
-  public var isUserListing: Bool = false { didSet { listView?.isUserListing = isUserListing } }
-  
-  public override func setupSelf() {
-    super.setupSelf()
-    
-    setupListView()
-    
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    listView?.fillSuperview()
-  }
-  
-  private func setupListView() {
-    listView = ListView()
-    listView?.tableView?.scrollEnabled = false
-    listView?.isUserListing = isUserListing
-    addSubview(listView!)
-  }
-  
-  public func cellPressed() {
-    _cellPressed => true
-  }
-}
-
 public class BookDetailCell: DLTableViewCell {
   
   public var authorsLabel: UILabel?

@@ -13,12 +13,11 @@ import Signals
 
 public class ActivityFeedController {
   
-  private struct Singleton { private static let _didUpdateChat = Signal<Bool>() }
-  public class func shared_didUpdateChat() -> Signal<Bool> { return Singleton._didUpdateChat }
-  
   public let model = ActivityFeedModel()
   
   private let socket = Sockets.sharedInstance()
+  
+  public let didGetActivityHistoryFromServer = Signal<Bool>()
   
   public init() {
     setupSelf()
@@ -26,6 +25,7 @@ public class ActivityFeedController {
   }
   
   public func viewDidAppear() {
+    markActivitiesAsSeen()
     getActivityFeedFromServer()
   }
   
@@ -47,17 +47,37 @@ public class ActivityFeedController {
   
   public func getActivityFeedFromServer() {
     socket.on("activityFeed.getActivityHistory.response") { [weak self] json in
-      if let jsonArray = json["activities"].array {
+      if let jsonArray = json["activities"].array where !jsonArray.isEmpty {
+        
+        // reset the badge count
+        self?.model.badgeCount = 0
         
         self?.model.activities.removeAll(keepCapacity: false)
         
         for json in jsonArray {
+          // add the activity results into the model
           self?.model.activities.append(Activity(json: json))
+          
+          // increment the badge count for each unread activity
+          self?.model.badgeCount += (json["isSeen"].bool ?? false) ? 0 : 1
         }
+        
+        self?.didGetActivityHistoryFromServer.fire(true)
+        
+      } else {
+        
+        self?.didGetActivityHistoryFromServer.fire(false)
       }
     }
     
     socket.emit("activityFeed.getActivityHistory", [ "user_id": model.user?._id ?? "" ])
+  }
+  
+  public func markActivitiesAsSeen() {
+    socket.on("activityFeed.markActivitiesAsSeen.response") { [weak self] json in
+    }
+    
+    socket.emit("activityFeed.markActivitiesAsSeen", [ "user_id": model.user?._id ?? "" ])
   }
   
   // MARK: Realm Functions

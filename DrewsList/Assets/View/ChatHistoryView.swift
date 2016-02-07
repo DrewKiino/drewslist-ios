@@ -66,8 +66,11 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
         }
       }
     
-      self?.refreshControl?.endRefreshing()
       self?.view.dismissActivityView()
+      
+      NSTimer.after(1.0) { [weak self] in
+        self?.refreshControl?.endRefreshing()
+      }
     }
   }
   

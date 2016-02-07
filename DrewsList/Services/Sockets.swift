@@ -67,6 +67,7 @@ public class Sockets {
     socket.on("reconnect") { data, socket in
     }
     socket.on("reconnectAttempt") { [weak self] data, socket in
+      log.info("attempting to reconnect.")
       if let executions = self?.reconnectExecutionArray?.values {
         for execute in executions {
           execute()
