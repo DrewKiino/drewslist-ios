@@ -19,12 +19,13 @@ public class UserController {
   }
   
   public static func sharedInstance() -> UserController { return Singleton.userController }
+  public class func setSharedUser(user: User?) { if let user = user { UserModel.setSharedUser(user) } }
   
   private let socket = Sockets.sharedInstance()
   
   public let model = UserModel()
   
-  public func getUser() -> User? { return model.user }
+  public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return UserModel.sharedUser() }
   
   // MARK: Realm Functions
   func readUserDefaults() -> UserDefaults? { if let defaults =  try! Realm().objects(UserDefaults.self).first { return defaults } else { return nil } }
@@ -52,7 +53,6 @@ public class UserController {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
         log.info("server: received device token.")
-        log.debug(json)
         self?.model.user = User(json: json)
       }
     }

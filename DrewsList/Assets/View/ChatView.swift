@@ -16,7 +16,9 @@ public class ChatView: JSQMessagesViewController {
   private let controller = ChatController()
   private unowned var model: ChatModel { get { return controller.model } }
   
+  // UI Controls
   private var refreshControl: UIRefreshControl?
+  private var alertController: UIAlertController?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -29,6 +31,7 @@ public class ChatView: JSQMessagesViewController {
     setupSelf()
     setupDataBinding()
     setupRefreshControl()
+    setupAlertController()
     controller.viewDidLoad()
   }
   
@@ -56,7 +59,7 @@ public class ChatView: JSQMessagesViewController {
     title = model.friend?.getName()
     inputToolbar?.translucent = false
     // hide attachment button
-    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+//    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
   }
   
   private func setupDataBinding() {
@@ -165,6 +168,15 @@ public class ChatView: JSQMessagesViewController {
     }
   }
   
+  private func setupAlertController() {
+    alertController = UIAlertController()
+    alertController?.addAction(UIAlertAction(title: "Send my location", style: .Default) { [weak self] action in
+      self?.controller.postUserLocation()
+    })
+    alertController?.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+  }
+  
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
@@ -185,7 +197,11 @@ public class ChatView: JSQMessagesViewController {
     controller.didPressSendButton(text)
   }
   
-  public override func didPressAccessoryButton(sender: UIButton!) {}
+  public override func didPressAccessoryButton(sender: UIButton!) {
+    if let alertController = alertController {
+      presentViewController(alertController, animated: true, completion: nil)
+    }
+  }
   
   // MARK: Collection View Delegates
   
@@ -227,7 +243,7 @@ public class ChatView: JSQMessagesViewController {
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
     return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
-      NSAttributedString(string: getDateString(indexPath.row, simple: true))
+      NSAttributedString(string: getDateString(indexPath.row, simple: false))
       : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ? model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ?
         NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
         : NSAttributedString(string: getDateString(indexPath.row, simple: true))

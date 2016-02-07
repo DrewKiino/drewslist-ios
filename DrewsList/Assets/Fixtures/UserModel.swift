@@ -15,13 +15,6 @@ import Async
 
 public class User: Mappable {
   
-  // a singleton class of a user
-  // this class is reserved for the main User that is logged in for
-  // all other controllers to access
-  private struct Singleton { private static var user: User? } 
-  public static func sharedUser() -> User? { return Singleton.user }
-
-  
   public let __id = Signal<String?>()
   public var _id: String? { didSet { __id => _id } }
   
@@ -121,6 +114,13 @@ public class User: Mappable {
 }
 
 public class UserModel {
+  
+  // a singleton class of a user
+  // this class is reserved for the main User that is logged in for
+  // all other controllers to access
+  private struct Singleton { private static let _user = Signal<User?>(); private static var user: User? { didSet { Singleton._user => Singleton.user } } }
+  public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return (Singleton._user, Singleton.user) }
+  public class func setSharedUser(user: User?) { if let user = user { Singleton.user = user } }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }

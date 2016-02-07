@@ -27,6 +27,8 @@ public class ChatController {
   
   public let socket = Sockets.sharedInstance()
   
+  public let locationController = LocationController.sharedInstanced()
+  
   // MARK : PUB/SUB
   
   // subscription
@@ -310,5 +312,9 @@ public class ChatController {
       mostRecentTimestamp: model.mostRecentTimestamp
     ), update: true)
     try! realm.commitWrite()
+  }
+  
+  public func postUserLocation() {
+    locationController.getLocation()
   }
 }

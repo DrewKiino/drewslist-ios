@@ -44,6 +44,10 @@ public class ChatHistoryController {
         self?.readRealmUser()
         self?.loadChatHistoryFromServer() }
     }
+    UserController.sharedUser()._user.removeListener(self)
+    UserController.sharedUser()._user.listen(self) { [weak self] user in
+      self?.model.user = user
+    }
   }
   
   public func loadChatHistoryFromServer() {

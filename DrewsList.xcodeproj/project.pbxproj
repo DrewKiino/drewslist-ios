@@ -99,6 +99,9 @@
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
+		EEB24D4D1C67C36700767AEC /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D4C1C67C36700767AEC /* LocationController.swift */; };
+		EEB24D4F1C67C42B00767AEC /* PermissionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */; };
+		EEB24D511C67C81B00767AEC /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D501C67C81B00767AEC /* LocationModel.swift */; };
 		EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */; };
 		EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */; };
 		EEC3E04B1C2DFE2A00D7843C /* SearchUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */; };
@@ -236,6 +239,9 @@
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
+		EEB24D4C1C67C36700767AEC /* LocationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
+		EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsController.swift; sourceTree = "<group>"; };
+		EEB24D501C67C81B00767AEC /* LocationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
 		EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedView.swift; sourceTree = "<group>"; };
 		EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolView.swift; sourceTree = "<group>"; };
 		EEC3E04A1C2DFE2A00D7843C /* SearchUserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchUserView.swift; sourceTree = "<group>"; };
@@ -393,6 +399,7 @@
 				EED8BADD1C45E9FF00EDB30D /* PushModel.swift */,
 				39B35FF31C4A18EE0084007D /* TermPrivacyModel.swift */,
 				39FE52261C4C362800FDFDC4 /* DeleteListingModel.swift */,
+				EEB24D501C67C81B00767AEC /* LocationModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -460,6 +467,8 @@
 				EED8BADB1C45E9CE00EDB30D /* PushController.swift */,
 				39B35FF51C4A19340084007D /* TermPrivacyController.swift */,
 				39FE52281C4C364400FDFDC4 /* DeleteListingController.swift */,
+				EEB24D4C1C67C36700767AEC /* LocationController.swift */,
+				EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -847,11 +856,13 @@
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
 				EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */,
+				EEB24D4D1C67C36700767AEC /* LocationController.swift in Sources */,
 				EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */,
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */,
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,
 				EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */,
+				EEB24D511C67C81B00767AEC /* LocationModel.swift in Sources */,
 				EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */,
 				EE1062921C433DE300DAA15E /* ActivityFeedController.swift in Sources */,
 				EE007AF81C1E4DCC0088ACBF /* ListModel.swift in Sources */,
@@ -876,6 +887,7 @@
 				4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EEC3E04F1C2DFE3800D7843C /* SearchUserController.swift in Sources */,
+				EEB24D4F1C67C42B00767AEC /* PermissionsController.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */,
 				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,
