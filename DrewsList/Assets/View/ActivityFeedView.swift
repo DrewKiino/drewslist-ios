@@ -102,7 +102,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return model.activities.count < 20 ? model.activities.count : 20
+    return model.activities.count < 50 ? model.activities.count : 50
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

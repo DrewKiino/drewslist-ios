@@ -54,6 +54,7 @@ public class ChatView: JSQMessagesViewController {
   private func setupSelf() {
     // set chat view title to friend's title
     title = model.friend?.getName()
+    inputToolbar?.translucent = false
     // hide attachment button
     inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
   }
