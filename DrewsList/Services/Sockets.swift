@@ -39,7 +39,8 @@ public class Sockets {
   public let socket = Sockets.new()
   public var isCurrentlyInChat: Bool = false
   
-  public var executionArray: [String: () -> Void]?
+  public var connectExecutionArray: [String: () -> Void]?
+  public var reconnectExecutionArray: [String: () -> Void]?
   
   public let _message = Signal<JSON>()
   
@@ -57,7 +58,7 @@ public class Sockets {
       
       execute?()
       
-      if let executions = self?.executionArray?.values {
+      if let executions = self?.connectExecutionArray?.values {
         for execute in executions {
           execute()
         }
@@ -65,7 +66,12 @@ public class Sockets {
     }
     socket.on("reconnect") { data, socket in
     }
-    socket.on("reconnectAttempt") { data, socket in
+    socket.on("reconnectAttempt") { [weak self] data, socket in
+      if let executions = self?.reconnectExecutionArray?.values {
+        for execute in executions {
+          execute()
+        }
+      }
     }
     socket.on("disconnect") { [weak self] data, socket in
       log.info("disconnected from server.")
@@ -165,10 +171,18 @@ public class Sockets {
   }
   
   public func onConnect(host: String, execute: () -> Void) {
-    if executionArray != nil {
-      executionArray?.updateValue(execute, forKey: host)
+    if connectExecutionArray != nil {
+      connectExecutionArray?.updateValue(execute, forKey: host)
     } else {
-      executionArray = [host: execute]
+      connectExecutionArray = [host: execute]
+    }
+  }
+  
+  public func onReconnectAttempt(host: String, execute: () -> Void) {
+    if reconnectExecutionArray != nil {
+      reconnectExecutionArray?.updateValue(execute, forKey: host)
+    } else {
+      reconnectExecutionArray = [host: execute]
     }
   }
   

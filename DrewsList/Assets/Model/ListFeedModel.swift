@@ -12,6 +12,9 @@ import RealmSwift
 
 public class ListFeedModel {
   
+  public let _user = Signal<User?>()
+  public var user: User? { didSet { _user => user } }
+  
   public let _listings = Signal<[Listing]>()
   public var listings: [Listing] = [] { didSet { _listings => listings } }
   

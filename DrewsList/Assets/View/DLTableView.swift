@@ -965,6 +965,8 @@ public class ListFeedCell: DLTableViewCell {
   
   public let _cellPressed = Signal<Bool>()
   
+  public var isUserListing: Bool = false { didSet { listView?.isUserListing = isUserListing } }
+  
   public override func setupSelf() {
     super.setupSelf()
     
@@ -982,6 +984,7 @@ public class ListFeedCell: DLTableViewCell {
   private func setupListView() {
     listView = ListView()
     listView?.tableView?.scrollEnabled = false
+    listView?.isUserListing = isUserListing
     addSubview(listView!)
   }
   

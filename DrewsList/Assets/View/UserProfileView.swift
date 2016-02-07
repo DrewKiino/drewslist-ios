@@ -128,6 +128,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // record the background view's original height
     originalBGViewFrame = bgViewTop?.frame
+    
+    // MARK: UI methods
+    view.showActivityView(-64)
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -167,11 +170,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   private func setupDataBinding() {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
+      self?.view.dismissActivityView()
     }
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
       if bool == true {
-        self?.view.showLoadingScreen(nil, bgOffset: nil ,fadeIn: true) { [weak self] in
+        self?.view.showLoadingScreen(-64, bgOffset: nil ,fadeIn: true) { [weak self] in
           if let frame = self?.originalBGViewFrame { self?.bgViewTop?.frame = frame }
           self?.scrollView?.panGestureRecognizer.enabled = false
           self?.scrollView?.panGestureRecognizer.enabled = true

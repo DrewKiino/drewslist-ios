@@ -10,6 +10,7 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 import RealmSwift
+import Signals
 
 public class ListFeedController {
   
@@ -19,30 +20,37 @@ public class ListFeedController {
   
   private let serverUrl = ServerUrl.Default.getValue() + "/listing"
   
-  public init() {}
+  public let shouldRefreshViews = Signal<Bool>()
+  
+  public init() {
+    readRealmUser()
+  }
   
   public func getModel() -> ListFeedModel { return model }
   
-  public func getListingsFromServer(skip: Int? = nil, listType: String? = nil) {
+  public func getListingsFromServer(skip: Int? = nil, listType: String? = nil, clearListings: Bool) {
     if model.shouldRefrainFromCallingServer == true { return }
     
-    if skip == 0 { model.listings.removeAll(keepCapacity: false) }
+    if clearListings { model.listings.removeAll(keepCapacity: false) }
     
     // lock the view
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, skip != nil ? listType != nil ? "\(serverUrl)?skip=\(skip!)&listType=\(listType!)" : "\(serverUrl)?skip=\(skip!)" : serverUrl, encoding: .URL)
+    Alamofire.request(.GET, "\(serverUrl)?skip=\(skip ?? 0)&listType=\(listType ?? model.listType ?? "All")", encoding: .URL)
     .response { [weak self] req, res, data, error in
       
       if let error = error {
         log.error(error)
+      } else if let data = data where JSON(data: data).array?.isEmpty == true {
+        self?.shouldRefreshViews.fire(false)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
         // for each listing in the JSON response, append it to the listings array
         // in the list feed model
         for json in jsonArray { self?.model.listings.append(Listing(json: json)) }
+        
+        self?.shouldRefreshViews.fire(true)
       }
-      
       
       // to safeguard against multiple server calls when the server has no more data
       // to send back, we use a timer to disable this controller's server calls
@@ -65,4 +73,8 @@ public class ListFeedController {
       self?.model.shouldRefrainFromCallingServer = false
     }
   }
+  
+  // MARK: Realm Functions
+  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
 }

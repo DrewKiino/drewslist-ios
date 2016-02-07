@@ -15,6 +15,7 @@ public class TabView: UITabBarController {
   
   private let controller = TabController()
   private var model: TabModel { get { return controller.model } }
+  private let socket = Sockets.sharedInstance()
   
   var testView = CreateListingView()
   var communityView: CommunityFeedView? = CommunityFeedView()
@@ -33,6 +34,7 @@ public class TabView: UITabBarController {
     setupActivityView()
     setupUserProfileViewContainer()
     setupViewControllers()
+    setupSockets()
     
     tabBar.translucent = false
     tabBar.tintColor = .soothingBlue()
@@ -41,7 +43,21 @@ public class TabView: UITabBarController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
+    if !socket.isConnected() {
+      view.displayStatusNotification("Connecting to server", animated: false)
+    }
+    
     checkIfUserIsLoggedIn()
+  }
+  
+  private func setupSockets() {
+    socket.onConnect("TabView") { [weak self] in
+      self?.view.dismissStatusNotification(true)
+    }
+    socket.onReconnectAttempt("TabView") { [weak self] in
+      self?.view.displayStatusNotification("Connecting to server", animated: true)
+    }
   }
   
   private func setupDataBinding() {
@@ -67,7 +83,7 @@ public class TabView: UITabBarController {
     selectedIndex = 3
     
     // fixture selected index
-    selectedIndex = 1
+    selectedIndex = 0
     
     // dealloc reference view controllers
     communityView = nil

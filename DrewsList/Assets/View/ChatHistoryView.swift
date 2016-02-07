@@ -30,6 +30,8 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     setupRefreshControl()
     
     tableView?.fillSuperview()
+    
+    view.showActivityView()
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -65,6 +67,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
       }
     
       self?.refreshControl?.endRefreshing()
+      self?.view.dismissActivityView()
     }
   }
   

@@ -28,6 +28,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     setupDataBinding()
     setupTableView()
     setupRefreshControl()
+    
+    view.showActivityView()
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -54,6 +56,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     model._activities.removeAllListeners()
     model._activities.listen(self) { [weak self] activities in
       self?.refreshControl?.endRefreshing()
+      self?.view.dismissActivityView()
       self?.tableView?.reloadData()
     }
   }

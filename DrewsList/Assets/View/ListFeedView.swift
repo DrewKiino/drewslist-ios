@@ -131,7 +131,6 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
       self?._userImagePressed.fire(user)
     }
     scrollView?.addSubview(saleListFeedView!)
-    saleListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func setupWishListFeed() {
@@ -150,7 +149,6 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
       self?._userImagePressed.fire(user)
     }
     scrollView?.addSubview(wishListFeedView!)
-    wishListFeedView?.showLoadingScreen(-132, bgOffset: nil)
   }
   
   public func selectLeftPage() {
@@ -209,8 +207,8 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   }
   
   public func getListingsFromServer(skip: Int?, listing: String?) {
-    if listing == "buying" { wishListFeedView?.getListingsFromServer(skip, listing: listing) }
-    else if listing == "selling" { saleListFeedView?.getListingsFromServer(skip, listing: listing) }
+    if listing == "buying" { wishListFeedView?.getListingsFromServer(skip, listing: listing, clearListings: true) }
+    else if listing == "selling" { saleListFeedView?.getListingsFromServer(skip, listing: listing, clearListings: true) }
   }
 }
 
@@ -220,6 +218,8 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   private var model: ListFeedModel { get { return controller.getModel() } }
   
   private var tableView: DLTableView?
+  
+  private var refreshControl: UIRefreshControl?
   
   public let _chatButtonPressed = Signal<Listing?>()
   public let _callButtonPressed = Signal<Listing?>()
@@ -231,6 +231,9 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     setupDataBinding()
     setupTableView()
+    setupRefreshControl()
+    
+    showActivityView(-132)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -245,20 +248,22 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   private func setupDataBinding() {
-    model._listings.removeAllListeners()
-    model._listings.listen(self) { [weak self] listings in
+    controller.shouldRefreshViews.removeAllListeners()
+    controller.shouldRefreshViews.listen(self) { [weak self] listings in
+      self?.dismissActivityView()
       self?.tableView?.reloadData()
+      NSTimer.after(1.0) { [weak self] in
+        self?.refreshControl?.endRefreshing()
+      }
     }
     
     model._listType.removeAllListeners()
     model._listType.listen(self) { [weak self] listType in
-      self?.model.listings.removeAll(keepCapacity: false)
-      self?.controller.getListingsFromServer(0, listType: listType)
+      self?.controller.getListingsFromServer(0, listType: listType, clearListings: true)
     }
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == false { self?.hideLoadingScreen() }
     }
   }
   
@@ -268,6 +273,19 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     tableView?.dataSource = self
     tableView?.backgroundColor = .whiteColor()
     addSubview(tableView!)
+  }
+  
+  private func setupRefreshControl() {
+    refreshControl = UIRefreshControl()
+    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    tableView?.addSubview(refreshControl!)
+  }
+  
+  // MARK: UIRefreshControl methods
+  
+  public func refresh(sender: UIRefreshControl) {
+    
+    controller.getListingsFromServer(clearListings: true)
   }
   
   // MARK: TableView Delegates
@@ -295,6 +313,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
       cell.showBottomBorder()
+      cell.isUserListing = model.user?._id == model.listings[indexPath.row].user?._id
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
@@ -310,6 +329,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       cell.listView?._userProfilePressed.listen(self) { [weak self] user in
         self?._userImagePressed.fire(user)
       }
+      
       return cell
     }
     
@@ -321,7 +341,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     if tableView.contentOffset.y >= (tableView.contentSize.height - frame.size.height) && frame.height > 0 {
       // user has scrolled to the bottom!
       // begin getting more data
-      controller.getListingsFromServer(model.listings.count, listType: model.listType)
+      controller.getListingsFromServer(model.listings.count, listType: model.listType, clearListings: false)
     }
   }
   
@@ -331,10 +351,9 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     model.listType = listType
   }
   
-  public func getListingsFromServer(skip: Int?, listing: String?) {
-    showLoadingScreen(-132, bgOffset: nil)
+  public func getListingsFromServer(skip: Int?, listing: String?, clearListings: Bool) {
     controller.getModel().listings.removeAll(keepCapacity: false)
-    controller.getListingsFromServer(skip, listType: listing)
+    controller.getListingsFromServer(skip, listType: listing, clearListings: clearListings)
   }
 }
 

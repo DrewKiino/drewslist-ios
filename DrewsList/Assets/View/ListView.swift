@@ -216,7 +216,6 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       }
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
-        
         cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
@@ -493,6 +492,9 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     notesTextViewContainer?.hidden = true
     
+    chatButton?.alpha = isUserListing ? 0.0 : 1.0
+    callButton?.alpha = isUserListing ? 0.0 : 1.0
+    
     Async.background { [weak self, weak listing] in
       
       let string1 = "Desired Price: $\(listing?.price ?? "")"
@@ -502,31 +504,22 @@ public class ListerAttributesViewCell: DLTableViewCell {
       
       Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
       
-      if self?.isUserListing == false {
-        
-        // init toucan
-        var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
-        
-        Async.main { [weak self] in
-          self?.callButton?.hidden = false
-          self?.callButton?.setImage(toucan1?.image, forState: .Normal)
-          // deinit toucan
-          toucan1 = nil
-        }
-        
-        var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
-        
-        Async.main { [weak self] in
-          self?.chatButton?.hidden = false
-          self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
-          toucan2 = nil
-        }
-        
-      } else {
-        Async.main { [weak self] in
-          self?.callButton?.hidden = true
-          self?.chatButton?.hidden = true
-        }
+      // init toucan
+      var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
+      
+      Async.main { [weak self] in
+        self?.callButton?.hidden = false
+        self?.callButton?.setImage(toucan1?.image, forState: .Normal)
+        // deinit toucan
+        toucan1 = nil
+      }
+      
+      var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
+      
+      Async.main { [weak self] in
+        self?.chatButton?.hidden = false
+        self?.chatButton?.setImage(toucan2?.image, forState: .Normal)
+        toucan2 = nil
       }
       
       let string2 = "Condition: \(listing?.getConditionText() ?? "")"

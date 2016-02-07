@@ -187,6 +187,25 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
+  public func showActivityView(heightOffset: CGFloat? = nil) {
+    dismissActivityView()
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, screen.width, screen.height)
+    activityView.tag = 1337
+    activityView.startAnimating()
+    addSubview(activityView)
+    activityView = nil
+  }
+  
+  public func dismissActivityView() {
+    for view in subviews {
+      if let activityView = view as? UIActivityIndicatorView where activityView.tag == 1337 {
+        activityView.stopAnimating()
+        activityView.removeFromSuperview()
+      }
+    }
+  }
+  
   public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil, fadeIn: Bool = false, completionHandler: (() -> Void)? = nil) {
   
     subviews.forEach {
@@ -300,21 +319,28 @@ extension UIView {
     }
   }
   
-  public func displayLoadingNotification() {
-    guard let text: String! = "" else { return }
-      
-    var notification: CWStatusBarNotification! = CWStatusBarNotification()
-    notification.notificationAnimationInStyle = .Bottom
-    notification.notificationAnimationOutStyle = .Bottom
-    notification.notificationStyle = .StatusBarNotification
+  public func displayStatusNotification(text: String, animated: Bool) {
     
-    var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
+//    var notification: CWStatusBarNotification! = CWStatusBarNotification()
+//    notification.notificationAnimationInStyle = .Top
+//    notification.notificationAnimationOutStyle = .Top
+//    notification.notificationStyle = .StatusBarNotification
+    
+    dismissStatusNotification(false)
+    
+    var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, animated ? -64 : 0, screen.width, 64))
     loadingLabel.text = text
     loadingLabel.textAlignment = .Center
-    loadingLabel.font = UIFont.asapBold(12)
+    loadingLabel.font = .asapBold(12)
     loadingLabel.textColor = .whiteColor()
     loadingLabel.morphingEffect = .Evaporate
-    loadingLabel.backgroundColor = .bareBlue()
+    loadingLabel.backgroundColor = .juicyOrange()
+    loadingLabel.tag = 1337
+    
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView.frame = CGRectMake(screen.width - 64, 0, 64, 64)
+    activityView.startAnimating()
+    loadingLabel.addSubview(activityView)
     
     NSTimer.every(0.5) { [weak loadingLabel] in
       switch loadingLabel?.text {
@@ -326,10 +352,33 @@ extension UIView {
       }
     }
     
-    notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
+    addSubview(loadingLabel)
     
-    notification = nil
+    if animated {
+      UIView.animateWithDuration(0.7, delay: 1.0, options: .CurveEaseInOut, animations: { [weak loadingLabel] in
+        loadingLabel?.frame.origin.y -= 64
+      }) { bool in
+      }
+    }
+    
     loadingLabel = nil
+    activityView = nil
+  }
+  
+  public func dismissStatusNotification(animated: Bool) {
+    for view in subviews {
+      if let loadingLabel = view as? LTMorphingLabel where loadingLabel.tag == 1337 {
+        if animated {
+          UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveEaseInOut, animations: { [weak loadingLabel] in
+            loadingLabel?.frame.origin.y -= 64
+          }) { [weak loadingLabel] bool in
+            loadingLabel?.removeFromSuperview()
+          }
+        } else {
+          loadingLabel.removeFromSuperview()
+        }
+      }
+    }
   }
   
   public func showComingSoonScreen(offset: CGFloat = 0) {
