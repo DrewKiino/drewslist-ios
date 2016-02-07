@@ -152,7 +152,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     searchBarTextField?.autocapitalizationType = .Words
     searchBarTextField?.spellCheckingType = .No
 //    searchBarTextField?.autocorrectionType = .No
-    searchBarTextField?.clearButtonMode = .WhileEditing
+    searchBarTextField?.clearButtonMode = .Always
     searchBarContainer?.addSubview(searchBarTextField!)
     
     searchBarImageView = UIImageView()

@@ -16,11 +16,15 @@ public class SearchBookController {
   public let model = SearchBookModel.sharedInstance()
   
   private var refrainTimer: NSTimer?
+  private var throttleTimer: NSTimer?
   
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-      self?.searchBook()
+      self?.throttleTimer?.invalidate()
+      self?.throttleTimer = NSTimer.after(1.0) { [weak self] in
+        self?.searchBook()
+      }
     }
   }
   

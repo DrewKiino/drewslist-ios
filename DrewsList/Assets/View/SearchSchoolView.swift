@@ -116,7 +116,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     searchBarTextField?.autocapitalizationType = .Words
     searchBarTextField?.spellCheckingType = .No
     searchBarTextField?.autocorrectionType = .No
-    searchBarTextField?.clearButtonMode = .WhileEditing
+    searchBarTextField?.clearButtonMode = .Always
     searchBarContainer?.addSubview(searchBarTextField!)
     
     searchBarImageView = UIImageView()
