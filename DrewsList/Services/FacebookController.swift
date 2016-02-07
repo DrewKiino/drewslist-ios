@@ -1,5 +1,5 @@
 //
-//  Facebook.swift
+//  FacebookController.swift
 //  DrewsList
 //
 //  Created by Steven Yang on 2/7/16.
@@ -11,12 +11,12 @@ import RealmSwift
 import FBSDKCoreKit
 import FBSDKLoginKit
 
-public class Facebook {
+public class FacebookController {
   private struct Singleton {
-    static let facebook = Facebook()
+    static let facebook = FacebookController()
   }
   
-  public func sharedInstance() -> Facebook { return Singleton.facebook }
+  public func sharedInstance() -> FacebookController { return Singleton.facebook }
   
   // MARK: Realm Functions
   
@@ -24,4 +24,12 @@ public class Facebook {
   
   private func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { user = realmUser.getUser() } }
   private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.user), update: true) } }
+  
+  // MARK: Facebook Functions
+  private func disconnect() {
+    if let token = FBSDKAccessToken.currentAccessToken() {
+      print("User \(token) will be logged out")
+      FBSDKAccessToken.setCurrentAccessToken(nil)
+    }
+  }
 }
