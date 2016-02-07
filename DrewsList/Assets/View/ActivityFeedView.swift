@@ -53,11 +53,23 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupDataBinding() {
-    model._activities.removeAllListeners()
-    model._activities.listen(self) { [weak self] activities in
-      self?.refreshControl?.endRefreshing()
-      self?.view.dismissActivityView()
-      self?.tableView?.reloadData()
+    controller.didGetActivityHistoryFromServer.removeAllListeners()
+    controller.didGetActivityHistoryFromServer.listen(self) { [weak self] didGet in
+      if didGet {
+        
+        self?.view.dismissActivityView()
+        
+        self?.tableView?.reloadData()
+        
+        NSTimer.after(1.0) { [weak self] in
+          self?.refreshControl?.endRefreshing()
+        }
+      }
+    }
+    model._badgeCount.removeAllListeners()
+    model._badgeCount.listen(self) { [weak self] count in
+      if let string: String! = String(count ?? 0) where count > 0 { self?.tabBarItem.badgeValue = string }
+      else { self?.tabBarItem.badgeValue = nil }
     }
   }
 
@@ -102,7 +114,6 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
         if let activity = activity {
           self?.controller.readRealmUser()
           self?.pushViewController(ChatView().setUsers(self?.model.user, friend: activity.user), animated: true)
-//          TabView.presentChatView(ChatView().setUsers(self?.model.user, friend: activity.user))
         }
       }
       

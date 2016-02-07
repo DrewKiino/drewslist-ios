@@ -111,19 +111,33 @@ extension NSDate {
   public func dl_toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "now"
+    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "Just Now"
   }
   
-  public func isRecent() -> Bool { return dl_toRelativeString() == "now" }
+  public func isRecent() -> Bool {
+    if let date = toLocalDateRegion()?.UTCDate {
+      return 60.seconds.ago < date
+    } else { return false }
+  }
   
-  public func dl_toString() -> String? {
-    return toString(.ShortStyle, dateStyle: .ShortStyle, timeStyle: .ShortStyle, inRegion: .LocalRegion())
+  public func dl_toString(simple: Bool = false) -> String? {
+    if let date = DateInRegion(UTCDate: self, region: .LocalRegion()), let weekday = date.weekdayName, let month = date.monthName, let day = date.monthDays, let year = date.year, let hour = date.hour, let second = date.second {
+      return date.isToday() ? "\(simple ? "" : "Today at ")\(hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
+        : "\(weekday), \(month) \(day) \(year) at \(hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
+    } else { return nil }
+//    return toString(.MediumStyle, dateStyle: .MediumStyle, timeStyle: .ShortStyle, inRegion: .LocalRegion())
+  }
+  
+  public func toLocalDateRegion() -> DateInRegion? {
+    return DateInRegion(UTCDate: self, region: .LocalRegion())
   }
 }
 
 extension String {
   
-  public func isRecent() -> Bool { return toRelativeString() == "now" }
+  public func isRecent() -> Bool {
+    return 60.seconds.ago < toDateFromISO8601()
+  }
   
   public func convertToOrdinal() -> String {
     if  let last = characters.last where Int(String(last)) != nil && self.lowercaseString.rangeOfString("edition") == nil {
@@ -143,21 +157,21 @@ extension String {
   public func toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    let string = (60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "now")
+    let string = (60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "Just Now")
     
     switch string {
-    case let x where x.containsString("yrs"): return string.stringByReplacingOccurrencesOfString("yrs", withString: "y")
-    case let x where x.containsString("yr"): return string.stringByReplacingOccurrencesOfString("yr", withString: "y")
-    case let x where x.containsString("mos"): return string.stringByReplacingOccurrencesOfString("mos", withString: "m")
-    case let x where x.containsString("mo"): return string.stringByReplacingOccurrencesOfString("mo", withString: "m")
-    case let x where x.containsString("wks"): return string.stringByReplacingOccurrencesOfString("wks", withString: "w")
-    case let x where x.containsString("wk"): return string.stringByReplacingOccurrencesOfString("wk", withString: "w")
-    case let x where x.containsString("days"): return string.stringByReplacingOccurrencesOfString("days", withString: "d")
-    case let x where x.containsString("day"): return string.stringByReplacingOccurrencesOfString("day", withString: "d")
-    case let x where x.containsString("hrs"): return string.stringByReplacingOccurrencesOfString("hrs", withString: "h")
-    case let x where x.containsString("hr"): return string.stringByReplacingOccurrencesOfString("hr", withString: "h")
-    case let x where x.containsString("mins"): return string.stringByReplacingOccurrencesOfString("mins", withString: "m")
-    case let x where x.containsString("min"): return string.stringByReplacingOccurrencesOfString("min", withString: "m")
+    case let x where x.containsString("yrs"): return string.stringByReplacingOccurrencesOfString(" yrs", withString: "y")
+    case let x where x.containsString("yr"): return string.stringByReplacingOccurrencesOfString(" yr", withString: "y")
+    case let x where x.containsString("mos"): return string.stringByReplacingOccurrencesOfString(" mos", withString: "m")
+    case let x where x.containsString("mo"): return string.stringByReplacingOccurrencesOfString(" mo", withString: "m")
+    case let x where x.containsString("wks"): return string.stringByReplacingOccurrencesOfString(" wks", withString: "w")
+    case let x where x.containsString("wk"): return string.stringByReplacingOccurrencesOfString(" wk", withString: "w")
+    case let x where x.containsString("days"): return string.stringByReplacingOccurrencesOfString(" days", withString: "d")
+    case let x where x.containsString("day"): return string.stringByReplacingOccurrencesOfString(" day", withString: "d")
+    case let x where x.containsString("hrs"): return string.stringByReplacingOccurrencesOfString(" hrs", withString: "h")
+    case let x where x.containsString("hr"): return string.stringByReplacingOccurrencesOfString(" hr", withString: "h")
+    case let x where x.containsString("mins"): return string.stringByReplacingOccurrencesOfString(" mins", withString: "m")
+    case let x where x.containsString("min"): return string.stringByReplacingOccurrencesOfString(" min", withString: "m")
     default: return string }
   }
   
@@ -319,7 +333,7 @@ extension UIView {
     }
   }
   
-  public func displayStatusNotification(text: String, animated: Bool) {
+  public func displayStatusNotification(text: String) {
     
 //    var notification: CWStatusBarNotification! = CWStatusBarNotification()
 //    notification.notificationAnimationInStyle = .Top
@@ -328,7 +342,7 @@ extension UIView {
     
     dismissStatusNotification(false)
     
-    var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, animated ? -64 : 0, screen.width, 64))
+    var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
     loadingLabel.text = text
     loadingLabel.textAlignment = .Center
     loadingLabel.font = .asapBold(12)
@@ -353,13 +367,6 @@ extension UIView {
     }
     
     addSubview(loadingLabel)
-    
-    if animated {
-      UIView.animateWithDuration(0.7, delay: 1.0, options: .CurveEaseInOut, animations: { [weak loadingLabel] in
-        loadingLabel?.frame.origin.y -= 64
-      }) { bool in
-      }
-    }
     
     loadingLabel = nil
     activityView = nil

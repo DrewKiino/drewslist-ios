@@ -73,6 +73,8 @@ public class Activity: Mappable {
   public let _type = Signal<String?>()
   public var type: String? { didSet { _type => type } }
   
+  public var isSeen: Bool = false
+  
   public init() {}
   
   public init(json: JSON) {
@@ -90,6 +92,7 @@ public class Activity: Mappable {
     timestamp   <- map["timestamp"]
     session_id  <- map["session_id"]
     room_id     <- map["room_id"]
+    isSeen      <- map["isSeen"]
   }
   
   public convenience init(message: String?, timestamp: String?, type: String?) {
@@ -115,17 +118,18 @@ public class Activity: Mappable {
   public func getDetailedMessage(modifier: String? = nil) -> NSMutableAttributedString? {
     switch ActivityType.getType(type) {
     case .Chat:
-      let attributedString = NSMutableAttributedString(string: (user?.getName() ?? ""), attributes: [
+      let attributedString: NSMutableAttributedString! = NSMutableAttributedString(string: (user?.getName() ?? ""), attributes: [
         NSFontAttributeName: UIFont.asapBold(12),
         NSForegroundColorAttributeName: UIColor.bareBlue()
       ])
       
-      let attributedString2 = NSMutableAttributedString(string: " sent you a message: ", attributes: [
+      var attributedString2: NSMutableAttributedString! = NSMutableAttributedString(string: " sent you a message: ", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.blackColor()
       ])
       
-      let attributedString3 = NSMutableAttributedString(string: " " + (timestamp?.toRelativeString() ?? "") + "\n", attributes: [
+      var string: String? = timestamp?.toRelativeString()
+      var attributedString3: NSMutableAttributedString! = NSMutableAttributedString(string: "\(string?.characters.count > 7 ? "\n\(string ?? "") " : "\(string ?? "")\n")", attributes: [
         NSFontAttributeName: UIFont.asapRegular(12),
         NSForegroundColorAttributeName: UIColor.sexyGray()
       ])
@@ -133,6 +137,10 @@ public class Activity: Mappable {
       attributedString.appendAttributedString(attributedString2)
       attributedString.appendAttributedString(attributedString3)
       if let message = getMessage() { attributedString.appendAttributedString(message) }
+      
+      attributedString2 = nil
+      attributedString3 = nil
+      string = nil
       
     return attributedString
 

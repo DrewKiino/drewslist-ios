@@ -250,8 +250,11 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   private func setupDataBinding() {
     controller.shouldRefreshViews.removeAllListeners()
     controller.shouldRefreshViews.listen(self) { [weak self] listings in
+      
       self?.dismissActivityView()
+      
       self?.tableView?.reloadData()
+      
       NSTimer.after(1.0) { [weak self] in
         self?.refreshControl?.endRefreshing()
       }
@@ -284,7 +287,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   // MARK: UIRefreshControl methods
   
   public func refresh(sender: UIRefreshControl) {
-    
+    refreshControl?.beginRefreshing()
     controller.getListingsFromServer(clearListings: true)
   }
   
@@ -312,7 +315,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
-      cell.showBottomBorder()
+      cell.showSeparatorLine()
       cell.isUserListing = model.user?._id == model.listings[indexPath.row].user?._id
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._chatButtonPressed.removeAllListeners()
@@ -354,6 +357,40 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   public func getListingsFromServer(skip: Int?, listing: String?, clearListings: Bool) {
     controller.getModel().listings.removeAll(keepCapacity: false)
     controller.getListingsFromServer(skip, listType: listing, clearListings: clearListings)
+  }
+}
+
+public class ListFeedCell: DLTableViewCell {
+  
+  public var listView: ListView?
+  
+  public let _cellPressed = Signal<Bool>()
+  
+  public var isUserListing: Bool = false { didSet { listView?.isUserListing = isUserListing } }
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupListView()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    listView?.fillSuperview()
+  }
+  
+  private func setupListView() {
+    listView = ListView()
+    listView?.tableView?.scrollEnabled = false
+    listView?.isUserListing = isUserListing
+    addSubview(listView!)
+  }
+  
+  public func cellPressed() {
+    _cellPressed => true
   }
 }
 
