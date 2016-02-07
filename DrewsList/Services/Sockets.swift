@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SocketIOClientSwift
+import Socket_IO_Client_Swift
 import Signals
 import PromiseKit
 import SwiftyJSON
