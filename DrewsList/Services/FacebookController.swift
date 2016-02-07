@@ -16,7 +16,7 @@ public class FacebookController {
     static let facebook = FacebookController()
   }
   
-  public func sharedInstance() -> FacebookController { return Singleton.facebook }
+  public class func sharedInstance() -> FacebookController { return Singleton.facebook }
   
   // MARK: Realm Functions
   
@@ -26,7 +26,7 @@ public class FacebookController {
   private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.user), update: true) } }
   
   // MARK: Facebook Functions
-  private func disconnect() {
+  public func disconnect() {
     if let token = FBSDKAccessToken.currentAccessToken() {
       print("User \(token) will be logged out")
       FBSDKAccessToken.setCurrentAccessToken(nil)
