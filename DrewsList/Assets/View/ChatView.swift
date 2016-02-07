@@ -211,29 +211,38 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
-      NSAttributedString(string: getDateString(indexPath.row, simple: true))
-      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ?
-        model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
-        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
-      : NSAttributedString(string: getDateString(indexPath.row))
+//    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+//      NSAttributedString(string: getDateString(indexPath.row, simple: true))
+//      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ?
+//        model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
+//        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
+//      : NSAttributedString(string: getDateString(indexPath.row))
+    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row))
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+//    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-//    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
-//      NSAttributedString(string: getBubbleTopText(indexPath.row)) :
-    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row))
-      : NSAttributedString(string: getBubbleTopText(indexPath.row))
+    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+      NSAttributedString(string: getDateString(indexPath.row, simple: true))
+      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ? model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ?
+        NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
+        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
+      : NSAttributedString(string: getDateString(indexPath.row))
+//    return indexPath.row == 0 ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row))
+//    return indexPath.row == 0 ? nil : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row))
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-//    return indexPath.row == (model.messages.count - 1) ? 20 :
-    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 :
-      model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ? model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? 20 : 0 : 20 : 20
+//    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+      20
+      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ? model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ?
+        20 : 0 : 20 : 20
+    //    return indexPath.row == 0 ? 0 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
   }
   
   private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
