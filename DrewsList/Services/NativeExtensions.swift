@@ -122,8 +122,9 @@ extension NSDate {
   
   public func dl_toString(simple: Bool = false) -> String? {
     if let date = DateInRegion(UTCDate: self, region: .LocalRegion()), let weekday = date.weekdayName, let month = date.monthName, let day = date.monthDays, let year = date.year, let hour = date.hour, let second = date.second {
-      return date.isToday() ? "\(simple ? "" : "Today at ")\(hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
-        : "\(weekday), \(month) \(day) \(year) at \(hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
+      return date.isToday() ? "\(simple ? "" : "Today at ")\(hour % 12 == 0 ? 12 : hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")" :
+        date.isYesterday() ? "Yesterday" : "\(weekday), \(month) \(day) \(year)"
+//        "\(date.isYesterday() ? "Yesterday" : weekday), \(month) \(day) \(year) at \(hour % 12 == 0 ? 12 : hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
     } else { return nil }
 //    return toString(.MediumStyle, dateStyle: .MediumStyle, timeStyle: .ShortStyle, inRegion: .LocalRegion())
   }
@@ -187,6 +188,13 @@ extension NSMutableAttributedString {
   
   func height(width: CGFloat) -> CGFloat {
     return boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil ).height
+  }
+  
+  func append(attributedString: NSMutableAttributedString?) -> Self {
+    if let attributedString = attributedString {
+      appendAttributedString(attributedString)
+    }
+    return self
   }
 }
 

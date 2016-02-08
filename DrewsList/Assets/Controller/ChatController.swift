@@ -27,6 +27,8 @@ public class ChatController {
   
   public let socket = Sockets.sharedInstance()
   
+  public let locationController = LocationController.sharedInstanced()
+  
   // MARK : PUB/SUB
   
   // subscription
@@ -102,18 +104,15 @@ public class ChatController {
   
   public func didPressSendButton(text: String) {
     guard let message = createOutgoingMessage(text),
-          let jsqMessage = message.toJSQMessage(),
           let json = message.toJSON()
           where !text.isEmpty && socket.isConnected() == true
           else { return }
     
     isSendingMessage => true
     
-    model.pendingMessages.append(jsqMessage)
-    
     socket.emit("broadcast", json)
   }
-
+  
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
     
 //    log.debug(model.user)
@@ -145,6 +144,22 @@ public class ChatController {
       session_id: session_id,
       room_id: room_id
     )
+  }
+  
+  public func didPressSendLocation() {
+    locationController.getCurrentLocation() { [weak self] location in
+      guard   let message = self?.createOutgoingLocationMessage(location),
+              let json = message.toJSON()
+      else { return }
+      
+      self?.isSendingMessage.fire(true)
+      
+      self?.socket.emit("broadcast", json)
+    }
+  }
+  
+  private func createOutgoingLocationMessage(location: CLLocation?) -> OutgoingMessage? {
+    return createOutgoingMessage("USER_LOCATION")?.set(location)
   }
   
   public func subscribe() {
@@ -207,17 +222,15 @@ public class ChatController {
         self.didSendMessage => false
         log.error(error)
         
-        // print any warnings
+      // print any warnings
       } else if let warning = json["warning"].string {
         log.warning(warning)
         
+        self.didSendMessage => true
+        
         // broadcast to listeners that the message sent was successful
       } else if let response = json["response"].string {
-        
-        if !self.model.pendingMessages.isEmpty {
-          self.model.pendingMessages.removeLast()
-          self.didSendMessage => true
-        }
+        self.didSendMessage => true
       }
     }
     
@@ -274,8 +287,6 @@ public class ChatController {
         // get teh time stamp of the most recent message
         self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
         
-        self?.loadChatHistory()
-        
         self?.didLoadMessagesFromServer.fire(true)
       }
     }
@@ -288,27 +299,7 @@ public class ChatController {
     ])
   }
   
-  public func loadChatHistory() {
-    if let room_id = model.room_id {
-      let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
-      if let message = chatHistory?.getMessages().first where model.messages.count > 0 && model.mostRecentTimestamp == chatHistory?.mostRecentTimestamp {
-        model.messages[model.messages.count - 1] = message
-      }
-    }
-  }
-  
-  public func saveChatHistory() {
-    if model.messages.isEmpty { return }
-    let realm = try! Realm()
-    realm.beginWrite()
-    realm.add(RealmChatHistory(
-      messages: model.messages,
-      pendingMessages: model.pendingMessages,
-      room_id: model.room_id,
-      user: model.user,
-      friend: model.friend,
-      mostRecentTimestamp: model.mostRecentTimestamp
-    ), update: true)
-    try! realm.commitWrite()
+  public func routeToLocation(location: CLLocation?, callback: () -> Void) {
+    locationController.routeToLocation(location) { callback() }
   }
 }

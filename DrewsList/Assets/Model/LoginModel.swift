@@ -29,4 +29,6 @@ public class LoginModel {
   
   public let _serverError = Signal<Bool?>()
   
+  public let _shouldLogout = Signal<Bool>()
+  public var shouldLogout: Bool = false { didSet { _shouldLogout => shouldLogout } }
 }

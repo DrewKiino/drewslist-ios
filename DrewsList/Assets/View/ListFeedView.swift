@@ -268,6 +268,12 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
     }
+    
+    UserController.sharedUser()._user.removeListener(self)
+    UserController.sharedUser()._user.listen(self) { [weak self] user in
+      self?.model.user = user
+      self?.tableView?.reloadData()
+    }
   }
   
   private func setupTableView() {

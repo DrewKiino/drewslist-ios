@@ -4,10 +4,8 @@
 <dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>let us use forever plz</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>let us use plz</string>
+	<string>We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>

@@ -46,9 +46,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
-    if let _ = FBSDKAccessToken.currentAccessToken() {
-      presentViewController(TabView(), animated: true, completion: nil)
-    }
+//    if let _ = FBSDKAccessToken.currentAccessToken() {
+//      presentViewController(TabView(), animated: true, completion: nil)
+//    }
     
     setupSelf()
     setupDataBinding()
@@ -365,13 +365,15 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       passwordField?.becomeFirstResponder()
       break
       // password
+    case 5:
+      loginButtonPressed()
+      break
     default: break
     }
     return false
   }
   
   // MARK: Delegates
-  
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
     if let error = error {
       // Process error

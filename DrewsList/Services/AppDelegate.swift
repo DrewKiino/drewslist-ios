@@ -33,17 +33,6 @@ public enum ServerUrl {
   }
 }
 
-private var _fbLoginManager: FBSDKLoginManager?
-
-var fbLoginManager: FBSDKLoginManager {
-get {
-  if _fbLoginManager == nil {
-    _fbLoginManager = FBSDKLoginManager()
-  }
-  return _fbLoginManager!
-}
-}
-
 public let _applicationWillEnterForeground = Signal<Bool>()
 public let _applicationDidEnterBackground = Signal<Bool>()
 
@@ -51,6 +40,7 @@ public let _applicationDidEnterBackground = Signal<Bool>()
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
   private let userController = UserController()
+  private let loginController = LoginController()
   
   var window: UIWindow?
   
@@ -77,6 +67,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
     // MARK: remote notification register fixtures
     UIApplication.sharedApplication().registerForRemoteNotifications()
+    
+    // MARK: User Auth
+    loginController.checkIfUserIsLoggedIn()
     
     // Add Facebook
     return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
