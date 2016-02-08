@@ -27,7 +27,6 @@ public class TabView: UITabBarController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupDataBinding()
     setupCommunityTab()
     setupChatView()
     setupISBNScannerView()
@@ -47,8 +46,6 @@ public class TabView: UITabBarController {
     if !socket.isConnected() {
       view.displayStatusNotification("Connecting to server")
     }
-    
-    checkIfUserIsLoggedIn()
   }
   
   private func setupSockets() {
@@ -57,13 +54,6 @@ public class TabView: UITabBarController {
     }
     socket.onReconnectAttempt("TabView") { [weak self] in
       self?.view.displayStatusNotification("Connecting to server")
-    }
-  }
-  
-  private func setupDataBinding() {
-    model._shouldLogout.removeAllListeners()
-    model._shouldLogout.listen(self) { [weak self] bool in
-      if bool == true { self?.presentViewController(LoginView(), animated: false, completion: nil) }
     }
   }
   
@@ -121,11 +111,6 @@ public class TabView: UITabBarController {
     var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-4")).resize(CGSize(width: 24, height: 24))
     userProfileView?.tabBarItem = UITabBarItem(title: "Profile", image: toucan?.image, selectedImage: toucan?.image)
     toucan = nil
-  }
-  
-  // MARK: User Auth
-  public func checkIfUserIsLoggedIn() {
-    if !controller.checkIfUserIsLoggedIn() && !controller.checkIfUserIsLogginInToFacebook() { presentViewController(LoginView(), animated: false, completion: nil) }
   }
   
   // tab switch functions

@@ -22,6 +22,7 @@ public class ActivityFeedController {
   public init() {
     setupSelf()
     setupSockets()
+    setupDataBinding()
   }
   
   public func viewDidAppear() {
@@ -31,6 +32,13 @@ public class ActivityFeedController {
   
   private func setupSelf() {
     readRealmUser()
+  }
+  
+  private func setupDataBinding() {
+    UserController.sharedUser()._user.removeListener(self)
+    UserController.sharedUser()._user.listen(self) { [weak self] user in
+      self?.model.user = user
+    }
   }
   
   private func setupSockets() {

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Neon
 import Signals
+import Async
 
 public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UITableViewDelegate {
   
@@ -102,11 +103,11 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return model.activities.count < 20 ? model.activities.count : 20
+    return model.activities.count < 50 ? model.activities.count : 50
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell") as? ActivityCell {
+    if let cell = tableView.dequeueReusableCellWithIdentifier("ActivityCell", forIndexPath: indexPath) as? ActivityCell {
       cell.activity = model.activities[indexPath.row]
       cell.showSeparatorLine()
       cell._containerPressed.removeAllListeners()
@@ -177,7 +178,19 @@ public class ActivityCell: DLTableViewCell {
     
     leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     
-    activityLabel?.attributedText = activity.getDetailedMessage()
+    if activity.isLocationActivity() {
+      Async.background { [weak self, weak activity] in
+        LocationController.sharedInstanced().getAddressString(activity?.location) { [weak self, weak activity] string in
+          var attributedString: NSMutableAttributedString? = activity?.getDetailedMessage()?.append(NSMutableAttributedString(string: string))
+          Async.main { [weak self] in
+            self?.activityLabel?.attributedText = attributedString
+            attributedString = nil
+          }
+        }
+      }
+    } else {
+      activityLabel?.attributedText = activity.getDetailedMessage()
+    }
   }
   
   public func containerPressed() {

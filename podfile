@@ -7,6 +7,9 @@ use_frameworks!
 
 #####################################
 
+# map routing libs
+pod 'OpenInGoogleMaps'
+
 # socket libs
 pod 'Socket.IO-Client-Swift'
 

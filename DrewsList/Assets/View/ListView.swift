@@ -216,7 +216,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       }
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
-        cell.isUserListing = isUserListing
+//        cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
         cell._chatButtonPressed.removeAllListeners()
@@ -403,8 +403,6 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private var chatButton: UIButton?
   private var callButton: UIButton?
   
-  public var isUserListing: Bool = false
-  
   public let _chatButtonPressed = Signal<Bool>()
   public let _callButtonPressed = Signal<Bool>()
   
@@ -491,6 +489,8 @@ public class ListerAttributesViewCell: DLTableViewCell {
   public func setListing(listing: Listing?) {
     
     notesTextViewContainer?.hidden = true
+    
+    let isUserListing = listing?.user?._id == UserController.sharedUser().user?._id
     
     chatButton?.alpha = isUserListing ? 0.0 : 1.0
     callButton?.alpha = isUserListing ? 0.0 : 1.0

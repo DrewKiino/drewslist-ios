@@ -303,7 +303,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     if user.imageUrl != nil {
       
       profileImg?.dl_setImageFromUrl(user.imageUrl, size: profileImg?.frame.size, maskWithEllipse: true) { [weak self] image in
-        
         self?.profileImg?.alpha = 0.0
         self?.profileImg?.image = image
         
