@@ -84,8 +84,7 @@ public class User: Mappable {
   }
   
   public func getName() -> String? {
-    guard let firstName = firstName, let lastName = lastName else { return username }
-    return "\(firstName) \(lastName)"
+    return username ?? "\(firstName ?? "") \(lastName ?? "")"
   }
   
   public func set(deviceToken deviceToken: String?) -> Self {

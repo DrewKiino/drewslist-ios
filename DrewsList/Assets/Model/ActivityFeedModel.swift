@@ -91,6 +91,10 @@ public class Activity: Mappable {
     }
   }
   
+  // MARK: bot message 
+  
+  public var isBot: Bool = false
+  
   public init() {}
   
   public init(json: JSON) {
@@ -113,6 +117,10 @@ public class Activity: Mappable {
     // MARK: location message data
     latitude    <- map["latitude"]
     longitude   <- map["longitude"]
+    
+    // MARL: bot message
+    
+    isBot       <- map["isBot"]
   }
   
   public convenience init(message: String?, timestamp: String?, type: String?) {

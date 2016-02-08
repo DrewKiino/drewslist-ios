@@ -20,6 +20,8 @@ public class ListViewContainer: UIViewController {
   
   public var listView: ListView?
   
+  public var doOnce = true
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -50,7 +52,12 @@ public class ListViewContainer: UIViewController {
     listView?._chatButtonPressed.removeAllListeners()
     listView?._chatButtonPressed.listen(self) { [weak self] bool in
       self?.readRealmUser()
-      self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
+      self?.navigationController?.pushViewController(
+        ChatView()
+          .setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user)
+          .setListing(self?.doOnce == true ? self?.listView?.model.listing : nil), animated: true
+      )
+      self?.doOnce = false
     }
     // FIXME: these signal listeners aren't being used??
     listView?._bookProfilePressed.removeAllListeners()

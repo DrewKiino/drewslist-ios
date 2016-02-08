@@ -224,7 +224,7 @@ public class ChatView: JSQMessagesViewController {
     if let message = model.messages[indexPath.row].media?() as? JSQLocationMediaItem {
       // show activity animation on nav bar
       DLNavigationController.showActivityAnimation(self)
-      controller.routeToLocation(message.location) { [weak self] in
+      controller.routeToLocation(message.location, host: model.messages[indexPath.row].senderDisplayName()) { [weak self] in
         // show activity animation on nav bar
         DLNavigationController.hideActivityAnimation(self)
       }
@@ -312,6 +312,10 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public func setUsers(user: User?, friend: User?) -> Self {
+    
+    // reserved keyword
+    // this username is only reserverd for the app bot
+    if friend?.username == "Jarvis" { friend?.username = nil }
     
     model.user = user
     model.friend = friend

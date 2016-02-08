@@ -27,7 +27,7 @@ public class ChatController {
   
   public let socket = Sockets.sharedInstance()
   
-  public let locationController = LocationController.sharedInstanced()
+  public let locationController = LocationController.sharedInstance()
   
   // MARK : PUB/SUB
   
@@ -304,7 +304,7 @@ public class ChatController {
     ])
   }
   
-  public func routeToLocation(location: CLLocation?, callback: () -> Void) {
-    locationController.routeToLocation(location) { callback() }
+  public func routeToLocation(location: CLLocation?, host: String? = nil, callback: () -> Void) {
+    locationController.routeToLocation(location, host: host) { callback() }
   }
 }

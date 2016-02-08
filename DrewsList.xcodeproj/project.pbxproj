@@ -151,8 +151,8 @@
 		39FE52241C4C361000FDFDC4 /* DeleteListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingView.swift; sourceTree = "<group>"; };
 		39FE52261C4C362800FDFDC4 /* DeleteListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingModel.swift; sourceTree = "<group>"; };
 		39FE52281C4C364400FDFDC4 /* DeleteListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteListingController.swift; sourceTree = "<group>"; };
-		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
-		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookController.swift; sourceTree = "<group>"; };
+		3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BookModel.swift; path = ../Fixtures/BookModel.swift; sourceTree = "<group>"; };
+		3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BookController.swift; path = ../Fixtures/BookController.swift; sourceTree = "<group>"; };
 		3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerController.swift; sourceTree = "<group>"; };
 		3F4CA3B01C0BEB4100CFC84D /* ScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		3F4CA3B21C0BEB4F00CFC84D /* ScannerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerModel.swift; sourceTree = "<group>"; };
@@ -204,7 +204,7 @@
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
-		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		EE3C949A1BF30FCC00E228A9 /* UserModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserModel.swift; path = ../Fixtures/UserModel.swift; sourceTree = "<group>"; };
 		EE3D67A41C2BF72100299F34 /* SearchSchoolController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolController.swift; sourceTree = "<group>"; };
 		EE3D67A61C2BF72800299F34 /* SearchSchoolModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolModel.swift; sourceTree = "<group>"; };
 		EE4B9D8E1C11F1DF00637458 /* TabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 		EE67C15B1C30B06300AC60DB /* SearchBookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBookController.swift; sourceTree = "<group>"; };
 		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
-		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
+		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserController.swift; path = ../Fixtures/UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EE8918B91C1169A800FCF031 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -372,6 +372,8 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
+				3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */,
 				EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
@@ -440,6 +442,8 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				EE79D3B21BFFDF0000F60EE1 /* UserController.swift */,
+				3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */,
 				EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
@@ -474,10 +478,6 @@
 		EE3C94991BF30FC500E228A9 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
-				3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */,
-				3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */,
-				EE79D3B21BFFDF0000F60EE1 /* UserController.swift */,
-				EE3C949A1BF30FCC00E228A9 /* UserModel.swift */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
