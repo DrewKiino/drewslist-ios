@@ -375,20 +375,24 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   // MARK: Delegates
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+    
     if let error = error {
       // Process error
       print("Login Button Error: \(error)")
-    }
-    else if result.isCancelled {
+      
+    } else if result.isCancelled {
+      
       // Handle cancellations
       print("FB login has been cancelled")
-    }
-    else {
+      
+    } else {
+      
       print("User is logged in")
       // Navigate to other view
       print("Naviating to the new view")
-      presentViewController(TabView(), animated: true, completion: nil)
-      }
+      
+      log.debug("mark")
+    }
   }
   
   public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {

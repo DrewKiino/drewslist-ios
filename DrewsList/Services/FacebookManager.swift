@@ -13,12 +13,13 @@ import FBSDKCoreKit
 import FBSDKLoginKit
 import SwiftyJSON
 
-public class FacebookManager {
+public class FBSDKController {
+  
   private struct Singleton {
-    static let facebook = FacebookManager()
+    static let facebook = FBSDKController()
   }
   
-  public class func sharedInstance() -> FacebookManager { return Singleton.facebook }
+  public class func sharedInstance() -> FBSDKController { return Singleton.facebook }
   
   // MARK: Realm
   private var user: User?

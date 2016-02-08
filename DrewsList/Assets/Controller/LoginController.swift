@@ -22,6 +22,8 @@ public class LoginController {
   
   private let userController = UserController()
   
+  private let facebookManager = FBSDKController()
+  
   private var refrainTimer: NSTimer?
   
   public init() {
