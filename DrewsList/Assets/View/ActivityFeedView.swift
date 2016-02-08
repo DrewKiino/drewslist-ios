@@ -58,14 +58,14 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     controller.didGetActivityHistoryFromServer.listen(self) { [weak self] didGet in
       if didGet {
         
-        self?.view.dismissActivityView()
-        
         self?.tableView?.reloadData()
         
         NSTimer.after(1.0) { [weak self] in
           self?.refreshControl?.endRefreshing()
         }
       }
+        
+      self?.view.dismissActivityView()
     }
     model._badgeCount.removeAllListeners()
     model._badgeCount.listen(self) { [weak self] count in

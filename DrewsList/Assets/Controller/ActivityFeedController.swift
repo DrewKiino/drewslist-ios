@@ -55,6 +55,7 @@ public class ActivityFeedController {
   
   public func getActivityFeedFromServer() {
     socket.on("activityFeed.getActivityHistory.response") { [weak self] json in
+      
       if let jsonArray = json["activities"].array where !jsonArray.isEmpty {
         
         

@@ -22,10 +22,10 @@ public class LoginController {
   public let model = LoginModel()
   
   private let userController = UserController()
-  
   private let fbsdkController = FBSDKController()
   
   public let shouldDismissView = Signal<Bool>()
+  public let shouldLogUserOutOfFacebook = Signal<Bool>()
   
   private var refrainTimer: NSTimer?
   
@@ -42,6 +42,15 @@ public class LoginController {
     }
     fbsdkController.didFinishGettingUserAttributesFromFacebook.removeAllListeners()
     fbsdkController.didFinishGettingUserAttributesFromFacebook.listen(self) { [weak self] user, friends in
+      // set the state of the model
+      self?.model.isCurrentlyAuthenticatingUserWithFacebook = true
+      // set the model's email with the created user email
+      self?.model.email = user?.email
+      // set the user and friends as well
+      self?.model.user = user
+      self?.model.friends = friends ?? []
+
+      // authenticate user
       self?.authenticateUserToServer(false)
     }
   }
@@ -117,36 +126,13 @@ public class LoginController {
   }
   
   public func authenticateUserToServer(localAuth: Bool = true) {
-    guard let email = model.email, let password = model.password else { return }
+    guard let email = model.email else { return }
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Sockets.sharedInstance().emit("authenticateUser", [
-      "email": email,
-      // NOTE: password is not given by facebook
-//      "password": password,
-      // facebook attributes
-      "facebook_id": model.user?.facebook_id ?? "",
-      "facebook_link": model.user?.facebook_link ?? "",
-      "facebook_update_time": model.user?.facebook_update_time ?? "",
-      "facebook_verified": model.user?.facebook_verified ?? "",
-      "gender": model.user?.gender ?? "",
-      "age_min": model.user?.age_min ?? "",
-      "age_max": model.user?.age_min ?? "",
-      "locale": model.user?.locale ?? "",
-      "image": model.user?.imageUrl ?? "",
-      "bgImage": model.user?.bgImage ?? "",
-      "timezone": model.user?.timezone ?? "",
-      "firstName": model.user?.firstName ?? "",
-      "lastName": model.user?.lastName ?? "",
-      "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
-    ] as [String: AnyObject])
-    
     Sockets.sharedInstance().on("authenticateUser.response") { [weak self] json in
-      
-      log.debug(json)
       
       if json["errmsg"].string != nil || json["error"].string != nil {
         
@@ -160,6 +146,8 @@ public class LoginController {
             self?.model._serverError.fire(true)
           }
         }
+        
+        self?.shouldLogUserOutOfFacebook.fire(true)
         
       } else {
         
@@ -181,6 +169,59 @@ public class LoginController {
       self?.refrainTimer = nil
       self?.model.shouldRefrainFromCallingServer = false
     }
+    
+    let password: String = model.password ?? ""
+    // NOTE: password is not given by facebook
+    // facebook attributes
+    let facebook_id: String = model.user?.facebook_id ?? ""
+    let facebook_link: String = model.user?.facebook_link ?? ""
+    let facebook_update_time: String = model.user?.facebook_update_time ?? ""
+    let facebook_verified: String = model.user?.facebook_verified ?? ""
+    let gender: String = model.user?.gender ?? ""
+    let age_min: String = model.user?.age_min ?? ""
+    let age_max: String = model.user?.age_max ?? ""
+    let locale: String = model.user?.locale ?? ""
+    let image: String = model.user?.imageUrl ?? ""
+    let bgImage: String = model.user?.bgImage ?? ""
+    let timezone: String = model.user?.timezone ?? ""
+    let firstName: String = model.user?.firstName ?? ""
+    let lastName: String = model.user?.lastName ?? ""
+    let deviceToken: String = userController.readUserDefaults()?.deviceToken ?? ""
+    
+    var friends = [[String: AnyObject]]()
+    for friend in model.friends {
+      let friend_facebook_id: String = friend.facebook_id ?? ""
+      let friend_firstName: String = friend.firstName ?? ""
+      let friend_lastName: String = friend.lastName ?? ""
+      friends.append([
+        "facebook_id": friend_facebook_id,
+        "firstName": friend_firstName,
+        "lastName": friend_lastName
+      ] as [String: AnyObject ])
+    }
+    
+    Sockets.sharedInstance().emit("authenticateUser", [
+      "email": email,
+      "password": password,
+      // NOTE: password is not given by facebook
+      // facebook attributes
+      "facebook_id": facebook_id,
+      "facebook_link": facebook_link,
+      "facebook_update_time": facebook_update_time,
+      "facebook_verified": facebook_verified,
+      "gender": gender,
+      "age_min": age_min,
+      "age_max": age_max,
+      "locale": locale,
+      "image": image,
+      "bgImage": bgImage,
+      "timezone": timezone,
+      "firstName": firstName,
+      "lastName": lastName,
+      "deviceToken": deviceToken,
+      "friends": friends,
+      "localAuth": localAuth
+    ] as [String: AnyObject])
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds

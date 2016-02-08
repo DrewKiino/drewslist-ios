@@ -33,6 +33,9 @@ public class User: Mappable {
   public let _school = Signal<String?>()
   public var school: String? { didSet { _school => school } }
   
+  public let _state = Signal<String?>()
+  public var state: String? { didSet { _state => state } }
+  
   public let _imageUrl = Signal<String?>()
   public var imageUrl: String? { didSet { _imageUrl => imageUrl } }
   

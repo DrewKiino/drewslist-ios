@@ -144,7 +144,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       if bool != true { self?.loginButtonIndicator?.stopAnimating() }
       else { self?.loginButtonIndicator?.startAnimating() }
     }
-    
     controller.shouldDismissView.removeAllListeners()
     controller.shouldDismissView.listen(self) { [weak self] user in
       self?.dismissKeyboard()
@@ -152,6 +151,10 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
         tabView.selectedIndex = 0
         tabView.dismissViewControllerAnimated(true, completion: nil)
       }
+    }
+    controller.shouldLogUserOutOfFacebook.removeAllListeners()
+    controller.shouldLogUserOutOfFacebook.listen(self) { [weak self] bool in
+      FBSDKLoginManager().logOut()
     }
   }
   
@@ -239,8 +242,8 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   private func setupFBLoginButton() {
     fbLoginButton = FBSDKLoginButton()
-    fbLoginButton!.delegate = self
-    fbLoginButton!.readPermissions = ["public_profile","email","user_friends"]
+    fbLoginButton?.delegate = self
+    fbLoginButton?.readPermissions = ["public_profile","email","user_friends"]
     containerView?.addSubview(fbLoginButton!)
   }
   
@@ -394,6 +397,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       
       log.info("User is logged in")
       
+      // disallow the user from clicking the facebook button 
+      // until the authentication process has been resolved
+      fbLoginButton?.userInteractionEnabled = false
     }
   }
   

@@ -22,6 +22,7 @@ public class FBSDKController {
   
   public class func sharedInstance() -> FBSDKController { return Singleton.facebook }
   
+  // facebook
   public let didFinishGettingUserAttributesFromFacebook = Signal<(User?, [User]?)>()
   
   // MARK: MVC
@@ -56,7 +57,7 @@ public class FBSDKController {
  
   public func populateBasicFBUserInfo(callback: Bool -> Void) {
     if userIsLoggedIntoFacebook() {
-      FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture,cover,timezone,updated_time,verified", parameters: nil)
+      FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture.type(large),cover,timezone,updated_time,verified,dob", parameters: nil)
       .startWithCompletionHandler() { [weak self] (connection, result, error) in
         
         if let error = error {
@@ -79,12 +80,16 @@ public class FBSDKController {
           user.firstName = json["first_name"].string
           user.lastName = json["last_name"].string
           user.gender = json["gender"].string
-          user.age_min = json["age_range"]["min"].string
-          user.age_max = json["age_range"]["max"].string
+          user.age_min = json["age_range"]["min"].description
+          user.age_max = json["age_range"]["max"].description
           user.locale = json["locale"].string
           user.imageUrl = json["picture"]["data"]["url"].string
           user.bgImage = json["cover"]["source"].string
           user.timezone = json["timezone"].string
+          
+          // number validation
+          user.age_min = user.age_min == "null" ? nil : user.age_min
+          user.age_max = user.age_max == "null" ? nil : user.age_max
           
           self?.model.user = user
           

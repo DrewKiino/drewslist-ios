@@ -32,7 +32,6 @@ public class ChatView: JSQMessagesViewController {
     setupSelf()
     setupDataBinding()
     setupRefreshControl()
-    setupAlertController()
     controller.viewDidLoad()
   }
   
@@ -173,15 +172,6 @@ public class ChatView: JSQMessagesViewController {
     }
   }
   
-  private func setupAlertController() {
-    alertController = UIAlertController()
-    alertController?.addAction(UIAlertAction(title: "Send my location", style: .Default) { [weak self] action in
-      self?.controller.didPressSendLocation()
-    })
-    alertController?.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-    })
-  }
-  
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
@@ -215,9 +205,13 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func didPressAccessoryButton(sender: UIButton!) {
-    if let alertController = alertController {
-      presentViewController(alertController, animated: true, completion: nil)
-    }
+    let alertController = UIAlertController()
+    alertController.addAction(UIAlertAction(title: "Send my location", style: .Default) { [weak self] action in
+      self?.controller.didPressSendLocation()
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    presentViewController(alertController, animated: true, completion: nil)
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
