@@ -16,26 +16,41 @@ import SwiftyJSON
 public class FacebookManager {
   private struct Singleton {
     static let facebook = FacebookManager()
-    weak var delegate: FBSDKLoginButtonDelegate?
   }
   
   public class func sharedInstance() -> FacebookManager { return Singleton.facebook }
   
-  // MARK: Realm Functions
-  
+  // MARK: Realm
   private var user: User?
   
   private func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { user = realmUser.getUser() } }
   private func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.user), update: true) } }
   
-  // MARK: Facebook Functions
-  private func userIsLoggedIntoFacebook() -> Bool {
+  // MARK: Facebook
+  /// Basic Info
+  private var id: String?
+  private var email: String?
+  private var first_name: String?
+  private var last_name: String?
+  private var gender: String?
+  private var age_range: String?
+  private var link: String?
+  private var locale: String?
+  private var pictureURL: String?
+  private var cover: String?
+  private var timezone: String?
+  private var updated_time: String?
+  private var verified: String?
+  
+  /// Social
+  private var friends: JSON?
+  
+  public func userIsLoggedIntoFacebook() -> Bool {
     if let _ = FBSDKAccessToken.currentAccessToken() { return true } else { return false }
   }
-  
-  public func getBasicFBUserInfo() -> User? {
+ 
+  public func populateBasicFBUserInfo() {
     if userIsLoggedIntoFacebook() {
-      print("User logged into FB")
       FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture,cover,timezone,updated_time,verified", parameters: nil).startWithCompletionHandler({ (connection, result, error) -> Void in
         guard let result = result else {
           print(error)
@@ -43,70 +58,51 @@ public class FacebookManager {
         }
         let json = JSON(result)
         print(json)
-        //          if let fullname = json["name"].string {
-        //            self.model.user?.username = fullname;
-        //            print("The user name is: \(fullname)")
-        //            let fullNameArray = fullname.characters.split{$0 == " "}.map(String.init)
-        //            self.model.user?.firstName = fullNameArray[0]
-        //            self.model.user?.lastName = fullNameArray[1]
-        //            print("First name is \(fullNameArray[0])")
-        //            print("Last name is \(fullNameArray[1])")
-        //          }
+        
+        // Add the result data to local variables
+        self.id = json["id"].string
+        self.email = json["email"].string
+        self.first_name = json["first_name"].string
+        self.last_name = json["last_name"].string
+        self.gender = json["gender"].string
+        self.age_range = json["age_range"].string
+        self.link = json["link"].string
+        self.locale = json["locale"].string
+        self.pictureURL = json["picture"]["data"]["url"].string
+        self.cover = json["cover"]["source"].string
+        self.timezone = json["timezone"].string
+        self.updated_time = json["updated_time"].string
+        self.verified = json["verified"].string
       })
-      
-            //
-      //      let coverRequest = FBSDKGraphRequest(graphPath: "me?fields=cover", parameters: nil)
-      //        coverRequest.startWithCompletionHandler({
-      //          (connection, result, error: NSError!) -> Void in
-      //          if let error = error {
-      //            print(error)
-      //          } else {
-      //            let json = JSON(result)
-      //            //print(json)
-      //            print("Cover url is: \(json["cover"]["source"])")
-      //          }
-      //        })
-      //
     }
-    guard let user = user else { return nil }
-    return user
   }
   
-  public func getFBProfilePictureURL() -> String? {
+  public func populateListOfFBFriends() {
     if userIsLoggedIntoFacebook() {
-      let pictureRequest = FBSDKGraphRequest(graphPath: "me/picture?type=large&redirect=false", parameters: nil)
-      var pictureUrl: String?
-      pictureRequest.startWithCompletionHandler({
-        (connection, result, error: NSError!) -> Void in
-        if error == nil {
-          let json = JSON(result)
-          pictureUrl = json["data"]["url"].description
-          print("Profile picture url is: \(json["data"]["url"])")
-        } else {
-          print(error)
-        }
-      })
-      if let picture = pictureUrl {
-        return picture
-      } else { return nil }
-    } else { return nil }
-  }
-  
-  public func getListOfFBFriends() -> JSON? {
-    if userIsLoggedIntoFacebook() {
-      let friendsRequest = FBSDKGraphRequest(graphPath: "me?fields=friends", parameters: nil)
-      var json: JSON?
+      let friendsRequest = FBSDKGraphRequest.init(graphPath: "me?fields=friends", parameters: nil)
       friendsRequest.startWithCompletionHandler({
         (connection, result, error: NSError!) -> Void in
         if let error = error {
           print(error)
         } else {
-          json = JSON(result)
-          print(json)
+          print(result)
+          self.friends = JSON(result)
         }
       })
-      if let json = json { return json } else { return nil }
-    } else { return nil }
+    }
+  }
+  
+  public func getBasicFBUserInfo() -> (id: String?, email: String?, first_name: String?, last_name: String?, gender: String?, age_range: String?, link: String?, locale: String?, picture: String?, cover: String?, timezone: String?, updated_time: String?, verified: String?) {
+    return (self.id, self.email, self.first_name, self.last_name, self.gender, self.age_range, self.link, self.locale, self.pictureURL, self.cover, self.timezone, self.updated_time, self.verified)
+  }
+  
+  public func getListOfFBFriends() -> JSON? {
+    if let friends = friends {
+      return friends
+    } else {
+      print("Problem retrieving friends")
+      return nil
+    }
   }
   
   public func disconnect() {
@@ -114,27 +110,5 @@ public class FacebookManager {
       print("User \(token) will be logged out")
       FBSDKAccessToken.setCurrentAccessToken(nil)
     } else { print("User could not be logged out") }
-  }
-  
-  // MARK: Delegates
-  public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
-    if let error = error {
-      // Process error
-      print("Login Button Error: \(error)")
-    }
-    else if result.isCancelled {
-      // Handle cancellations
-      print("FB login has been cancelled")
-    }
-    else {
-      print("User is logged in")
-      // Navigate to other view
-      print("Naviating to the new view")
-//      self.delegate.presentViewController(TabView(), animated: true, completion: nil)
-    }
-  }
-  
-  public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-    print("User Logged Out")
   }
 }

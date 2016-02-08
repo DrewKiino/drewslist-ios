@@ -46,9 +46,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
-    if let _ = FBSDKAccessToken.currentAccessToken() {
-      presentViewController(TabView(), animated: true, completion: nil)
-    }
+//    if let _ = FBSDKAccessToken.currentAccessToken() {
+//      presentViewController(TabView(), animated: true, completion: nil)
+//    }
     
     setupSelf()
     setupDataBinding()
@@ -382,7 +382,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     }
     else {
       print("User is logged in")
-      print("FB Profile URL \(FacebookManager.sharedInstance().getBasicFBUserInfo())")
       // Navigate to other view
       print("Naviating to the new view")
       presentViewController(TabView(), animated: true, completion: nil)
