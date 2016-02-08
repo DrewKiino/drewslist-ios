@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 import Alamofire
 import SwiftyJSON
+import Signals
 
 public class LoginController {
   
@@ -22,7 +23,9 @@ public class LoginController {
   
   private let userController = UserController()
   
-  private let facebookManager = FBSDKController()
+  private let fbsdkController = FBSDKController()
+  
+  public let shouldDismissView = Signal<Bool>()
   
   private var refrainTimer: NSTimer?
   
@@ -37,6 +40,10 @@ public class LoginController {
         tabView.presentViewController(LoginView(), animated: false, completion: nil)
       }
     }
+    fbsdkController.didFinishGettingUserAttributesFromFacebook.removeAllListeners()
+    fbsdkController.didFinishGettingUserAttributesFromFacebook.listen(self) { [weak self] user, friends in
+      self?.authenticateUserToServer(false)
+    }
   }
   
   public func checkIfUserIsLoggedIn() -> Bool {
@@ -46,6 +53,9 @@ public class LoginController {
       model.user = user
       
       getUserFromServer()
+      
+      // dismiss the view
+      shouldDismissView.fire(true)
       
       return true
       
@@ -82,6 +92,9 @@ public class LoginController {
         // write user object to realm
         self?.writeRealmUser()
         
+        // dismiss the view
+        self?.shouldDismissView.fire(true)
+        
       // user does not exist in database
       } else {
         
@@ -100,6 +113,81 @@ public class LoginController {
       self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
         self?.model.shouldRefrainFromCallingServer = false
       }
+    }
+  }
+  
+  public func authenticateUserToServer(localAuth: Bool = true) {
+    guard let email = model.email, let password = model.password else { return }
+    
+    // to safeguard against multiple server calls when the server has no more data
+    // to send back, we use a timer to disable this controller's server calls
+    model.shouldRefrainFromCallingServer = true
+    
+    Sockets.sharedInstance().emit("authenticateUser", [
+      "email": email,
+      // NOTE: password is not given by facebook
+//      "password": password,
+      // facebook attributes
+      "facebook_id": model.user?.facebook_id ?? "",
+      "facebook_link": model.user?.facebook_link ?? "",
+      "facebook_update_time": model.user?.facebook_update_time ?? "",
+      "facebook_verified": model.user?.facebook_verified ?? "",
+      "gender": model.user?.gender ?? "",
+      "age_min": model.user?.age_min ?? "",
+      "age_max": model.user?.age_min ?? "",
+      "locale": model.user?.locale ?? "",
+      "image": model.user?.imageUrl ?? "",
+      "bgImage": model.user?.bgImage ?? "",
+      "timezone": model.user?.timezone ?? "",
+      "firstName": model.user?.firstName ?? "",
+      "lastName": model.user?.lastName ?? "",
+      "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
+    ] as [String: AnyObject])
+    
+    Sockets.sharedInstance().on("authenticateUser.response") { [weak self] json in
+      
+      log.debug(json)
+      
+      if json["errmsg"].string != nil || json["error"].string != nil {
+        
+        // update the UI if the authentication session was done through local auth
+        if localAuth {
+          if json["error"].string?.containsString("email") == true {
+            self?.model._isValidEmail.fire(false)
+          } else if json["error"].string?.containsString("password") == true {
+            self?.model._isValidPassword.fire(false)
+          } else {
+            self?.model._serverError.fire(true)
+          }
+        }
+        
+      } else {
+        
+        // create and  user object
+        self?.model.user = User(json: json)
+        // set the shared user instance
+        UserController.setSharedUser(self?.model.user)
+        // write user object to realm
+        self?.writeRealmUser()
+        // set user online status to true
+        Sockets.sharedInstance().setOnlineStatus(true)
+        
+        self?.shouldDismissView.fire(true)
+      }
+      
+      // create a throttler
+      // this will disable this controllers server calls for 10 seconds
+      self?.refrainTimer?.invalidate()
+      self?.refrainTimer = nil
+      self?.model.shouldRefrainFromCallingServer = false
+    }
+    
+    // create a throttler
+    // this will disable this controllers server calls for 10 seconds
+    refrainTimer?.invalidate()
+    refrainTimer = nil
+    refrainTimer = NSTimer.after(60.0) { [weak self] in
+      self?.model.shouldRefrainFromCallingServer = false
     }
   }
   
@@ -127,8 +215,9 @@ public class LoginController {
         } else {
           self?.model._serverError.fire(true)
         }
-
+        
       } else {
+        
         // create and  user object
         self?.model.user = User(json: json)
         // set the shared user instance
@@ -137,6 +226,8 @@ public class LoginController {
         self?.writeRealmUser()
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
+        
+        self?.shouldDismissView.fire(true)
       }
       
       // create a throttler
@@ -145,51 +236,6 @@ public class LoginController {
       self?.refrainTimer = nil
       self?.model.shouldRefrainFromCallingServer = false
     }
-    
-//    Alamofire.request(
-//      .POST,
-//      ServerUrl.Default.getValue() + "/user/authenticateWithLocalAuth",
-//      parameters: [
-//        "email": email,
-//        "password": password,
-//        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
-//      ] as [String: AnyObject],
-//      encoding: .JSON
-//    )
-//    .response { [weak self] req, res, data, error in
-//      
-//      if let error = error {
-//        log.error(error)
-//        self?.model._serverError.fire(true)
-//        
-//      } else if let data = data, let json: JSON! = JSON(data: data) {
-//        
-//        if json["errmsg"].string != nil || json["error"].string != nil {
-//          
-//          if json["error"].string?.containsString("email") == true {
-//            self?.model._isValidEmail.fire(false)
-//          } else if json["error"].string?.containsString("password") == true {
-//            self?.model._isValidPassword.fire(false)
-//          } else {
-//            self?.model._serverError.fire(true)
-//          }
-//          
-//        } else {
-//          // create and  user object
-//          self?.model.user = User(json: json)
-//          // write user object to realm
-//          self?.writeRealmUser()
-//          // set user online status to true
-//          Sockets.sharedInstance().setOnlineStatus(true)
-//        }
-//      }
-//      
-//      // create a throttler
-//      // this will disable this controllers server calls for 10 seconds
-//      self?.refrainTimer?.invalidate()
-//      self?.refrainTimer = nil
-//      self?.model.shouldRefrainFromCallingServer = false
-//    }
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds
@@ -200,6 +246,9 @@ public class LoginController {
     }
   }
   
+  public func getUserAttributesFromFacebook() {
+    fbsdkController.getUserAttributesFromFacebook()
+  }
   
   // MARK: Realm Functions
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }

@@ -58,6 +58,33 @@ public class User: Mappable {
   public var listings: [Listing] = [] { didSet { _wishList => wishList } }
   
   // MARK: Facebook user attributes
+  
+  public let _facebook_id = Signal<String?>()
+  public var facebook_id: String? { didSet { _facebook_id => facebook_id } }
+  
+  public let _facebook_verified = Signal<String?>()
+  public var facebook_verified: String? { didSet { _facebook_verified => facebook_verified } }
+  
+  public let _facebook_link = Signal<String?>()
+  public var facebook_link: String? { didSet { _facebook_update_time => facebook_update_time } }
+  
+  public let _facebook_update_time = Signal<String?>()
+  public var facebook_update_time: String? { didSet { _facebook_update_time => facebook_update_time } }
+  
+  public let _timezone = Signal<String?>()
+  public var timezone: String? { didSet { _timezone => timezone } }
+ 
+  public let _gender = Signal<String?>()
+  public var gender: String? { didSet { _gender => gender } }
+  
+  public let _age_min = Signal<String?>()
+  public var age_min: String? { didSet { _age_min => age_min } }
+  
+  public let _age_max = Signal<String?>()
+  public var age_max: String? { didSet { _age_max => age_max } }
+  
+  public let _locale = Signal<String?>()
+  public var locale: String? { didSet { _locale => locale } }
  
   public init() {}
   

@@ -144,8 +144,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       if bool != true { self?.loginButtonIndicator?.stopAnimating() }
       else { self?.loginButtonIndicator?.startAnimating() }
     }
-    model._user.removeAllListeners()
-    model._user.listen(self) { [weak self] user in
+    
+    controller.shouldDismissView.removeAllListeners()
+    controller.shouldDismissView.listen(self) { [weak self] user in
       self?.dismissKeyboard()
       if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
         tabView.selectedIndex = 0
@@ -376,27 +377,28 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   // MARK: Delegates
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
     
+    // show the user there was an error if the fbsdk login did not succeed
     if let error = error {
-      // Process error
-      print("Login Button Error: \(error)")
+      log.error(error)
       
+    // else, if the login was cancelled show the user as well that the fbsdk login did not succeed
     } else if result.isCancelled {
       
       // Handle cancellations
-      print("FB login has been cancelled")
+      log.debug("FB login has been cancelled")
       
+    // else, the user has successfully logged in
     } else {
       
-      print("User is logged in")
-      // Navigate to other view
-      print("Naviating to the new view")
+      controller.getUserAttributesFromFacebook()
       
-      log.debug("mark")
+      log.info("User is logged in")
+      
     }
   }
   
   public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-    print("User Logged Out")
+    log.info("User Logged Out")
   }
 }
 

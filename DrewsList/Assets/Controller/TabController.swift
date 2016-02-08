@@ -26,8 +26,8 @@ public class TabController {
   public func checkIfUserIsLogginInToFacebook() -> Bool {
       if FBSDKController.sharedInstance().userIsLoggedIntoFacebook() {
         print("User logged into FB")
-        FBSDKController.sharedInstance().populateBasicFBUserInfo()
-        FBSDKController.sharedInstance().populateListOfFBFriends()
+//        FBSDKController.sharedInstance().populateBasicFBUserInfo()
+//        FBSDKController.sharedInstance().populateListOfFBFriends()
       return true
     } else {
       print("User is not logged into FB")
