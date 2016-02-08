@@ -107,7 +107,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
         self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
       }
       
-      cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date.isRecent() ?? false) ? .paradiseGray() : .whiteColor()
+      cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date().isRecent() ?? false) ? .paradiseGray() : .whiteColor()
       
       return cell
     }
@@ -201,9 +201,11 @@ public class ChatHistoryCell: DLTableViewCell {
     
     title?.text = chatModel.friend?.getName()
     
-    timestamp?.text = chatModel.messages.last?.date.dl_toRelativeString()
+    timestamp?.text = chatModel.messages.last?.date().dl_toRelativeString()
     
-    message?.text = chatModel.messages.last?.text
+    message?.text = chatModel.messages.last?.isMediaMessage() == true ?
+      chatModel.messages.last?.senderId() == UserController.sharedUser().user?._id ? "you have sent them your location" : "has sent you their location."
+      : chatModel.messages.last?.text?()
   }
 }
 

@@ -87,7 +87,7 @@ public class ChatHistoryController {
         // $0.0 represents the first chat model being compared
         // $0.1 represents teh second chat model being compared
         // this type of syntax is called 'inferred' syntax
-        self?.model.chatModels.sortInPlace { return $0.0.messages.last?.date > $0.1.messages.last?.date }
+        self?.model.chatModels.sortInPlace { return $0.0.messages.last?.date() > $0.1.messages.last?.date() }
         // tell the view to update its views
         self?.model.shouldRefreshViews = true
       }

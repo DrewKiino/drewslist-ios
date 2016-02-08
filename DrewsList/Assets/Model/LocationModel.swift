@@ -14,4 +14,7 @@ public class LocationModel {
   
   public let _userLocation = Signal<CLLocation?>()
   public var userLocation: CLLocation? { didSet { _userLocation => userLocation } }
+  
+  public let _authorizationStatus = Signal<CLAuthorizationStatus>()
+  public var authorizationStatus: CLAuthorizationStatus = .NotDetermined { didSet { _authorizationStatus => authorizationStatus } }
 }

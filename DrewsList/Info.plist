@@ -5,7 +5,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We use your location to help you publish your location to potential patrons as well as making it easier for us to find matches for you!</string>
+	<string>We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>

@@ -75,11 +75,14 @@ public class LoginController {
           
           // create and  user object
           self?.model.user = User(json: json)
+          // set the shared user instance
+          UserController.setSharedUser(self?.model.user)
           // write user object to realm
           self?.writeRealmUser()
           
         // user does not exist in database
         } else {
+          
           // nullify the model and
           // delete the deprecated user
           self?.model.user = nil

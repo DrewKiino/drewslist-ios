@@ -86,7 +86,6 @@
 		EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67C15B1C30B06300AC60DB /* SearchBookController.swift */; };
 		EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */; };
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
-		EE73BD8E1C4F675E00FC33E0 /* Omega.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE73BD8D1C4F675E00FC33E0 /* Omega.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
@@ -226,7 +225,6 @@
 		EE67C15B1C30B06300AC60DB /* SearchBookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBookController.swift; sourceTree = "<group>"; };
 		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
-		EE73BD8D1C4F675E00FC33E0 /* Omega.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Omega.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -565,7 +563,6 @@
 				EEA80B231C1287C70058ED0C /* NativeExtensions.swift */,
 				EED29A0E1BF533A1009C6D47 /* Sockets.swift */,
 				EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */,
-				EE73BD8D1C4F675E00FC33E0 /* Omega.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -809,7 +806,6 @@
 				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
 				EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */,
 				39B35FF61C4A19340084007D /* TermPrivacyController.swift in Sources */,
-				EE73BD8E1C4F675E00FC33E0 /* Omega.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,

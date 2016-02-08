@@ -56,6 +56,8 @@ public class User: Mappable {
   
   public let _listings = Signal<[Listing]>()
   public var listings: [Listing] = [] { didSet { _wishList => wishList } }
+  
+  // MARK: Facebook user attributes
  
   public init() {}
   

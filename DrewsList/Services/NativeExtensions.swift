@@ -189,6 +189,13 @@ extension NSMutableAttributedString {
   func height(width: CGFloat) -> CGFloat {
     return boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil ).height
   }
+  
+  func append(attributedString: NSMutableAttributedString?) -> Self {
+    if let attributedString = attributedString {
+      appendAttributedString(attributedString)
+    }
+    return self
+  }
 }
 
 import NVActivityIndicatorView
