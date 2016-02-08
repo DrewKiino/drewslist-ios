@@ -66,7 +66,7 @@ extension UIColor {
   // NOTE: TableView Padding Color
   
   public class func paradiseGray() -> UIColor {
-    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 0.5)
+    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
   }
   
   public class func tableViewNativeSeparatorColor() -> UIColor {

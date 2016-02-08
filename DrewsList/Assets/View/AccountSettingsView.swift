@@ -83,10 +83,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupTableView()
     tableView?.fillSuperview()
   }
-  
-  
 
-  
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     controller.readRealmUser()
@@ -96,15 +93,11 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     super.viewWillDisappear(animated)
   }
   
-  
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
     title = "Account Setting"
   }
 
-  
-  
-  
   private func setupTableView() {
     tableView = DLTableView()
     tableView?.delegate = self

@@ -154,7 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
     var tabView: TabView? = TabView()
     
-//    var tabView: SearchBookView? = SearchBookView()
+//    var tabView: ProfileImagePickerView? = ProfileImagePickerView()
 //    var tabView: UserProfileView? = UserProfileView()
     
     /*
