@@ -46,6 +46,10 @@ public class ChatModel: NSObject {
   public let _mostRecentTimestamp = Signal<String?>()
   public var mostRecentTimestamp: String? { didSet { _mostRecentTimestamp => mostRecentTimestamp } }
   
+  // MARK: listing
+  public let _listing = Signal<Listing?>()
+  public var listing: Listing? { didSet { _listing => listing } }
+  
   public func set(user user: User?) -> Self {
     self.user = user
     return self
@@ -91,6 +95,10 @@ public class IncomingMessage: Mappable {
   public let _longitude = Signal<Double?>()
   public var longitude: Double? { didSet { _longitude => longitude } }
   
+  // MARK: bot message
+  public let _isBot = Signal<Bool?>()
+  public var isBot: Bool? { didSet { _isBot => isBot } }
+
   public init(json: JSON?) {
     if let json = json?.dictionaryObject {
       mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
@@ -105,6 +113,11 @@ public class IncomingMessage: Mappable {
     createdAt       <- map["createdAt"]
     latitude        <- map["latitude"]
     longitude       <- map["longitude"]
+    
+    // if a user was not parsed, then the message is from a bot
+    if user == nil {
+      user          <- map["bot"]
+    }
   }
   
   public func toJSQMessage() -> JSQMessage? {
@@ -167,6 +180,10 @@ public class OutgoingMessage {
   public let _location = Signal<CLLocation?>()
   public var location: CLLocation? { didSet { _location => location } }
   
+  // MARK: listing 
+  public let _listing = Signal<Listing?>()
+  public var listing: Listing? { didSet { _listing => listing } }
+  
   public init(
     user_id: String,
     username: String,
@@ -218,14 +235,20 @@ public class OutgoingMessage {
       "room_id": room_id,
       "message": message,
       "latitude": location?.coordinate.latitude ?? 0,
-      "longitude": location?.coordinate.longitude ?? 0
+      "longitude": location?.coordinate.longitude ?? 0,
+      "listing": listing?._id ?? ""
     ]
     
     return json
   }
   
-  public func set(text: String) -> Self {
-    message = text
+  public func set(messsage message: String?) -> Self {
+    self.message = message
+    return self
+  }
+  
+  public func set(listing listing: Listing?) -> Self {
+    self.listing = listing
     return self
   }
 }

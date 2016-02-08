@@ -111,6 +111,10 @@ public class ChatController {
     isSendingMessage => true
     
     socket.emit("broadcast", json)
+    
+    // set the listing to nil to indicate that the user has already sent which listing he has
+    // viewed to the other user
+    model.listing = nil
   }
   
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
@@ -144,6 +148,7 @@ public class ChatController {
       session_id: session_id,
       room_id: room_id
     )
+    .set(listing: model.listing)
   }
   
   public func didPressSendLocation() {

@@ -294,13 +294,17 @@ public class ChatView: JSQMessagesViewController {
   }
   
   private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
-    return model.messages.isEmpty ? nil : model.messages[index].senderId() == senderId ?
-      JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
-      JSQMessagesAvatarImage(avatarImage: model.friend_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
+    return model.messages.isEmpty ? nil :
+      model.messages[index].senderId() == "BOT" ?
+        JSQMessagesAvatarImage(avatarImage: UIImage(named: "mrfreeto-profile-icon"), highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
+          model.messages[index].senderId() == senderId ?
+            JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
+            JSQMessagesAvatarImage(avatarImage: model.friend_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
   }
   
   private func getBubbleTopText(index: Int) -> String {
-    return "\(model.messages.isEmpty ? "" : model.messages[index].senderId() == model.user?._id ? model.user?.getName() ?? "" : model.friend?.getName() ?? "")"
+    return model.messages.isEmpty ? "" : model.messages[index].senderDisplayName()
+//    return "\(model.messages.isEmpty ? "" : model.messages[index].senderId() == model.user?._id ? model.messages[index].senderDisplayName() ?? "" : () ?? "")"
   }
   
   private func getDateString(index: Int, simple: Bool = false) -> String {
@@ -311,6 +315,13 @@ public class ChatView: JSQMessagesViewController {
     
     model.user = user
     model.friend = friend
+    
+    return self
+  }
+  
+  public func setListing(listing: Listing?) -> Self {
+    
+    model.listing = listing
     
     return self
   }

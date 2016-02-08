@@ -57,6 +57,7 @@ public class ActivityFeedController {
     socket.on("activityFeed.getActivityHistory.response") { [weak self] json in
       if let jsonArray = json["activities"].array where !jsonArray.isEmpty {
         
+        
         // reset the badge count
         self?.model.badgeCount = 0
         

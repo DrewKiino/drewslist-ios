@@ -65,39 +65,39 @@ public class LoginController {
     model.shouldRefrainFromCallingServer = true
     
     Alamofire.request(.GET, ServerUrl.Default.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
-      .response { [weak self] req, res, data, error in
+    .response { [weak self] req, res, data, error in
+      
+      if let error = error {
         
-        if let error = error {
-          
-          log.error(error)
-          
-        } else if let data = data, let json: JSON! = JSON(data: data) where !json.isEmpty {
-          
-          // create and  user object
-          self?.model.user = User(json: json)
-          // set the shared user instance
-          UserController.setSharedUser(self?.model.user)
-          // write user object to realm
-          self?.writeRealmUser()
-          
-        // user does not exist in database
-        } else {
-          
-          // nullify the model and
-          // delete the deprecated user
-          self?.model.user = nil
-          self?.deleteRealmUser()
-          // then log user out
-          self?.model.shouldLogout = true
-        }
+        log.error(error)
         
-        // create a throttler
-        // this will disable this controllers server calls for 10 seconds
-        self?.refrainTimer?.invalidate()
-        self?.refrainTimer = nil
-        self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
-          self?.model.shouldRefrainFromCallingServer = false
-        }
+      } else if let data = data, let json: JSON! = JSON(data: data) where !json.isEmpty && json["error"].string != "user is undefined" {
+        
+        // create and  user object
+        self?.model.user = User(json: json)
+        // set the shared user instance
+        UserController.setSharedUser(self?.model.user)
+        // write user object to realm
+        self?.writeRealmUser()
+        
+      // user does not exist in database
+      } else {
+        
+        // nullify the model and
+        // delete the deprecated user
+        self?.model.user = nil
+        self?.deleteRealmUser()
+        // then log user out
+        self?.model.shouldLogout = true
+      }
+      
+      // create a throttler
+      // this will disable this controllers server calls for 10 seconds
+      self?.refrainTimer?.invalidate()
+      self?.refrainTimer = nil
+      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
+        self?.model.shouldRefrainFromCallingServer = false
+      }
     }
   }
   

@@ -148,7 +148,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePage?._chatButtonPressed.removeAllListeners()
     middlePage?._chatButtonPressed.listen(self) { [weak self] listing in
       self?.controller.readRealmUser()
-      self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user), animated: true)
+      self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user).setListing(listing), animated: true)
     }
     middlePage?._bookProfilePressed.removeAllListeners()
     middlePage?._bookProfilePressed.listen(self) { [weak self] book in
