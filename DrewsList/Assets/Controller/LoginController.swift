@@ -11,6 +11,7 @@ import RealmSwift
 import Alamofire
 import SwiftyJSON
 import Signals
+import FBSDKLoginKit
 
 public class LoginController {
   
@@ -25,7 +26,6 @@ public class LoginController {
   private let fbsdkController = FBSDKController()
   
   public let shouldDismissView = Signal<Bool>()
-  public let shouldLogUserOutOfFacebook = Signal<Bool>()
   
   private var refrainTimer: NSTimer?
   
@@ -57,7 +57,7 @@ public class LoginController {
   
   public func checkIfUserIsLoggedIn() -> Bool {
     // check if user is already logged in
-    if let user = try! Realm().objects(RealmUser.self).first?.getUser() {
+    if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
       
       model.user = user
       
@@ -66,11 +66,17 @@ public class LoginController {
       // dismiss the view
       shouldDismissView.fire(true)
       
-      return true
+    // check if user is logged into facebook
+    } else if fbsdkController.userIsLoggedIntoFacebook() {
+      
+      fbsdkController.getUserAttributesFromFacebook()
       
     // if we already have a user, attempt to call the server to update the current user
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
+      
+      // else, log use out of facebook
+      FBSDKLoginManager().logOut()  
       
       tabView.presentViewController(LoginView(), animated: false, completion: nil)
     }
@@ -147,7 +153,8 @@ public class LoginController {
           }
         }
         
-        self?.shouldLogUserOutOfFacebook.fire(true)
+        // if theres an error, log the user out
+        FBSDKLoginManager().logOut()
         
       } else {
         

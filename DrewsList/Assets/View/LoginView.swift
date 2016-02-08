@@ -46,10 +46,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public override func viewDidLoad() {
       super.viewDidLoad()
     
-//    if let _ = FBSDKAccessToken.currentAccessToken() {
-//      presentViewController(TabView(), animated: true, completion: nil)
-//    }
-    
     setupSelf()
     setupDataBinding()
     setupBackgroundImage()
@@ -92,6 +88,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
     checkIfUserHasSeenOnboardingView()
     
     if drewslistLogo?.image == nil {
@@ -151,10 +148,6 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
         tabView.selectedIndex = 0
         tabView.dismissViewControllerAnimated(true, completion: nil)
       }
-    }
-    controller.shouldLogUserOutOfFacebook.removeAllListeners()
-    controller.shouldLogUserOutOfFacebook.listen(self) { [weak self] bool in
-      FBSDKLoginManager().logOut()
     }
   }
   

@@ -57,7 +57,7 @@ public class FBSDKController {
  
   public func populateBasicFBUserInfo(callback: Bool -> Void) {
     if userIsLoggedIntoFacebook() {
-      FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture.type(large),cover,timezone,updated_time,verified,dob", parameters: nil)
+      FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture.type(large),cover,timezone,updated_time,verified", parameters: nil)
       .startWithCompletionHandler() { [weak self] (connection, result, error) in
         
         if let error = error {
