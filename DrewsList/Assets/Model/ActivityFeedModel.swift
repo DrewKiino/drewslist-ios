@@ -11,6 +11,7 @@ import Signals
 import RealmSwift
 import SwiftyJSON
 import ObjectMapper
+import CoreLocation
 
 public enum ActivityType {
   
@@ -47,7 +48,6 @@ public class ActivityFeedModel {
   public var badgeCount: Int = 0 { didSet { _badgeCount => badgeCount } }
 }
 
-
 public class Activity: Mappable {
   
   public let _user = Signal<User?>()
@@ -75,6 +75,22 @@ public class Activity: Mappable {
   
   public var isSeen: Bool = false
   
+  // MARK: Location Message
+  
+  public let _latitude = Signal<Double?>()
+  public var latitude: Double? { didSet { _latitude => latitude } }
+  
+  public let _longitude = Signal<Double?>()
+  public var longitude: Double? { didSet { _longitude => longitude } }
+  
+  public var location: CLLocation? { get {
+    if let latitude = latitude, let longitude = longitude {
+      return CLLocation(latitude: latitude, longitude: longitude)
+    }
+    return nil
+    }
+  }
+  
   public init() {}
   
   public init(json: JSON) {
@@ -93,6 +109,10 @@ public class Activity: Mappable {
     session_id  <- map["session_id"]
     room_id     <- map["room_id"]
     isSeen      <- map["isSeen"]
+    
+    // MARK: location message data
+    latitude    <- map["latitude"]
+    longitude   <- map["longitude"]
   }
   
   public convenience init(message: String?, timestamp: String?, type: String?) {
@@ -106,10 +126,11 @@ public class Activity: Mappable {
   public func getMessage() -> NSMutableAttributedString? {
     switch ActivityType.getType(type) {
     case .Chat:
-      return NSMutableAttributedString(string: (message ?? ""), attributes: [
-        NSFontAttributeName: UIFont.asapRegular(12),
-        NSForegroundColorAttributeName: UIColor.blackColor()
-      ])
+      return message == "USER_LOCATION" ? nil :
+        NSMutableAttributedString(string: (message ?? ""), attributes: [
+          NSFontAttributeName: UIFont.asapRegular(12),
+          NSForegroundColorAttributeName: UIColor.blackColor()
+        ])
     case .None: break
     }
     return nil
@@ -118,15 +139,26 @@ public class Activity: Mappable {
   public func getDetailedMessage(modifier: String? = nil) -> NSMutableAttributedString? {
     switch ActivityType.getType(type) {
     case .Chat:
+      
       let attributedString: NSMutableAttributedString! = NSMutableAttributedString(string: (user?.getName() ?? ""), attributes: [
         NSFontAttributeName: UIFont.asapBold(12),
         NSForegroundColorAttributeName: UIColor.bareBlue()
       ])
       
-      var attributedString2: NSMutableAttributedString! = NSMutableAttributedString(string: " sent you a message: ", attributes: [
-        NSFontAttributeName: UIFont.asapRegular(12),
-        NSForegroundColorAttributeName: UIColor.blackColor()
-      ])
+      // check if the message is a location message
+      var attributedString2: NSMutableAttributedString!
+      if message == "USER_LOCATION" {
+        attributedString2 = NSMutableAttributedString(string: " sent you their location: ", attributes: [
+          NSFontAttributeName: UIFont.asapRegular(12),
+          NSForegroundColorAttributeName: UIColor.blackColor()
+        ])
+      // if not, then create a regular message alert
+      } else {
+        attributedString2 = NSMutableAttributedString(string: " sent you a message: ", attributes: [
+          NSFontAttributeName: UIFont.asapRegular(12),
+          NSForegroundColorAttributeName: UIColor.blackColor()
+        ])
+      }
       
       var string: String? = timestamp?.toRelativeString()
       var attributedString3: NSMutableAttributedString! = NSMutableAttributedString(string: "\(string?.characters.count > 7 ? "\n\(string ?? "") " : "\(string ?? "")\n")", attributes: [
@@ -136,6 +168,7 @@ public class Activity: Mappable {
       
       attributedString.appendAttributedString(attributedString2)
       attributedString.appendAttributedString(attributedString3)
+      
       if let message = getMessage() { attributedString.appendAttributedString(message) }
       
       attributedString2 = nil
@@ -147,6 +180,10 @@ public class Activity: Mappable {
     case .None: break
     }
     return nil
+  }
+  
+  public func isLocationActivity() -> Bool {
+    return latitude != nil && longitude != nil && latitude != 0.0 && longitude != 0.0
   }
 }
 

@@ -365,6 +365,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       passwordField?.becomeFirstResponder()
       break
       // password
+    case 5:
+      loginButtonPressed()
+      break
     default: break
     }
     return false

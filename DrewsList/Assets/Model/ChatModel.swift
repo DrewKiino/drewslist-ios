@@ -13,6 +13,7 @@ import ObjectMapper
 import SwiftyJSON
 import SwiftDate
 import RealmSwift
+import CoreLocation
 
 public class ChatModel: NSObject {
   
@@ -36,12 +37,11 @@ public class ChatModel: NSObject {
   public let _friend_image = Signal<UIImage?>()
   public var friend_image: UIImage? { didSet { _friend_image => friend_image } }
 
-  public let _messages = Signal<[JSQMessage]>()
-  public var messages = [JSQMessage]() { didSet { _messages => messages } }
+  public let _messages = Signal<[JSQMessageData]>()
+  public var messages = [JSQMessageData]() { didSet { _messages => messages } }
   
-  public let _pendingMessages = Signal<[JSQMessage]>()
-  public var pendingMessages = [JSQMessage]() { didSet { _pendingMessages => pendingMessages } }
-  
+  public let _pendingMessages = Signal<[JSQMessageData]>()
+  public var pendingMessages = [JSQMessageData]() { didSet { _pendingMessages => pendingMessages } }
   
   public let _mostRecentTimestamp = Signal<String?>()
   public var mostRecentTimestamp: String? { didSet { _mostRecentTimestamp => mostRecentTimestamp } }
@@ -83,6 +83,14 @@ public class IncomingMessage: Mappable {
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
+  // MARK: Location Message
+  
+  public let _latitude = Signal<Double?>()
+  public var latitude: Double? { didSet { _latitude => latitude } }
+  
+  public let _longitude = Signal<Double?>()
+  public var longitude: Double? { didSet { _longitude => longitude } }
+  
   public init(json: JSON?) {
     if let json = json?.dictionaryObject {
       mapping(Map(mappingType: .FromJSON, JSONDictionary: json))
@@ -95,13 +103,34 @@ public class IncomingMessage: Mappable {
     user            <- map["user"]
     message         <- map["message"]
     createdAt       <- map["createdAt"]
+    latitude        <- map["latitude"]
+    longitude       <- map["longitude"]
   }
   
   public func toJSQMessage() -> JSQMessage? {
     guard let friend_id = user?._id, let friend_username = user?.getName(), let message = message, let date = createdAt?.toDateFromISO8601() else { return nil }
-    return JSQMessage(senderId: friend_id, senderDisplayName: friend_username, date: date, text: message)
+    
+    // check if latitude and longitude exists
+    // if it does, then the message is a location message
+    // 0.0 means it is not.
+    if let latitude = latitude, let longitude = longitude where latitude != 0.0 && longitude != 0.0 {
+      return JSQMessage(
+        senderId: friend_id,
+        senderDisplayName: friend_username,
+        date: date,
+        media: JSQLocationMediaItem(
+          location:
+          CLLocation(
+            latitude: latitude,
+            longitude: longitude
+          )
+        )
+        .isIncomingMessage(UserController.sharedUser().user?._id == friend_id)
+      )
+    } else {
+      return JSQMessage(senderId: friend_id, senderDisplayName: friend_username, date: date, text: message)
+    }
   }
-  
 }
 
 public class OutgoingMessage {
@@ -133,6 +162,10 @@ public class OutgoingMessage {
   public let _createdAt = Signal<String?>()
   public var createdAt: String? { didSet { _createdAt => createdAt } }
   
+  // MARK: Location Message
+  
+  public let _location = Signal<CLLocation?>()
+  public var location: CLLocation? { didSet { _location => location } }
   
   public init(
     user_id: String,
@@ -152,6 +185,11 @@ public class OutgoingMessage {
     self.message = message
     self.session_id = session_id
     self.room_id = room_id
+  }
+  
+  public func set(location: CLLocation?) -> Self {
+    self.location = location
+    return self
   }
   
   public func toJSQMessage() -> JSQMessage? {
@@ -178,7 +216,9 @@ public class OutgoingMessage {
       "friend_username": friend_username,
       "session_id": session_id,
       "room_id": room_id,
-      "message": message
+      "message": message,
+      "latitude": location?.coordinate.latitude ?? 0,
+      "longitude": location?.coordinate.longitude ?? 0
     ]
     
     return json
@@ -234,6 +274,13 @@ public class RealmChatHistory: Object {
   
   public func getChatModel() -> ChatModel {
     return ChatModel().set(messages: getMessages()).set(pendingMessages: getPendingMessages()).set(user: user?.getUser()).set(friend: friend?.getUser()).set(mostRecentTimestamp: mostRecentTimestamp)
+  }
+}
+
+extension JSQLocationMediaItem {
+  public func isIncomingMessage(bool: Bool) -> Self {
+    appliesMediaViewMaskAsOutgoing = bool
+    return self
   }
 }
 

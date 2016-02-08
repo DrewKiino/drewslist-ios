@@ -110,7 +110,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
             // we ask the tab view to check any current user, since we have no current user
             // it will present the login screen
             self?.navigationController?.popToRootViewControllerAnimated(true)
-            if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.checkIfUserIsLoggedIn() }
+            LoginController.sharedInstance().checkIfUserIsLoggedIn()
           }
         }
         cell.showBottomBorder()

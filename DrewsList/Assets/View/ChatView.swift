@@ -9,6 +9,7 @@
 import Foundation
 import JSQMessagesViewController
 import SwiftDate
+import Async
 
 public class ChatView: JSQMessagesViewController {
   
@@ -16,7 +17,9 @@ public class ChatView: JSQMessagesViewController {
   private let controller = ChatController()
   private unowned var model: ChatModel { get { return controller.model } }
   
+  // UI Controls
   private var refreshControl: UIRefreshControl?
+  private var alertController: UIAlertController?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -29,6 +32,7 @@ public class ChatView: JSQMessagesViewController {
     setupSelf()
     setupDataBinding()
     setupRefreshControl()
+    setupAlertController()
     controller.viewDidLoad()
   }
   
@@ -54,8 +58,9 @@ public class ChatView: JSQMessagesViewController {
   private func setupSelf() {
     // set chat view title to friend's title
     title = model.friend?.getName()
+    inputToolbar?.translucent = false
     // hide attachment button
-    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+//    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
   }
   
   private func setupDataBinding() {
@@ -128,12 +133,14 @@ public class ChatView: JSQMessagesViewController {
     // if 'didReceive' is true, update the UI
     controller.didReceiveMessage.removeAllListeners()
     controller.didReceiveMessage.listen(self) { [weak self] didReceive in
-      if didReceive { self?.finishReceivingMessage() }
+      if didReceive {
+        self?.finishReceivingMessage()
+        self?.reloadViewsDelayed()
+      }
     }
     controller.didRequestLoadingMessagesFromServer.removeAllListeners()
     controller.didRequestLoadingMessagesFromServer.listen(self) { [weak self] didRequest in
-      if didRequest {
-      }
+      if didRequest { }
     }
     controller.didLoadMessagesFromServer.removeAllListeners()
     controller.didLoadMessagesFromServer.listen(self) { [weak self] didReceive in
@@ -156,6 +163,8 @@ public class ChatView: JSQMessagesViewController {
             self?.controller.didPullToRefresh = false
           }
         }
+        
+        self?.reloadViewsDelayed()
       }
       
       NSTimer.after(1.0) { [weak self] in
@@ -164,15 +173,36 @@ public class ChatView: JSQMessagesViewController {
     }
   }
   
+  private func setupAlertController() {
+    alertController = UIAlertController()
+    alertController?.addAction(UIAlertAction(title: "Send my location", style: .Default) { [weak self] action in
+      self?.controller.didPressSendLocation()
+    })
+    alertController?.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+  }
+  
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
     collectionView?.addSubview(refreshControl!)
   }
   
+  private func reloadViewsDelayed() {
+    // reload the collection view just in case any of the messages is a media message
+    NSTimer.after(3.0) { [weak self] in
+      self?.collectionView?.reloadData()
+      // and another one just to make sure... yeah I know it sucks.
+      NSTimer.after(7.0) { [weak self] in
+        self?.collectionView?.reloadData()
+      }
+    }
+  }
+  
   // MARK: UIRefreshControl methods
   
   public func refresh(sender: UIRefreshControl) {
+    refreshControl?.beginRefreshing()
     controller.didPullToRefresh = true
     controller.getChatHistoryFromServer(model.messages.count, paging: 10)
   }
@@ -184,7 +214,26 @@ public class ChatView: JSQMessagesViewController {
     controller.didPressSendButton(text)
   }
   
-  public override func didPressAccessoryButton(sender: UIButton!) {}
+  public override func didPressAccessoryButton(sender: UIButton!) {
+    if let alertController = alertController {
+      presentViewController(alertController, animated: true, completion: nil)
+    }
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+    if let message = model.messages[indexPath.row].media?() as? JSQLocationMediaItem {
+      // show activity animation on nav bar
+      DLNavigationController.showActivityAnimation(self)
+      controller.routeToLocation(message.location) { [weak self] in
+        // show activity animation on nav bar
+        DLNavigationController.hideActivityAnimation(self)
+      }
+      NSTimer.after(3.0) { [weak self] in
+        // show activity animation on nav bar
+        DLNavigationController.hideActivityAnimation(self)
+      }
+    }
+  }
   
   // MARK: Collection View Delegates
   
@@ -199,7 +248,7 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
-    return model.messages.isEmpty ? nil : model.messages[indexPath.row].senderId == senderId ? outgoingBubble : incomingBubble
+    return model.messages.isEmpty ? nil : model.messages[indexPath.row].senderId() == senderId ? outgoingBubble : incomingBubble
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
@@ -210,43 +259,52 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
-      NSAttributedString(string: getDateString(indexPath.row, simple: true))
-      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ?
-        model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
-        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
-      : NSAttributedString(string: getDateString(indexPath.row))
+//    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
+//      NSAttributedString(string: getDateString(indexPath.row, simple: true))
+//      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ?
+//        model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
+//        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
+//      : NSAttributedString(string: getDateString(indexPath.row))
+    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId() == model.messages[indexPath.row].senderId() ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row))
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+//    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId() == model.messages[indexPath.row].senderId() ? 0 : 20 : 20
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-//    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ?
-//      NSAttributedString(string: getBubbleTopText(indexPath.row)) :
-    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row))
-      : NSAttributedString(string: getBubbleTopText(indexPath.row))
+    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId() == model.messages[indexPath.row].senderId() ?
+      NSAttributedString(string: getDateString(indexPath.row, simple: false))
+      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date().weekday == model.messages[indexPath.row].date().weekday ? model.messages[indexPath.row].date().toLocalDateRegion()?.isToday() == true ?
+        NSAttributedString(string: getDateString(indexPath.row, simple: true)) : nil
+        : NSAttributedString(string: getDateString(indexPath.row, simple: true))
+      : NSAttributedString(string: getDateString(indexPath.row))
+//    return indexPath.row == 0 ? nil : NSAttributedString(string: getBubbleTopText(indexPath.row))
+//    return indexPath.row == 0 ? nil : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row)) : NSAttributedString(string: getBubbleTopText(indexPath.row))
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForCellTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-//    return indexPath.row == (model.messages.count - 1) ? 20 :
-    return indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 :
-      model.messages[indexPath.row - 1].date.weekday == model.messages[indexPath.row].date.weekday ? model.messages[indexPath.row].date.toLocalDateRegion()?.isToday() == true ? 20 : 0 : 20 : 20
+//    return indexPath.row == (model.messages.count - 1) ? 20 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+    return indexPath.row == (model.messages.count - 1) && indexPath.row > 0 && model.messages[indexPath.row - 1].senderId() == model.messages[indexPath.row].senderId() ?
+      20
+      : indexPath.row > 0 ? model.messages[indexPath.row - 1].date().weekday == model.messages[indexPath.row].date().weekday ? model.messages[indexPath.row].date().toLocalDateRegion()?.isToday() == true ?
+        20 : 0 : 20 : 20
+    //    return indexPath.row == 0 ? 0 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
   }
   
   private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
-    return model.messages.isEmpty ? nil : model.messages[index].senderId == senderId ?
+    return model.messages.isEmpty ? nil : model.messages[index].senderId() == senderId ?
       JSQMessagesAvatarImage(avatarImage: model.user_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder")) :
       JSQMessagesAvatarImage(avatarImage: model.friend_image, highlightedImage: nil, placeholderImage: UIImage(named: "profile-placeholder"))
   }
   
   private func getBubbleTopText(index: Int) -> String {
-    return "\(model.messages.isEmpty ? "" : model.messages[index].senderId == model.user?._id ? model.user?.getName() ?? "" : model.friend?.getName() ?? "")"
+    return "\(model.messages.isEmpty ? "" : model.messages[index].senderId() == model.user?._id ? model.user?.getName() ?? "" : model.friend?.getName() ?? "")"
   }
   
   private func getDateString(index: Int, simple: Bool = false) -> String {
-    return 60.seconds.ago > model.messages[index].date ? (model.messages[index].date.dl_toString(simple) ?? "") : "Just Now"
+    return 60.seconds.ago > model.messages[index].date() ? (model.messages[index].date().dl_toString(simple) ?? "") : "Just Now"
   }
   
   public func setUsers(user: User?, friend: User?) -> Self {
