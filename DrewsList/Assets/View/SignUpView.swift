@@ -31,6 +31,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   private var firstNameField: HoshiTextField?
   private var lastNameField: HoshiTextField?
   private var emailField:      HoshiTextField?
+  private var phoneField:      HoshiTextField?
   private var passwordField:   HoshiTextField?
   private var rePasswordField: HoshiTextField?
   private var schoolTextField: HoshiTextField?
@@ -54,6 +55,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     setupDrewslistLogo()
     setupNameFields()
     setupEmailLabel()
+    setupPhoneLabel()
     setupPasswordLabel()
     setupSchoolTextField()
     setupSignupButton()
@@ -76,7 +78,8 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     firstNameField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     lastNameField?.alignAndFillWidth(align: .UnderCentered, relativeTo: firstNameField!, padding: 0, height: 48)
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: lastNameField!, padding: 0, height: 48)
-    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    phoneField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: phoneField!, padding: 0, height: 48)
     rePasswordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 48)
     schoolTextField?.alignAndFillWidth(align: .UnderCentered, relativeTo: rePasswordField!, padding: 0, height: 48)
     
@@ -142,6 +145,11 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       if bool != true { self?.emailField?.placeholder = "Must be a valid email" }
       else { self?.emailField?.placeholder = "Email" }
     }
+    model._isValidPhone.removeAllListeners()
+    model._isValidPhone.listen(self) { [weak self] bool in
+      if bool != true { self?.phoneField?.placeholder = "Must be a valid phone number" }
+      else { self?.phoneField?.placeholder = "Phone" }
+    }
     model._isValidPassword.removeAllListeners()
     model._isValidPassword.listen(self) { [weak self] bool in
       if bool != true { self?.passwordField?.placeholder = "Password, at least 6 characters and 1 number" }
@@ -159,6 +167,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     }
     model._isValidForm.removeAllListeners()
     model._isValidForm.listen(self) { [weak self] bool in
+      log.debug(bool)
       if bool == true { self?.controller.createNewUserInServer() }
     }
     model._serverError.removeAllListeners()
@@ -186,7 +195,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   private func setupScrollView() {
     scrollView = UIScrollView()
     scrollView?.showsVerticalScrollIndicator = false
-    scrollView?.scrollEnabled = false
+//    scrollView?.scrollEnabled = false
     view.addSubview(scrollView!)
   }
   
@@ -240,6 +249,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     firstNameField?.resignFirstResponder()
     lastNameField?.resignFirstResponder()
     emailField?.resignFirstResponder()
+    phoneField?.resignFirstResponder()
     passwordField?.resignFirstResponder()
     rePasswordField?.resignFirstResponder()
     schoolTextField?.resignFirstResponder()
@@ -264,6 +274,26 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     containerView?.addSubview(emailField!)
   }
   
+  public func setupPhoneLabel() {
+    phoneField = HoshiTextField()
+    phoneField?.borderInactiveColor = .bareBlue()
+    phoneField?.borderActiveColor = .juicyOrange()
+    phoneField?.placeholderColor = .whiteColor()
+    phoneField?.placeholderLabel.font = .asapRegular(12)
+    phoneField?.placeholder = "Phone"
+    phoneField?.delegate = self
+    phoneField?.font = .asapRegular(16)
+    phoneField?.textColor = .whiteColor()
+    phoneField?.spellCheckingType = .No
+    phoneField?.autocorrectionType = .No
+    phoneField?.autocapitalizationType = .None
+    phoneField?.clearButtonMode = .WhileEditing
+    phoneField?.keyboardType = .PhonePad
+    phoneField?.tag = 5
+    
+    containerView?.addSubview(phoneField!)
+  }
+  
   public func setupPasswordLabel() {
     passwordField = HoshiTextField()
     passwordField?.borderInactiveColor = .bareBlue()
@@ -278,7 +308,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     passwordField?.autocorrectionType = .No
     passwordField?.textColor = .whiteColor()
     passwordField?.clearButtonMode = .WhileEditing
-    passwordField?.tag = 5
+    passwordField?.tag = 6
     
     containerView?.addSubview(passwordField!)
     
@@ -294,7 +324,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     rePasswordField?.spellCheckingType = .No
     rePasswordField?.autocorrectionType = .No
     rePasswordField?.textColor = .whiteColor()
-    rePasswordField?.tag = 6
+    rePasswordField?.tag = 7
     rePasswordField?.clearButtonMode = .WhileEditing
     
     containerView?.addSubview(rePasswordField!)
@@ -312,7 +342,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     schoolTextField?.spellCheckingType = .No
     schoolTextField?.autocorrectionType = .No
     schoolTextField?.textColor = .whiteColor()
-    schoolTextField?.tag = 7
+    schoolTextField?.tag = 8
     schoolTextField?.clearButtonMode = .WhileEditing
     containerView?.addSubview(schoolTextField!)
   }
@@ -416,10 +446,10 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   
   public func textFieldDidBeginEditing(textField: UITextField) {
     switch textField.tag {
-    case 4...6:
+    case 4...7:
       scrollView?.setContentOffset(CGPointMake(0, 110), animated: true)
       break
-    case 7:
+    case 8:
       textField.resignFirstResponder()
       searchSchools()
       break
@@ -450,11 +480,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
         case 4:
           model.email = _string
           break
-          // password
+          //phone
         case 5:
+          model.phone = _string
+          break
+          // password
+        case 6:
           model.password = _string
           // repassword
-        case 6:
+        case 7:
           model.repassword = _string
         default: break
         }
@@ -475,11 +509,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
         case 4:
           model.email = _string
           break
-          // password
+          // phone
         case 5:
+          model.phone = _string
+          break
+          // password
+        case 6:
           model.password = _string
           // repassword
-        case 6:
+        case 7:
           model.repassword = _string
         default: break
         }
@@ -501,13 +539,16 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       break
       // email
     case 4:
-      passwordField?.becomeFirstResponder()
+      phoneField?.becomeFirstResponder()
       break
-      // password
+      // phone
     case 5:
+      passwordField?.becomeFirstResponder()
+      // password
+    case 6:
       rePasswordField?.becomeFirstResponder()
       // repassword
-    case 6:
+    case 7:
       schoolTextField?.becomeFirstResponder()
     default: break
     }

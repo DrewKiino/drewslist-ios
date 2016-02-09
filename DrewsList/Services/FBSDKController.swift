@@ -152,10 +152,7 @@ public class FBSDKController {
     }
   }
   
-  public func disconnect() {
-    if let token = FBSDKAccessToken.currentAccessToken() {
-      print("User \(token) will be logged out")
-      FBSDKAccessToken.setCurrentAccessToken(nil)
-    } else { print("User could not be logged out") }
+  public class func logout() {
+    FBSDKLoginManager().logOut()
   }
 }

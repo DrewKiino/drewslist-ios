@@ -28,6 +28,10 @@ public class SignUpModel {
   public let _email = Signal<String?>()
   public var email: String? { didSet { _email => email } }
   
+  public let _isValidPhone = Signal<Bool?>()
+  public let _phone = Signal<String?>()
+  public var phone: String? { didSet { _phone => phone } }
+  
   public let _isValidPassword = Signal<Bool?>()
   public let _password = Signal<String?>()
   public var password: String? { didSet { _password => password } }
@@ -74,5 +78,9 @@ extension String {
     let emailRegEx = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
     let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
     return emailTest.evaluateWithObject(self) && !self.isEmpty
+  }
+  
+  func isValidPhoneNumber() -> Bool {
+    return rangeOfCharacterFromSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet) == nil && (characters.count == 7 || characters.count == 10 || characters.count == 11)
   }
 }

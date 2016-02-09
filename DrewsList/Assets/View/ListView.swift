@@ -464,6 +464,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   private func setupCallButton() {
     callButton = UIButton()
+    callButton?.addTarget(self, action: "callButtonPressed", forControlEvents: .TouchUpInside)
     addSubview(callButton!)
   }
   
@@ -500,7 +501,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     let isUserListing = listing?.user?._id == UserController.sharedUser().user?._id
     
     chatButton?.alpha = isUserListing ? 0.0 : 1.0
-    callButton?.alpha = isUserListing ? 0.0 : 1.0
+    callButton?.alpha = isUserListing ? 0.0 : listing?.user?.phone != nil ? 1.0 : 0.0
     
     Async.background { [weak self, weak listing] in
       
@@ -603,6 +604,10 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   public func chatButtonPressed() {
     _chatButtonPressed => true
+  }
+  
+  public func callButtonPressed() {
+    _callButtonPressed => true
   }
 }
 

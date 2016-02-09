@@ -21,6 +21,9 @@ public class User: Mappable {
   public let _email = Signal<String?>()
   public var email: String? { didSet { _email => email } }
   
+  public let _phone = Signal<String?>()
+  public var phone: String? { didSet { _phone => phone } }
+  
   public let _firstName = Signal<String?>()
   public var firstName: String? { didSet { _firstName => firstName } }
   
@@ -102,6 +105,7 @@ public class User: Mappable {
   public func mapping(map: Map) {
     _id             <- map["_id"]
     email           <- map["email"]
+    phone           <- map["phone"]
     firstName       <- map["firstName"]
     lastName        <- map["lastName"]
     username        <- map["username"]
