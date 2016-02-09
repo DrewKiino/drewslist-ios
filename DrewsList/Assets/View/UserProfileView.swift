@@ -139,6 +139,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
+    controller.getUserFromServer()
   }
   
   override public func didReceiveMemoryWarning() {
@@ -172,18 +174,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     model._user.listen(self) { [weak self] user in
       self?.view.dismissActivityView()
     }
-    model._shouldRefrainFromCallingServer.removeAllListeners()
-    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == true {
-        self?.view.showLoadingScreen(-64, bgOffset: nil ,fadeIn: true) { [weak self] in
-          if let frame = self?.originalBGViewFrame { self?.bgViewTop?.frame = frame }
-          self?.scrollView?.panGestureRecognizer.enabled = false
-          self?.scrollView?.panGestureRecognizer.enabled = true
-        }
-      } else {
+    controller.didLoadUserDataFromServer.removeAllListeners()
+    controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
+      if didLoad {
         self?.setUser(self?.model.user, isOtherUser: self?.isOtherUser)
         self?.bookShelf?.reloadData()
-        self?.view.hideLoadingScreen()
       }
     }
   }
@@ -303,12 +298,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     if user.imageUrl != nil {
       
       profileImg?.dl_setImageFromUrl(user.imageUrl, size: profileImg?.frame.size, maskWithEllipse: true) { [weak self] image in
-        self?.profileImg?.alpha = 0.0
+//        self?.profileImg?.alpha = 0.0
         self?.profileImg?.image = image
         
-        UIView.animateWithDuration(duration) { [weak self] in
-          self?.profileImg?.alpha = 1.0
-        }
+//        UIView.animateWithDuration(duration) { [weak self] in
+//          self?.profileImg?.alpha = 1.0
+//        }
       }
     } else {
       
@@ -318,13 +313,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         
         Async.main { [weak self] in
           
-          self?.profileImg?.alpha = 0.0
+//          self?.profileImg?.alpha = 0.0
           
           self?.profileImg?.image = toucan?.image
           
-          UIView.animateWithDuration(duration) { [weak self] in
-            self?.profileImg?.alpha = 1.0
-          }
+//          UIView.animateWithDuration(duration) { [weak self] in
+//            self?.profileImg?.alpha = 1.0
+//          }
           
           toucan = nil
         }
@@ -334,11 +329,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     if user.bgImage != nil {
       
       bgViewTop?.dl_setImageFromUrl(user.bgImage, size: bgViewTop?.frame.size) { [weak self] image in
-        self?.bgViewTop?.alpha = 0.0
+//        self?.bgViewTop?.alpha = 0.0
         self?.bgViewTop?.image = image
-        UIView.animateWithDuration(duration) { [weak self] in
-          self?.bgViewTop?.alpha = 1.0
-        }
+//        UIView.animateWithDuration(duration) { [weak self] in
+//          self?.bgViewTop?.alpha = 1.0
+//        }
       }
     } else {
       
@@ -348,29 +343,22 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         
         Async.main { [weak self] in
           
-          self?.bgViewTop?.alpha = 0.0
+//          self?.bgViewTop?.alpha = 0.0
           
           self?.bgViewTop?.image = toucan?.image
           
-          UIView.animateWithDuration(duration) { [weak self] in
-            self?.bgViewTop?.alpha = 1.0
-          }
+//          UIView.animateWithDuration(duration) { [weak self] in
+//            self?.bgViewTop?.alpha = 1.0
+//          }
           
           toucan = nil
         }
       }
     }
     
-    profileUsername?.alpha = 0.0
-    descriptionTextView?.alpha = 0.0
-    
-    UIView.animateWithDuration(duration) { [weak self, weak user] in
-      self?.profileUsername?.text = user?.username ?? user?.getName()
-      self?.descriptionTextView?.text = user?.description
+    profileUsername?.text = user.getName()
+    descriptionTextView?.text = user.description
       
-      self?.profileUsername?.alpha = 1.0
-      self?.descriptionTextView?.alpha = 1.0
-    }
     return self
   }
   

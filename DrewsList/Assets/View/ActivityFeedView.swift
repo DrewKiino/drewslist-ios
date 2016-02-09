@@ -58,14 +58,14 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     controller.didGetActivityHistoryFromServer.listen(self) { [weak self] didGet in
       if didGet {
         
-        self?.view.dismissActivityView()
-        
         self?.tableView?.reloadData()
         
         NSTimer.after(1.0) { [weak self] in
           self?.refreshControl?.endRefreshing()
         }
       }
+        
+      self?.view.dismissActivityView()
     }
     model._badgeCount.removeAllListeners()
     model._badgeCount.listen(self) { [weak self] count in
@@ -176,11 +176,18 @@ public class ActivityCell: DLTableViewCell {
   public func set(activity: Activity?) {
     guard let activity = activity else { return }
     
-    leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+    if activity.isBot {
+      leftImageView?.image = UIImage(named: "mrfreeto-profile-icon")
+      activity.user?.username = "Jarvis"
+      
+    } else {
+      leftImageView?.dl_setImageFromUrl(activity.leftImage, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+      
+    }
     
     if activity.isLocationActivity() {
       Async.background { [weak self, weak activity] in
-        LocationController.sharedInstanced().getAddressString(activity?.location) { [weak self, weak activity] string in
+        LocationController.sharedInstance().getAddressString(activity?.location) { [weak self, weak activity] string in
           var attributedString: NSMutableAttributedString? = activity?.getDetailedMessage()?.append(NSMutableAttributedString(string: string))
           Async.main { [weak self] in
             self?.activityLabel?.attributedText = attributedString

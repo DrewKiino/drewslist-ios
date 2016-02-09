@@ -20,6 +20,8 @@ public class ListViewContainer: UIViewController {
   
   public var listView: ListView?
   
+  public var doOnce = true
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -50,7 +52,12 @@ public class ListViewContainer: UIViewController {
     listView?._chatButtonPressed.removeAllListeners()
     listView?._chatButtonPressed.listen(self) { [weak self] bool in
       self?.readRealmUser()
-      self?.navigationController?.pushViewController(ChatView().setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user), animated: true)
+      self?.navigationController?.pushViewController(
+        ChatView()
+          .setUsers(self?.listView?.model.user, friend: self?.listView?.model.listing?.user)
+          .setListing(self?.doOnce == true ? self?.listView?.model.listing : nil), animated: true
+      )
+      self?.doOnce = false
     }
     // FIXME: these signal listeners aren't being used??
     listView?._bookProfilePressed.removeAllListeners()
@@ -457,6 +464,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   private func setupCallButton() {
     callButton = UIButton()
+    callButton?.addTarget(self, action: "callButtonPressed", forControlEvents: .TouchUpInside)
     addSubview(callButton!)
   }
   
@@ -493,7 +501,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     let isUserListing = listing?.user?._id == UserController.sharedUser().user?._id
     
     chatButton?.alpha = isUserListing ? 0.0 : 1.0
-    callButton?.alpha = isUserListing ? 0.0 : 1.0
+    callButton?.alpha = isUserListing ? 0.0 : listing?.user?.phone != nil ? 1.0 : 0.0
     
     Async.background { [weak self, weak listing] in
       
@@ -596,6 +604,10 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   public func chatButtonPressed() {
     _chatButtonPressed => true
+  }
+  
+  public func callButtonPressed() {
+    _callButtonPressed => true
   }
 }
 

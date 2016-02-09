@@ -27,8 +27,13 @@ public class LoginModel {
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
   
+  public let _friends = Signal<[User]>()
+  public var friends: [User] = [] { didSet { _friends => friends } }
+  
   public let _serverError = Signal<Bool?>()
   
   public let _shouldLogout = Signal<Bool>()
   public var shouldLogout: Bool = false { didSet { _shouldLogout => shouldLogout } }
+  
+  public var isCurrentlyAuthenticatingUserWithFacebook: Bool = false
 }
