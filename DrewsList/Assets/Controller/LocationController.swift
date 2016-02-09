@@ -10,6 +10,8 @@ import Foundation
 import CoreLocation
 import OpenInGoogleMaps
 
+
+
 public class LocationController: NSObject, CLLocationManagerDelegate {
   
   // MARK: Singleton instance

@@ -11,7 +11,7 @@ use_frameworks!
 pod 'OpenInGoogleMaps'
 
 # socket libs
-pod 'Socket.IO-Client-Swift'
+pod 'Socket.IO-Client-Swift', '~> 5.3.3' # Or latest version
 
 # http libs
 pod 'Alamofire'
