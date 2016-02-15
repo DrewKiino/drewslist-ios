@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+public class SearchListingModel {
+  
+  private struct Singleton { static let model = SearchListingModel() }
+  public class func sharedInstance() -> SearchListingModel { return Singleton.model }
+}

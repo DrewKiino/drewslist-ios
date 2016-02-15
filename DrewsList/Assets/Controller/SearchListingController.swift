@@ -7,3 +7,11 @@
 //
 
 import Foundation
+
+public class SearchListingController {
+  
+  private let model = SearchListingModel.sharedInstance()
+  
+  
+  
+}
