@@ -170,26 +170,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

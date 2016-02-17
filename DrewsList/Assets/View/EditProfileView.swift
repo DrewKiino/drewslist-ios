@@ -75,7 +75,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
 //    presentViewController(picker, animated: true, completion: nil)
 //  }
   private func presentImagePicker() {
-    presentViewController(ProfileImagePickerView(), animated: true, completion: nil)
+    navigationController?.pushViewController(ProfileImagePickerView(), animated: true)
   }
   
   private func presentSchoolPicker() {

@@ -37,6 +37,9 @@
 		4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A041C309B3200091408 /* BookProfileView.swift */; };
 		4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A061C309B4500091408 /* BookProfileModel.swift */; };
 		4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A081C309B5600091408 /* BookProfileController.swift */; };
+		4FE141CC1C683BE700070C19 /* ProfileImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE141CB1C683BE700070C19 /* ProfileImagePickerView.swift */; };
+		4FE141CE1C683BED00070C19 /* ProfileImagePickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE141CD1C683BED00070C19 /* ProfileImagePickerModel.swift */; };
+		4FE141D01C683BF300070C19 /* ProfileImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE141CF1C683BF300070C19 /* ProfileImagePickerController.swift */; };
 		69C059934EF1052D34354EB7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */; };
 		EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF51C1E4DC80088ACBF /* ListView.swift */; };
@@ -170,6 +173,9 @@
 		4FCF2A041C309B3200091408 /* BookProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileView.swift; sourceTree = "<group>"; };
 		4FCF2A061C309B4500091408 /* BookProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileModel.swift; sourceTree = "<group>"; };
 		4FCF2A081C309B5600091408 /* BookProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileController.swift; sourceTree = "<group>"; };
+		4FE141CB1C683BE700070C19 /* ProfileImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerView.swift; sourceTree = "<group>"; };
+		4FE141CD1C683BED00070C19 /* ProfileImagePickerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerModel.swift; sourceTree = "<group>"; };
+		4FE141CF1C683BF300070C19 /* ProfileImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerController.swift; sourceTree = "<group>"; };
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetAlert.swift; sourceTree = "<group>"; };
@@ -374,6 +380,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4FE141CD1C683BED00070C19 /* ProfileImagePickerModel.swift */,
 				EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */,
 				EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */,
 				EE3C94971BF30F2E00E228A9 /* ChatModel.swift */,
@@ -407,6 +414,7 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4FE141CB1C683BE700070C19 /* ProfileImagePickerView.swift */,
 				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
 				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
@@ -442,6 +450,7 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				4FE141CF1C683BF300070C19 /* ProfileImagePickerController.swift */,
 				EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */,
 				EE3C94951BF30F2700E228A9 /* ChatController.swift */,
 				EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */,
@@ -676,6 +685,7 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 2NC533SE3E;
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -831,6 +841,7 @@
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
 				3FF074121C68360900AAE0E7 /* FacebookManager.swift in Sources */,
+				4FE141CC1C683BE700070C19 /* ProfileImagePickerView.swift in Sources */,
 				EE2824D11C30A43600969E74 /* EditListingModel.swift in Sources */,
 				EE53E75D1C2D00C900A32613 /* TabController.swift in Sources */,
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
@@ -855,6 +866,7 @@
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
 				EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */,
+				4FE141D01C683BF300070C19 /* ProfileImagePickerController.swift in Sources */,
 				EEB24D4D1C67C36700767AEC /* LocationController.swift in Sources */,
 				EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */,
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
@@ -871,6 +883,7 @@
 				EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */,
 				EE8918BF1C1169A800FCF031 /* UserProfileView.swift in Sources */,
 				4F8AC9E61C55B8C100B18AF3 /* UserProfileController.swift in Sources */,
+				4FE141CE1C683BED00070C19 /* ProfileImagePickerModel.swift in Sources */,
 				EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */,
 				EE4B9D971C11F38B00637458 /* RAMItemAnimationProtocol.swift in Sources */,
 				4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */,
