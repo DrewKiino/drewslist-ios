@@ -15,7 +15,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
   // MARK: Singleton instance
   
   private struct Singleton { static let locationController = LocationController() }
-  public class func sharedInstanced() -> LocationController { return Singleton.locationController }
+  public class func sharedInstance() -> LocationController { return Singleton.locationController }
   
   // MARK: Model
   private let model = LocationModel()
@@ -57,21 +57,18 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
     }
   }
   
-  public func routeToLocation(location: CLLocation?, callback: (() -> Void)) {
+  public func routeToLocation(location: CLLocation?, host: String? = nil, callback: (() -> Void)) {
     if let location = location {
       getCurrentLocation() { userLocation in
         if let userLocation = userLocation {
-          let alertController = UIAlertController()
+          let alertController = UIAlertController(title: host ?? "User's location", message: "\(Int(userLocation.distanceFromLocation(location))) meters away", preferredStyle: .Alert)
           alertController.addAction(UIAlertAction(title: "Open in Maps?", style: UIAlertActionStyle.Default) { action in
-            let definition = GoogleDirectionsDefinition()
-            let destination = GoogleDirectionsWaypoint()
-            destination.location = location.coordinate
-            definition.destinationPoint = destination
-            definition.travelMode = .Walking
-            OpenInGoogleMapsController.sharedInstance().openDirections(definition)
-            })
+            let definition = GoogleMapDefinition()
+            definition.queryString = "\(location.coordinate.latitude) \(location.coordinate.longitude)"
+            OpenInGoogleMapsController.sharedInstance().openMap(definition)
+          })
           alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-            })
+          })
           UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
         callback()

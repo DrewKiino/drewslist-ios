@@ -20,6 +20,8 @@ public class UserProfileController {
   private var view: UserProfileView?
   private var isOtherUser: Bool?
   
+  public let didLoadUserDataFromServer = Signal<Bool>()
+  
   public func changeOtherUserBoolean(isOtherUser: Bool?){
     if let isOtherUser = isOtherUser {
       self.isOtherUser = isOtherUser
@@ -43,13 +45,15 @@ public class UserProfileController {
         self?.model.user = User(json: json)
         // write user object to realm
         self?.writeRealmUser()
+        
+        self?.didLoadUserDataFromServer.fire(true)
       }
       
       // create a throttler
       // this will disable this controllers server calls for 10 seconds
       self?.refrainTimer?.invalidate()
       self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(1.0) { [weak self] in
+      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
         // allow the controller to make server calls again
         self?.model.shouldRefrainFromCallingServer = false
       }

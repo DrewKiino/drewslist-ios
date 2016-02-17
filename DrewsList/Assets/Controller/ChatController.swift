@@ -27,7 +27,7 @@ public class ChatController {
   
   public let socket = Sockets.sharedInstance()
   
-  public let locationController = LocationController.sharedInstanced()
+  public let locationController = LocationController.sharedInstance()
   
   // MARK : PUB/SUB
   
@@ -111,6 +111,10 @@ public class ChatController {
     isSendingMessage => true
     
     socket.emit("broadcast", json)
+    
+    // set the listing to nil to indicate that the user has already sent which listing he has
+    // viewed to the other user
+    model.listing = nil
   }
   
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
@@ -144,6 +148,7 @@ public class ChatController {
       session_id: session_id,
       room_id: room_id
     )
+    .set(listing: model.listing)
   }
   
   public func didPressSendLocation() {
@@ -299,7 +304,7 @@ public class ChatController {
     ])
   }
   
-  public func routeToLocation(location: CLLocation?, callback: () -> Void) {
-    locationController.routeToLocation(location) { callback() }
+  public func routeToLocation(location: CLLocation?, host: String? = nil, callback: () -> Void) {
+    locationController.routeToLocation(location, host: host) { callback() }
   }
 }

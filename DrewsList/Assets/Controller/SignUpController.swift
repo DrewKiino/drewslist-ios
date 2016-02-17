@@ -27,6 +27,7 @@ public class SignUpController {
     let validFirstName = model.firstName?.isValidName()
     let validLastName = model.lastName?.isValidName()
     let validEmail = model.email?.isValidEmail()
+    let validPhone = model.phone?.isValidPhoneNumber()
     let validPassword = model.password?.isValidPassword()
     let validRepassword = model.password != nil && model.repassword != nil && model.password! == model.repassword && model.repassword?.isValidPassword() == true
     let validSchool = model.school != nil && !model.school!.isEmpty && model.state != nil && !model.state!.isEmpty
@@ -34,6 +35,7 @@ public class SignUpController {
     model._isValidFirstName.fire(validFirstName)
     model._isValidLastName.fire(validLastName)
     model._isValidEmail.fire(validEmail)
+    model._isValidPhone.fire(validPhone)
     model._isValidPassword.fire(validPassword)
     model._isValidRepassword.fire(validRepassword)
     model._isValidSchool.fire(validSchool)
@@ -42,6 +44,7 @@ public class SignUpController {
       validFirstName == true &&
       validLastName == true &&
       validEmail == true &&
+      validPhone == true &&
       validPassword == true &&
       validRepassword == true &&
       validSchool == true
@@ -72,6 +75,7 @@ public class SignUpController {
     guard let firstName = model.firstName,
           let lastName = model.lastName,
           let email = model.email,
+          let phone = model.phone,
           let password = model.password,
           let school = model.school,
           let state = model.state else
@@ -99,6 +103,7 @@ public class SignUpController {
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
+        "phone": phone,
         "password": password,
         "school": school,
         "state": state,

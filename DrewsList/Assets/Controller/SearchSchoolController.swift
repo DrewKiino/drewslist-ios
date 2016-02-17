@@ -13,15 +13,19 @@ import RealmSwift
 
 public class SearchSchoolController {
   
-  public let model = SearchSchoolModel()
+  public let model = SearchSchoolModel.sharedInstance()
   
   private let serverUrl = "https://nearbycolleges.info/api/autocomplete"
   private var refrainTimer: NSTimer?
+  private var throttleTimer: NSTimer?
   
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-      self?.searchSchool(string)
+      self?.throttleTimer?.invalidate()
+      self?.throttleTimer = NSTimer.after(1.0) { [weak self] in
+        self?.searchSchool(string)
+      }
     }
   }
   
