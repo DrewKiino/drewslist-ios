@@ -16,6 +16,8 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   private var model: ProfileImagePickerModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
+  private var profileImgURLs: [String]?
+  private var profileImgNames: [String]?
   
   
   
@@ -29,6 +31,8 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   }
   
   public override func viewWillAppear(animated: Bool) {
+    profileImgURLs = ["http://www.drawingcoach.com/image-files/240x434xhtd_bunny_st5.gif.pagespeed.ic.Q5eg7QP9kx.png", "http://clipartfreefor.com/cliparts/penguin-clip-art/cliparti1_penguin-clip-art_01.jpg", "http://www.how-to-draw-funny-cartoons.com/image-files/wolf-cartoon-006.jpg", "https://s-media-cache-ak0.pinimg.com/originals/2a/33/17/2a3317dad8bf7f15920f2d2e1fd68840.jpg", "http://images5.fanpop.com/image/photos/28500000/pandas-cartoon-pandas-28525562-455-500.png", "https://s-media-cache-ak0.pinimg.com/564x/6b/c5/37/6bc537a241ffc746acb7d2180d2253d8.jpg", "http://www.clker.com/cliparts/e/c/2/c/11954410851373638183Gerald_G_Cartoon_Cat_Sitting.svg.hi.png", "http://www.clipartbest.com/cliparts/4i9/aB9/4i9aB9r5T.png", "https://www.wpclipart.com/animals/dogs/cartoon_dogs/cartoon_dogs_6/cartoon_dog.png"]
+    profileImgNames = ["Harry", "Muffins", "Puff", "Niko", "Paul", "Mosby", "Brownie", "Jasper", "Randy"]
     controller.readRealmUser()
   }
   
@@ -39,6 +43,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
+    
     tableView?.fillSuperview()
   }
   
@@ -80,105 +85,29 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    let cell : UITableViewCell = UITableViewCell()
-    
-    switch (indexPath.row) {
-      
-    case 0:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://www.drawingcoach.com/image-files/240x434xhtd_bunny_st5.gif.pagespeed.ic.Q5eg7QP9kx.png"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Harry"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 1:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://clipartfreefor.com/cliparts/penguin-clip-art/cliparti1_penguin-clip-art_01.jpg"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Muffins"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 2:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://www.how-to-draw-funny-cartoons.com/image-files/wolf-cartoon-006.jpg"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Puff"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 3:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "https://s-media-cache-ak0.pinimg.com/originals/2a/33/17/2a3317dad8bf7f15920f2d2e1fd68840.jpg"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Niko"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://images5.fanpop.com/image/photos/28500000/pandas-cartoon-pandas-28525562-455-500.png"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Paul"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 5:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "https://s-media-cache-ak0.pinimg.com/564x/6b/c5/37/6bc537a241ffc746acb7d2180d2253d8.jpg"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Mosby"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 6:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://www.clker.com/cliparts/e/c/2/c/11954410851373638183Gerald_G_Cartoon_Cat_Sitting.svg.hi.png"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Brownie"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 7:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "http://www.clipartbest.com/cliparts/4i9/aB9/4i9aB9r5T.png"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Jasper"
-        cell.label?.textAlignment = .Center
-        return cell
-      }
-      break
-    case 8:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-        let imageURL = "https://www.wpclipart.com/animals/dogs/cartoon_dogs/cartoon_dogs_6/cartoon_dog.png"
-        cell.downloadImageFromURL(imageURL)
-        cell.label?.text = "Randy"
-        cell.label?.textAlignment = .Center
+    if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
+      if let profileImgURLs = profileImgURLs, profileImgNames = profileImgNames {
+        cell.downloadImageFromURL(profileImgURLs[indexPath.row])
+        cell.label?.text = profileImgNames[indexPath.row]
         cell._didSelectCell.listen(self) { [weak cell] list in
-          self.model.user?.imageUrl = imageURL
-          self.dismissViewControllerAnimated(true, completion: nil)
+          self.model.user?.imageUrl = profileImgURLs[indexPath.row]
+          self.navigationController?.popToRootViewControllerAnimated(true)
         }
-        
-        
-        return cell
       }
-      break
-    default:
-      break
+      cell.label?.textAlignment = .Center
+      
+      
+      return cell
+      
+    } else {
+      log.error("Cell not found: ProfileImagePickerView.swift")
+      return UITableViewCell()
     }
-    return cell
+   
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return screen.height / 10
+    return screen.height / 11
   }
   
 }

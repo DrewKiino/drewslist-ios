@@ -291,8 +291,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     self.isOtherUser = isOtherUser
     controller.changeOtherUserBoolean(isOtherUser)
     
-    let duration: NSTimeInterval = 0.2
-    
+    let duration: NSTimeInterval = 0.1
     // MARK: Images
     
     if user.imageUrl != nil {
@@ -375,7 +374,10 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 225
+    //return 225
+    switch indexPath.row {
+    default: return 255
+    }
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

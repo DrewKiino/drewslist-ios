@@ -31,6 +31,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
   
   private func setupTableView() {
     tableView = DLTableView()
+    tableView?.scrollEnabled = false
     tableView?.delegate = self
     tableView?.dataSource = self
     view.addSubview(tableView!)
