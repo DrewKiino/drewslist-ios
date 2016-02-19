@@ -178,7 +178,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     model._user.listen(self) { [weak self] user in
       self?.view.dismissActivityView()
       if self?.isOtherUser == true { self?.title = "User Profile" }
-      else { self?.title = "Your Profile" }
+      else { self?.title = "Profile" }
     }
     controller.didLoadUserDataFromServer.removeAllListeners()
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in

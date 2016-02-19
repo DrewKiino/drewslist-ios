@@ -330,7 +330,6 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       }
       cell.listView?._bookProfilePressed.removeAllListeners()
       cell.listView?._bookProfilePressed.listen(self) { [weak self] book in
-        log.debug(book?._id)
         //self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
         self?._bookProfilePressed.fire(book)
       }
