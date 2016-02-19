@@ -145,10 +145,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-//    var tabView: TabView? = TabView()
+    var tabView: TabView? = TabView()
     
 //    var tabView: SignUpView? = SignUpView()
-    var tabView: SearchListingView? = SearchListingView()
+//    var tabView: LoginView? = LoginView()
     
     /*
     * Use this code to get the bounds of the screen

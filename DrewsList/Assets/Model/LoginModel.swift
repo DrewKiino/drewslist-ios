@@ -21,6 +21,9 @@ public class LoginModel {
   public let _password = Signal<String?>()
   public var password: String? { didSet { _password => password } }
   
+  public let _phone = Signal<String?>()
+  public var phone: String? { didSet { _phone => phone } }
+  
   public let _shouldRefrainFromCallingServer = Signal<Bool>()
   public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
   

@@ -149,6 +149,10 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
         tabView.dismissViewControllerAnimated(true, completion: nil)
       }
     }
+    controller.shouldPresentPhoneInputView.removeAllListeners()
+    controller.shouldPresentPhoneInputView.listen(self) { [weak self] bool in
+      self?.presentPhoneNumberInputView()
+    }
   }
   
   private func setupBackgroundImage() {
@@ -398,6 +402,43 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   public func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
     log.info("User Logged Out")
+  }
+  
+  public func presentPhoneNumberInputView() {
+    let alertController = UIAlertController(title: "Call Me Maybe?", message: "Please input your phone number, this will help other users get in touch with you much quicker.", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler() { textField in
+      textField.font = .asapRegular(16)
+      textField.textColor = .blackColor()
+      textField.spellCheckingType = .No
+      textField.autocorrectionType = .No
+      textField.autocapitalizationType = .None
+      textField.clearButtonMode = .WhileEditing
+      textField.keyboardType = .PhonePad
+    }
+    alertController.addAction(UIAlertAction(title: "Done", style: .Default) { [weak self, weak alertController] action in
+      if let phoneNumber = alertController?.textFields?.first?.text where phoneNumber.isValidPhoneNumber() == true {
+        self?.model.phone = phoneNumber
+        self?.controller.authenticateUserToServer(false)
+      } else {
+        self?.logUserOutOfFacebook()
+        self?.dismissKeyboard()
+        let alertController2 = UIAlertController(title: "Sorry", message: "The number you entered didn't seem to be a valid phone number.", preferredStyle: .Alert)
+          alertController2.addAction(UIAlertAction(title: "Ok", style: .Cancel) { [weak self] action in
+        })
+        self?.presentViewController(alertController2, animated: true, completion: nil)
+      }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+  }
+  
+  public func logUserOutOfFacebook() {
+    // if theres an error, log the user out
+    FBSDKLoginManager().logOut()
+    // disallow the user from clicking the facebook button
+    // until the authentication process has been resolved
+    fbLoginButton?.userInteractionEnabled = true
   }
 }
 
