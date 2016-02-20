@@ -85,7 +85,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 18
+    return 16
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -94,211 +94,154 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     
     switch (indexPath.row) {
     case 0:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
-        cell.titleLabel?.fillSuperview(left: screen.width / 25, right: 0, top: 10, bottom: 0)
-        if model.book?.authors.first?.name != nil {
-          cell.titleLabel?.text = model.book?.authors.first?.name
-          print(model.book?.authors.first?.name)
-          print(model.book?.title)
-          print(model.book?.largeImage)
-      
-        } else { cell.titleLabel?.text = "Author"}
-        cell.titleLabel?.font = .asapItalic(12)
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.hideTopBorder()
+        cell.paddingLabel?.text = "Information"
+        
         return cell
       }
       break;
     case 1:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
-        cell.titleLabel?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-        if model.book?.title != nil {
-          cell.titleLabel?.text = model.book?.title
-        } else { cell.titleLabel?.text = "Title of Book" }
-        cell.titleLabel?.font = .asapBold(20)
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.label?.text = model.book?.authors.first?.name ?? "Author"
+        cell.label?.font = .asapItalic(12)
         return cell
       }
       break;
     case 2:
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
-        let view = CosmosView()
-        if let rating = model.book?.averageRating {
-          view.rating = rating
-        } else {
-          view.rating = 0.0
-        }
-        cell.backgroundColor = .whiteColor()
-        view.settings.fillMode = .Precise
-        view.settings.borderColorEmpty = .juicyOrange()
-        view.settings.colorFilled = .juicyOrange()
-        view.anchorAndFillEdge(.Left, xPad: screen.width / 30, yPad: 0, otherSize: 150)
-        cell.addSubview(view)
-        
+      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
+        cell.label?.text = model.book?.title ?? "Book"
+        cell.label?.font = .asapBold(32)
+        cell.label?.numberOfLines = 3
+        cell.label?.minimumScaleFactor = 0.4
         return cell
       }
       break;
     case 3:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
-        cell.backgroundColor = .whiteColor()
-        let bookImageView = UIImageView()
-        let duration: NSTimeInterval = 0.2
-        
-        if let url = model.book?.getImageUrl() {
-          bookImageView.dl_setImageFromUrl(url, size: bookImageView.frame.size) { [weak self] image in
-            bookImageView.alpha = 0.0
-            bookImageView.image = image
-            UIView.animateWithDuration(duration) { [weak self] in
-              bookImageView.alpha = 1.0
-            }
-          }
-        } else {
-          
-          Async.background { [ weak self] in
-            var toucan: Toucan?  = Toucan (image: UIImage(named: "book-placeholder")).resize(bookImageView.frame.size, fitMode: .Crop)
-            Async.main { [weak self] in
-              bookImageView.alpha = 0.0
-              bookImageView.image = toucan?.image
-              UIView.animateWithDuration(duration) { [ weak self] in
-                bookImageView.alpha = 1.0
-              }
-              toucan = nil
-            }
-          }
-        }
-        
-        cell.addSubview(bookImageView)
-        bookImageView.anchorInCenter(width: cell.frame.height * (2 / 3), height: cell.frame.height)
-
-        return cell
+      if  let cell = tableView.dequeueReusableCellWithIdentifier("RatingsCell", forIndexPath: indexPath) as? RatingsCell {
+        cell.set(rating: model.book?.averageRating)
       }
       break;
     case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("ISBN: ")
-        if let isbn = model.book?.ISBN13 {
-          cell.setLabelSubTitle(isbn)
-        } else {
-          cell.setLabelSubTitle("")
-        }
-        cell.setLabelFullTitle()
+      if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
+        cell.imageUrl = model.book?.getImageUrl()
         return cell
       }
       break;
     case 5:
-      
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Binding: ")
-        if let binding = model.book?.binding {
-          cell.setLabelSubTitle(binding)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "ISBN:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.ISBN13 ?? model.book?.ISBN10
+        cell.titleTextLabel?.textColor = .sexyGray()
+
         return cell
       }
       break;
     case 6:
       
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Edition: ")
-        if let edition = model.book?.edition {
-          cell.setLabelSubTitle(edition)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Binding:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.binding
         
+        return cell
       }
       break;
     case 7:
       
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Publisher: ")
-        if let publisher = model.book?.publisher {
-          cell.setLabelSubTitle(publisher)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Edition:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.edition
+
         return cell
         
       }
       break;
     case 8:
       
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Page Count: ")
-        if let pageCount = model.book?.pageCount {
-          cell.setLabelSubTitle("\(pageCount)")
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Publisher:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.publisher
+        cell.titleTextLabel?.textColor = .sexyGray()
+
         return cell
+        
       }
       break;
     case 9:
       
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Categories: ")
-        if let categories = model.book?.categories {
-          cell.setLabelSubTitle(categories)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Page Count:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = String(model.book?.pageCount ?? 0)
+        cell.titleTextLabel?.textColor = .sexyGray()
         
+        return cell
       }
       break;
     case 10:
       
-      if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
-        cell.setLabelTitle("Rating: ")
-        if let rating = model.book?.maturityRating {
-          cell.setLabelSubTitle(rating)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Categories:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.categories.first?.category ?? ""
+        cell.titleTextLabel?.textColor = .sexyGray()
         
+        return cell
+      }
+      break;
+    case 11:
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
+        cell.titleLabel?.text = "Maturity Rating:"
+        cell.titleLabel?.font = .asapBold(12)
+        cell.titleTextLabel?.text = model.book?.maturityRating
+        cell.titleTextLabel?.textColor = .sexyGray()
+        
+        return cell
       }
       break;
       
-    case 11:
-      if  let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell{
-        cell.label?.numberOfLines = 0
-        cell.setLabelTitle("Description: ")
-        
-        if let description = model.book?.description {
-          cell.setLabelSubTitle(description)
-        } else { cell.setLabelSubTitle("")}
-        cell.setLabelFullTitle()
-        return cell
-      }
-      break;
     case 12:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.showSeparatorLine()
-        cell.hideBothTopAndBottomBorders()
+      
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         
-        cell.titleButton?.setTitle("Read Reviews ", forState: .Normal)
-        cell.titleButton?.setTitleColor(.juicyOrange(), forState: .Normal)
-        cell.titleButton?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-        cell.rightImageView?.frame = CGRectMake(cell.frame.width-cell.frame.height * (1 / 2), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3), cell.frame.height * (1 / 3))
-        cell.rightImageView?.image = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(cell.rightImageView?.frame.size, fitMode: .Clip).image
-        cell._didSelectCell.listen(self){ [weak self] bool in
-          // FIXME: Go to Reviews
-        }
+        cell.titleLabel?.text = "Description:"
+        cell.titleLabel?.font = .asapBold(12)
         
         return cell
       }
+      
       break;
+      
     case 13:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.showSeparatorLine()
-        cell.hideBothTopAndBottomBorders()
+      if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
         cell.backgroundColor = .whiteColor()
+        cell.inputTextView?.text = model.book?.description ?? "No description"
+        cell.inputTextView?.textColor = .sexyGray()
+        cell.inputTextView?.userInteractionEnabled = false
         
         return cell
       }
       break;
     case 14:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Options"
+        
+        return cell
+      }
+      break;
+    case 15:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.hideBothTopAndBottomBorders()
-        
         cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
         cell.button?.buttonColor = .juicyOrange()
         cell.button?.cornerRadius = 4
         cell.button?.setTitle("Add Book to Wishlist", forState: .Normal)
+        cell._onPressed.removeAllListeners()
         cell._onPressed.listen(self) { [weak self] bool in
           // FIXME: Add book to wishlist
           self?.presentCreateListingView(self?.model.book)
@@ -306,79 +249,73 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 15:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.hideBothTopAndBottomBorders()
-        cell.backgroundColor = .whiteColor()
-        
-        return cell
-      }
-      break;
-//    case 16:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
-//        cell.hideBothTopAndBottomBorders()
-//        
-//        cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
-//        cell.button?.buttonColor = .juicyOrange()
-//        cell.button?.cornerRadius = 4
-//        cell.button?.setTitle("Sell This Book", forState: .Normal)
-//        cell._onPressed.listen(self) { [weak self] bool in
-//          // FIXME: Add book to Sell List
-//        }
-//        return cell
-//      }
-//      break;
     case 16:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.hideBothTopAndBottomBorders()
-        cell.backgroundColor = .whiteColor()
-        
+        cell.hideBottomBorder()
         return cell
       }
       break;
-    default:
-      break;
-    
-    
-//    cell.textLabel?.textColor = UIColor.lightGrayColor()
-//    cell.textLabel?.font = UIFont.asapRegular(14)
-  }
-    return DLTableViewCell()
+    default: break;
     }
+    return DLTableViewCell()
+  }
   
 
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch (indexPath.row) {
-    case 0:
-      return screen.height / 25
-    case 3:
-      return screen.height / 3
     case 4:
-      return screen.height / 25
-    case 5:
-      return screen.height / 25
-    case 11:
-      if let string = model.book?.description, let height: CGFloat! = string.height(400) { return height }
-      return screen.height / 10
-    case 12:
-      return screen.height / 20
+      return 175
     case 13:
-      return screen.height / 40
-    case 14: // Wish List Button
-      return screen.height / 15
+      if let string = model.book?.description, let height: CGFloat = string.height(screen.width) { return height + 100 }
     case 15:
-      return screen.height / 40
-//    case 16: // Sell Button
-//      return screen.height / 15
-    case 16:
-      return screen.height / 50
-    default:
-      return screen.height / 25
+      return 64
+    default: break
     }
+    return 18
   }
   
   public func presentCreateListingView(book: Book?) {
     presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
   }
-  
 }
+
+public class RatingsCell: DLTableViewCell {
+  
+  private var cosmosView: CosmosView?
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    cosmosView?.fillSuperview(left: 8, right: 8, top: 0, bottom: 0)
+  }
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    backgroundColor = .whiteColor()
+    setupRatingsView()
+  }
+  
+  private func setupRatingsView() {
+    cosmosView = CosmosView()
+    cosmosView?.settings.fillMode = .Precise
+    cosmosView?.settings.borderColorEmpty = .juicyOrange()
+    cosmosView?.settings.colorFilled = .juicyOrange()
+    addSubview(cosmosView!)
+  }
+  
+  public func set(rating rating: Double?) {
+    cosmosView?.rating = rating ?? 0.0
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+

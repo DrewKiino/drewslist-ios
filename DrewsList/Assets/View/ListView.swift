@@ -64,20 +64,22 @@ public class ListViewContainer: UIViewController {
     listView?._bookProfilePressed.listen(self) { [weak self] book in
       self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
     }
+    listView?._userProfilePressed.removeAllListeners()
+    listView?._userProfilePressed.listen(self) { [weak self] user in
+      self?.navigationController?.pushViewController(UserProfileView().setUser(user), animated: true)
+    }
     view.addSubview(listView!)
   }
   
   public func setListing(listing: Listing?) -> Self {
     listView = ListView()
     listView?.setListing(listing)
-    title = "View Listing"
     return self
   }
   
   public func setList_id(list_id: String?) -> Self {
     listView = ListView()
     listView?.getListingFromServer(list_id)
-    title = "View Listing"
     return self
   }
   
@@ -86,7 +88,7 @@ public class ListViewContainer: UIViewController {
     title = "Your Listing"
     return self
   }
-  
+ 
   public func editButtonPressed() {
     navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
   }
@@ -157,14 +159,14 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == true { self?.showLoadingScreen(-64, bgOffset: nil) }
+      if bool == true { self?.showActivityView() }
       else if bool == false { self?.hideLoadingScreen() }
     }
     
     model._serverCallbackFromFindListing.removeAllListeners()
     model._serverCallbackFromFindListing.listen(self) { [weak self] bool in
       if bool == true { self?.tableView?.reloadData() }
-      self?.hideLoadingScreen()
+      self?.dismissActivityView()
     }
   }
   
@@ -434,9 +436,9 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     priceLabel?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 200, height: 12)
     
-    callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
+    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
     
-    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 24, height: 24)
     
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     

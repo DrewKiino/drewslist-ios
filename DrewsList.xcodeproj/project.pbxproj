@@ -88,6 +88,9 @@
 		EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE67C15B1C30B06300AC60DB /* SearchBookController.swift */; };
 		EE6AC5FC1C1FC4BD00001F37 /* book_placeholder.gif in Resources */ = {isa = PBXBuildFile; fileRef = EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */; };
 		EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */; };
+		EE7400E91C7109E400277D31 /* SearchListingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7400E81C7109E400277D31 /* SearchListingView.swift */; };
+		EE7400EB1C710A0300277D31 /* SearchListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7400EA1C710A0300277D31 /* SearchListingModel.swift */; };
+		EE7400ED1C710A0E00277D31 /* SearchListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7400EC1C710A0E00277D31 /* SearchListingController.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
@@ -229,6 +232,9 @@
 		EE67C15B1C30B06300AC60DB /* SearchBookController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBookController.swift; sourceTree = "<group>"; };
 		EE6AC5FB1C1FC4BD00001F37 /* book_placeholder.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = book_placeholder.gif; sourceTree = "<group>"; };
 		EE7009961BFEE48F008F23C4 /* ChatHistoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryView.swift; sourceTree = "<group>"; };
+		EE7400E81C7109E400277D31 /* SearchListingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchListingView.swift; sourceTree = "<group>"; };
+		EE7400EA1C710A0300277D31 /* SearchListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchListingModel.swift; sourceTree = "<group>"; };
+		EE7400EC1C710A0E00277D31 /* SearchListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchListingController.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -405,6 +411,7 @@
 				EED779E41C151DF800D172BE /* UserProfileListingModel.swift */,
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE367DC31C69191300B88CA0 /* FBSDKModel.swift */,
+				EE7400EA1C710A0300277D31 /* SearchListingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -440,6 +447,7 @@
 				EE4B9D8E1C11F1DF00637458 /* TabView.swift */,
 				39B35FF11C4A18D90084007D /* TermPrivacyView.swift */,
 				EE8918BA1C1169A800FCF031 /* UserProfileView.swift */,
+				EE7400E81C7109E400277D31 /* SearchListingView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -476,6 +484,7 @@
 				EE79D3B21BFFDF0000F60EE1 /* UserController.swift */,
 				4F8AC9E51C55B8C100B18AF3 /* UserProfileController.swift */,
 				EED779E21C151DF200D172BE /* UserProfileListingController.swift */,
+				EE7400EC1C710A0E00277D31 /* SearchListingController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -826,6 +835,7 @@
 				EE4B9D8F1C11F1DF00637458 /* TabView.swift in Sources */,
 				EE007AFA1C1E4DD30088ACBF /* ListController.swift in Sources */,
 				EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */,
+				EE7400E91C7109E400277D31 /* SearchListingView.swift in Sources */,
 				EEC3E04B1C2DFE2A00D7843C /* SearchUserView.swift in Sources */,
 				EEEFB78A1C28032A005CB4F9 /* CreateListingModel.swift in Sources */,
 				39B35FF41C4A18EE0084007D /* TermPrivacyModel.swift in Sources */,
@@ -851,6 +861,7 @@
 				EE3D67A71C2BF72800299F34 /* SearchSchoolModel.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,
+				EE7400EB1C710A0300277D31 /* SearchListingModel.swift in Sources */,
 				EE67C1581C30B05700AC60DB /* SearchBookView.swift in Sources */,
 				EE367DC41C69191300B88CA0 /* FBSDKModel.swift in Sources */,
 				EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */,
@@ -895,6 +906,7 @@
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */,
 				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,
+				EE7400ED1C710A0E00277D31 /* SearchListingController.swift in Sources */,
 				EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */,
 				EE1B737A1C236FDF00BD942C /* ListFeedModel.swift in Sources */,
 				EED8BADE1C45E9FF00EDB30D /* PushModel.swift in Sources */,
