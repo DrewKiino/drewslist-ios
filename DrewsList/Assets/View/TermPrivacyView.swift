@@ -18,7 +18,7 @@ import SwiftyButton
 //UnderConstruction!
 class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegate {
   
-  
+ 
   
   //NavView
   private var TableView: DLTableView?
@@ -33,7 +33,6 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
     super.viewDidLoad()
     
     SetUpSelf()
-    SetUpHeaderView()
     //TermPriSelf()
   
     
@@ -57,31 +56,12 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
   
   private func SetUpSelf() {
     view.backgroundColor = .whiteColor()
+    title = "Terms & Privacy"
    
   }
   
-  private func SetUpHeaderView() {
-    HeaderView = UIView()
-    HeaderView?.backgroundColor = .soothingBlue()
-    view.addSubview(HeaderView!)
-    
-    HeaderTitle = UILabel()
-    HeaderTitle?.text = "Term & Privacy"
-    HeaderTitle?.font = UIFont.asapBold(16)
-    HeaderTitle?.textColor = .whiteColor()
-    HeaderView?.addSubview(HeaderTitle!)
-    
-    BackButton = UIButton()
-    BackButton?.setTitle("", forState: .Normal)
-    BackButton?.titleLabel?.font = UIFont.asapBold(12)
-    HeaderView?.addSubview(BackButton!)
-    
-    
-  }
   
-
-  
-//  private func TermPriSelf() {
+  //  private func TermPriSelf() {
 //    
 //    TermPriLabel?.backgroundColor = .bareBlue()
 //    TermPriLabel?.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Hello Ispumspisum"
@@ -94,23 +74,6 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
 //    
 //    
 //  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
 }
