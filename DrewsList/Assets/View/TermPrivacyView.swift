@@ -45,15 +45,17 @@ class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegat
     
     
     
-    label.center = CGPointMake(160, 284)
+    label.center = CGPointMake(200, 228)
     label.textAlignment = NSTextAlignment.Center
-    label.textColor = UIColor.blueColor()
-    label.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Hello Ispumspisum"
+    label.textColor = UIColor.bareBlue()
+    label.text = "Drew's List Privacy Policy (updated January 1st, 2016).This policy details"
     self.view.addSubview(label)
     
   }
   
   
+  
+
   private func SetUpSelf() {
     view.backgroundColor = .whiteColor()
     title = "Terms & Privacy"

@@ -220,6 +220,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         cell.textLabel?.text = "Deactivate Account"
+        cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { bool in
           log.debug(bool)
       }
