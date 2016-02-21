@@ -118,6 +118,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public func setupSaleListFeed() {
     saleListFeedView = ListFeedView()
     saleListFeedView?.setListType("selling")
+    saleListFeedView?._callButtonPressed.removeAllListeners()
+    saleListFeedView?._callButtonPressed.listen(self) { [weak self] listing in
+      self?._callButtonPressed.fire(listing)
+    }
     saleListFeedView?._chatButtonPressed.removeAllListeners()
     saleListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
       self?._chatButtonPressed.fire(listing)
@@ -136,6 +140,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public func setupWishListFeed() {
     wishListFeedView = ListFeedView()
     wishListFeedView?.setListType("buying")
+    wishListFeedView?._callButtonPressed.removeAllListeners()
+    wishListFeedView?._callButtonPressed.listen(self) { [weak self] listing in
+      self?._callButtonPressed.fire(listing)
+    }
     wishListFeedView?._chatButtonPressed.removeAllListeners()
     wishListFeedView?._chatButtonPressed.listen(self) { [weak self] listing in
     }
@@ -324,13 +332,16 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       cell.showSeparatorLine()
       cell.isUserListing = model.user?._id == model.listings[indexPath.row].user?._id
       cell.listView?.setListing(model.listings[indexPath.row])
+      cell.listView?._callButtonPressed.removeAllListeners()
+      cell.listView?._callButtonPressed.listen(self) { [weak self] bool in
+        self?._callButtonPressed.fire(self?.model.listings[indexPath.row])
+      }
       cell.listView?._chatButtonPressed.removeAllListeners()
       cell.listView?._chatButtonPressed.listen(self) { [weak self] bool in
         self?._chatButtonPressed.fire(self?.model.listings[indexPath.row])
       }
       cell.listView?._bookProfilePressed.removeAllListeners()
       cell.listView?._bookProfilePressed.listen(self) { [weak self] book in
-        //self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
         self?._bookProfilePressed.fire(book)
       }
       cell.listView?._userProfilePressed.removeAllListeners()
