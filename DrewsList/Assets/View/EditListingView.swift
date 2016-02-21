@@ -97,7 +97,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     headerView?.addSubview(cancelButton!)
     
     saveButton = UIButton()
-    saveButton?.setTitle("List It", forState: .Normal)
+    saveButton?.setTitle("", forState: .Normal)
     saveButton?.titleLabel?.font = UIFont.asapRegular(16)
     saveButton?.addTarget(self, action: "upload", forControlEvents: .TouchUpInside)
     headerView?.addSubview(saveButton!)
@@ -154,6 +154,11 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+//            cell.bookView?.setBook(model.listing?.book)
+//            model._listing.removeAllListeners()
+//        model._listing.listen(self) {[weak cell] listing in
+//          cell?.bookView?.setBook(listing?.book)
+//        }
         cell.setBook(model.book)
         return cell
       }
@@ -288,15 +293,16 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
         return cell
       }
       break
-    case 12:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
-        cell.buttonLabel?.text = "Delete Listing"
-        cell._onPressed.removeAllListeners()
-        cell._onPressed.listen(self) { [weak self] bool in /*self?.controller.deleteListingFromServer()*/ }
-        return cell
-      }
+//    case 12:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+//        cell.buttonLabel?.text = "Delete Listing"
+//        cell._onPressed.removeAllListeners()
+//        cell._onPressed.listen(self) { [weak self] bool in
+//          self?.controller.deleteListingFromServer() }
+//        return cell
+//      }
       break
-    case 13:
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showTopBorder()
         cell.hideBottomBorder()
