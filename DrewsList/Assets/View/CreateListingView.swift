@@ -837,9 +837,9 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
     setupTitleLabel()
     setupInputTextView()
     
-    titleLabel?.anchorAndFillEdge(.Top, xPad: 14, yPad: 2, otherSize: 12)
+    titleLabel?.anchorAndFillEdge(.Top, xPad: 8, yPad: 2, otherSize: 12)
     
-    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
+    separatorLine.frame = CGRectMake(8, 0, bounds.size.width - 1, 1)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -848,7 +848,7 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    inputTextView?.anchorAndFillEdge(.Top, xPad: 14, yPad: 16, otherSize: bounds.height - 16)
+    inputTextView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 16, otherSize: bounds.height - 16)
   }
   
   public override func setupSelf() {
@@ -920,7 +920,7 @@ public class BigButtonCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    button?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    button?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 48)
     indicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
     buttonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
   }

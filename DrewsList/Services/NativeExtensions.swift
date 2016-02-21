@@ -441,13 +441,13 @@ extension UIImageView {
     }
   }
   
-  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode? = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
     if let url = url, let nsurl = NSURL(string: url) {
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
         Async.background { [weak self] in
           
-          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: .Crop)
+          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: fitMode ?? .Crop)
           
           if maskWithEllipse == true { toucan?.maskWithEllipse() }
           

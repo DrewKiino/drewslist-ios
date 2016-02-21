@@ -148,7 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var tabView: TabView? = TabView()
     
 //    var tabView: SignUpView? = SignUpView()
-//    var tabView: UserProfileView? = UserProfileView()
+//    var tabView: LoginView? = LoginView()
     
     /*
     * Use this code to get the bounds of the screen

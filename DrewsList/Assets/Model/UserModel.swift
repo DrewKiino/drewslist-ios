@@ -21,8 +21,8 @@ public class User: Mappable {
   public let _email = Signal<String?>()
   public var email: String? { didSet { _email => email } }
   
-  public let _phone = Signal<String?>()
-  public var phone: String? { didSet { _phone => phone } }
+  public let _phone = Signal<Int?>()
+  public var phone: Int? { didSet { _phone => phone } }
   
   public let _firstName = Signal<String?>()
   public var firstName: String? { didSet { _firstName => firstName } }

@@ -24,6 +24,11 @@ public class UserProfileViewContainer: DLNavigationController {
     setupProfileView()
   }
   
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    userProfileView?.viewDidAppear(animated)
+  }
+  
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
   }
@@ -45,7 +50,6 @@ public class UserProfileViewContainer: DLNavigationController {
   }
   
   public func isUserListing() -> Self {
-    //listView?.isUserListing = true
     title = "Your Listing"
     return self
   }
@@ -140,7 +144,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
-    controller.getUserFromServer()
+    controller.viewDidAppear()
   }
   
   override public func didReceiveMemoryWarning() {
@@ -173,28 +177,30 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
       self?.view.dismissActivityView()
+      if self?.isOtherUser == true { self?.title = "User Profile" }
+      else { self?.title = "Profile" }
     }
     controller.didLoadUserDataFromServer.removeAllListeners()
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
       if didLoad {
-        self?.setUser(self?.model.user, isOtherUser: self?.isOtherUser)
         self?.bookShelf?.reloadData()
       }
+      
+      // MARK: Images
+      self?.profileImg?.dl_setImageFromUrl(self?.model.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+      self?.bgViewTop?.dl_setImageFromUrl(self?.model.user?.bgImage, placeholder: UIImage(named: "background_books_1"))
+      
+      // MARK: Texts
+      self?.profileUsername?.text = self?.model.user?.getName()
+      self?.descriptionTextView?.text = self?.model.user?.description
     }
   }
   
   // MARK: UI Setup
   
   public func setupSelf() {
-    if model.user == nil{
-      controller.readRealmUser()
-      isOtherUser = false
-    } else {
-      isOtherUser = true
-    }
     controller.changeOtherUserBoolean(isOtherUser)
     controller.getUserFromServer()
-    
   }
   
   public func setupScrollView() {
@@ -280,84 +286,20 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     return self
   }
   
-  public func setUser(user: User?, isOtherUser: Bool?) -> Self {
+  public func setUser(user: User?) -> Self {
     // fixture
     guard let user = user else { return self}
+    // read the user currently logged in
+    controller.readRealmUser()
+    isOtherUser = user._id != model.user?._id
     // Check if incoming set user is the current user or is another user
-    if(user._id != model.user?._id) {
+    if isOtherUser == true {
       //self.isOtherUser = is
       model.user = user
     }
-    self.isOtherUser = isOtherUser
+    
     controller.changeOtherUserBoolean(isOtherUser)
     
-    let duration: NSTimeInterval = 0.1
-    // MARK: Images
-    
-    if user.imageUrl != nil {
-      
-      profileImg?.dl_setImageFromUrl(user.imageUrl, size: profileImg?.frame.size, maskWithEllipse: true) { [weak self] image in
-//        self?.profileImg?.alpha = 0.0
-        self?.profileImg?.image = image
-        
-//        UIView.animateWithDuration(duration) { [weak self] in
-//          self?.profileImg?.alpha = 1.0
-//        }
-      }
-    } else {
-      
-      Async.background { [weak self] in
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImg?.frame.size, fitMode: .Crop).maskWithEllipse()
-        
-        Async.main { [weak self] in
-          
-//          self?.profileImg?.alpha = 0.0
-          
-          self?.profileImg?.image = toucan?.image
-          
-//          UIView.animateWithDuration(duration) { [weak self] in
-//            self?.profileImg?.alpha = 1.0
-//          }
-          
-          toucan = nil
-        }
-      }
-    }
-    
-    if user.bgImage != nil {
-      
-      bgViewTop?.dl_setImageFromUrl(user.bgImage, size: bgViewTop?.frame.size) { [weak self] image in
-//        self?.bgViewTop?.alpha = 0.0
-        self?.bgViewTop?.image = image
-//        UIView.animateWithDuration(duration) { [weak self] in
-//          self?.bgViewTop?.alpha = 1.0
-//        }
-      }
-    } else {
-      
-      Async.background { [weak self] in
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "background_books_1")).resize(self?.profileImg?.frame.size, fitMode: .Clip)
-        
-        Async.main { [weak self] in
-          
-//          self?.bgViewTop?.alpha = 0.0
-          
-          self?.bgViewTop?.image = toucan?.image
-          
-//          UIView.animateWithDuration(duration) { [weak self] in
-//            self?.bgViewTop?.alpha = 1.0
-//          }
-          
-          toucan = nil
-        }
-      }
-    }
-    
-    profileUsername?.text = user.getName()
-    descriptionTextView?.text = user.description
-      
     return self
   }
   
@@ -374,47 +316,41 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    //return 225
-    switch indexPath.row {
-    default: return 255
-    }
+    return 235
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    guard let cell = tableView.dequeueReusableCellWithIdentifier("UserProfileListView") as? UserProfileListView else { return DLTableViewCell() }
+    guard let cell = tableView.dequeueReusableCellWithIdentifier("UserProfileListView", forIndexPath: indexPath) as? UserProfileListView else { return DLTableViewCell() }
     
     switch indexPath.row {
     case 0:
+      
       cell.tag = 0
-      
-      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
-      
-      cell.label.text =  "I'm Selling"
-      
-      // set data
-      cell.controller.model.bookList = user.listings.filter { $0.listType == "selling" }
-      
-      // data bind
-      user._saleList.removeAllListeners()
-      user._saleList.listen(self) { [weak cell] list in
-        cell?.controller.model.bookList = list
+      if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
+        
+        cell.label.text =  "I'm Selling"
+        
+        // set data
+        cell.controller.model.bookList = listings
+        
+      } else {
+        
+        cell.label.text =  nil
       }
       
       break
     case 1:
       cell.tag = 1
-      
-      guard let user = model.user where user._id != nil && user.listings.first?.book?._id != nil else { break }
-      cell.label.text = "I'm Buying"
-      
-      // set data
-      cell.controller.model.bookList = user.listings.filter { $0.listType == "buying" }
-      
-      // data bind
-      user._wishList.removeAllListeners()
-      user._wishList.listen(self) { [weak cell] list in
-        cell?.controller.model.bookList = list
+      if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
+        
+        cell.label.text = "I'm Buying"
+        
+        // set data
+        cell.controller.model.bookList = listings
+        
+      } else {
+        cell.label.text = nil
       }
 
       break
@@ -445,9 +381,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       // if the offset is greater than 64, then call the server to update the user object in the model
       // Refresh
       if offset >= 128 && model.shouldRefrainFromCallingServer == false {
-        if let isOtherUser = isOtherUser {
-          if !isOtherUser{ controller.readRealmUser() }
-        }
+        if isOtherUser == false { controller.readRealmUser() }
         controller.getUserFromServer()
       }
     }
@@ -479,3 +413,280 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     layer.shadowRadius = 3
   }
 }
+
+
+public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
+  
+  public let label = UILabel()
+  public var collectionView: UICollectionView?
+  
+  public let controller = UserProfileListingController()
+  public var model: UserProfileListingModel { get { return controller.model } }
+  
+  public let _collectionViewFrame = Signal<CGRect>()
+  public var collectionViewFrame: CGRect = CGRectZero { didSet { _collectionViewFrame => collectionViewFrame } }
+  
+  public let _didSelectListing = Signal<String?>()
+  public let _didSelectMatch = Signal<String?>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupDataBinding()
+    setupCollectionView()
+    setupLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  private func setupDataBinding() {
+    model._bookList.listen(self) { [weak self] list in
+      self?.collectionView?.reloadData()
+    }
+  }
+  
+  private func setupCollectionView() {
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .Horizontal
+    
+    _collectionViewFrame.listen(self) { [weak layout] frame in
+      layout?.itemSize = CGSizeMake(100, frame.height)
+    }
+    
+    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+    collectionView?.registerClass(ListCell.self, forCellWithReuseIdentifier: "ListCell")
+    collectionView?.delegate = self
+    collectionView?.dataSource = self
+    collectionView?.backgroundColor = UIColor.whiteColor()
+    collectionView?.showsHorizontalScrollIndicator = false
+    collectionView?.multipleTouchEnabled = true
+    addSubview(collectionView!)
+  }
+  
+  private func setupLabel() {
+    label.font = UIFont.systemFontOfSize(16)
+    label.textColor = UIColor.sexyGray()
+    addSubview(label)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
+    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
+    collectionViewFrame = collectionView!.frame
+  }
+  
+  public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
+    return UIEdgeInsetsMake(0, 8, 0, 8)
+  }
+  
+  public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return model.bookList.count
+  }
+  
+  public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    
+    if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ListCell", forIndexPath: indexPath) as? ListCell {
+      
+      cell.setListing(model.bookList[indexPath.row])
+      
+      // databind the cells
+      cell._didSelectListing.removeListener(self)
+      cell._didSelectListing.listen(self) { [weak self] list_id in
+        self?._didSelectListing.fire(list_id)
+      }
+      
+      // databind the cells
+      cell._didSelectMatch.removeListener(self)
+      cell._didSelectMatch.listen(self) { [weak self] list_id in
+        self?._didSelectMatch.fire(list_id)
+      }
+      
+      return cell
+    }
+    
+    return UICollectionViewCell()
+  }
+}
+
+public class ListCell: UICollectionViewCell {
+  
+  public var listing: Listing?
+  
+  private var containerView: UIView?
+  
+  public var bookImageView: UIImageView?
+  public var bookPriceLabel: UILabel?
+  
+  public var matchInfoView: UIView?
+  public var matchUserImageView: UIImageView?
+  public var matchPriceLabel: UILabel?
+  public var matchUserNameLabel: UILabel?
+  
+  public let _didSelectListing = Signal<String?>()
+  public let _didSelectMatch = Signal<String?>()
+  
+  private var matchTapGesture: UITapGestureRecognizer?
+  
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
+    setupSelf()
+    setupContainerView()
+    setupBookImageView()
+    setupBookPriceLabel()
+    setupMatchInfoView()
+    setupMatchUserImageView()
+    setupMatchPriceLabel()
+    setupMatchUserNameLabel()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)
+    
+    bookImageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
+    bookPriceLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookImageView!, padding: 4, height: 12)
+    matchInfoView?.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: 32)
+//    matchInfoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookPriceLabel!, padding: 0, height: 36)
+    matchUserImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 24, height: 24)
+    matchPriceLabel?.alignAndFill(align: .ToTheRightCentered, relativeTo: matchUserImageView!, padding: 4)
+    
+    // load the UI for the listing once the frame's have been set
+    loadListingIntoView()
+  }
+  
+  private func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupContainerView() {
+    containerView = UIView()
+    containerView?.backgroundColor = .whiteColor()
+    containerView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
+    containerView?.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
+    containerView?.layer.shadowOpacity = 1.0
+    containerView?.layer.shadowRadius = 2
+    containerView?.layer.masksToBounds = true
+    containerView?.clipsToBounds = false
+    addSubview(containerView!)
+  }
+  
+  private func setupBookImageView() {
+    bookImageView = UIImageView()
+    bookImageView?.userInteractionEnabled = true
+    bookImageView?.backgroundColor = .whiteColor()
+    bookImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedListing"))
+    
+    containerView?.addSubview(bookImageView!)
+  }
+  
+  private func setupBookPriceLabel() {
+    bookPriceLabel = UILabel()
+    bookPriceLabel?.textColor = UIColor.moneyGreen()
+    bookPriceLabel?.font = UIFont.asapBold(12)
+    bookPriceLabel?.adjustsFontSizeToFitWidth = true
+    bookPriceLabel?.minimumScaleFactor = 0.1
+    bookPriceLabel?.backgroundColor = .whiteColor()
+    containerView?.addSubview(bookPriceLabel!)
+  }
+  
+  private func setupMatchInfoView() {
+    matchInfoView = UIView()
+    matchInfoView?.userInteractionEnabled = true
+    matchInfoView?.backgroundColor = .whiteColor()
+    containerView?.addSubview(matchInfoView!)
+    
+    matchTapGesture = UITapGestureRecognizer(target: self, action: "selectedMatch")
+    matchInfoView?.addGestureRecognizer(matchTapGesture!)
+  }
+  
+  private func setupMatchUserImageView() {
+    matchUserImageView = UIImageView()
+    matchInfoView?.addSubview(matchUserImageView!)
+  }
+  
+  private func setupMatchPriceLabel() {
+    matchPriceLabel = UILabel()
+    matchPriceLabel?.textColor = .juicyOrange()
+    matchPriceLabel?.font = .asapBold(12)
+    matchPriceLabel?.adjustsFontSizeToFitWidth = true
+    matchPriceLabel?.minimumScaleFactor = 0.1
+    matchInfoView?.addSubview(matchPriceLabel!)
+  }
+  
+  private func setupMatchUserNameLabel() {
+    matchUserNameLabel = UILabel()
+    matchUserNameLabel?.textColor = .blackColor()
+    matchUserNameLabel?.font = .asapRegular(12)
+    matchUserNameLabel?.adjustsFontSizeToFitWidth = true
+    matchUserNameLabel?.minimumScaleFactor = 0.1
+    matchInfoView?.addSubview(matchUserNameLabel!)
+  }
+  
+  public func selectedMatch() {
+    _didSelectMatch => listing?.highestLister?._id
+  }
+  
+  public func selectedListing() {
+    _didSelectListing => listing?._id
+  }
+  
+  public func setListing(listing: Listing?) {
+    
+    self.listing = listing
+    loadListingIntoView()
+  }
+  
+  private func loadListingIntoView() {
+    
+    // load book image once the image view's frame has been set
+    bookImageView?.dl_setImageFromUrl(listing?.book?.getImageUrl(), animated: true)
+    
+    // set user price label
+    bookPriceLabel?.text = nil
+    
+    Async.background { [weak listing] in
+      
+      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: $\(listing?.price ?? "")")
+      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 6))
+      coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 6))
+      
+      Async.main { [weak self] in
+        
+        self?.bookPriceLabel?.attributedText = coloredString
+        
+        coloredString = nil
+      }
+    }
+    
+    matchUserImageView?.image = nil
+    matchPriceLabel?.text = nil
+    
+    if listing?.highestLister != nil {
+      // unhide the match info view
+      matchInfoView?.hidden = false
+      // set highest matcher's user imagee
+      matchUserImageView?.dl_setImageFromUrl(listing?.highestLister?.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+      // set highest matcher's list price
+      matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") $\(listing?.highestLister?.price ?? "")"
+      // resize the container view
+      containerView?.removeConstraints(containerView!.constraints)
+      containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)
+      containerView?.layer.shadowPath = UIBezierPath(roundedRect: containerView!.bounds, cornerRadius: 0).CGPath
+    } else {
+      // hide the match info view
+      matchInfoView?.hidden = true
+      // resize the container view
+      containerView?.removeConstraints(containerView!.constraints)
+      containerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 175)
+      containerView?.layer.shadowPath = UIBezierPath(roundedRect: containerView!.bounds, cornerRadius: 0).CGPath
+    }
+  }
+}
+
