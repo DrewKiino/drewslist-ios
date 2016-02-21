@@ -23,18 +23,8 @@ public class CreateListingController {
   // MARK: Initializers
   public init() {
     readRealmUser()
-    setDefaultListing()
     // fixtures
 //    getBookFromServer("9780547539638")
-  }
-  
-  public func setDefaultListing() {
-    // create default listing in case user has not changed any inputs
-    model.listing?.listType = "buying"
-    model.listing?.cover = "hardcover"
-    model.listing?.condition = "2"
-    model.listing?.price = "1.00"
-    model.listing?.notes = ""
   }
   
   // MARK: Getters
@@ -49,6 +39,12 @@ public class CreateListingController {
   
   public func uploadListingToServer() {
     // unwrap isbn and make sure it exists, then make sure there are no prior server calls executed
+    log.debug(model.listing?.price)
+    log.debug(model.listing?.listType)
+    log.debug(model.listing?.condition)
+    log.debug(model.listing?.cover)
+    log.debug(model.listing?.notes)
+    
     guard let user_id = model.user?._id,
           let book_id = model.book?._id,
           let price = model.listing?.price,
@@ -57,11 +53,15 @@ public class CreateListingController {
           let cover = model.listing?.cover,
           let notes = model.listing?.notes
           where model.shouldRefrainFromCallingServer == false else
-    { return }
-    print(condition)
+    {
+      log.debug("HEY")
+      return
+    }
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
+    
+
     Alamofire.request(
       .POST,
       "\(ServerUrl.Default.getValue())/user/listBook",
@@ -87,7 +87,6 @@ public class CreateListingController {
         self?.model.serverCallbackFromUploadlIsting = false
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
-        log.debug(json)
         // using ObjectMapper we quickly convert the json data into an actual object we can use
         // then we set the model's book with the new book
         self?.model.serverCallbackFromUploadlIsting = true
