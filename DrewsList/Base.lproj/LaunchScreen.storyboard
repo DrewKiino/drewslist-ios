@@ -17,18 +17,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash-icon" translatesAutoresizingMaskIntoConstraints="NO" id="8nO-Bn-UpB">
-                                <rect key="frame" x="270" y="278" width="60" height="44"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="splash-icon" translatesAutoresizingMaskIntoConstraints="NO" id="8nO-Bn-UpB">
+                                <rect key="frame" x="184" y="286" width="250" height="27"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="Ohp-J9-3Qd"/>
-                                    <constraint firstAttribute="height" constant="44" id="dew-2v-Cau"/>
+                                    <constraint firstAttribute="width" constant="250" id="Ohp-J9-3Qd"/>
+                                    <constraint firstAttribute="height" constant="27" id="dew-2v-Cau"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="HY0-Fa-XA2"/>
-                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="gRh-ou-SdO"/>
+                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="202-tz-9Dg"/>
+                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="VSV-by-Pun"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +38,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="splash-icon" width="300" height="222"/>
+        <image name="splash-icon" width="1500" height="161"/>
     </resources>
 </document>
