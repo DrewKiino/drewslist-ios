@@ -39,11 +39,6 @@ public class CreateListingController {
   
   public func uploadListingToServer() {
     // unwrap isbn and make sure it exists, then make sure there are no prior server calls executed
-    log.debug(model.listing?.price)
-    log.debug(model.listing?.listType)
-    log.debug(model.listing?.condition)
-    log.debug(model.listing?.cover)
-    log.debug(model.listing?.notes)
     
     guard let user_id = model.user?._id,
           let book_id = model.book?._id,
@@ -53,10 +48,7 @@ public class CreateListingController {
           let cover = model.listing?.cover,
           let notes = model.listing?.notes
           where model.shouldRefrainFromCallingServer == false else
-    {
-      log.debug("HEY")
-      return
-    }
+    { return }
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
