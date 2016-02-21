@@ -38,17 +38,13 @@ public class ListViewContainer: UIViewController {
   private func setupSelf() {
     
     view.backgroundColor = .whiteColor()
-    
-    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
-    item.setTitleTextAttributes([
-      NSFontAttributeName: UIFont.asapRegular(16),
-      NSForegroundColorAttributeName: UIColor.whiteColor()
-    ], forState: .Normal)
-
-    navigationItem.rightBarButtonItem = item
   }
   
   private func setupListView() {
+    listView?._callButtonPressed.removeAllListeners()
+    listView?._callButtonPressed.listen(self) { [weak self] bool in
+      self?.listView?.model.user?.phone?.callNumber()
+    }
     listView?._chatButtonPressed.removeAllListeners()
     listView?._chatButtonPressed.listen(self) { [weak self] bool in
       self?.readRealmUser()
@@ -68,7 +64,31 @@ public class ListViewContainer: UIViewController {
     listView?._userProfilePressed.listen(self) { [weak self] user in
       self?.navigationController?.pushViewController(UserProfileView().setUser(user), animated: true)
     }
+    listView?.model._listing.removeAllListeners()
+    listView?.model._listing.listen(self) { [weak self] listing in
+      if listing?.user?._id == UserModel.sharedUser().user?._id {
+        self?.showEditButton()
+      } else {
+        self?.hideEditButton()
+      }
+    }
+    
     view.addSubview(listView!)
+  }
+  
+  public func showEditButton() {
+    hideEditButton()
+    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
+    item.setTitleTextAttributes([
+      NSFontAttributeName: UIFont.asapRegular(16),
+      NSForegroundColorAttributeName: UIColor.whiteColor()
+    ], forState: .Normal)
+    
+    navigationItem.rightBarButtonItem = item
+  }
+  
+  public func hideEditButton() {
+    navigationItem.rightBarButtonItem = nil
   }
   
   public func setListing(listing: Listing?) -> Self {
@@ -159,14 +179,17 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == true { self?.showActivityView() }
-      else if bool == false { self?.hideLoadingScreen() }
+      if bool == true {
+        self?.showActivityView()
+        self?.tableView?.hidden = true
+      }
     }
     
     model._serverCallbackFromFindListing.removeAllListeners()
     model._serverCallbackFromFindListing.listen(self) { [weak self] bool in
       if bool == true { self?.tableView?.reloadData() }
       self?.dismissActivityView()
+      self?.tableView?.hidden = false
     }
   }
   
@@ -228,6 +251,10 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 //        cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
+        cell._callButtonPressed.removeAllListeners()
+        cell._callButtonPressed.listen(self) { [weak self] bool in
+          self?._callButtonPressed.fire(bool)
+        }
         cell._chatButtonPressed.removeAllListeners()
         cell._chatButtonPressed.listen(self) { [weak self] bool in
           self?._chatButtonPressed.fire(bool)

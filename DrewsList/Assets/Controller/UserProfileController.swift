@@ -59,7 +59,7 @@ public class UserProfileController {
       // this will disable this controllers server calls for 10 seconds
       self?.refrainTimer?.invalidate()
       self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
+      self?.refrainTimer = NSTimer.after(5.0) { [weak self] in
         // allow the controller to make server calls again
         self?.model.shouldRefrainFromCallingServer = false
       }
@@ -68,7 +68,7 @@ public class UserProfileController {
     // just in case the doesn't ever respond...
     refrainTimer?.invalidate()
     refrainTimer = nil
-    refrainTimer = NSTimer.after(3.0) { [weak self] in
+    refrainTimer = NSTimer.after(5.0) { [weak self] in
       // disable loading screen
       self?.model.shouldRefrainFromCallingServer = false
     }

@@ -80,6 +80,11 @@ extension UIColor {
 
 }
 
+extension Int {
+  
+  public func callNumber() { if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) } }
+}
+
 extension UIFont {
   
   /**
