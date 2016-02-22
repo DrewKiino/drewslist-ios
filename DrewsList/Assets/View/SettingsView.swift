@@ -89,7 +89,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          log.debug("TODO: show terms and privacy view")
+          self?.navigationController?.pushViewController(TermPrivacyView(), animated: true)
         }
         return cell
       }
@@ -100,8 +100,14 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         cell.titleButton?.setTitle("Log Out", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          LoginController.logOut()
-          self?.navigationController?.popToRootViewControllerAnimated(true)
+          let alertController = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
+          alertController.addAction(UIAlertAction(title: "Yes, I'm sure.", style: .Default) { [weak self] action in
+            LoginController.logOut()
+            self?.navigationController?.popToRootViewControllerAnimated(true)
+          })
+          alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+          })
+          TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
         }
         cell.showBottomBorder()
         return cell
