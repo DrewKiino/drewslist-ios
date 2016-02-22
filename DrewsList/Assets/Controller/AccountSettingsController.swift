@@ -50,14 +50,4 @@ public class AccountSettingsController {
       self?.model.user = user
     }
   }
-  
-  public func deleteAccount() {
-    Alamofire.request(.DELETE, "\(ServerUrl.Default.getValue())/\(model.user?._id ?? "")")
-    .response { [weak self] req, res, data, error in
-      log.debug(JSON(data: data!))
-    }
-  }
-  
-  public func checkPushNotificationsPermission() {
-  }
 }
