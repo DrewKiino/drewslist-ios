@@ -82,6 +82,10 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   // MARK: TableView Delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    switch indexPath.row {
+      case 12: return 0
+      default: return 12
+    }
     return 24
   }
   
@@ -213,6 +217,13 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
+        cell.textLabel?.text = "Deactivate Account"
+        cell._didSelectCell.removeAllListeners()
+        cell._didSelectCell.listen(self) { bool in
+          log.debug(bool)
+      }
+      return cell
+
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)
         cell.hideArrowIcon()
         cell._didSelectCell.removeAllListeners()
@@ -221,6 +232,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         }
         
         return cell
+
       }
       break
     case 13:

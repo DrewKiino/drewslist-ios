@@ -89,7 +89,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          log.debug("TODO: show terms and privacy view")
+          self?.navigationController?.pushViewController(TermPrivacyView(), animated: true)
         }
         return cell
       }

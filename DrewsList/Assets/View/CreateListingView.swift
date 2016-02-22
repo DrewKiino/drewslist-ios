@@ -311,7 +311,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     return UITableViewCell()
   }
   
-  
+ 
   // MARK: Class Functions
   
   public func setBook(book: Book?) -> Self {
