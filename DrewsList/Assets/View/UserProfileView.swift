@@ -135,6 +135,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // MARK: UI methods
     view.showActivityView(-64)
+    
   }
   
   public override func viewWillAppear(animated: Bool) {

@@ -134,8 +134,6 @@ public class Listing: Mappable {
     createdAt     <- map["createdAt"]
     updatedAt     <- map["updatedAt"]
     
-    log.debug(price)
-    
 //    if (user      == nil) { user      <- map["user"] }
 //    if (book      == nil) { book      <- map["book"] }
 //    if (listType  == _id) { listType  <- map["listType"] }
