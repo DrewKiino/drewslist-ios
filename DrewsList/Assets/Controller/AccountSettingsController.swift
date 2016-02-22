@@ -9,57 +9,55 @@
 import Foundation
 import RealmSwift
 import PermissionScope
+import Alamofire
+import SwiftyJSON
 
 public class AccountSettingsController {
   
   private let model = AccountSettingsModel()
   
+  private let pushController = PushController.sharedInstance()
+  private let locationController = LocationController.sharedInstance()
+  private let userPrivacyController = UserPrivacyController.sharedInstance()
+  
   public func getModel() -> AccountSettingsModel { return model }
   
-  // MARK: Realm Functions 
-  public func readRealmUser(){ if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
-  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
-
-  private let Pscope = PermissionScope()
-  
-   public init () {
-    initilize_Pscope()
+  public init () {
+    setupSelf()
+    setupDataBinding()
   }
   
-  private func initilize_Pscope() {
-    
-    Pscope.headerLabel.text = "Hello"
-    Pscope.bodyLabel.text = "Do you want to log with Facebook."
-    
-    //PermissionSetUps
-    Pscope.addPermission(NotificationsPermission(notificationCategories:
-      nil ), message: "Thanks for the reply")
-    
-    
+  public func viewDidAppear() {
+    // init user
+    model.user = UserModel.sharedUser().user
+    // check permissions
+    pushController.isRegisteredForRemoteNotifications()
+    locationController.isRegisteredForLocationUpdates()
   }
   
-  public func permissionsAppear() {
-    
-    switch PermissionScope().statusNotifications() {
-    case .Unknown:
-      
-      Pscope.show({ finished, results in
-        for result in results{
-          switch result.status {
-          case .Authorized:
-            UIApplication.sharedApplication().registerForRemoteNotifications()
-            break
-          default: break
-          }
-        }
-        }, cancelled: { (results) -> Void in
-      })
-    case .Unauthorized, .Disabled: return
-    case .Authorized:
-      SweetAlert().showAlert("Already Signed In!", subTitle: nil, style: .Success,
-        buttonTitle: "Ok", buttonColor: .soothingBlue())
-      return
-      
+  public func viewWillDisappear() {
+    userPrivacyController.updateUserPrivacySettingsInServer()
+  }
+  
+  private func setupSelf() {
+  }
+  
+  private func setupDataBinding() {
+    // databind to the shared user
+    UserModel.sharedUser()._user.removeListener(self)
+    UserModel.sharedUser()._user.listen(self) { [weak self] user in
+      // set the user whenever the shared user changes
+      self?.model.user = user
     }
+  }
+  
+  public func deleteAccount() {
+    Alamofire.request(.DELETE, "\(ServerUrl.Default.getValue())/\(model.user?._id ?? "")")
+    .response { [weak self] req, res, data, error in
+      log.debug(JSON(data: data!))
+    }
+  }
+  
+  public func checkPushNotificationsPermission() {
   }
 }

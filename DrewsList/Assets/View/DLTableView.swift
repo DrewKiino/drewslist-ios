@@ -271,13 +271,6 @@ public class LabelCell: DLTableViewCell {
       mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title.characters.count, length: subTitle.characters.count))
       label?.attributedText = mutstring
     } else {
-//      title = ":"
-//      subTitle = ""
-//      fullTitle = title! + subTitle!
-//      var mutstring = NSMutableAttributedString()
-//      mutstring = NSMutableAttributedString(string: fullTitle!, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-//      mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
-//      mutstring.addAttribute(NSForegroundColorAttributeName, value: UIColor.sexyGray(), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
       label?.attributedText = nil
     }
   }
@@ -297,9 +290,6 @@ public class TitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupTitleTextLabel()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
-    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -308,6 +298,9 @@ public class TitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
+    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public override func setupSelf() {
@@ -346,10 +339,6 @@ public class FullTitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupRightImageView()
-    
-    titleButton?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: screen.width - 48)
-    rightImageView?.anchorToEdge(.Right, padding: 12, width: 12, height: 16)
-    rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -358,20 +347,25 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    titleButton?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
+    rightImageView?.anchorToEdge(.Right, padding: 8, width: 16, height:  16)
+    rightImageView?.dl_setImage(UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate))
   }
   
   public override func setupSelf() {
     super.setupSelf()
+    
     backgroundColor = .whiteColor()
   }
   
   private func setupTitleLabel() {
     titleButton = UIButton()
-    titleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    titleButton?.setTitleColor(.sexyGray(), forState: .Normal)
     titleButton?.contentHorizontalAlignment = .Left
-    titleButton?.titleLabel?.font = .asapRegular(16)
+    titleButton?.titleLabel?.font = .asapRegular(12)
     titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
-    titleButton?.titleLabel?.minimumScaleFactor = 0.5
+    titleButton?.titleLabel?.minimumScaleFactor = 0.8
     titleButton?.addTarget(self, action: "cellPressed:", forControlEvents: .TouchDown)
     titleButton?.addTarget(self, action: "cellPressReleased:", forControlEvents: .TouchUpOutside)
     titleButton?.addTarget(self, action: "cellSelected:", forControlEvents: .TouchUpInside)
@@ -435,16 +429,6 @@ public class SwitchCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupSwitchImageView()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 200)
-    switchImageView?.anchorToEdge(.Right, padding: 8, width: 24, height: 24)
-    switchImageViewReferenceFrame = switchImageView?.frame
-    switchImageView?.frame = CGRectMake(
-      screen.width + 2,
-      switchImageViewReferenceFrame!.origin.y,
-      switchImageViewReferenceFrame!.width,
-      switchImageViewReferenceFrame!.height
-    )
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -454,6 +438,9 @@ public class SwitchCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
+    switchImageView?.anchorToEdge(.Right, padding: 8, width: frame.height - 8, height: frame.height - 8)
+    switchImageViewReferenceFrame = switchImageView?.frame
   }
   
   public override func setupSelf() {
@@ -469,8 +456,8 @@ public class SwitchCell: DLTableViewCell {
   
   private func setupTitleLabel() {
     titleLabel = UILabel()
-    titleLabel?.textColor = .blackColor()
-    titleLabel?.font = .asapRegular(16)
+    titleLabel?.textColor = .sexyGray()
+    titleLabel?.font = .asapRegular(12)
     titleLabel?.adjustsFontSizeToFitWidth = true
     titleLabel?.minimumScaleFactor = 0.8
     addSubview(titleLabel!)
@@ -484,6 +471,10 @@ public class SwitchCell: DLTableViewCell {
   
   public func select() {
     _didSelectCell => toggle.getValue()
+  }
+  
+  public func isOn() -> Bool {
+    return toggle == .On
   }
   
   public func switchOn() {
@@ -503,25 +494,13 @@ public class SwitchCell: DLTableViewCell {
   }
   
   public func animateToggle() {
-    
-    let duration: NSTimeInterval = 0.7
-    let damping: CGFloat = 0.5
-    let velocity: CGFloat = 1.0
 
     switch toggle {
     case .On:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        let frame: CGRect! = self?.switchImageViewReferenceFrame
-        self?.switchImageView?.frame = frame
-      }, completion: { bool in
-      })
+      switchImageView?.tintColor = .juicyOrange()
       break
     case .Off:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        let frame: CGRect! = self?.switchImageView?.frame
-        self?.switchImageView?.frame = CGRectMake(screen.width + 2, frame.origin.y, frame.width, frame.height)
-      }, completion: { bool in
-      })
+      switchImageView?.tintColor = .sexyGray()
       break
     }
   }

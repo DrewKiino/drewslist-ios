@@ -60,6 +60,9 @@ public class LoginController {
     // check if user is already logged in
     if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
       
+      log.debug(model.user)
+      
+      // set the user's model
       model.user = user
       
       getUserFromServer()
@@ -76,10 +79,10 @@ public class LoginController {
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
       
-      // else, log use out of facebook
-      FBSDKLoginManager().logOut()  
-      
-      tabView.presentViewController(LoginView(), animated: false, completion: nil)
+      tabView.presentViewController(LoginView(), animated: false) { bool in
+        // else, log use out of facebook
+        FBSDKLoginManager().logOut()
+      }
     }
     
     return false
@@ -161,10 +164,12 @@ public class LoginController {
         
         // create and  user object
         self?.model.user = User(json: json)
+        
         // set the shared user instance
         UserController.setSharedUser(self?.model.user)
         // write user object to realm
         self?.writeRealmUser()
+        
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         
@@ -311,6 +316,17 @@ public class LoginController {
   // this one deletes all prior users
   // we should only have one user in database, and that should be the current user
   public func deleteRealmUser(){ try! Realm().write { try! Realm().deleteAll() } }
+  
+  public class func logOut() {
+    // deletes the current user, then will log user out.
+    LoginController.sharedInstance().deleteRealmUser()
+    // log out of facebook if they are logged in
+    FBSDKController.logout()
+    // since the current user does not exist anymore
+    // we ask the tab view to check any current user, since we have no current user
+    // it will present the login screen
+    LoginController.sharedInstance().checkIfUserIsLoggedIn()
+  }
 }
 
 

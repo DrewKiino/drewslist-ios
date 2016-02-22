@@ -81,6 +81,7 @@
 		EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */; };
 		EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */; };
 		EE4B9DAB1C11F3F900637458 /* RAMBounceAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */; };
+		EE4E215E1C7A69F400FEC5F9 /* UserPrivacyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4E215D1C7A69F400FEC5F9 /* UserPrivacyModel.swift */; };
 		EE53E75D1C2D00C900A32613 /* TabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE53E75C1C2D00C900A32613 /* TabController.swift */; };
 		EE53E75F1C2D00DB00A32613 /* TabModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE53E75E1C2D00DB00A32613 /* TabModel.swift */; };
 		EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */; };
@@ -107,7 +108,7 @@
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA80B231C1287C70058ED0C /* NativeExtensions.swift */; };
 		EEB24D4D1C67C36700767AEC /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D4C1C67C36700767AEC /* LocationController.swift */; };
-		EEB24D4F1C67C42B00767AEC /* PermissionsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */; };
+		EEB24D4F1C67C42B00767AEC /* UserPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D4E1C67C42B00767AEC /* UserPrivacyController.swift */; };
 		EEB24D511C67C81B00767AEC /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB24D501C67C81B00767AEC /* LocationModel.swift */; };
 		EEBAEAD61C2CE7C800FCADE0 /* ActivityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */; };
 		EEBD83901C2BF3E700FF9FDC /* SearchSchoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */; };
@@ -227,6 +228,7 @@
 		EE4B9DA21C11F3DD00637458 /* RAMFrameItemAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFrameItemAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DA41C11F3E300637458 /* RAMFumeAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMFumeAnimation.swift; sourceTree = "<group>"; };
 		EE4B9DAA1C11F3F900637458 /* RAMBounceAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RAMBounceAnimation.swift; sourceTree = "<group>"; };
+		EE4E215D1C7A69F400FEC5F9 /* UserPrivacyModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPrivacyModel.swift; sourceTree = "<group>"; };
 		EE53E75C1C2D00C900A32613 /* TabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabController.swift; sourceTree = "<group>"; };
 		EE53E75E1C2D00DB00A32613 /* TabModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabModel.swift; sourceTree = "<group>"; };
 		EE55200B1C23B9D3008EF831 /* CommunityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommunityFeedView.swift; sourceTree = "<group>"; };
@@ -253,7 +255,7 @@
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA80B231C1287C70058ED0C /* NativeExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeExtensions.swift; sourceTree = "<group>"; };
 		EEB24D4C1C67C36700767AEC /* LocationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
-		EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsController.swift; sourceTree = "<group>"; };
+		EEB24D4E1C67C42B00767AEC /* UserPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPrivacyController.swift; sourceTree = "<group>"; };
 		EEB24D501C67C81B00767AEC /* LocationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
 		EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedView.swift; sourceTree = "<group>"; };
 		EEBD838F1C2BF3E700FF9FDC /* SearchSchoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSchoolView.swift; sourceTree = "<group>"; };
@@ -419,6 +421,7 @@
 				EE8918C61C1169B500FCF031 /* UserProfileModel.swift */,
 				EE367DC31C69191300B88CA0 /* FBSDKModel.swift */,
 				EE7400EA1C710A0300277D31 /* SearchListingModel.swift */,
+				EE4E215D1C7A69F400FEC5F9 /* UserPrivacyModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -479,7 +482,7 @@
 				EEB24D4C1C67C36700767AEC /* LocationController.swift */,
 				EE8918C91C1169BA00FCF031 /* LoginController.swift */,
 				EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */,
-				EEB24D4E1C67C42B00767AEC /* PermissionsController.swift */,
+				EEB24D4E1C67C42B00767AEC /* UserPrivacyController.swift */,
 				EED8BADB1C45E9CE00EDB30D /* PushController.swift */,
 				3F4CA3AE1C0BEB0E00CFC84D /* ScannerController.swift */,
 				EE67C15B1C30B06300AC60DB /* SearchBookController.swift */,
@@ -877,6 +880,7 @@
 				EE4B9DA51C11F3E300637458 /* RAMFumeAnimation.swift in Sources */,
 				EE7009971BFEE48F008F23C4 /* ChatHistoryView.swift in Sources */,
 				4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */,
+				EE4E215E1C7A69F400FEC5F9 /* UserPrivacyModel.swift in Sources */,
 				EE4B9D9F1C11F3BE00637458 /* RAMTransitionItemAnimation.swift in Sources */,
 				EE4B9DA11C11F3D700637458 /* RAMRotationAnimation.swift in Sources */,
 				EEC3E04D1C2DFE3200D7843C /* SearchUserModel.swift in Sources */,
@@ -911,7 +915,7 @@
 				4F966CE81C27624000CECCC6 /* EditProfileController.swift in Sources */,
 				EE8918BE1C1169A800FCF031 /* OnboardingView.swift in Sources */,
 				EEC3E04F1C2DFE3800D7843C /* SearchUserController.swift in Sources */,
-				EEB24D4F1C67C42B00767AEC /* PermissionsController.swift in Sources */,
+				EEB24D4F1C67C42B00767AEC /* UserPrivacyController.swift in Sources */,
 				EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */,
 				EED779E51C151DF800D172BE /* UserProfileListingModel.swift in Sources */,
 				EE55200E1C23BADF008EF831 /* CommunityFeedModel.swift in Sources */,

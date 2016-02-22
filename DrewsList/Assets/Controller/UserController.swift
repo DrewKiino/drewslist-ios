@@ -57,4 +57,25 @@ public class UserController {
       }
     }
   }
+  
+  public class func deleteUserInServer(user_id: String?) {
+    let alertController = UIAlertController(title: "Delete Account", message: "Are you sure you want to delete your account? This process is irreversable and all your data will be lost.", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Yes, I'm sure.", style: .Default) { action in
+      guard let user_id = user_id else { return }
+      Alamofire.request(
+        .DELETE,
+        ServerUrl.Default.getValue() + "/user/\(user_id)"
+      )
+      .response { req, res, data, error in
+        if let error = error {
+          log.error(error)
+        } else if let data = data, let json: JSON! = JSON(data: data) {
+          LoginController.logOut()
+        }
+      }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
+  }
 }
