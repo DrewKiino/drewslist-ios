@@ -40,8 +40,8 @@ public class Listing: Mappable {
   public let _listType = Signal<String?>()
   public var listType: String? { didSet { _listType => listType } }
   
-  public let _price = Signal<String?>()
-  public var price: String? { didSet { _price => price } }
+  public let _price = Signal<Double?>()
+  public var price: Double? { didSet { _price => price } }
   
   public let _notes = Signal<String?>()
   public var notes: String? { didSet { _notes => notes } }
@@ -60,6 +60,15 @@ public class Listing: Mappable {
 
   public let _updatedAt = Signal<String?>()
   public var updatedAt: String? { didSet { _updatedAt => updatedAt } }
+  
+  public func getPriceText() -> String? {
+    if let price = price {
+      let formatter = NSNumberFormatter()
+      formatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+      return formatter.stringFromNumber(price)
+    }
+    else { return nil }
+  }
   
   public func getConditionImage() -> UIImage? {
     guard let condition = condition else { return nil }
@@ -114,27 +123,27 @@ public class Listing: Mappable {
   public func mapping(map: Map) {
     // in this case, _id is a book from the server
     // after being populated by mongoose
-    _id           <- map["_id._id"]
-    book          <- map["_id.book"]
-    user          <- map["_id.user"]
-    listType      <- map["_id.listType"]
-    price         <- map["_id.price"]
-    notes         <- map["_id.notes"]
-    cover         <- map["_id.cover"]
-    condition     <- map["_id.condition"]
-    createdAt     <- map["_id.createdAt"]
-    updatedAt     <- map["_id.updatedAt"]
+    _id           <- map["_id"]
+    book          <- map["book"]
+    user          <- map["user"]
+    listType      <- map["listType"]
+    price         <- map["price"]
+    notes         <- map["notes"]
+    cover         <- map["cover"]
+    condition     <- map["condition"]
+    createdAt     <- map["createdAt"]
+    updatedAt     <- map["updatedAt"]
     
-    if (user      == nil) { user      <- map["user"] }
-    if (book      == nil) { book      <- map["book"] }
-    if (listType  == _id) { listType  <- map["listType"] }
-    if (price     == _id) { price     <- map["price"] }
-    if (notes     == _id) { notes     <- map["notes"] }
-    if (cover     == _id) { cover     <- map["cover"] }
-    if (condition == _id) { condition <- map["condition"] }
-    if (createdAt == _id) { createdAt <- map["createdAt"] }
-    if (updatedAt == _id) { updatedAt <- map["updatedAt"] }
+//    if (user      == nil) { user      <- map["user"] }
+//    if (book      == nil) { book      <- map["book"] }
+//    if (listType  == _id) { listType  <- map["listType"] }
+//    if (price     == _id) { price     <- map["price"] }
+//    if (notes     == _id) { notes     <- map["notes"] }
+//    if (cover     == _id) { cover     <- map["cover"] }
+//    if (condition == _id) { condition <- map["condition"] }
+//    if (createdAt == _id) { createdAt <- map["createdAt"] }
+//    if (updatedAt == _id) { updatedAt <- map["updatedAt"] }
     
-    highestLister <- map["highestLister"]
+//    highestLister <- map["highestLister"]
   }
 }

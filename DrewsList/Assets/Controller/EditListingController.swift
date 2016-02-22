@@ -21,18 +21,8 @@ public class EditListingController {
   //MARK: Initilizers
   public init() {
     readRealmUser()
-    setDefaultListing()
     
   }
-  
-  public func setDefaultListing() {
-    model.listing?.listType = "buying"
-    model.listing?.cover = "hardcover"
-    model.listing?.condition = "2"
-    model.listing?.price = "1.00"
-    model.listing?.notes = ""
-  }
-  
 
   //MARK: Getters
   public func getModel() -> EditListingModel { return model }

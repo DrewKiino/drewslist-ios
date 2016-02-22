@@ -77,10 +77,10 @@ public class LoginController {
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
       
-      // else, log use out of facebook
-      FBSDKLoginManager().logOut()  
-      
-      tabView.presentViewController(LoginView(), animated: false, completion: nil)
+      tabView.presentViewController(LoginView(), animated: false) { bool in
+        // else, log use out of facebook
+        FBSDKLoginManager().logOut()
+      }
     }
     
     return false
@@ -162,10 +162,12 @@ public class LoginController {
         
         // create and  user object
         self?.model.user = User(json: json)
+        
         // set the shared user instance
         UserController.setSharedUser(self?.model.user)
         // write user object to realm
         self?.writeRealmUser()
+        
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         

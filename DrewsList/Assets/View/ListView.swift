@@ -534,7 +534,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     Async.background { [weak self, weak listing] in
       
-      let string1 = "Desired Price: $\(listing?.price ?? "")"
+      let string1 = "Desired Price: \(listing?.getPriceText() ?? "")"
       let coloredString1 = NSMutableAttributedString(string: string1)
       coloredString1.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 13))
       coloredString1.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 13))

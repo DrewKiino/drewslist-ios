@@ -23,18 +23,8 @@ public class ConfirmTransferController {
   //Mark: Initil
   public init() {
     readRealmUser()
-    setDefaultListing()
     // fixtures
     //    getBookFromServer("9780547539638")
-  }
-  
-  public func setDefaultListing() {
-    // create default listing in case user has not changed any inputs
-    model.listing?.listType = "buying"
-    model.listing?.cover = "hardcover"
-    model.listing?.condition = "2"
-    model.listing?.price = "1.00"
-    model.listing?.notes = ""
   }
   
   // MARK: Getters

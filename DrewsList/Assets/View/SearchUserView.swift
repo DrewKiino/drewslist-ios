@@ -45,7 +45,8 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     
     searchBarContainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: headerView!, padding: 0, height: 36)
     searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 48)
-    searchBarImageView?.alignAndFill(align: .ToTheRightCentered, relativeTo: searchBarTextField!, padding: 8)
+    searchBarImageView?.alignAndFill(align: .ToTheRightCentered, relativeTo: searchBarTextField!, padding: 0)
+    searchBarImageView?.align(.ToTheRightCentered, relativeTo: searchBarTextField!, padding: 5, width: 25, height: 25)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
   }
