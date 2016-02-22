@@ -21,8 +21,8 @@ public class User: Mappable {
   public let _email = Signal<String?>()
   public var email: String? { didSet { _email => email } }
   
-  public let _phone = Signal<String?>()
-  public var phone: String? { didSet { _phone => phone } }
+  public let _phone = Signal<Int?>()
+  public var phone: Int? { didSet { _phone => phone } }
   
   public let _firstName = Signal<String?>()
   public var firstName: String? { didSet { _firstName => firstName } }
@@ -91,6 +91,11 @@ public class User: Mappable {
   
   public let _locale = Signal<String?>()
   public var locale: String? { didSet { _locale => locale } }
+  
+  // MARK: Permission attributes 
+  
+  public let _privatePhoneNumber = Signal<Bool>()
+  public var privatePhoneNumber: Bool = false { didSet { _privatePhoneNumber => privatePhoneNumber } }
  
   public init() {}
   
@@ -103,22 +108,28 @@ public class User: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
-    _id             <- map["_id"]
-    email           <- map["email"]
-    phone           <- map["phone"]
-    firstName       <- map["firstName"]
-    lastName        <- map["lastName"]
-    username        <- map["username"]
-    school          <- map["school"]
-    imageUrl        <- map["image"]
-    bgImage         <- map["bgImage"]
-    description     <- map["description"]
-    deviceToken     <- map["deviceToken"]
-    listings        <- map["listings"]
+    _id                 <- map["_id"]
+    email               <- map["email"]
+    phone               <- map["phone"]
+    firstName           <- map["firstName"]
+    lastName            <- map["lastName"]
+    username            <- map["username"]
+    school              <- map["school"]
+    imageUrl            <- map["image"]
+    bgImage             <- map["bgImage"]
+    description         <- map["description"]
+    deviceToken         <- map["deviceToken"]
+    listings            <- map["listings"]
+    privatePhoneNumber  <- map["privatePhoneNumber"]
   }
   
   public func getName() -> String? {
     return username ?? "\(firstName ?? "") \(lastName ?? "")"
+  }
+  
+  public func getPhoneNumberText() -> String? {
+    if let phone = phone { return String(phone) }
+    else { return nil }
   }
   
   public func set(deviceToken deviceToken: String?) -> Self {
@@ -153,7 +164,10 @@ public class UserModel {
   // a singleton class of a user
   // this class is reserved for the main User that is logged in for
   // all other controllers to access
-  private struct Singleton { private static let _user = Signal<User?>(); private static var user: User? { didSet { Singleton._user => Singleton.user } } }
+  private struct Singleton {
+    private static let _user = Signal<User?>()
+    private static var user: User? { didSet { Singleton._user => Singleton.user } }
+  }
   public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return (Singleton._user, Singleton.user) }
   public class func setSharedUser(user: User?) { if let user = user { Singleton.user = user } }
   

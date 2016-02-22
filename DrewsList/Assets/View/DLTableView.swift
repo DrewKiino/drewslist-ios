@@ -70,6 +70,9 @@ public class DLTableView: UITableView {
     // MARK: Activity Feed
     registerClass(ActivityCell.self, forCellReuseIdentifier: "ActivityCell")
     
+    // MARK: Book Profile
+    registerClass(RatingsCell.self, forCellReuseIdentifier: "RatingsCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .paradiseGray()
@@ -185,6 +188,8 @@ public class PaddingCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     
+    backgroundColor = .paradiseGray()
+    
     showBothTopAndBottomBorders()
   }
   
@@ -214,7 +219,7 @@ public class LabelCell: DLTableViewCell {
   public var label: UILabel?
   public var title: String?
   public var subTitle: String?
-  private var fullTitle: String?
+  public var fullTitle: String?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -234,25 +239,20 @@ public class LabelCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    //label?.anchorAndFillEdge(.Left, xPad: 14, yPad: 4, otherSize: 300)
-    
-    //label?.fillSuperview()
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-    
+    label?.fillSuperview(left: 8, right: 8, top: 0, bottom: 0)
   }
   
   private func setupLabel() {
     label = UILabel()
     label?.textColor = .sexyGray()
     label?.textAlignment = .Left
-    //label?.font = .asapRegular(12)
+    label?.font = .asapRegular(12)
     label?.adjustsFontSizeToFitWidth = true
-    label?.minimumScaleFactor = 0.1
+    label?.minimumScaleFactor = 0.8
+    label?.numberOfLines = 2
     addSubview(label!)
     
     label?.backgroundColor = .whiteColor()
-    
-    
   }
   
   public func setLabelTitle(title: String){
@@ -271,16 +271,8 @@ public class LabelCell: DLTableViewCell {
       mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title.characters.count, length: subTitle.characters.count))
       label?.attributedText = mutstring
     } else {
-      title = ":"
-      subTitle = ""
-      fullTitle = title! + subTitle!
-      var mutstring = NSMutableAttributedString()
-      mutstring = NSMutableAttributedString(string: fullTitle!, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
-      mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
-      label?.attributedText = mutstring
- 
+      label?.attributedText = nil
     }
-  
   }
   
   public func alignTextLeft() {
@@ -298,9 +290,6 @@ public class TitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupTitleTextLabel()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 80)
-    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -309,6 +298,9 @@ public class TitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
+    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public override func setupSelf() {
@@ -319,7 +311,7 @@ public class TitleCell: DLTableViewCell {
   private func setupTitleLabel() {
     titleLabel = UILabel()
     titleLabel?.textColor = .sexyGray()
-    titleLabel?.font = .asapRegular(16)
+    titleLabel?.font = .asapRegular(12)
     titleLabel?.adjustsFontSizeToFitWidth = true
     titleLabel?.minimumScaleFactor = 0.8
     addSubview(titleLabel!)
@@ -328,7 +320,7 @@ public class TitleCell: DLTableViewCell {
   private func setupTitleTextLabel() {
     titleTextLabel = UILabel()
     titleTextLabel?.textColor = .blackColor()
-    titleTextLabel?.font = .asapRegular(16)
+    titleTextLabel?.font = .asapRegular(12)
     titleTextLabel?.adjustsFontSizeToFitWidth = true
     titleTextLabel?.minimumScaleFactor = 0.8
     addSubview(titleTextLabel!)
@@ -347,10 +339,6 @@ public class FullTitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupRightImageView()
-    
-    titleButton?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: screen.width - 48)
-    rightImageView?.anchorToEdge(.Right, padding: 12, width: 12, height: 16)
-    rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -359,20 +347,25 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    titleButton?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
+    rightImageView?.anchorToEdge(.Right, padding: 8, width: 16, height:  16)
+    rightImageView?.dl_setImage(UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate))
   }
   
   public override func setupSelf() {
     super.setupSelf()
+    
     backgroundColor = .whiteColor()
   }
   
   private func setupTitleLabel() {
     titleButton = UIButton()
-    titleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    titleButton?.setTitleColor(.sexyGray(), forState: .Normal)
     titleButton?.contentHorizontalAlignment = .Left
-    titleButton?.titleLabel?.font = .asapRegular(16)
+    titleButton?.titleLabel?.font = .asapRegular(12)
     titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
-    titleButton?.titleLabel?.minimumScaleFactor = 0.5
+    titleButton?.titleLabel?.minimumScaleFactor = 0.8
     titleButton?.addTarget(self, action: "cellPressed:", forControlEvents: .TouchDown)
     titleButton?.addTarget(self, action: "cellPressReleased:", forControlEvents: .TouchUpOutside)
     titleButton?.addTarget(self, action: "cellSelected:", forControlEvents: .TouchUpInside)
@@ -436,16 +429,6 @@ public class SwitchCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupSwitchImageView()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 200)
-    switchImageView?.anchorToEdge(.Right, padding: 8, width: 24, height: 24)
-    switchImageViewReferenceFrame = switchImageView?.frame
-    switchImageView?.frame = CGRectMake(
-      screen.width + 2,
-      switchImageViewReferenceFrame!.origin.y,
-      switchImageViewReferenceFrame!.width,
-      switchImageViewReferenceFrame!.height
-    )
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -455,6 +438,9 @@ public class SwitchCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
+    switchImageView?.anchorToEdge(.Right, padding: 8, width: frame.height - 8, height: frame.height - 8)
+    switchImageViewReferenceFrame = switchImageView?.frame
   }
   
   public override func setupSelf() {
@@ -470,8 +456,8 @@ public class SwitchCell: DLTableViewCell {
   
   private func setupTitleLabel() {
     titleLabel = UILabel()
-    titleLabel?.textColor = .blackColor()
-    titleLabel?.font = .asapRegular(16)
+    titleLabel?.textColor = .sexyGray()
+    titleLabel?.font = .asapRegular(12)
     titleLabel?.adjustsFontSizeToFitWidth = true
     titleLabel?.minimumScaleFactor = 0.8
     addSubview(titleLabel!)
@@ -485,6 +471,10 @@ public class SwitchCell: DLTableViewCell {
   
   public func select() {
     _didSelectCell => toggle.getValue()
+  }
+  
+  public func isOn() -> Bool {
+    return toggle == .On
   }
   
   public func switchOn() {
@@ -504,25 +494,13 @@ public class SwitchCell: DLTableViewCell {
   }
   
   public func animateToggle() {
-    
-    let duration: NSTimeInterval = 0.7
-    let damping: CGFloat = 0.5
-    let velocity: CGFloat = 1.0
 
     switch toggle {
     case .On:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        let frame: CGRect! = self?.switchImageViewReferenceFrame
-        self?.switchImageView?.frame = frame
-      }, completion: { bool in
-      })
+      switchImageView?.tintColor = .juicyOrange()
       break
     case .Off:
-      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-        let frame: CGRect! = self?.switchImageView?.frame
-        self?.switchImageView?.frame = CGRectMake(screen.width + 2, frame.origin.y, frame.width, frame.height)
-      }, completion: { bool in
-      })
+      switchImageView?.tintColor = .sexyGray()
       break
     }
   }
@@ -539,384 +517,19 @@ public class SwitchCell: DLTableViewCell {
 
 public class ImageCell: DLTableViewCell {
   
-  public var view: UIView?
+  public var imageUrl: String?
   
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupView()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    backgroundColor = .whiteColor()
   }
   
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    view?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 8)
-  }
-  
-  private func setupView() {
-    view = UIView()
-    addSubview(view!)
-  }
-  
-}
-
-public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
-  
-  public let label = UILabel()
-  public var collectionView: UICollectionView?
-  
-  public let controller = UserProfileListingController()
-  public var model: UserProfileListingModel { get { return controller.model } }
-  
-  public let _collectionViewFrame = Signal<CGRect>()
-  public var collectionViewFrame: CGRect = CGRectZero { didSet { _collectionViewFrame => collectionViewFrame } }
-  
-  public let _didSelectListing = Signal<String?>()
-  public let _didSelectMatch = Signal<String?>()
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupDataBinding()
-    setupCollectionView()
-    setupLabel()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  private func setupDataBinding() {
-    model._bookList.listen(self) { [weak self] list in
-      self?.collectionView?.reloadData()
-    }
-  }
-  
-  private func setupCollectionView() {
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
-    
-    _collectionViewFrame.listen(self) { [weak layout] frame in
-      layout?.itemSize = CGSizeMake(100, frame.height)
-    }
-    
-    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
-    collectionView?.registerClass(ListCell.self, forCellWithReuseIdentifier: "ListCell")
-    collectionView?.delegate = self
-    collectionView?.dataSource = self
-    collectionView?.backgroundColor = UIColor.whiteColor()
-    collectionView?.showsHorizontalScrollIndicator = false
-    collectionView?.multipleTouchEnabled = true
-    addSubview(collectionView!)
-  }
-  
-  private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(16)
-    label.textColor = UIColor.sexyGray()
-    addSubview(label)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
-    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
-    collectionViewFrame = collectionView!.frame
-  }
-  
-  public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
-    return UIEdgeInsetsMake(0, 8, 0, 8)
-  }
-  
-  public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return model.bookList.count
-  }
-  
-  public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    
-    if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ListCell", forIndexPath: indexPath) as? ListCell {
-      
-      cell.setListing(model.bookList[indexPath.row])
-      
-      // databind the cells
-      cell._didSelectListing.removeListener(self)
-      cell._didSelectListing.listen(self) { [weak self] list_id in
-        self?._didSelectListing.fire(list_id)
-      }
-      
-      // databind the cells
-      cell._didSelectMatch.removeListener(self)
-      cell._didSelectMatch.listen(self) { [weak self] list_id in
-        self?._didSelectMatch.fire(list_id)
-      }
-      
-      return cell
-    }
-    
-    return UICollectionViewCell()
-  }
-}
-
-public class ListCell: UICollectionViewCell {
-  
-  public var listing: Listing?
-  
-  public var bookImageView: UIImageView?
-  public var bookPriceLabel: UILabel?
-  
-  public var matchInfoView: UIView?
-  public var matchUserImageView: UIImageView?
-  public var matchPriceLabel: UILabel?
-  public var matchUserNameLabel: UILabel?
-  
-  public let _didSelectListing = Signal<String?>()
-  public let _didSelectMatch = Signal<String?>()
-  
-  private var matchTapGesture: UITapGestureRecognizer?
-  
-  public override init(frame: CGRect) {
-    super.init(frame: frame)
-    setupBookImageView()
-    setupBookPriceLabel()
-    setupMatchInfoView()
-    setupMatchUserImageView()
-    setupMatchPriceLabel()
-    setupMatchUserNameLabel()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    bookImageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
-    bookPriceLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookImageView!, padding: 4, height: 12)
-    matchInfoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookPriceLabel!, padding: 2, height: 24)
-    matchUserImageView?.anchorInCorner(.TopLeft, xPad: 0, yPad: 0, width: 24, height: 24)
-    matchPriceLabel?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: matchUserImageView!, padding: 2, height: 12)
-    matchUserNameLabel?.alignAndFillWidth(align: .ToTheRightMatchingTop, relativeTo: matchUserImageView!, padding: 2, height: 12)
-    
-    bookImageView?.layer.shadowPath = UIBezierPath(roundedRect: bookImageView!.bounds, cornerRadius: 0).CGPath
-  }
-  
-  private func setupBookImageView() {
-    bookImageView = UIImageView()
-    bookImageView?.userInteractionEnabled = true
-    bookImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedListing"))
-    
-    bookImageView?.layer.shadowColor = UIColor.clearColor().CGColor
-    bookImageView?.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-    bookImageView?.layer.shadowOpacity = 1.0
-    bookImageView?.layer.shadowRadius = 2
-    bookImageView?.layer.masksToBounds = true
-    bookImageView?.clipsToBounds = false
-    
-    addSubview(bookImageView!)
-  }
-  
-  private func setupBookPriceLabel() {
-    bookPriceLabel = UILabel()
-    bookPriceLabel?.textColor = UIColor.moneyGreen()
-    bookPriceLabel?.font = UIFont.asapBold(12)
-    bookPriceLabel?.adjustsFontSizeToFitWidth = true
-    bookPriceLabel?.minimumScaleFactor = 0.1
-    addSubview(bookPriceLabel!)
-  }
-  
-  private func setupMatchInfoView() {
-    matchInfoView = UIView()
-    matchInfoView?.userInteractionEnabled = true
-    matchInfoView?.layer.cornerRadius = 12
-    matchInfoView?.layer.masksToBounds = true
-    addSubview(matchInfoView!)
-  }
-  
-  private func setupMatchUserImageView() {
-    matchUserImageView = UIImageView()
-    matchInfoView?.addSubview(matchUserImageView!)
-  }
-  
-  private func setupMatchPriceLabel() {
-    matchPriceLabel = UILabel()
-    matchPriceLabel?.textColor = UIColor.moneyGreen()
-    matchPriceLabel?.font = UIFont.asapBold(12)
-    matchPriceLabel?.adjustsFontSizeToFitWidth = true
-    matchPriceLabel?.minimumScaleFactor = 0.1
-    matchInfoView?.addSubview(matchPriceLabel!)
-  }
-  
-  private func setupMatchUserNameLabel() {
-    matchUserNameLabel = UILabel()
-    matchUserNameLabel?.textColor = UIColor.blackColor()
-    matchUserNameLabel?.font = UIFont.asapRegular(12)
-    matchUserNameLabel?.adjustsFontSizeToFitWidth = true
-    matchUserNameLabel?.minimumScaleFactor = 0.1
-    matchInfoView?.addSubview(matchUserNameLabel!)
-  }
-  
-  public func selectedMatch() {
-    _didSelectMatch => listing?.highestLister?._id
-  }
-  
-  public func selectedListing() {
-    _didSelectListing => listing?._id
-  }
-  
-  public func setListing(listing: Listing?) {
-    
-    self.listing = listing
-    
-    _setListing(listing)
-  }
-  
-  private func _setListing(listing: Listing?) {
-    
-    setBook(listing?.book)
-    setHighestLister(listing?.highestLister)
-    
-    // set user price label
-    bookPriceLabel?.text = nil
-    if let price = listing?.price { bookPriceLabel?.text = "$\(price)" }
-    
-    // set highest listing info
-    matchUserImageView?.image = nil
-    matchUserImageView?.alpha = 0.0
-    
-    // set lister price label
-    bookPriceLabel?.text = nil
-    
-    Async.background { [weak listing] in
-      
-      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: $\(listing?.price ?? "")")
-      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 6))
-      coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 6))
-      
-      Async.main { [weak self] in
-        
-        self?.bookPriceLabel?.attributedText = coloredString
-        
-        coloredString = nil
-      }
-    }
-  }
-  
-  public func setHighestLister(listing: Listing?) {
-    
-    // refresh match info view
-    matchInfoView?.backgroundColor = .clearColor()
-    
-    // refresh lister labels
-    matchPriceLabel?.text = nil
-    matchUserNameLabel?.text = nil
-    
-    if matchTapGesture != nil {
-      matchInfoView?.removeGestureRecognizer(matchTapGesture!)
-      matchTapGesture = nil
-    }
-    
-    // Highest Lister UI Setup
-    if let highestLister = listing {
-      
-      // if highest lister exists, add tap gesture
-      matchTapGesture = UITapGestureRecognizer(target: self, action: "selectedMatch")
-      matchInfoView?.addGestureRecognizer(matchTapGesture!)
-      
-      matchInfoView?.backgroundColor = .sweetBeige()
-      
-      let duration: NSTimeInterval = 0.2
-      
-      if let image = highestLister.user?.imageUrl {
-        
-        matchUserImageView?.dl_setImageFromUrl(image, maskWithEllipse: true, animated: true)
-
-      } else {
-        
-        // image processing done in background
-        Async.background { [weak self] in
-          
-          var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.matchUserImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
-          
-          Async.main { [weak self] in
-            
-            self?.matchUserImageView?.image = toucan?.image
-            
-            UIView.animateWithDuration(duration) { [weak self] in
-              self?.matchUserImageView?.alpha = 1.0
-            }
-            
-            toucan = nil
-          }
-        }
-      }
-      
-      Async.background { [weak highestLister] in
-        
-        //      let priceMatch: String? = listing?.price != nil ?
-        var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Best \(highestLister?.getListTypeText2() ?? "Match"): $\(highestLister?.price ?? "")")
-        coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 11))
-        coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 11))
-        
-        Async.main { [weak self] in
-          
-          self?.matchPriceLabel?.attributedText = coloredString
-          
-          coloredString = nil
-        }
-      }
-      
-      Async.background { [weak highestLister] in
-        
-        //      let priceMatch: String? = listing?.price != nil ?
-        var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Best \(highestLister?.getListTypeText2() ?? "Match"): $\(highestLister?.price ?? "")")
-        coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 11))
-        coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 11))
-        
-        Async.main { [weak self] in
-          
-          self?.matchUserNameLabel?.text = highestLister?.user?.getName()
-          
-          coloredString = nil
-        }
-      }
-    }
-  }
-  
-  public func setBook(book: Book?) {
-    
-    bookImageView?.image = nil
-    bookImageView?.alpha = 0.0
-    bookImageView?.layer.shadowColor = UIColor.clearColor().CGColor
-    
-    let duration: NSTimeInterval = 0.2
-    
-    // MARK: Images
-    if book?.hasImageUrl() == true {
-      
-      bookImageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
-      
-    } else {
-      
-      Async.background { [weak self] in
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "book-placeholder")).resize(self?.bookImageView?.frame.size)
-        
-        Async.main { [weak self] in
-          
-          self?.bookImageView?.image = toucan?.image
-          
-          if self?.bookImageView?.image != nil { self?.bookImageView?.layer.shadowColor = UIColor.darkGrayColor().CGColor }
-          
-          UIView.animateWithDuration(duration) { [weak self] in
-            self?.bookImageView?.alpha = 1.0
-          }
-          
-          toucan = nil
-        }
-      }
-    }
+    imageView?.anchorInCenter(width: 100, height: 150)
+    imageView?.dl_setImageFromUrl(imageUrl)
   }
 }
 

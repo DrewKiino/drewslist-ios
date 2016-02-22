@@ -49,8 +49,8 @@ public class Book: Mappable {
   public let _pageCount = Signal<Int?>()
   public var pageCount: Int? { didSet { _pageCount => pageCount } }
   
-  public let _categories = Signal<String?>()
-  public var categories: String? { didSet { _categories => categories } }
+  public let _categories = Signal<[Category]>()
+  public var categories: [Category] = [] { didSet { _categories => categories } }
   
   public let _averageRating = Signal<Double?>()
   public var averageRating: Double? { didSet { _averageRating => averageRating } }
@@ -151,6 +151,18 @@ public class Author: Mappable {
   
   public func mapping(map: Map) {
     name            <- map["name"]
+  }
+}
+
+public class Category: Mappable {
+  
+  public let _category = Signal<String?>()
+  public var category: String? { didSet { _category => category } }
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    category    <- map["category"]
   }
 }
 

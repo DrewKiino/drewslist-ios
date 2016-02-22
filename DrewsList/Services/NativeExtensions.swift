@@ -66,7 +66,7 @@ extension UIColor {
   // NOTE: TableView Padding Color
   
   public class func paradiseGray() -> UIColor {
-    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 0.5)
+    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
   }
   
   public class func tableViewNativeSeparatorColor() -> UIColor {
@@ -78,6 +78,11 @@ extension UIColor {
     return UIColor(red: 15/255, green: 135/255, blue: 255/255, alpha: 1.0)
   }
 
+}
+
+extension Int {
+  
+  public func callNumber() { if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) } }
 }
 
 extension UIFont {
@@ -441,13 +446,13 @@ extension UIImageView {
     }
   }
   
-  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode? = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
     if let url = url, let nsurl = NSURL(string: url) {
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
         Async.background { [weak self] in
           
-          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: .Crop)
+          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: fitMode ?? .Crop)
           
           if maskWithEllipse == true { toucan?.maskWithEllipse() }
           

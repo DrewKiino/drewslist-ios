@@ -26,6 +26,7 @@ public class LoginController {
   private let fbsdkController = FBSDKController()
   
   public let shouldDismissView = Signal<Bool>()
+  public let shouldPresentPhoneInputView = Signal<Bool>()
   
   private var refrainTimer: NSTimer?
   
@@ -59,6 +60,7 @@ public class LoginController {
     // check if user is already logged in
     if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
       
+      // set the user's model
       model.user = user
       
       getUserFromServer()
@@ -167,7 +169,11 @@ public class LoginController {
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         
-        self?.shouldDismissView.fire(true)
+        if self?.model.user?.phone == nil {
+          self?.shouldPresentPhoneInputView.fire(true)
+        } else {
+          self?.shouldDismissView.fire(true)
+        }
       }
       
       // create a throttler
@@ -178,6 +184,7 @@ public class LoginController {
     }
     
     let password: String = model.password ?? ""
+    let phone: String = model.phone ?? ""
     // NOTE: password is not given by facebook
     // facebook attributes
     let facebook_id: String = model.user?.facebook_id ?? ""
@@ -210,6 +217,7 @@ public class LoginController {
     Sockets.sharedInstance().emit("authenticateUser", [
       "email": email,
       "password": password,
+      "phone" : phone,
       // NOTE: password is not given by facebook
       // facebook attributes
       "facebook_id": facebook_id,
@@ -304,6 +312,17 @@ public class LoginController {
   // this one deletes all prior users
   // we should only have one user in database, and that should be the current user
   public func deleteRealmUser(){ try! Realm().write { try! Realm().deleteAll() } }
+  
+  public class func logOut() {
+    // deletes the current user, then will log user out.
+    LoginController.sharedInstance().deleteRealmUser()
+    // log out of facebook if they are logged in
+    FBSDKController.logout()
+    // since the current user does not exist anymore
+    // we ask the tab view to check any current user, since we have no current user
+    // it will present the login screen
+    LoginController.sharedInstance().checkIfUserIsLoggedIn()
+  }
 }
 
 

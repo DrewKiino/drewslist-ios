@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import OpenInGoogleMaps
+import Signals
 
 
 
@@ -22,18 +23,24 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
   // MARK: Model
   private let model = LocationModel()
   
-  // MARK: Singleton instances
-  
-  private let permissionController = PermissionsController.sharedInstance()
-  
   // MARK: class variables
   
   private var locationManager: CLLocationManager?
   
+  public let _didUpdateAuthorizationStatus = Signal<Bool>()
+  
   public override init() {
     super.init()
+    setupDataBinding()
     setupLocationManager()
     setupMapsLib()
+  }
+  
+  private func setupDataBinding() {
+    model._authorizationStatus.removeListener(self)
+    model._authorizationStatus.listen(self) { [weak self] status in
+      self?._didUpdateAuthorizationStatus.fire(self?.isRegisteredForLocationUpdates() ?? false)
+    }
   }
   
   private func setupLocationManager() {
@@ -59,6 +66,16 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
     }
   }
   
+  public func isRegisteredForLocationUpdates() -> Bool {
+    switch model.authorizationStatus {
+    case .AuthorizedWhenInUse:
+      return true
+      break
+    default:
+      return false
+    }
+  }
+  
   public func routeToLocation(location: CLLocation?, host: String? = nil, callback: (() -> Void)) {
     if let location = location {
       getCurrentLocation() { userLocation in
@@ -76,15 +93,19 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         callback()
       }
       if model.authorizationStatus == .Denied {
-        let alertController = UIAlertController(title: "Permissions", message: "We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!", preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
-          UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
-        })
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-        })
-        UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+        showPermissions()
       }
     }
+  }
+  
+  public func showPermissions() {
+    let alertController = UIAlertController(title: "Permissions", message: "We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+      UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+      })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+      })
+    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
   }
   
   public func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {

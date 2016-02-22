@@ -38,17 +38,13 @@ public class ListViewContainer: UIViewController {
   private func setupSelf() {
     
     view.backgroundColor = .whiteColor()
-    
-    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
-    item.setTitleTextAttributes([
-      NSFontAttributeName: UIFont.asapRegular(16),
-      NSForegroundColorAttributeName: UIColor.whiteColor()
-    ], forState: .Normal)
-
-    navigationItem.rightBarButtonItem = item
   }
   
   private func setupListView() {
+    listView?._callButtonPressed.removeAllListeners()
+    listView?._callButtonPressed.listen(self) { [weak self] bool in
+      self?.listView?.model.user?.phone?.callNumber()
+    }
     listView?._chatButtonPressed.removeAllListeners()
     listView?._chatButtonPressed.listen(self) { [weak self] bool in
       self?.readRealmUser()
@@ -64,20 +60,46 @@ public class ListViewContainer: UIViewController {
     listView?._bookProfilePressed.listen(self) { [weak self] book in
       self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
     }
+    listView?._userProfilePressed.removeAllListeners()
+    listView?._userProfilePressed.listen(self) { [weak self] user in
+      self?.navigationController?.pushViewController(UserProfileView().setUser(user), animated: true)
+    }
+    listView?.model._listing.removeAllListeners()
+    listView?.model._listing.listen(self) { [weak self] listing in
+      if listing?.user?._id == UserModel.sharedUser().user?._id {
+        self?.showEditButton()
+      } else {
+        self?.hideEditButton()
+      }
+    }
+    
     view.addSubview(listView!)
+  }
+  
+  public func showEditButton() {
+    hideEditButton()
+    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
+    item.setTitleTextAttributes([
+      NSFontAttributeName: UIFont.asapRegular(16),
+      NSForegroundColorAttributeName: UIColor.whiteColor()
+    ], forState: .Normal)
+    
+    navigationItem.rightBarButtonItem = item
+  }
+  
+  public func hideEditButton() {
+    navigationItem.rightBarButtonItem = nil
   }
   
   public func setListing(listing: Listing?) -> Self {
     listView = ListView()
     listView?.setListing(listing)
-    title = "View Listing"
     return self
   }
   
   public func setList_id(list_id: String?) -> Self {
     listView = ListView()
     listView?.getListingFromServer(list_id)
-    title = "View Listing"
     return self
   }
   
@@ -86,7 +108,7 @@ public class ListViewContainer: UIViewController {
     title = "Your Listing"
     return self
   }
-  
+ 
   public func editButtonPressed() {
     navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
   }
@@ -157,14 +179,17 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-      if bool == true { self?.showLoadingScreen(-64, bgOffset: nil) }
-      else if bool == false { self?.hideLoadingScreen() }
+      if bool == true {
+        self?.showActivityView()
+        self?.tableView?.hidden = true
+      }
     }
     
     model._serverCallbackFromFindListing.removeAllListeners()
     model._serverCallbackFromFindListing.listen(self) { [weak self] bool in
       if bool == true { self?.tableView?.reloadData() }
-      self?.hideLoadingScreen()
+      self?.dismissActivityView()
+      self?.tableView?.hidden = false
     }
   }
   
@@ -226,6 +251,10 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 //        cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
+        cell._callButtonPressed.removeAllListeners()
+        cell._callButtonPressed.listen(self) { [weak self] bool in
+          self?._callButtonPressed.fire(bool)
+        }
         cell._chatButtonPressed.removeAllListeners()
         cell._chatButtonPressed.listen(self) { [weak self] bool in
           self?._chatButtonPressed.fire(bool)
@@ -434,9 +463,9 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     priceLabel?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 200, height: 12)
     
-    callButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
+    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
     
-    chatButton?.align(.ToTheLeftCentered, relativeTo: callButton!, padding: 24, width: 24, height: 24)
+    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 24, height: 24)
     
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     

@@ -8,6 +8,8 @@
 
 import Foundation
 import PermissionScope
+import UIKit
+import Signals
 
 public class PushController {
   
@@ -17,55 +19,35 @@ public class PushController {
   
   public class func sharedInstance() -> PushController { return Singleton.pushController }
   
-  public let model = PushModel()
+  private let model = PushModel()
   
-  private let permissionScope = PermissionScope()
+  public let _didUpdateAuthorizationStatus = Signal<Bool>()
   
   public init() {
-    setupPermissionScope()
+    model._authorizationStatus.removeListener(self)
+    model._authorizationStatus.listen(self) { [weak self] bool in
+      self?._didUpdateAuthorizationStatus.fire(bool)
+    }
   }
   
-  private func setupPermissionScope() {
-    
-    permissionScope.headerLabel.text = "Hey cool person!"
-    permissionScope.bodyLabel.text = "Let us enhance your app experience with live updates."
-    
-    // Set up permissions
-    permissionScope.addPermission(NotificationsPermission(notificationCategories: nil), message: "Thanks in advance.")
+  public func isRegisteredForRemoteNotifications() -> Bool {
+    model.authorizationStatus = UIApplication.sharedApplication().isRegisteredForRemoteNotifications()
+    return model.authorizationStatus
   }
   
-  public func removeNotificationsAllowed() -> Bool {
-    
-//    return permissionScope.statusNotifications()
-    return true
+  public func registerForRemoteNotifications() {
+    // MARK: remote notification register fixtures
+    UIApplication.sharedApplication().registerForRemoteNotifications()
   }
   
   public func showPermissions() {
-    
-    // manual push perm
-    //    let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge], categories: nil)
-    //    application.registerUserNotificationSettings(settings)
-    //    application.registerForRemoteNotifications()
-    
-//    switch PermissionScope().statusNotifications() {
-//    case .Unknown:
-      // Show dialog with callbacks
-//      pscope.show({ finished, results in
-//        for result in results {
-//          switch result.status {
-//          case .Authorized:
-//            UIApplication.sharedApplication().registerForRemoteNotifications()
-//            break
-//          default: break
-//          }
-//        }
-//        }, cancelled: { (results) -> Void in
-//      })
-//    case .Unauthorized, .Disabled: return
-//    case .Authorized:
-//      SweetAlert().showAlert("Already authorized!", subTitle: nil, style: .Success, buttonTitle: "Ok", buttonColor: .soothingBlue())
-//      return
-//    }
+    let alertController = UIAlertController(title: "Permissions", message: "We send you push notifications to notify you with the latest app updates including chats, listings, etc!", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+      if let nsurl = NSURL(string: UIApplicationOpenSettingsURLString) { UIApplication.sharedApplication().openURL(nsurl) }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
   }
 }
 

@@ -145,6 +145,10 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     scrollView?.addSubview(leftPage!)
     
     middlePage = ListFeedViewContainer()
+    middlePage?._callButtonPressed.removeAllListeners()
+    middlePage?._callButtonPressed.listen(self) { [weak self] listing in
+      listing?.user?.phone?.callNumber()
+    }
     middlePage?._chatButtonPressed.removeAllListeners()
     middlePage?._chatButtonPressed.listen(self) { [weak self] listing in
       self?.controller.readRealmUser()
@@ -156,7 +160,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     }
     middlePage?._userImagePressed.removeAllListeners()
     middlePage?._userImagePressed.listen(self) { [weak self] user in
-      self?.pushViewController(UserProfileView().setUser(user, isOtherUser: true), animated: true)
+      self?.pushViewController(UserProfileView().setUser(user), animated: true)
 
     }
     scrollView?.addSubview(middlePage!)
