@@ -11,6 +11,8 @@ import CoreLocation
 import OpenInGoogleMaps
 import Signals
 
+
+
 public class LocationController: NSObject, CLLocationManagerDelegate {
   
   // MARK: Singleton instance

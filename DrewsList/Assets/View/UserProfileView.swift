@@ -135,6 +135,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // MARK: UI methods
     view.showActivityView(-64)
+    
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -330,7 +331,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
         
         cell.label.text =  "I'm Selling"
-        
+        print(model.user?.listings[0].notes)
         // set data
         cell.controller.model.bookList = listings
         
@@ -653,7 +654,7 @@ public class ListCell: UICollectionViewCell {
     
     Async.background { [weak listing] in
       
-      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: $\(listing?.price ?? "")")
+      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: $\(listing?.getPriceText() ?? "")")
       coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 6))
       coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 6))
       
@@ -674,7 +675,7 @@ public class ListCell: UICollectionViewCell {
       // set highest matcher's user imagee
       matchUserImageView?.dl_setImageFromUrl(listing?.highestLister?.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
       // set highest matcher's list price
-      matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") $\(listing?.highestLister?.price ?? "")"
+      matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") $\(listing?.highestLister?.getPriceText() ?? "")"
       // resize the container view
       containerView?.removeConstraints(containerView!.constraints)
       containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)

@@ -35,6 +35,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     setupDataBinding()
     setupHeaderView()
     setupTableView()
+    setupDefaultValues()
     
     headerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
     headerTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
@@ -108,6 +109,14 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     tableView?.delegate = self
     tableView?.dataSource = self
     view.addSubview(tableView!)
+  }
+  
+  private func setupDefaultValues(){
+    self.model.listing?.price = 1
+    self.model.listing?.listType = "buying"
+    self.model.listing?.cover = "hardcover"
+    self.model.listing?.condition = "2"
+    self.model.listing?.notes = ""
   }
   
   // MARK: TableView Delegates
@@ -217,15 +226,12 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         cell._didSelectCell.listen(self) { [weak self] toggle in
           switch toggle {
           case .left:
-            print("1")
             self?.model.listing?.condition = "1"
             return
           case .middle:
-            print("2")
             self?.model.listing?.condition = "2"
             return
           case .right:
-            print("3")
             self?.model.listing?.condition = "3"
             return
           }
@@ -259,7 +265,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         }
         cell._inputTextFieldString.removeAllListeners()
         cell._inputTextFieldString.listen(self) { [weak self] text in
-          self?.model.listing?.price = text
+          if let text = text { self?.model.listing?.price = Double(text) }
         }
         return cell
       }
@@ -285,7 +291,9 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.buttonLabel?.text = "Upload Listing"
         cell._onPressed.removeAllListeners()
-        cell._onPressed.listen(self) { [weak self] bool in self?.controller.uploadListingToServer() }
+        cell._onPressed.listen(self) { [weak self] bool in
+          self?.controller.uploadListingToServer()
+        }
         return cell
       }
       break

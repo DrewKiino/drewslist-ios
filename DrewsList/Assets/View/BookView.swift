@@ -31,6 +31,8 @@ public class BookView: UIView {
   public var desc: UILabel?
   private var activityView: UIActivityIndicatorView?
   
+  public var book: Book?
+  
   public init() {
     super.init(frame: CGRectZero)
     
@@ -70,6 +72,8 @@ public class BookView: UIView {
     desc?.alignAndFillWidth(align: .UnderCentered, relativeTo: isbn!, padding: 0, height: 48)
 
     layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0).CGPath
+    
+    updateViews()
   }
   
   private func setupSelf() {
@@ -156,30 +160,19 @@ public class BookView: UIView {
   
   private func setupDataBinding() {
     controller.get_Book().listen(self) { [weak self] book in
-      self?._setBook(book)
+      self?.book = book
+      self?.updateViews()
     }
   }
   
-  private func _setBook(book: Book?) {
+  private func updateViews() {
     
-    // reset image view if image url url is different
-    // and set alpha to 0 for fade in animation
-    if imageViewUrl != book?.getImageUrl() {
-      imageView?.alpha = 0.0
-      imageView?.image = nil
-    }
-    
-    if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
-      
-      imageViewUrl = book?.getImageUrl()
-      
-      imageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
-    }
+    imageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
     
     Async.background { [weak self] in
     
       // MARK: Attributes
-      guard let book = book else { return }
+      guard let book = self?.book else { return }
       let title = book.title
       let authors = (book.authors.map { $0.name != nil ? ($0.name!.componentsSeparatedByString(",") as NSArray).componentsJoinedByString(", ") : "" } as NSArray).componentsJoinedByString(", ")
       let edition = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""

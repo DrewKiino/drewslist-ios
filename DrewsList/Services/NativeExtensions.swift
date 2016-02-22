@@ -451,7 +451,6 @@ extension UIImageView {
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
         Async.background { [weak self] in
-          
           var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: fitMode ?? .Crop)
           
           if maskWithEllipse == true { toucan?.maskWithEllipse() }
@@ -463,6 +462,7 @@ extension UIImageView {
             if let block = block {
               block(image: toucan?.image)
             } else {
+             
               self?.image = toucan?.image
             }
             
@@ -476,7 +476,9 @@ extension UIImageView {
           }
         }
       }
-    } else { dl_setImage(placeholder) }
+    } else {
+      dl_setImage(placeholder)
+    }
 //    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
 //      .CacheMemoryOnly,
 //      .ContinueInBackground,
@@ -486,6 +488,7 @@ extension UIImageView {
 //    ]) { image, error, cache, url in
 //      completionHandler?(image, error, cache, url)
 //    }
+    
   }
   
   public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {

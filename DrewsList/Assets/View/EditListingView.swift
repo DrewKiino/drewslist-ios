@@ -263,7 +263,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
         }
         cell._inputTextFieldString.removeAllListeners()
         cell._inputTextFieldString.listen(self) { [weak self] text in
-          self?.model.listing?.price = text
+          if let text = text { self?.model.listing?.price = Double(text) }
         }
         return cell
       }
