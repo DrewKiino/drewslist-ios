@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="splash-icon" translatesAutoresizingMaskIntoConstraints="NO" id="8nO-Bn-UpB">
-                                <rect key="frame" x="184" y="286" width="250" height="27"/>
+                                <rect key="frame" x="175" y="285" width="250" height="27"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="Ohp-J9-3Qd"/>
                                     <constraint firstAttribute="height" constant="27" id="dew-2v-Cau"/>
@@ -27,8 +27,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="202-tz-9Dg"/>
-                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="VSV-by-Pun"/>
+                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="HOA-Zh-IFf"/>
+                            <constraint firstItem="8nO-Bn-UpB" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="285" id="nku-VM-ozU"/>
                         </constraints>
                     </view>
                 </viewController>
