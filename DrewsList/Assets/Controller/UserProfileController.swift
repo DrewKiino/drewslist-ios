@@ -29,7 +29,7 @@ public class UserProfileController {
   }
   
   public func viewDidAppear() {
-    if isOtherUser == false { readRealmUser() }
+    if isOtherUser == false { model.user = UserModel.sharedUser().user }
     getUserFromServer()
   }
   
