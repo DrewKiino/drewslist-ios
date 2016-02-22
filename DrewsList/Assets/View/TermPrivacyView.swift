@@ -16,47 +16,75 @@ import SwiftyButton
 
 
 //UnderConstruction!
-class TermPrivacyView: UIViewController, UITableViewDelegate, UITextFieldDelegate {
-  
- 
+public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
   
   //NavView
-  private var TableView: DLTableView?
-  private var HeaderView: UIView?
-  private var BackButton: UIButton?
-  private var HeaderTitle: UILabel?
-  private var TermPriLabel: UILabel!
-  var myLabel:UILabel = UILabel(frame: CGRectMake(7, 5, 370, 600))
- 
-
+  private var tableView: DLTableView?
+//  private var HeaderView: UIView?
+//  private var BackButton: UIButton?
+//  private var HeaderTitle: UILabel?
+//  private var TermPriLabel: UILabel!
+//  var myLabel:UILabel = UILabel(frame: CGRectMake(7, 5, 370, 600))
   
+  private let TERMS_AND_PRIVACY = "Drew's List Privacy Policy (updated January 1st, 2016).\n\nThis policy details This policy details how data about you is used when you access our mobile app and services (together, DL) or interact with us. If we update it, we will revise the date, place notices on DL if changes are material, and/or obtain your consent as required by law.\n\n1. Protecting your Privacy: We take precautions to prevent unauthorized access to or misuse of data about you.We do not employ tracking devices for marketing purposes.Please review privacy policies of any third party sites linked to from DL.\n\n2. Data we use to provide/improve our services and/or combat fraud/abuse: Data you post on or send via DL, and/or send us directly or via other sites credit card data, which is transmitted to payment processors via a security protocol (e.g. SSL). data you submit or provide (e.g. name, address, email,phone, fax, photos, tax ID).data collected via cookies (e.g. search data and  favorites lists). data about your device(s) (e.g. screen size, DOM local storage, plugins).data from 3rd parties (e.g. phone type, geo-location via IP address).Data provided by Facebook integration (e.g. General Information, email).\n\n3. Data we store: We retain data as needed for our business purposes and/or as required by law. We make good faith efforts to store data securely, but can make no guarantees. You may access and update certain data about you via your account login."
+ 
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    SetUpSelf()
+    setUpSelf()
+    setupTableView()
     
-    HeaderView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
-    HeaderTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
-    BackButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
-    TableView?.alignAndFill(align: .UnderCentered, relativeTo: HeaderView!, padding: 0)
+//    HeaderView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
+//    HeaderTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
+//    BackButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
+//    TableView?.alignAndFill(align: .UnderCentered, relativeTo: HeaderView!, padding: 0)
     
     
     
-    myLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
-    myLabel.numberOfLines = 0                      //'0' means infinite number of lines
-    myLabel.textColor = UIColor.sexyGray()
-    myLabel.text = "Drew's List Privacy Policy (updated January 1st, 2016).This policy details This policy details how data about you is used when you access our mobile app and services (together, DL) or interact with us. If we update it, we will revise the date, place notices on DL if changes are material, and/or obtain your consent as required by law. 1. Protecting your Privacy: We take precautions to prevent unauthorized access to or misuse of data about you.We do not employ tracking devices for marketing purposes.Please review privacy policies of any third party sites linked to from DL. 2. Data we use to provide/improve our services and/or combat fraud/abuse: Data you post on or send via DL, and/or send us directly or via other sites credit card data, which is transmitted to payment processors via a security protocol (e.g. SSL). data you submit or provide (e.g. name, address, email,phone, fax, photos, tax ID).data collected via cookies (e.g. search data and  favorites lists). data about your device(s) (e.g. screen size, DOM local storage, plugins).data from 3rd parties (e.g. phone type, geo-location via IP address).Data provided by Facebook integration (e.g. General Information, email). 3. Data we store: We retain data as needed for our business purposes and/or as required by law. We make good faith efforts to store data securely, but can make no guarantees. You may access and update certain data about you via your account login."
-
-
-    self.view.addSubview(myLabel)
+//    myLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
+//    myLabel.numberOfLines = 0                      //'0' means infinite number of lines
+//    myLabel.textColor = UIColor.sexyGray()
+//    myLabel.text =
+//
+//
+//    self.view.addSubview(myLabel)
     
+    tableView?.fillSuperview()
   }
   
+  // MARK: DLTableView delegates  
   
-  private func SetUpSelf() {
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return TERMS_AND_PRIVACY.height(screen.width)
+  }
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return 1
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
+      cell.inputTextView?.text = TERMS_AND_PRIVACY
+      cell.inputTextView?.userInteractionEnabled = false
+      return cell
+    }
+    
+    return DLTableViewCell()
+  }
+  
+  private func setUpSelf() {
     view.backgroundColor = .whiteColor()
     title = "Terms & Privacy"
-   
+  }
+  
+  private func setupTableView() {
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
+    view.addSubview(tableView!)
   }
   
 }
+
+

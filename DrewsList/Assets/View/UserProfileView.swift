@@ -317,6 +317,19 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    switch indexPath.row {
+    case 0:
+      if (model.user?.listings.filter { $0.listType == "selling" })?.first == nil {
+        return 0
+      }
+      break
+    case 1:
+      if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
+        return 0
+      }
+      break
+    default: break
+    }
     return 235
   }
   
