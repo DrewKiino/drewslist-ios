@@ -141,7 +141,6 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   
   public func choose() {
     searchBarTextField?.resignFirstResponder()
-    controller.saveData()
     presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
   
