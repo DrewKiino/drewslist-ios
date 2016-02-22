@@ -64,9 +64,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // connect to server
     Sockets.sharedInstance().connect()
-  
-    // MARK: remote notification register fixtures
-    UIApplication.sharedApplication().registerForRemoteNotifications()
     
     // MARK: User Auth
     loginController.checkIfUserIsLoggedIn()
@@ -105,8 +102,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // connect to server when app enters foreground
     Sockets.sharedInstance().connect()
+    
+    _applicationWillEnterForeground => true
   }
-
+  
   func applicationDidBecomeActive(application: UIApplication) {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     FBSDKAppEvents.activateApp()
@@ -147,7 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
     var tabView: TabView? = TabView()
     
-//    var tabView: SignUpView? = SignUpView()
+//    var tabView: AccountSettingsView? = AccountSettingsView()
 //    var tabView: LoginView? = LoginView()
     
     /*

@@ -134,6 +134,10 @@ public class TabView: UITabBarController {
     // nullify badge count whenver user selects the tab
     item.badgeValue = nil
   }
+  
+  public class func currentView() -> UIViewController? {
+    return UIApplication.sharedApplication().keyWindow?.rootViewController
+  }
 }
 
 

@@ -60,7 +60,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     setupSchoolTextField()
     setupSignupButton()
     setupOptions()
-    resetSchoolInput()
     
     activityView?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 24, height: 24)
     
@@ -95,7 +94,8 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     super.viewDidAppear(animated)
     
     resignFirstResponder()
-    setSchool()
+    
+    controller.viewDidAppear()
     
     if drewslistLogo?.image == nil {
       Async.background { [weak self] in
@@ -167,7 +167,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     }
     model._isValidForm.removeAllListeners()
     model._isValidForm.listen(self) { [weak self] bool in
-      log.debug(bool)
       if bool == true { self?.controller.createNewUserInServer() }
     }
     model._serverError.removeAllListeners()
@@ -414,14 +413,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     super.resignFirstResponder()
     schoolTextField?.resignFirstResponder()
     return true
-  }
-  
-  public func resetSchoolInput() {
-    controller.resetSchoolInput()
-  }
-  
-  public func setSchool() {
-    controller.setSchool()
   }
   
   public func hideUI() {
