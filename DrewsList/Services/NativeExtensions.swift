@@ -82,7 +82,30 @@ extension UIColor {
 
 extension Int {
   
-  public func callNumber() { if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) } }
+  public func toFormattedPhoneNumberText() -> NSMutableString {
+    let string: NSMutableString = NSMutableString(string: String(self))
+    if string.length == 11 {
+      string.insertString("-", atIndex: 0)
+      string.insertString("-", atIndex: 4)
+      string.insertString("-", atIndex: 8)
+    } else if string.length == 10 {
+      string.insertString("-", atIndex: 3)
+      string.insertString("-", atIndex: 7)
+    } else if string.length == 7 {
+      string.insertString("-", atIndex: 3)
+    }
+    return string
+  }
+  
+  public func callNumber() {
+    let alertController = UIAlertController(title: self.toFormattedPhoneNumberText() as String, message: "Would you like to call this number?", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
+      if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
+  }
 }
 
 extension UIFont {

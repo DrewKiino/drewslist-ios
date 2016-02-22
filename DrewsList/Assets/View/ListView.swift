@@ -436,6 +436,8 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private var notesTextViewContainer: UIView?
   private var notesTextView: UITextView?
   
+  public var listing: Listing?
+  
   private var chatButton: UIButton?
   private var callButton: UIButton?
   
@@ -525,12 +527,14 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   public func setListing(listing: Listing?) {
     
+    self.listing = listing
+    
     notesTextViewContainer?.hidden = true
     
     let isUserListing = listing?.user?._id == UserController.sharedUser().user?._id
     
     chatButton?.alpha = isUserListing ? 0.0 : 1.0
-    callButton?.alpha = isUserListing ? 0.0 : listing?.user?.phone != nil ? 1.0 : 0.0
+    callButton?.alpha = isUserListing ? 0.0 : listing?.user?.phone != nil ? listing?.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
     
     Async.background { [weak self, weak listing] in
       
@@ -632,11 +636,13 @@ public class ListerAttributesViewCell: DLTableViewCell {
   }
   
   public func chatButtonPressed() {
-    _chatButtonPressed => true
+//    _chatButtonPressed => true
+    if let listing = listing { TabView.currentView()?.pushViewController(ChatView().setListing(listing).setUsers(UserModel.sharedUser().user, friend: listing.user), animated: true) }
   }
   
   public func callButtonPressed() {
-    _callButtonPressed => true
+//    _callButtonPressed => true
+    listing?.user?.phone?.callNumber()
   }
 }
 

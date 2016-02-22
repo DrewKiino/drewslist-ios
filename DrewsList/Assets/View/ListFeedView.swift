@@ -10,6 +10,20 @@ import Foundation
 import UIKit
 import Signals
 
+public class ListFeedNavigationView: DLNavigationController {
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setRootViewTitle("Community")
+    setupSelf()
+  }
+  
+  private func setupSelf() {
+    rootView?.view = ListFeedViewContainer()
+  }
+}
+
 public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   private var scrollView: UIScrollView?

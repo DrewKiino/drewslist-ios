@@ -17,17 +17,19 @@ public class TabView: UITabBarController {
   private var model: TabModel { get { return controller.model } }
   private let socket = Sockets.sharedInstance()
   
-  var testView = CreateListingView()
-  var communityView: CommunityFeedView? = CommunityFeedView()
-  var chatView: ChatHistoryView?  = ChatHistoryView()
-  var scannerView: ScannerView? = ScannerView()
-  var activityView: ActivityFeedView? = ActivityFeedView()
-  var userProfileView: UserProfileViewContainer? = UserProfileViewContainer()
+  public var testView = CreateListingView()
+  public var communityView: CommunityFeedView? = CommunityFeedView()
+  public var listFeedView: ListFeedNavigationView? = ListFeedNavigationView()
+  public var chatView: ChatHistoryView?  = ChatHistoryView()
+  public var scannerView: ScannerView? = ScannerView()
+  public var activityView: ActivityFeedView? = ActivityFeedView()
+  public var userProfileView: UserProfileViewContainer? = UserProfileViewContainer()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    setupCommunityTab()
+    setupListFeedView()
+//    setupCommunityTab()
     setupChatView()
     setupISBNScannerView()
     setupActivityView()
@@ -66,7 +68,8 @@ public class TabView: UITabBarController {
 //    viewControllers = [searchBookView!]
     
     // set view controllers
-    viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
+//    viewControllers = [communityView!, chatView!, scannerView!, activityView!, userProfileView!]
+    viewControllers = [listFeedView!, chatView!, scannerView!, activityView!, userProfileView!]
     
     // first initialize both the chat history view and activity feed view
     selectedIndex = 1
@@ -76,17 +79,24 @@ public class TabView: UITabBarController {
     selectedIndex = 0
     
     // dealloc reference view controllers
-    communityView = nil
+//    communityView = nil
+    listFeedView = nil
     chatView = nil
     scannerView = nil
     activityView = nil
     userProfileView = nil
   }
   
-  private func setupCommunityTab() {
+  private func setupListFeedView() {
     var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-1")).resize(CGSize(width: 24, height: 24))
-    communityView?.tabBarItem = UITabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
+    listFeedView?.tabBarItem = UITabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
     toucan = nil
+  }
+  
+  private func setupCommunityTab() {
+//    var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListTabBar_Icon-1")).resize(CGSize(width: 24, height: 24))
+//    communityView?.tabBarItem = UITabBarItem(title: "Community", image: toucan!.image, selectedImage: toucan!.image)
+//    toucan = nil
   }
   
   private func setupChatView() {
@@ -135,9 +145,13 @@ public class TabView: UITabBarController {
     item.badgeValue = nil
   }
   
-  public class func currentView() -> UIViewController? {
-    return UIApplication.sharedApplication().keyWindow?.rootViewController
-  }
+  public class func currentView() -> DLNavigationController? {
+    if  let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView,
+        let view = tabView.selectedViewController as? DLNavigationController
+    {
+      return view
+    } else { return nil }
+  } 
 }
 
 
