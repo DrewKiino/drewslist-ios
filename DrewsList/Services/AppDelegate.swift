@@ -54,6 +54,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     
+    // [START tracker_swift]
+    // Configure tracker from GoogleService-Info.plist.
+    var configureError:NSError?
+    GGLContext.sharedInstance().configureWithError(&configureError)
+    assert(configureError == nil, "Error configuring Google services: \(configureError)")
+    
+    // Optional: configure GAI options.
+    var gai = GAI.sharedInstance()
+    gai.trackUncaughtExceptions = true  // report uncaught exceptions
+    gai.logger.logLevel = GAILogLevel.Verbose  // remove before app release
+    // [END tracker_swift]
+    
     setupRootView()
     
     // on foreground, reset the badge number

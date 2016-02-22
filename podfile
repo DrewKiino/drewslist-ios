@@ -66,6 +66,9 @@ pod 'PermissionScope'
 pod 'FBSDKCoreKit'
 pod 'FBSDKLoginKit'
 
+# analytics
+pod 'Google/Analytics'
+
 #####################################
 # unit testing
 
