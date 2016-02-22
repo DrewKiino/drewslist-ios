@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import Signals
 
 public class PushModel {
   
-  
+  public let _authorizationStatus = Signal<Bool>()
+  public var authorizationStatus: Bool = false { didSet { _authorizationStatus => authorizationStatus } }
 }

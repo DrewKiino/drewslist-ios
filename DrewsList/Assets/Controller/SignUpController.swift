@@ -22,6 +22,11 @@ public class SignUpController {
   
   public init() {}
   
+  public func viewDidAppear() {
+    model.school = SearchSchoolController.currentSelection()?.name
+    model.state = SearchSchoolController.currentSelection()?.state
+  }
+  
   public func validateInputs() {
     
     let validFirstName = model.firstName?.isValidName()
@@ -49,26 +54,6 @@ public class SignUpController {
       validRepassword == true &&
       validSchool == true
     )
-  }
-  
-  public func resetSchoolInput() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write { [weak self] in
-        userDefaults.school = nil
-        self?.model.school = nil
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
-  }
-  
-  public func setSchool() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write { [weak self] in
-        self?.model.school = userDefaults.school
-        self?.model.state = userDefaults.state
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
   }
   
   public func createNewUserInServer() {

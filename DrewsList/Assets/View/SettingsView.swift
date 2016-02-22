@@ -39,20 +39,19 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 7
+    return 5
+  }
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 48
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     switch indexPath.row {
-//    case 0:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
-//        cell.hideTopBorder()
-//        return cell
-//      }
-//      break
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showTopBorder()
+        cell.showSeparatorLine()
         cell.titleButton?.setTitle("Edit Profile", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
@@ -96,28 +95,14 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
       break
     case 4:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-        cell.showSeparatorLine()
         cell.hideArrowIcon()
         cell.titleButton?.setTitle("Log Out", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          // deletes the current user, then will log user out.
-          self?.deleteRealmUser()
-          // log out of facebook if they are logged in
-          FBSDKController.logout()
-          // since the current user does not exist anymore
-          // we ask the tab view to check any current user, since we have no current user
-          // it will present the login screen
+          LoginController.logOut()
           self?.navigationController?.popToRootViewControllerAnimated(true)
-          LoginController.sharedInstance().checkIfUserIsLoggedIn()
         }
         cell.showBottomBorder()
-        return cell
-      }
-      break
-    case 7:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
-        cell.hideBottomBorder()
         return cell
       }
       break
