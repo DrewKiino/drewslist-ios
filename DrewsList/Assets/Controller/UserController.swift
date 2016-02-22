@@ -38,22 +38,26 @@ public class UserController {
   
   // MARK: User Functions
   func updateUserToServer(updateBlock: ((user: User?) -> User?)? = nil) {
-    guard let user = updateBlock?(user: model.user), let user_id = model.user?._id else { return }
-    Alamofire.request(
-      .POST,
-      ServerUrl.Default.getValue() + "/user/\(user_id)",
-      parameters: [
-        "deviceToken": user.deviceToken ?? ""
-      ] as [String: AnyObject],
-      encoding: .JSON
-    )
-    .response { [weak self] req, res, data, error in
+    if let user = updateBlock?(user: model.user ?? UserController.sharedUser().user), let user_id = user._id {
       
-      if let error = error {
-        log.error(error)
-      } else if let data = data, let json: JSON! = JSON(data: data) {
-        log.info("server: received device token.")
-        self?.model.user = User(json: json)
+      Alamofire.request(
+        .POST,
+        ServerUrl.Default.getValue() + "/user/\(user_id)",
+        parameters: [
+          "deviceToken": user.deviceToken ?? "",
+          "image": user.imageUrl ?? ""
+          
+          ] as [String: AnyObject],
+        encoding: .JSON
+        )
+        .response { [weak self] req, res, data, error in
+          log.debug(JSON(data: data!))
+          if let error = error {
+            log.error(error)
+          } else if let data = data, let json: JSON! = JSON(data: data) {
+            log.info("server: received device token.")
+            self?.model.user = User(json: json)
+          }
       }
     }
   }

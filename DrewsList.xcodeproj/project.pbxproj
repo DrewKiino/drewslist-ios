@@ -38,6 +38,9 @@
 		4FCF2A051C309B3200091408 /* BookProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A041C309B3200091408 /* BookProfileView.swift */; };
 		4FCF2A071C309B4500091408 /* BookProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A061C309B4500091408 /* BookProfileModel.swift */; };
 		4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF2A081C309B5600091408 /* BookProfileController.swift */; };
+		4FEB00DB1C7530AA00A041F7 /* ProfileImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEB00DA1C7530AA00A041F7 /* ProfileImagePickerView.swift */; };
+		4FEB00DD1C7530B100A041F7 /* ProfileImagePickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEB00DC1C7530B100A041F7 /* ProfileImagePickerModel.swift */; };
+		4FEB00DF1C7530B800A041F7 /* ProfileImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEB00DE1C7530B800A041F7 /* ProfileImagePickerController.swift */; };
 		69C059934EF1052D34354EB7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57626CC0C64AD000DE5434DD /* Pods.framework */; };
 		EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */; };
 		EE007AF61C1E4DC80088ACBF /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE007AF51C1E4DC80088ACBF /* ListView.swift */; };
@@ -176,6 +179,9 @@
 		4FCF2A041C309B3200091408 /* BookProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileView.swift; sourceTree = "<group>"; };
 		4FCF2A061C309B4500091408 /* BookProfileModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileModel.swift; sourceTree = "<group>"; };
 		4FCF2A081C309B5600091408 /* BookProfileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookProfileController.swift; sourceTree = "<group>"; };
+		4FEB00DA1C7530AA00A041F7 /* ProfileImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerView.swift; sourceTree = "<group>"; };
+		4FEB00DC1C7530B100A041F7 /* ProfileImagePickerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerModel.swift; sourceTree = "<group>"; };
+		4FEB00DE1C7530B800A041F7 /* ProfileImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileImagePickerController.swift; sourceTree = "<group>"; };
 		57626CC0C64AD000DE5434DD /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		EE007AF31C1E1E7C0088ACBF /* SweetAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SweetAlert.swift; sourceTree = "<group>"; };
@@ -384,6 +390,7 @@
 		EE3C94921BF30F1500E228A9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4FEB00DC1C7530B100A041F7 /* ProfileImagePickerModel.swift */,
 				EE27AB461C2B7A7200EEFA4D /* AccountSettingsModel.swift */,
 				EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */,
 				3F4CA3AA1C0BE98300CFC84D /* BookModel.swift */,
@@ -422,6 +429,7 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4FEB00DA1C7530AA00A041F7 /* ProfileImagePickerView.swift */,
 				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
 				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
 				EED779E61C15406600D172BE /* BookFeedView.swift */,
@@ -458,6 +466,7 @@
 		EE3C94941BF30F1A00E228A9 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				4FEB00DE1C7530B800A041F7 /* ProfileImagePickerController.swift */,
 				EEE2AA081C28A33C0093DB46 /* AccountSettingsController.swift */,
 				EE1062911C433DE300DAA15E /* ActivityFeedController.swift */,
 				3F4CA3AC1C0BE99A00CFC84D /* BookController.swift */,
@@ -823,6 +832,7 @@
 				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
 				EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */,
 				39B35FF61C4A19340084007D /* TermPrivacyController.swift in Sources */,
+				4FEB00DF1C7530B800A041F7 /* ProfileImagePickerController.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,
 				EE1B73781C236FD000BD942C /* ListFeedView.swift in Sources */,
 				EE5520101C23BAE7008EF831 /* CommunityFeedController.swift in Sources */,
@@ -843,6 +853,7 @@
 				39B35FF41C4A18EE0084007D /* TermPrivacyModel.swift in Sources */,
 				EE007AFC1C1E4F460088ACBF /* BookView.swift in Sources */,
 				EE3D67A51C2BF72100299F34 /* SearchSchoolController.swift in Sources */,
+				4FEB00DB1C7530AA00A041F7 /* ProfileImagePickerView.swift in Sources */,
 				4F59BAC61C5ED944006F3F31 /* LFTPulseAnimation.swift in Sources */,
 				EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */,
 				EEEFB7881C280315005CB4F9 /* Toucan.swift in Sources */,
@@ -860,6 +871,7 @@
 				EE3C949B1BF30FCC00E228A9 /* UserModel.swift in Sources */,
 				EE4B9DA31C11F3DD00637458 /* RAMFrameItemAnimation.swift in Sources */,
 				39B35FF21C4A18D90084007D /* TermPrivacyView.swift in Sources */,
+				4FEB00DD1C7530B100A041F7 /* ProfileImagePickerModel.swift in Sources */,
 				EE3D67A71C2BF72800299F34 /* SearchSchoolModel.swift in Sources */,
 				EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */,
 				EEA80B241C1287C70058ED0C /* NativeExtensions.swift in Sources */,

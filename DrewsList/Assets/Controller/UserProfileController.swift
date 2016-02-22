@@ -46,7 +46,6 @@ public class UserProfileController {
       if let error = error {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
-        
         // create and  user object
         self?.model.user = User(json: json)
         // write user object to realm

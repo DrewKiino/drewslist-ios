@@ -30,11 +30,9 @@ public class DLTableView: UITableView {
  
     // MARK: Settings Cells
     registerClass(ChangeImageCell.self, forCellReuseIdentifier: "ChangeImageCell")
-    registerClass(PickerCell.self, forCellReuseIdentifier: "PickerCell")
-
-    // MARK: User Profile
+    
+    // MARK: User Profile 
     registerClass(UserProfileListView.self, forCellReuseIdentifier: "UserProfileListView")
-    registerClass(BigImageCell.self, forCellReuseIdentifier: "BigImageCell")
     
     // MARK: Regular Static View Cell
     registerClass(PaddingCell.self, forCellReuseIdentifier: "PaddingCell")
@@ -273,6 +271,13 @@ public class LabelCell: DLTableViewCell {
       mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title.characters.count, length: subTitle.characters.count))
       label?.attributedText = mutstring
     } else {
+//      title = ":"
+//      subTitle = ""
+//      fullTitle = title! + subTitle!
+//      var mutstring = NSMutableAttributedString()
+//      mutstring = NSMutableAttributedString(string: fullTitle!, attributes: [NSFontAttributeName: UIFont.asapBold(15)])
+//      mutstring.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(15), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
+//      mutstring.addAttribute(NSForegroundColorAttributeName, value: UIColor.sexyGray(), range: NSRange(location: title!.characters.count, length: subTitle!.characters.count))
       label?.attributedText = nil
     }
   }
@@ -292,6 +297,9 @@ public class TitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupTitleTextLabel()
+    
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
+    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -300,9 +308,6 @@ public class TitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
-    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
   }
   
   public override func setupSelf() {
@@ -341,13 +346,10 @@ public class FullTitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupRightImageView()
-<<<<<<< HEAD
-=======
     
-    titleButton?.anchorAndFillEdge(.Left, xPad: 10, yPad: 0, otherSize: screen.width)
-    rightImageView?.anchorToEdge(.Right, padding: 0, width: 12, height: 16)
+    titleButton?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: screen.width - 48)
+    rightImageView?.anchorToEdge(.Right, padding: 12, width: 12, height: 16)
     rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
->>>>>>> origin/integrate/settings-view
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -356,25 +358,20 @@ public class FullTitleCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    
-    titleButton?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
-    rightImageView?.anchorToEdge(.Right, padding: 8, width: 16, height:  16)
-    rightImageView?.dl_setImage(UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate))
   }
   
   public override func setupSelf() {
     super.setupSelf()
-    
     backgroundColor = .whiteColor()
   }
   
   private func setupTitleLabel() {
     titleButton = UIButton()
-    titleButton?.setTitleColor(.sexyGray(), forState: .Normal)
+    titleButton?.setTitleColor(.blackColor(), forState: .Normal)
     titleButton?.contentHorizontalAlignment = .Left
-    titleButton?.titleLabel?.font = .asapRegular(12)
+    titleButton?.titleLabel?.font = .asapRegular(16)
     titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
-    titleButton?.titleLabel?.minimumScaleFactor = 0.8
+    titleButton?.titleLabel?.minimumScaleFactor = 0.5
     titleButton?.addTarget(self, action: "cellPressed:", forControlEvents: .TouchDown)
     titleButton?.addTarget(self, action: "cellPressReleased:", forControlEvents: .TouchUpOutside)
     titleButton?.addTarget(self, action: "cellSelected:", forControlEvents: .TouchUpInside)
@@ -438,6 +435,16 @@ public class SwitchCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupSwitchImageView()
+    
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 14, yPad: 8, otherSize: 200)
+    switchImageView?.anchorToEdge(.Right, padding: 8, width: 24, height: 24)
+    switchImageViewReferenceFrame = switchImageView?.frame
+    switchImageView?.frame = CGRectMake(
+      screen.width + 2,
+      switchImageViewReferenceFrame!.origin.y,
+      switchImageViewReferenceFrame!.width,
+      switchImageViewReferenceFrame!.height
+    )
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -447,9 +454,6 @@ public class SwitchCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: screen.width - 48)
-    switchImageView?.anchorToEdge(.Right, padding: 8, width: frame.height - 8, height: frame.height - 8)
-    switchImageViewReferenceFrame = switchImageView?.frame
   }
   
   public override func setupSelf() {
@@ -465,8 +469,8 @@ public class SwitchCell: DLTableViewCell {
   
   private func setupTitleLabel() {
     titleLabel = UILabel()
-    titleLabel?.textColor = .sexyGray()
-    titleLabel?.font = .asapRegular(12)
+    titleLabel?.textColor = .blackColor()
+    titleLabel?.font = .asapRegular(16)
     titleLabel?.adjustsFontSizeToFitWidth = true
     titleLabel?.minimumScaleFactor = 0.8
     addSubview(titleLabel!)
@@ -480,10 +484,6 @@ public class SwitchCell: DLTableViewCell {
   
   public func select() {
     _didSelectCell => toggle.getValue()
-  }
-  
-  public func isOn() -> Bool {
-    return toggle == .On
   }
   
   public func switchOn() {
@@ -503,13 +503,25 @@ public class SwitchCell: DLTableViewCell {
   }
   
   public func animateToggle() {
+    
+    let duration: NSTimeInterval = 0.7
+    let damping: CGFloat = 0.5
+    let velocity: CGFloat = 1.0
 
     switch toggle {
     case .On:
-      switchImageView?.tintColor = .juicyOrange()
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        let frame: CGRect! = self?.switchImageViewReferenceFrame
+        self?.switchImageView?.frame = frame
+      }, completion: { bool in
+      })
       break
     case .Off:
-      switchImageView?.tintColor = .sexyGray()
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        let frame: CGRect! = self?.switchImageView?.frame
+        self?.switchImageView?.frame = CGRectMake(screen.width + 2, frame.origin.y, frame.width, frame.height)
+      }, completion: { bool in
+      })
       break
     }
   }
@@ -617,16 +629,15 @@ public class ChangeImageCell: DLTableViewCell {
   //public var profileImg: UIImage?
   public var profileImgT: Toucan?
   public var profileImgView: UIImageView?
-  public var arrowImgView: UIImageView?
   
   public let _didSelectCell = Signal<Bool>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
+    layoutSubviews()
     setupLabel()
     setupProfileImgView()
-    layoutSubviews()
+    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
     //profileImgView?.anchorToEdge(.Right, padding: 0, width: 10, height: 10)
   }
   
@@ -637,11 +648,6 @@ public class ChangeImageCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     hideBothTopAndBottomBorders()
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-    
-    arrowImgView?.anchorToEdge(.Right, padding: screen.width / 20, width: screen.width / 20, height: screen.width / 20)
-    profileImgView?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: screen.width / 20, width: frame.height * (4 / 5), height: frame.height * (4 / 5))
-    
   }
   
   public override func setupSelf() {
@@ -694,14 +700,17 @@ public class ChangeImageCell: DLTableViewCell {
   private func setupProfileImgView(){
     profileImgView = UIImageView()
     let arrowImgT = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(CGSize(width: frame.width/20, height: frame.width/20))
-    arrowImgView = UIImageView()
-    arrowImgView?.image = arrowImgT.image
+    let arrowImgView = UIImageView()
+    arrowImgView.image = arrowImgT.image
     let profileImg = UIImage(named: "profile-placeholder")
     profileImgT = Toucan(image: profileImg).resize(CGSize(width: frame.width/10, height: frame.width/10)).maskWithEllipse()
     profileImgView?.image = profileImgT?.image
-    addSubview(arrowImgView!)
+    //profileImgView?.backgroundColor = UIColor.redColor()
+    addSubview(arrowImgView)
     addSubview(profileImgView!)
-    
+    profileImgView?.anchorToEdge(.Right, padding: 0, width: frame.width/10, height: frame.width/10)
+    arrowImgView.align(.ToTheRightCentered, relativeTo: profileImgView!, padding: frame.width/20, width: frame.width/20, height: frame.width/20)
+  
   }
   
   public func select() { _didSelectCell => true }
@@ -773,175 +782,30 @@ public class ChangeImageCell: DLTableViewCell {
 //}
 }
 
-public class PickerCell: DLTableViewCell {
-  
-  public var label: UILabel?
-  //public var profileImg: UIImage?
-  
-  public var schoolName: String?
-  public var schoolNameLabel: UILabel?
-  public var arrowImgView: UIImageView?
-  
-  public let _didSelectCell = Signal<Bool>()
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-  
-    setupLabel()
-    setupSchoolNameLabel()
-    layoutSubviews()
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-    
-    arrowImgView?.anchorToEdge(.Right, padding: screen.width / 20, width: screen.width / 20, height: screen.width / 20)
-    schoolNameLabel?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: screen.width / 20, width: frame.width * (2 / 3) - 20, height: frame.height)
-    
-    
-    hideBothTopAndBottomBorders()
-  }
-  
-  public override func setupSelf() {
-    super.setupSelf()
-    backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
-    pressGesture.minimumPressDuration = 0.01
-    addGestureRecognizer(pressGesture)
-  }
-  
-  public func setupUser(user: User?){
-    guard let user = user else { return }
-    
-    let duration: NSTimeInterval = 0.2
-   // FIXME: grab user from server for school name
-  }
-  
-  private func setupLabel() {
-    label = UILabel()
-    label?.textColor = .blackColor()
-    label?.font = .asapRegular(16)
-    addSubview(label!)
-  }
-  
-  private func setupSchoolNameLabel(){
-    schoolNameLabel = UILabel()
-    let arrowImgT = Toucan(image: UIImage(named: "Icon-OrangeChevron")).resize(CGSize(width: frame.width/20, height: frame.width/20))
-    arrowImgView = UIImageView()
-    arrowImgView?.image = arrowImgT.image
-    // FIXME: Default School name is Cal State LA
-    schoolName = "Cal State LA"
-    schoolNameLabel?.text = schoolName
-    schoolNameLabel?.textAlignment = .Right
-    addSubview(arrowImgView!)
-    addSubview(schoolNameLabel!)
-    
-  }
-  
-  public func select() { _didSelectCell => true }
-  
-  public func pressed(sender: UILongPressGestureRecognizer) {
-    if (sender.state == .Began) {
-      backgroundColor = .sweetBeige()
-    } else if (sender.state == .Ended){
-      backgroundColor = .whiteColor()
-      if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
-    }
-  }
-  
-  // FIXME: Setup the User's School
-  
-//  public func setupUserSchool(user : User?){
-//  
-//  
-//  }
-}
 
 
-public class BigImageCell: DLTableViewCell {
-  
-  public var label: UILabel?
-  public var imageURL: String?
-  public var imageToucan: Toucan?
-  public var bigImageView: UIImageView?
-  
-  public let _didSelectCell = Signal<Bool>()
-  
-  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
-    setupLabel()
-    setupProfileImgView()
-    layoutSubviews()
-    //profileImgView?.anchorToEdge(.Right, padding: 0, width: 10, height: 10)
-  }
-  
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    hideBothTopAndBottomBorders()
-    
-    let yPad = screen.width / 50
-    bigImageView?.anchorAndFillEdge(.Left, xPad: screen.width / 10, yPad: yPad, otherSize: frame.height - yPad * 2)
-    label?.anchorAndFillEdge(.Right, xPad: screen.width / 10, yPad: screen.width / 30, otherSize: screen.width * (2 / 3))
-    
-  }
-  
-  public override func setupSelf() {
-    super.setupSelf()
-    backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
-    pressGesture.minimumPressDuration = 0.01
-    addGestureRecognizer(pressGesture)
-  }
-  
-  private func setupLabel() {
-    label = UILabel()
-    label?.textColor = .blackColor()
-    label?.font = .asapRegular(16)
-    addSubview(label!)
-  }
-  
-  private func setupProfileImgView(){
-    bigImageView = UIImageView()
-    let defaultImg = UIImage(named: "profile-placeholder")
-    imageToucan = Toucan(image: defaultImg).resize(CGSize(width: frame.width, height: frame.width)).maskWithEllipse()
-//    imageToucan = Toucan(image: defaultImg).maskWithEllipse()
 
-    bigImageView?.image = imageToucan?.image
-    addSubview(bigImageView!)
-    
-  }
-  
-  public func select() { _didSelectCell => true }
-  
-  public func pressed(sender: UILongPressGestureRecognizer) {
-    if (sender.state == .Began) {
-      backgroundColor = .sweetBeige()
-    } else if (sender.state == .Ended){
-      backgroundColor = .whiteColor()
-      if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
-    }
-  }
-  
-  public func downloadImageFromURL(url: String?){
-    bigImageView?.dl_setImageFromUrl(url, size: bigImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
-      
-      self?.bigImageView?.alpha = 0.0
-      self?.bigImageView?.image = image
-      
-      UIView.animateWithDuration(0.1) { [weak self] in
-        self?.bigImageView?.alpha = 1.0
-      }
-    }
-  }
-  
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
