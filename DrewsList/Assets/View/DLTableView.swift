@@ -341,13 +341,10 @@ public class FullTitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupRightImageView()
-<<<<<<< HEAD
-=======
     
     titleButton?.anchorAndFillEdge(.Left, xPad: 10, yPad: 0, otherSize: screen.width)
     rightImageView?.anchorToEdge(.Right, padding: 0, width: 12, height: 16)
     rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
->>>>>>> origin/integrate/settings-view
   }
   
   public required init?(coder aDecoder: NSCoder) {

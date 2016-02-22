@@ -60,8 +60,6 @@ public class LoginController {
     // check if user is already logged in
     if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
       
-      log.debug(model.user)
-      
       // set the user's model
       model.user = user
       
