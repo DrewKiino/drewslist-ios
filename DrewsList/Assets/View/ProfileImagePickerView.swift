@@ -20,8 +20,6 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   private var profileImgURLs: [String]?
   private var profileImgNames: [String]?
   
-  
-  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -46,6 +44,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     tableView?.fillSuperview()
+    tableView?.contentSize = CGSizeMake(screen.width, screen.height * 2)
   }
   
   // MARK: setup view functions

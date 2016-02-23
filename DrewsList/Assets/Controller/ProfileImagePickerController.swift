@@ -35,6 +35,7 @@ public class ProfileImagePickerController {
         }
       } else {
         print("\(error)")
+        self.model.fbProfileImageURL = nil
       }
     })
   }
