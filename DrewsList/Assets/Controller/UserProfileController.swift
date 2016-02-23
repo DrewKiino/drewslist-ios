@@ -39,10 +39,8 @@ public class UserProfileController {
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
-   log.debug("mark1")
     Alamofire.request(.GET, ServerUrl.Default.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
-     log.debug("Mark2")
       if let error = error {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
