@@ -89,7 +89,6 @@ public class BookView: UIView {
   
   public func pressed() {
     TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true)
-    
     _bookViewPressed => true
   }
   
