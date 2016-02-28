@@ -50,6 +50,25 @@ public class ListController {
     }
   }
   
+//  public func DeleteListingFromServer() {
+//    guard let listing_id = model.listing?._id else { return }
+//    model.shouldRefrainFromCallingServer = true
+//    
+//    Alamofire.request(.DELETE, ServerUrl.Default.getValue() + "/listing/\(listing_id)")
+//    
+//      .response { [weak self] req, res, data, error in
+//        if let error = error {
+//          log.error(error)
+//        } else if let data = data, let json: JSON! = JSON(data: data) {
+//          
+//          //create and userobject
+//          self?.model.book = Book(json: json)
+//          
+//        }
+//    
+//    
+//  }
+  
   public func setListing(listing: Listing) { model.listing = listing }
   
   public func getModel() -> ListModel { return model }

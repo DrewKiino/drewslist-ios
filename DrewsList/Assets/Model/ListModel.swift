@@ -24,6 +24,12 @@ public class ListModel {
   
   public let _serverCallbackFromFindListing = Signal<Bool>()
   public var serverCallbackFromFindListing: Bool = false { didSet { _serverCallbackFromFindListing => serverCallbackFromFindListing } }
+  
+  public let _book = Signal<Book?>()
+  public var book: Book? { didSet {_book => book } }
+  
+  public let _serverCallbackFromDeleteListing = Signal<Bool>()
+  public var serverCallbackFromDeletelIsting: Bool = false { didSet { _serverCallbackFromDeleteListing => serverCallbackFromDeletelIsting } }
 }
 
 public class Listing: Mappable {

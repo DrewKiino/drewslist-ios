@@ -22,6 +22,12 @@ public class ListViewContainer: UIViewController {
   
   public var doOnce = true
   
+  private let controller = DeleteListingController()
+  private var model: DeleteListingModel  { get { return controller.model } }
+  private var ScreenSize = UIScreen.mainScreen().bounds
+  private var TableView: DLTableView?
+
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -177,6 +183,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       self?.tableView?.reloadData()
     }
     
+    
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
       if bool == true {
@@ -259,7 +266,39 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         return cell
+        
       }
+      break;
+    case 3:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+        cell.backgroundColor = .whiteColor()
+        cell.hideBothTopAndBottomBorders()
+        cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
+        cell.button?.cornerRadius = 2
+        cell.button?.buttonColor = .juicyOrange()
+        cell.button?.setTitle("Delete Book", forState: .Normal)
+        cell._onPressed.removeAllListeners()
+        cell._onPressed.listen(self) {[ weak self] bool in
+          //self?.controller.setBookID(self?.model.listing?._id)
+          //self?.controller.deleteListingFromServer()
+          //self?.dismissViewControllerAnimated(true, completion: nil)
+          
+          
+        }
+        
+        return cell
+      }
+      
+      
+      break;
+    case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.backgroundColor = .whiteColor()
+        
+        return cell
+      }
+
+      
     default: break
     }
     
