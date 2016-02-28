@@ -24,6 +24,17 @@ public class ListFeedNavigationView: DLNavigationController {
   private func setupListFeedViewContainer() {
     listFeedViewContainer = ListFeedViewContainer()
     rootView?.view = listFeedViewContainer
+    
+    rootView?.navigationItem.rightBarButtonItem = UIBarButtonItem(
+      image: Toucan(image: UIImage(named: "Icon-Search-1")).resize(CGSize(width: 24, height: 24)).image,
+      style: UIBarButtonItemStyle.Done,
+      target: self,
+      action: "selectedSearchButton"
+    )
+  }
+  
+  public func selectedSearchButton() {
+    pushViewController(SearchListingView(), animated: true)
   }
 }
 
@@ -338,8 +349,6 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//    if model.listings.count > 0 { return model.listings.count + 1 }
-//    else { return 0 }
     return model.listings.count
   }
   

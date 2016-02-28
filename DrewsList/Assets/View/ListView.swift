@@ -134,6 +134,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public init() {
     super.init(frame: CGRectZero)
+    
     setupDataBinding()
     setupTableView()
     
@@ -149,9 +150,8 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   }
   
   public func setListing(listing: Listing?) -> Bool {
-    guard let listing = listing else { return false }
     
-    controller.setListing(listing)
+    model.listing = listing
     
     tableView?.reloadData()
     
@@ -163,6 +163,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   }
   
   private func setupTableView() {
+    tableView?.removeFromSuperview()
     tableView = DLTableView()
     tableView?.dataSource = self
     tableView?.delegate = self
@@ -214,6 +215,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+        
         cell.bookView?.setBook(model.listing?.book)
         model._listing.removeListener(self)
         model._listing.listen(self) { [weak cell] listing in
@@ -242,7 +244,6 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       }
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
-//        cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
         cell._callButtonPressed.removeAllListeners()

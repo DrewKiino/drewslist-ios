@@ -245,6 +245,16 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
+  public func showActivityBarItem() {
+    dismissActivityView()
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView.frame = CGRectMake(screen.width - 32, 24, 24, 24)
+    activityView.tag = 1337
+    activityView.startAnimating()
+    addSubview(activityView)
+    activityView = nil
+  }
+  
   public func showActivityView(heightOffset: CGFloat? = nil) {
     dismissActivityView()
     var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
