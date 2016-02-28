@@ -71,4 +71,10 @@ public class DLNavigationController: UINavigationController {
   public func setRootViewTitle(title: String?) {
     rootView?.title = title
   }
+  
+  public class func setRightBarButton(view: UIViewController?, customView: UIView?) {
+    if let view = view, let customView = customView {
+        view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: customView)
+    }
+  }
 }

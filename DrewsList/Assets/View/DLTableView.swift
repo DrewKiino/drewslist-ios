@@ -562,8 +562,15 @@ public class BookViewCell: DLTableViewCell {
   
   private func setupBookView() {
     bookView = BookView()
+    bookView?._bookViewPressed.removeAllListeners()
+    bookView?._bookViewPressed.listen(self) { [weak self] bool in
+      self?._cellPressed.fire(true)
+    }
     addSubview(bookView!)
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
   }
+  
   
   public func setBook(book: Book?) {
     bookView?.setBook(book)

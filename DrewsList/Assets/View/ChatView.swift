@@ -20,6 +20,7 @@ public class ChatView: JSQMessagesViewController {
   // UI Controls
   private var refreshControl: UIRefreshControl?
   private var alertController: UIAlertController?
+  private var settingsButton: UIButton?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -58,6 +59,37 @@ public class ChatView: JSQMessagesViewController {
     // set chat view title to friend's title
     title = model.friend?.getName()
     inputToolbar?.translucent = false
+    
+    //settingsButton.action
+    // TODO: check if user is self
+    
+    // hide attachment button
+//    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+  }
+  
+  public func layoutSubviews() {
+    settingsButton?.fillSuperview()
+  }
+  
+  public func setupButtons(){
+    var myImage = UIImage(named: "Icon-CallButton")
+    var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screen.width/20, height: screen.width/20))
+    resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+    
+    settingsButton = UIButton()
+    settingsButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+    settingsButton?.setImage(resizedImage, forState: .Normal)
+    settingsButton?.frame = CGRectMake(0, 0, 30, 30)
+    settingsButton?.layer.cornerRadius = (settingsButton?.frame.width)! / 2
+    settingsButton?.layer.backgroundColor = UIColor.whiteColor().CGColor
+    
+    DLNavigationController.setRightBarButton(self, customView: settingsButton)
+    myImage = nil
+    resizedImage = nil
+  }
+  
+  public func callFriend(){
+    self.model.friend?.phone?.callNumber()
   }
   
   private func setupDataBinding() {
@@ -101,6 +133,7 @@ public class ChatView: JSQMessagesViewController {
       if didReceive {
         // show activity animation on nav bar
         DLNavigationController.hideActivityAnimation(self)
+        self?.setupButtons()
       }
     }
     

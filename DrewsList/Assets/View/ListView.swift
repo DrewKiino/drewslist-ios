@@ -233,6 +233,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         cell._cellPressed.removeAllListeners()
         cell._cellPressed.listen(self) { [weak self] bool in
+          print("moo2")
           if bool == true {
             self?._bookProfilePressed.fire(self?.model.listing?.book)
           }
@@ -434,9 +435,9 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     priceLabel?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 200, height: 12)
     
-    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 24, height: 24)
+    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 30, height: 30)
     
-    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 24, height: 24)
+    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 30, height: 30)
     
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
     
