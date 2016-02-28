@@ -7,6 +7,9 @@ use_frameworks!
 
 #####################################
 
+# analytics
+pod 'GoogleAnalytics'
+
 # map routing libs
 pod 'OpenInGoogleMaps'
 

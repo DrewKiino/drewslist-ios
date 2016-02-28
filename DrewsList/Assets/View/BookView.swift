@@ -14,8 +14,6 @@ import Signals
 
 public class BookView: UIView {
   
-  public let _cellPressed = Signal<Bool>()
-  
   private let controller = BookController()
   
   public var attributesContainer: UIView?
@@ -88,7 +86,7 @@ public class BookView: UIView {
   }
   
   public func pressed() {
-    _cellPressed => true
+    TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true)
   }
   
   private func setupImageView() {

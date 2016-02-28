@@ -237,12 +237,6 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         model._listing.listen(self) { [weak cell] listing in
           cell?.setListing(listing)
         }
-        cell._userImageViewPressed.removeAllListeners()
-        cell._userImageViewPressed.listen(self) { [weak self] user in
-          if let user = user {
-            self?._userProfilePressed.fire(user)
-          }
-        }
         
         return cell
       }
@@ -276,14 +270,12 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
 
 public class ListerProfileViewCell: DLTableViewCell {
   
-  private var userImageView: UIButton?
+  private var userImageView: UIImageView?
   private var nameLabel: UILabel?
   private var listTypeLabel: UILabel?
   private var listDateTitle: UILabel?
   private var listDateLabel: UILabel?
   private var cellListing: Listing?
-  
-  public let _userImageViewPressed = Signal<User?>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -313,19 +305,14 @@ public class ListerProfileViewCell: DLTableViewCell {
     listDateLabel?.anchorInCorner(.BottomRight, xPad: 16, yPad: 6, width: 100, height: 16)
   }
   
-//  private override func setupSelf() {
-//    super.setupSelf()
-//    
-//    backgroundColor = .whiteColor()
-//  }
-  
   public override func setupSelf() {
     backgroundColor = .whiteColor()
   }
   
   private func setupUserImage() {
-    userImageView = UIButton()
-    userImageView?.addTarget(self, action: "userImageViewPressed", forControlEvents: .TouchUpInside)
+    userImageView = UIImageView()
+    userImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "userImageViewPressed"))
+    userImageView?.userInteractionEnabled = true
     addSubview(userImageView!)
   }
   
@@ -344,7 +331,7 @@ public class ListerProfileViewCell: DLTableViewCell {
   
   private func setupListDateTitle() {
     listDateTitle = UILabel()
-    listDateTitle?.font = UIFont.asapBold(12)
+    listDateTitle?.font = UIFont.asapRegular(12)
     listDateTitle?.textAlignment = .Right
     addSubview(listDateTitle!)
   }
@@ -361,36 +348,9 @@ public class ListerProfileViewCell: DLTableViewCell {
     guard let listing = listing, let user = listing.user else { return }
     
     cellListing = listing
-    let duration: NSTimeInterval = 0.5
     
     // MARK: Images
-    if user.imageUrl != nil {
-      
-      UIImageView.dl_setImageFromUrl(user.imageUrl, size: userImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
-
-        self?.userImageView?.setImage(image, forState: .Normal)
-        
-        // animate
-        UIView.animateWithDuration(duration) { [weak self] in
-          self?.userImageView?.alpha = 1.0
-        }
-      }
-    } else {
-      
-      var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(userImageView?.frame.size, fitMode: .Crop).maskWithEllipse()
-      
-      Async.main { [weak self] in
-        
-        //self?.userImageView?.imageView?.image = toucan?.image
-        self?.userImageView?.setImage(toucan?.image, forState: .Normal)
-        
-        UIView.animateWithDuration(duration) { [weak self] in
-          self?.userImageView?.alpha = 1.0
-        }
-        
-        toucan = nil
-      }
-    }
+    userImageView?.dl_setImageFromUrl(user.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
     
     Async.background { [weak self] in
       
@@ -402,7 +362,7 @@ public class ListerProfileViewCell: DLTableViewCell {
       // NOTE: DONT FORGET THESE CODES OMFG
       // converts the date strings sent from the server to local time strings
       if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
-        let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1)
+          let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1)
       {
         let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
         coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
@@ -423,8 +383,7 @@ public class ListerProfileViewCell: DLTableViewCell {
   }
   
   public func userImageViewPressed() {
-    guard let user = cellListing?.user else { return }
-    _userImageViewPressed.fire(user)
+    TabView.currentView()?.pushViewController(UserProfileView().setUser(cellListing?.user), animated: true)
   }
 }
 
@@ -636,12 +595,10 @@ public class ListerAttributesViewCell: DLTableViewCell {
   }
   
   public func chatButtonPressed() {
-//    _chatButtonPressed => true
     if let listing = listing { TabView.currentView()?.pushViewController(ChatView().setListing(listing).setUsers(UserModel.sharedUser().user, friend: listing.user), animated: true) }
   }
   
   public func callButtonPressed() {
-//    _callButtonPressed => true
     listing?.user?.phone?.callNumber()
   }
 }
