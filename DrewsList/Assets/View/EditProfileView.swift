@@ -146,7 +146,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           cell.inputTextField?.font = .asapRegular(16)
           
           cell._inputTextFieldString.listen(self) { [weak self] string in
-            print(string)
             self?.controller.setUsername(string)
           }
           return cell

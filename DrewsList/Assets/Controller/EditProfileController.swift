@@ -8,6 +8,8 @@
 
 import Foundation
 import RealmSwift
+import Alamofire
+import SwiftyJSON
 
 public class EditProfileController {
 
@@ -22,10 +24,6 @@ public class EditProfileController {
     }
   }
   
-  private func updateUserInServer() {
-    
-  }
-  
   public func setFirstName(string: String?) {
     model.user?.firstName = string
   }
@@ -36,8 +34,23 @@ public class EditProfileController {
   
   public func setUsername(string: String?) {
     UserModel.sharedUser().user?.username = string
-    //model.user?.username = string
+    updateUserInServer()
   }
+  
+  public func updateUserInServer() {
+    Alamofire.request(.POST, "\(ServerUrl.Default.getValue())/user/\(UserModel.sharedUser().user?._id ?? "")", parameters: [
+      "username": UserModel.sharedUser().user?.username ?? false
+      ] as [ String: AnyObject ])
+      .response { [weak self] req, res, data, error in
+        if let error = error {
+          log.error(error)
+        } else if let data = data, let json: JSON! = JSON(data: data) {
+          UserModel.setSharedUser(User(json: json))
+          log.debug(UserModel.sharedUser().user?.username)
+        }
+    }
+  }
+
   
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
