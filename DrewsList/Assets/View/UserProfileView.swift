@@ -169,7 +169,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
-    scrollView?.contentSize = CGSizeMake(screen.width, 1000)
+    scrollView?.contentSize = CGSizeMake(screen.width, 830)
   }
   
   // MARK: Data Binding
@@ -181,8 +181,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if self?.isOtherUser == true { self?.title = "User Profile" }
       else { self?.title = "Profile" }
     }
+    controller.isLoadingUserDataFromServer.removeAllListeners()
+    controller.isLoadingUserDataFromServer.listen(self) { [weak self] isLoading in
+      DLNavigationController.showActivityAnimation(self, leftHandSide: true)
+    }
     controller.didLoadUserDataFromServer.removeAllListeners()
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
+      
+      DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
+      
       if didLoad {
         self?.bookShelf?.reloadData()
       }
@@ -574,10 +581,6 @@ public class ListCell: UICollectionViewCell {
     
     // load the UI for the listing once the frame's have been set
     loadListingIntoView()
-    
-    NSTimer.after(3.0) { [weak self] in
-      log.debug(self?.bookImageView?.image)
-    }
   }
   
   private func setupSelf() {
@@ -632,7 +635,7 @@ public class ListCell: UICollectionViewCell {
   
   private func setupMatchPriceLabel() {
     matchPriceLabel = UILabel()
-    matchPriceLabel?.textColor = .juicyOrange()
+    matchPriceLabel?.textColor = .whiteColor()
     matchPriceLabel?.font = .asapBold(12)
     matchPriceLabel?.adjustsFontSizeToFitWidth = true
     matchPriceLabel?.minimumScaleFactor = 0.1
@@ -659,13 +662,12 @@ public class ListCell: UICollectionViewCell {
   public func setListing(listing: Listing?) {
     
     self.listing = listing
-    loadListingIntoView()
   }
   
   private func loadListingIntoView() {
     
     // load book image once the image view's frame has been set
-    bookImageView?.dl_setImageFromUrl(listing?.book?.getImageUrl(), animated: true)
+    bookImageView?.dl_setImageFromUrl(listing?.book?.getImageUrl())
     
     // set user price label
     bookPriceLabel?.text = nil
@@ -688,6 +690,12 @@ public class ListCell: UICollectionViewCell {
     matchPriceLabel?.text = nil
     
     if listing?.highestLister != nil {
+      
+      containerView?.layer.borderColor = UIColor.juicyOrange().CGColor
+      containerView?.layer.borderWidth = 1.0
+      
+      matchInfoView?.backgroundColor = .juicyOrange()
+      
       // unhide the match info view
       matchInfoView?.hidden = false
       // set highest matcher's user imagee

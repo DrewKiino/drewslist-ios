@@ -51,6 +51,14 @@ extension UIColor {
   
   // NOTE: Highlight Color
   
+  public class func superSexyPurple() -> UIColor {
+    return UIColor(red: 177/255, green: 107/255, blue: 245/255, alpha: 1.0)
+  }
+  
+  public class func lightJuicyOrange() -> UIColor {
+    return UIColor(red: 245/255, green: 177/255, blue: 107/255, alpha: 1.0)
+  }
+  
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
   }

@@ -20,18 +20,26 @@ public class DLNavigationController: UINavigationController {
     setupSelf()
   }
   
-  public class func showActivityAnimation(view: UIViewController?) {
+  public class func showActivityAnimation(view: UIViewController?, leftHandSide: Bool = false) {
     if let view = view {
       var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
-      view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
+      if leftHandSide == true {
+        view.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityView)
+      } else {
+        view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
+      }
       activityView.startAnimating()
       activityView = nil
     }
   }
   
-  public class func hideActivityAnimation(view: UIViewController?) {
+  public class func hideActivityAnimation(view: UIViewController?, leftHandSide: Bool = false) {
     if let view = view {
-      view.navigationItem.rightBarButtonItem = nil
+      if leftHandSide == true {
+        view.navigationItem.leftBarButtonItem = nil
+      } else {
+        view.navigationItem.rightBarButtonItem = nil
+      }
     }
   }
   

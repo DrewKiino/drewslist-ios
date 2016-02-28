@@ -165,7 +165,7 @@ public class BookView: UIView {
   
   private func updateViews() {
     
-    imageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
+    imageView?.dl_setImageFromUrl(book?.getImageUrl())
     
     Async.background { [weak self] in
     

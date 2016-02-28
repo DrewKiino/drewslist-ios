@@ -20,6 +20,7 @@ public class UserProfileController {
   private var view: UserProfileView?
   private var isOtherUser: Bool?
   
+  public let isLoadingUserDataFromServer = Signal<Bool>()
   public let didLoadUserDataFromServer = Signal<Bool>()
   
   public func changeOtherUserBoolean(isOtherUser: Bool?){
@@ -34,10 +35,9 @@ public class UserProfileController {
   }
   
   public func getUserFromServer() {
-    
     // make sure the user_id exists
     guard let user_id = model.user?._id where model.shouldRefrainFromCallingServer == false else { return }
-    
+    isLoadingUserDataFromServer => true
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true

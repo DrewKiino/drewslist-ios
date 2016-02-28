@@ -156,9 +156,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-    var tabView: TabView? = TabView()
+//    var tabView: TabView? = TabView()
     
-//    var tabView: AccountSettingsView? = AccountSettingsView()
+    var tabView: SearchListingView? = SearchListingView()
 //    var tabView: LoginView? = LoginView()
     
     /*

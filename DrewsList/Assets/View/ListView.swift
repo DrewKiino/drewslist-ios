@@ -529,8 +529,12 @@ public class ListerAttributesViewCell: DLTableViewCell {
       Async.main { [weak self] in
         self?.conditionLabel?.attributedText = coloredString2
       }
+    }
+    
+    if notesTextView?.attributedText == listing?.notes { return }
+    else { notesTextView?.attributedText = nil }
       
-      
+    Async.background { [weak self, weak listing] in
       if let notes = listing?.notes {
         Async.main { [weak self] in
           self?.notesTitle?.text = !notes.isEmpty ? "Notes:" : nil
@@ -546,7 +550,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
         NSForegroundColorAttributeName: UIColor.blackColor(),
         NSFontAttributeName: UIFont.asapRegular(12)
-        ])
+      ])
       
       // dealloc paragraph style
       paragraphStyle = nil
