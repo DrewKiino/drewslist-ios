@@ -563,13 +563,17 @@ public class BookViewCell: DLTableViewCell {
   private func setupBookView() {
     bookView = BookView()
     addSubview(bookView!)
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
   }
+  
   
   public func setBook(book: Book?) {
     bookView?.setBook(book)
   }
   
   public func cellPressed() {
+    print("moo")
     _cellPressed => true
   }
 }

@@ -142,10 +142,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
           
           cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
-          cell.inputTextField?.text = model.user?.username
+          cell.inputTextField?.text = UserModel.sharedUser().user?.username
           cell.inputTextField?.font = .asapRegular(16)
           
           cell._inputTextFieldString.listen(self) { [weak self] string in
+            print(string)
             self?.controller.setUsername(string)
           }
           return cell

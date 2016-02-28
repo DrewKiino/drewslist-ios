@@ -31,6 +31,8 @@ public class BookView: UIView {
   
   public var book: Book?
   
+  public let _bookViewPressed = Signal<Bool>()
+  
   public init() {
     super.init(frame: CGRectZero)
     
@@ -87,6 +89,8 @@ public class BookView: UIView {
   
   public func pressed() {
     TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true)
+    
+    _bookViewPressed => true
   }
   
   private func setupImageView() {
