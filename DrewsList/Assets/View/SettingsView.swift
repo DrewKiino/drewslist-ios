@@ -34,6 +34,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     tableView?.scrollEnabled = false
     tableView?.delegate = self
     tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
     view.addSubview(tableView!)
     
     tableView?.fillSuperview()

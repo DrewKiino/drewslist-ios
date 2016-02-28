@@ -78,13 +78,7 @@ public class ListViewContainer: UIViewController {
   
   public func showEditButton() {
     hideEditButton()
-    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
-    item.setTitleTextAttributes([
-      NSFontAttributeName: UIFont.asapRegular(16),
-      NSForegroundColorAttributeName: UIColor.whiteColor()
-    ], forState: .Normal)
-    
-    navigationItem.rightBarButtonItem = item
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editButtonPressed")
   }
   
   public func hideEditButton() {
@@ -110,7 +104,22 @@ public class ListViewContainer: UIViewController {
   }
  
   public func editButtonPressed() {
-    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
+//    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
+    let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
+    })
+    alertController.addAction(UIAlertAction(title: "Delete", style: .Default) { [weak self] action in
+      if let strongSelf = self {
+        self?.listView?.controller.serverCallbackFromDeletelIsting.removeAllListeners()
+        self?.listView?.controller.serverCallbackFromDeletelIsting.listen(strongSelf) { [weak self] didCallback in
+          log.debug(didCallback)
+        }
+      }
+      self?.listView?.controller.deleteListingFromServer()
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
   }
   
   // MARK: Realm Functions
