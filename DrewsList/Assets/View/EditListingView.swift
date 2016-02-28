@@ -154,11 +154,11 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-//            cell.bookView?.setBook(model.listing?.book)
-//            model._listing.removeAllListeners()
-//        model._listing.listen(self) {[weak cell] listing in
-//          cell?.bookView?.setBook(listing?.book)
-//        }
+            cell.bookView?.setBook(model.listing?.book)
+            model._listing.removeAllListeners()
+        model._listing.listen(self) {[weak cell] listing in
+          cell?.bookView?.setBook(listing?.book)
+        }
         cell.setBook(model.book)
         return cell
       }
