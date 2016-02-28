@@ -58,6 +58,23 @@ public class ChatView: JSQMessagesViewController {
     // set chat view title to friend's title
     title = model.friend?.getName()
     inputToolbar?.translucent = false
+    
+    let myImage = UIImage(named: "Icon-SettingsGear")
+    let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screen.width/20, height: screen.width/20))
+    
+    //let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+    var settingsButton = UIButton()
+    settingsButton.frame = CGRectMake(30, 30, 30, 30)
+    settingsButton.backgroundColor = .redColor()
+    
+    view.addSubview(settingsButton)
+    
+    
+    
+    //settingsButton.action
+    // TODO: check if user is self
+   // self.navigationController?.navigationItem.rightBarButtonItem = settingsButton
+    
     // hide attachment button
 //    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
   }
