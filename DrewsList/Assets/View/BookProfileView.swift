@@ -78,7 +78,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public func setBook(book: Book?) -> Self {
-    if let book = book { model.book = book }
+    model.book = book
     return self
   }
   

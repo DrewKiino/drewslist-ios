@@ -82,10 +82,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   // MARK: TableView Delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    switch indexPath.row {
-      case 12: return 0
-      default: return 12
-    }
     return 24
   }
   
@@ -106,7 +102,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Email:"
-        cell.titleTextLabel?.text = model.user?.email ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.email
         cell.hideSeparatorLine()
         return cell
       }
@@ -114,35 +110,35 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Username:"
-        cell.titleTextLabel?.text = model.user?.username ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.username
         return cell
       }
       break
     case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "First Name:"
-        cell.titleTextLabel?.text = model.user?.firstName ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.firstName
         return cell
       }
       break
     case 4:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Last Name:"
-        cell.titleTextLabel?.text = model.user?.lastName ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.lastName
         return cell
       }
       break
     case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Phone Number:"
-        cell.titleTextLabel?.text = model.user?.getPhoneNumberText() ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.getPhoneNumberText()
         return cell
       }
       break
     case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "School:"
-        cell.titleTextLabel?.text = model.user?.school ?? "N/A"
+        cell.titleTextLabel?.text = model.user?.school
         return cell
       }
       break
@@ -166,6 +162,12 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
           else { cell?.switchOff() }
         }
         
+        if pushController.isRegisteredForRemoteNotifications() {
+          cell.switchOn()
+        } else {
+          cell.switchOff()
+        }
+        
         cell.hideSeparatorLine()
         
         return cell
@@ -177,6 +179,12 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self, weak cell] bool in
           self?.locationController.showPermissions()
+        }
+        
+        if locationController.isRegisteredForLocationUpdates() {
+          cell.switchOn()
+        } else {
+          cell.switchOff()
         }
         
         locationController._didUpdateAuthorizationStatus.removeListener(self)
@@ -217,13 +225,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.textLabel?.text = "Deactivate Account"
-        cell._didSelectCell.removeAllListeners()
-        cell._didSelectCell.listen(self) { bool in
-          log.debug(bool)
-      }
-      return cell
-
+        
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)
         cell.hideArrowIcon()
         cell._didSelectCell.removeAllListeners()
@@ -232,7 +234,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         }
         
         return cell
-
       }
       break
     case 13:

@@ -96,6 +96,14 @@ public class User: Mappable {
   
   public let _privatePhoneNumber = Signal<Bool>()
   public var privatePhoneNumber: Bool = false { didSet { _privatePhoneNumber => privatePhoneNumber } }
+  
+  // MARK: User Settings
+  
+  public let _hasSeenTermsAndPrivacy = Signal<Bool>()
+  public var hasSeenTermsAndPrivacy: Bool = false { didSet { _hasSeenTermsAndPrivacy => hasSeenTermsAndPrivacy } }
+  
+  public let _hasSeenOnboardingView = Signal<Bool>()
+  public var hasSeenOnboardingView: Bool = false { didSet { _hasSeenOnboardingView => hasSeenOnboardingView } }
  
   public init() {}
   
@@ -108,19 +116,22 @@ public class User: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
-    _id                 <- map["_id"]
-    email               <- map["email"]
-    phone               <- map["phone"]
-    firstName           <- map["firstName"]
-    lastName            <- map["lastName"]
-    username            <- map["username"]
-    school              <- map["school"]
-    imageUrl            <- map["image"]
-    bgImage             <- map["bgImage"]
-    description         <- map["description"]
-    deviceToken         <- map["deviceToken"]
-    listings            <- map["listings"]
-    privatePhoneNumber  <- map["privatePhoneNumber"]
+    _id                     <- map["_id"]
+    email                   <- map["email"]
+    phone                   <- map["phone"]
+    firstName               <- map["firstName"]
+    lastName                <- map["lastName"]
+    username                <- map["username"]
+    school                  <- map["school"]
+    imageUrl                <- map["image"]
+    bgImage                 <- map["bgImage"]
+    description             <- map["description"]
+    deviceToken             <- map["deviceToken"]
+    listings                <- map["listings"]
+    privatePhoneNumber      <- map["privatePhoneNumber"]
+    hasSeenTermsAndPrivacy  <- map["hasSeenTermsAndPrivacy"]
+    hasSeenOnboardingView   <- map["hasSeenOnboardingView"]
+    
   }
   
   public func getName() -> String? {

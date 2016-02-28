@@ -322,21 +322,21 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
   public func dismissAndPresentListingFeed() {
     if  let tabView = presentingViewController as? TabView,
         let scannerView = (tabView.viewControllers?.filter { $0 is ScannerView })?.first as? ScannerView,
-        let communityFeedView = (tabView.viewControllers?.filter { $0 is CommunityFeedView })?.first as? CommunityFeedView
+//        let communityFeedView = (tabView.viewControllers?.filter { $0 is CommunityFeedView })?.first as? CommunityFeedView
+        let listFeedView = (tabView.viewControllers?.filter { $0 is ListFeedNavigationView })?.first as? ListFeedNavigationView
     {
       // dismiss view and go back to scanner view
-      scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak communityFeedView] in
+      scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak listFeedView] in
         // setup scanner view to start new session
         scannerView?.previewLayer?.hidden = false
         scannerView?.session?.startRunning()
         tabView?.selectedIndex = 0
-        communityFeedView?.selectMiddlePage()
         if self?.model.listing?.listType == "buying" {
-          communityFeedView?.middlePage?.selectLeftPage()
-          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "buying")
+          listFeedView?.listFeedViewContainer?.selectLeftPage()
+          listFeedView?.listFeedViewContainer?.getListingsFromServer(0, listing: "buying")
         } else if self?.model.listing?.listType == "selling" {
-          communityFeedView?.middlePage?.selectRightPage()
-          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "selling")
+          listFeedView?.listFeedViewContainer?.selectRightPage()
+          listFeedView?.listFeedViewContainer?.getListingsFromServer(0, listing: "selling")
         }
       }
     }

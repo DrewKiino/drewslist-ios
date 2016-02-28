@@ -10,6 +10,23 @@ import Foundation
 import UIKit
 import Signals
 
+public class ListFeedNavigationView: DLNavigationController {
+  
+  public var listFeedViewContainer: ListFeedViewContainer?
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setRootViewTitle("Community")
+    setupListFeedViewContainer()
+  }
+  
+  private func setupListFeedViewContainer() {
+    listFeedViewContainer = ListFeedViewContainer()
+    rootView?.view = listFeedViewContainer
+  }
+}
+
 public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   private var scrollView: UIScrollView?
@@ -60,7 +77,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     
     pageSelector?.frame = rightPageTitleButton!.frame
     
-    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 148 - 32)
+    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 32 - 112)
     
     wishListFeedView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: screen.width)
     saleListFeedView?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: wishListFeedView!, padding: 0, width: screen.width)

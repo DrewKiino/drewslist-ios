@@ -7,6 +7,9 @@ use_frameworks!
 
 #####################################
 
+# analytics
+pod 'GoogleAnalytics'
+
 # map routing libs
 pod 'OpenInGoogleMaps'
 
@@ -65,6 +68,9 @@ pod 'PermissionScope'
 # authentication libs
 pod 'FBSDKCoreKit'
 pod 'FBSDKLoginKit'
+
+# analytics
+pod 'Google/Analytics'
 
 #####################################
 # unit testing

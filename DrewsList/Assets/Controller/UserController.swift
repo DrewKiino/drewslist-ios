@@ -51,7 +51,6 @@ public class UserController {
         encoding: .JSON
         )
         .response { [weak self] req, res, data, error in
-          log.debug(JSON(data: data!))
           if let error = error {
             log.error(error)
           } else if let data = data, let json: JSON! = JSON(data: data) {

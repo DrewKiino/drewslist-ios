@@ -133,6 +133,7 @@ public class Listing: Mappable {
     condition     <- map["condition"]
     createdAt     <- map["createdAt"]
     updatedAt     <- map["updatedAt"]
+    highestLister <- map["highestLister"]
     
 //    if (user      == nil) { user      <- map["user"] }
 //    if (book      == nil) { book      <- map["book"] }
@@ -144,6 +145,5 @@ public class Listing: Mappable {
 //    if (createdAt == _id) { createdAt <- map["createdAt"] }
 //    if (updatedAt == _id) { updatedAt <- map["updatedAt"] }
     
-//    highestLister <- map["highestLister"]
   }
 }

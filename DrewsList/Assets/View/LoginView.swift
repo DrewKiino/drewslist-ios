@@ -88,6 +88,17 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+   
+    // Google Analytics
+    let name = "LoginView" // Get view name
+    
+    // [START screen_view_hit_swift]
+    let tracker = GAI.sharedInstance().defaultTracker
+    tracker.set(kGAIScreenName, value: name)
+    
+    let builder = GAIDictionaryBuilder.createScreenView()
+    tracker.send(builder.build() as [NSObject : AnyObject])
+    // [END screen_view_hit_swift]
     
     checkIfUserHasSeenOnboardingView()
     

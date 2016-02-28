@@ -20,11 +20,30 @@ public class CreateListingController {
   
   private var refrainTimer: NSTimer?
   
-  // MARK: Initializers
   public init() {
-    readRealmUser()
+    
+    model.user = UserModel.sharedUser().user
+    
+    setDefaultListing()
     // fixtures
-//    getBookFromServer("9780547539638")
+    //    getBookFromServer("9780547539638")
+    setupDataBinding()
+  }
+  
+  private func setupDataBinding() {
+    UserModel.sharedUser()._user.removeListener(self)
+    UserModel.sharedUser()._user.listen(self) { [weak self] user in
+      self?.model.user = user
+    }
+  }
+  
+  public func setDefaultListing() {
+    // create default listing in case user has not changed any inputs
+    model.listing?.listType = "buying"
+    model.listing?.cover = "hardcover"
+    model.listing?.condition = "2"
+    model.listing?.price = 1.00
+    model.listing?.notes = ""
   }
   
   // MARK: Getters
@@ -40,6 +59,14 @@ public class CreateListingController {
   public func uploadListingToServer() {
     // unwrap isbn and make sure it exists, then make sure there are no prior server calls executed
     
+   log.debug(model.user?._id)
+   log.debug(model.book?._id)
+   log.debug(model.listing?.price)
+   log.debug(model.listing?.listType)
+   log.debug(model.listing?.condition)
+   log.debug(model.listing?.cover)
+   log.debug(model.listing?.notes)
+    
     guard let user_id = model.user?._id,
           let book_id = model.book?._id,
           let price = model.listing?.price,
@@ -49,6 +76,8 @@ public class CreateListingController {
           let notes = model.listing?.notes
           where model.shouldRefrainFromCallingServer == false else
     { return }
+   log.debug(model._shouldRefrainFromCallingServer)
+    log.debug("mark")
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern

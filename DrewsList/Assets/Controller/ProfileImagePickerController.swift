@@ -8,16 +8,36 @@
 
 import Foundation
 import RealmSwift
+import FBSDKCoreKit
+import Alamofire
 
 public class ProfileImagePickerController {
   
   public let model = ProfileImagePickerModel()
+  private let fbsdkController = FBSDKController()
   
-  public func setUp() {
-    
+  public init() {
+    setupDataBinding()
+    setupFBProfile()
   }
   
   public func setupDataBinding() {
+    
+  }
+ 
+  public func setupFBProfile(){
+    let pictureRequest = FBSDKGraphRequest(graphPath: "me/picture?type=large&redirect=false", parameters: nil)
+    pictureRequest.startWithCompletionHandler({
+      (connection, result, error: NSError!) -> Void in
+      if error == nil {
+        if let url = result["data"]["url"]{
+          self.model.fbProfileImageURL = "\(url)"
+        }
+      } else {
+        print("\(error)")
+        self.model.fbProfileImageURL = nil
+      }
+    })
   }
   
   public func updateUserInServer() {

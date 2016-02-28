@@ -34,15 +34,16 @@ public class UserProfileController {
   }
   
   public func getUserFromServer() {
+    
     // make sure the user_id exists
     guard let user_id = model.user?._id where model.shouldRefrainFromCallingServer == false else { return }
+    
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
     Alamofire.request(.GET, ServerUrl.Default.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
     .response { [weak self] req, res, data, error in
-      
       if let error = error {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
