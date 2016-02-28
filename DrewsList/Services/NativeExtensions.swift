@@ -471,47 +471,19 @@ extension UIImageView {
   
   public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode? = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
     if let url = url, let nsurl = NSURL(string: url) {
+      // set the tag with the url's unique hash value
+      if tag == url.hashValue { return }
+      // else set the new tag as the new url's hash value
+      tag = url.hashValue
+      image = nil
+      // begin image download
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-        Async.background { [weak self] in
-          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: fitMode ?? .Crop)
-          
-          if maskWithEllipse == true { toucan?.maskWithEllipse() }
-          
-          Async.main { [weak self] in
-            
-            if animated == true { self?.alpha = 0.0 }
-            
-            if let block = block {
-              block(image: toucan?.image)
-            } else {
-             
-              self?.image = toucan?.image
-            }
-            
-            if animated == true {
-              UIView.animateWithDuration(0.7) { [weak self] in
-                self?.alpha = 1.0
-              }
-            }
-            
-            toucan = nil
-          }
-        }
+        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
       }
     } else {
       dl_setImage(placeholder)
     }
-//    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
-//      .CacheMemoryOnly,
-//      .ContinueInBackground,
-//      .ProgressiveDownload,
-//      .AvoidAutoSetImage,
-//      .LowPriority
-//    ]) { image, error, cache, url in
-//      completionHandler?(image, error, cache, url)
-//    }
-    
   }
   
   public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {
