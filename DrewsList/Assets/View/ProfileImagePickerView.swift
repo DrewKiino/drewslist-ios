@@ -16,6 +16,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   private var model: ProfileImagePickerModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
 
+  private var scrollView: UIScrollView?
   private var tableView: DLTableView?
   private var profileImgURLs: [String]?
   private var profileImgNames: [String]?
@@ -26,6 +27,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     setupSelf()
     setupDataBinding()
     setupProfileImages()
+    setupScrollView()
     setupTableView()
     
   }
@@ -58,6 +60,15 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
       profileImgNames = ["Harry", "Muffins", "Puff", "Niko", "Paul", "Mosby", "Brownie", "Jasper", "Randy"]
     }
     
+  }
+  
+  public func setupScrollView(){
+    scrollView = UIScrollView()
+    scrollView?.scrollEnabled = true
+    scrollView?.pagingEnabled = true
+    scrollView?.showsHorizontalScrollIndicator = false
+    scrollView?.delegate = self
+    view.addSubview(scrollView!)
   }
   
   

@@ -891,9 +891,7 @@ public class BigImageCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
-    pressGesture.minimumPressDuration = 0.01
-    addGestureRecognizer(pressGesture)
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "pressed:"))
   }
   
   private func setupLabel() {
