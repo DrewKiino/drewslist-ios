@@ -707,7 +707,11 @@
 				TargetAttributes = {
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
+<<<<<<< HEAD
 						DevelopmentTeam = 8SJ3UJ3963;
+=======
+						DevelopmentTeam = YL9E8RLWV2;
+>>>>>>> origin/integrate-user-sign-up-login
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -1078,7 +1082,11 @@
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.totemv.drewlistapp;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.totemv.drewslist.1.0;
+>>>>>>> origin/integrate-user-sign-up-login
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
@@ -1097,7 +1105,11 @@
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.totemv.drewlistapp;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.totemv.drewslist.1.0;
+>>>>>>> origin/integrate-user-sign-up-login
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;

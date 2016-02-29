@@ -66,8 +66,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    pulseContainer?.anchorInCorner(.BottomRight, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
-    searchButton?.anchorInCorner(.BottomRight, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
+    pulseContainer?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
+    searchButton?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
     searchPulse?.anchorInCenter(width: 60, height: 60)
 
     helpButton?.setImage(Toucan(image: UIImage(named: "help-button")).resize(helpButton!.frame.size).image, forState: .Normal)
