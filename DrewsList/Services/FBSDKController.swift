@@ -151,8 +151,17 @@ public class FBSDKController {
       return nil
     }
   }
-  
+    
   public class func logout() {
     FBSDKLoginManager().logOut()
+  }
+  
+  // MARK: Analytics
+  public func createCustomEventForName(name: String) {
+    FBSDKAppEvents.logEvent(name)
+  }
+  
+  public func createCustomEventForName(name: String, with parameters: [NSObject: AnyObject]) {
+    FBSDKAppEvents.logEvent(name, parameters: parameters)
   }
 }

@@ -26,7 +26,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     setupSelf()
     setupDataBinding()
     setUpTableView()
-    
+    FBSDKController().createCustomEventForName("UserEditProfile")
   }
   
   public override func viewWillAppear(animated: Bool) {

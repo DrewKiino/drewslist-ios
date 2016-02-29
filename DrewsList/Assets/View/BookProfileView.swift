@@ -38,6 +38,8 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     setupDataBinding()
     
     controller.viewDidLoad()
+    
+    FBSDKController().createCustomEventForName("UserBookProfile")
   }
   
   public override func viewWillAppear(animated: Bool) {

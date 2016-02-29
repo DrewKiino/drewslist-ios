@@ -42,6 +42,8 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     saveButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
+    
+    FBSDKController().createCustomEventForName("UserEditListing")
   }
   
   // MARK: Setup Functions

@@ -64,6 +64,7 @@ public class ConfirmTransferView: UIViewController, UITableViewDelegate, UITextF
     
     TableView?.alignAndFill(align: .UnderCentered, relativeTo: HeaderView!, padding: 0)
     
+    FBSDKController().createCustomEventForName("UserConfirmTransfer")
   }
   
   public override func viewDidAppear(animated: Bool) {
