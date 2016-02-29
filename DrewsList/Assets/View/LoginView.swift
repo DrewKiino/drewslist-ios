@@ -289,7 +289,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public func loginButtonPressed() {
     dismissKeyboard()
     controller.loginUserToServer()
-    FBSDKController().createCustomEventForName("LoginButtonPressed")
+    FBSDKController().createCustomEventForName("Login_LoginButtonPressed")
   }
   
   public func signupButtonPressed() {
