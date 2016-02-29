@@ -51,28 +51,28 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     //skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
     //skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
     
-    let firstPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding1")!).resize(firstPage.view.frame.size, fitMode: .Clip).image)
+    let firstPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-1")!).resize(firstPage.view.frame.size, fitMode: .Clip).image)
     firstPageBG.frame = firstPage.view.frame
     firstPage.view.addSubview(firstPageBG)
     //firstPage.view.addSubview(skipButton!)
     firstPage.title = "WelcomeScreen"
     
-    let secondPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding2")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    let secondPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-2")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
     secondPageBG.frame = firstPage.view.frame
     secondPage.view.addSubview(secondPageBG)
     secondPage.title = "ScanInfoScreen"
     
-    let thirdPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding3")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    let thirdPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-3")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
     thirdPageBG.frame = thirdPage.view.frame
     thirdPage.view.addSubview(thirdPageBG)
     thirdPage.title = "GetMatchedScreen"
     
-    let fourthPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding4")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    let fourthPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-4")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
     fourthPageBG.frame = fourthPage.view.frame
     fourthPage.view.addSubview(fourthPageBG)
     fourthPage.title = "PermissionsForPushScreen"
     
-    let fifthPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding5")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
+    let fifthPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-5")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
     fifthPageBG.frame = fifthPage.view.frame
     fifthPage.view.addSubview(fifthPageBG)
     fifthPage.title = "CloseTheDealScreen"
