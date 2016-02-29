@@ -19,7 +19,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   private let controller = OnboardingController()
   private let screen = UIScreen.mainScreen().bounds
   private var myViewControllers = Array(count: 2, repeatedValue:UIViewController())
-  private var skipButton: UIButton?
+  //private var skipButton: UIButton?
   private var pushPermissionsLaterButton: SwiftyButton?
   private var pushPermissionsAcceptButton: SwiftyButton?
   private var getStartedButton: SwiftyButton?
@@ -46,15 +46,15 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   private func setupOnboardingView() {
     
     // persist app state and say that the onboarding view has been seen
-//    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "OnboardingSeen")
+    //    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "OnboardingSeen")
     
-    skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
-    skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
+    //skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
+    //skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
     
     let firstPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding1")!).resize(firstPage.view.frame.size, fitMode: .Clip).image)
     firstPageBG.frame = firstPage.view.frame
     firstPage.view.addSubview(firstPageBG)
-    firstPage.view.addSubview(skipButton!)
+    //firstPage.view.addSubview(skipButton!)
     firstPage.title = "WelcomeScreen"
     
     let secondPageBG = UIImageView(image: Toucan(image: UIImage(named: "onboarding2")!).resize(secondPage.view.frame.size, fitMode: .Clip).image)
@@ -143,7 +143,8 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     case "CloseTheDealScreen":
       setupGetStartedButton(currentView.view)
       break
-    default: currentView.view.addSubview(skipButton!)
+    //default: currentView.view.addSubview(skipButton!)
+    default: break
     }
     
     return currentView
@@ -166,7 +167,8 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     case "CloseTheDealScreen":
       setupGetStartedButton(currentView.view)
       break
-    default: currentView.view.addSubview(skipButton!)
+    //default: currentView.view.addSubview(skipButton!)
+    default: break
     }
     
     return currentView
@@ -183,7 +185,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
       if view == pushPermissionsLaterButton { view.removeFromSuperview() }
       else if view == pushPermissionsAcceptButton { view.removeFromSuperview() }
       else if view == getStartedButton { view.removeFromSuperview() }
-      else if view == skipButton { view.removeFromSuperview() }
+//      else if view == skipButton { view.removeFromSuperview() }
     }
   }
   
