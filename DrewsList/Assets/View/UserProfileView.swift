@@ -84,6 +84,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public var wishListView: UICollectionView?
   public var arrow: UIImageView?
   public var isOtherUser: Bool?
+  public var callButton: UIButton?
+  public var chatButton: UIButton?
+  
   
   // if you know there are variables that classes outside of this class
   // aren't going to be used, or that unit tests dont need to know about it
@@ -163,9 +166,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     descriptionTextView?.alignAndFillWidth(
       align: .UnderCentered,
       relativeTo: bgView!,
-      padding: 16,
-      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
+      padding: 0,
+      height: 50
+      //      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
     )
+    descriptionTextView?.backgroundColor = .whiteColor()
+    
     
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
@@ -277,6 +283,35 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         // TODO: check if user is self
         self.navigationItem.rightBarButtonItem = settingsButton
       }
+      if (isOtherUser) {
+        let iconWidth = screen.width / 12
+        
+        var myImage = UIImage(named: "Icon-CallButton")
+        var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+        
+        callButton = UIButton()
+        callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+        callButton?.setImage(resizedImage, forState: .Normal)
+        callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+        callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
+       
+        myImage = UIImage(named: "Icon-MessageButton")
+        resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+        
+        chatButton = UIButton()
+        chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
+        chatButton?.setImage(resizedImage, forState: .Normal)
+        chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+        
+        descriptionTextView?.addSubview(callButton!)
+        descriptionTextView?.addSubview(chatButton!)
+        
+        
+        myImage = nil
+        resizedImage = nil
+      }
     }
   }
   
@@ -316,6 +351,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public func settingsButtonPressed(){
     navigationController?.pushViewController(SettingsView(), animated: true)
   }
+  
+  public func callFriend(){
+    self.model.user?.phone?.callNumber()
+  }
+  
+  public func chatFriend(){
+    TabView.currentView()?.pushViewController(ChatView().setUsers(UserModel.sharedUser().user, friend: model.user), animated: true)
+  }
+  
   
   // MARK: Table View Delegates
   
