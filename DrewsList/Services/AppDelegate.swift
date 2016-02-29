@@ -158,7 +158,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
     var tabView: TabView? = TabView()
     
-    //var tabView: SearchListingView? = SearchListingView()
+//    var tabView: SearchListingView? = SearchListingView()
 //    var tabView: LoginView? = LoginView()
     
     /*

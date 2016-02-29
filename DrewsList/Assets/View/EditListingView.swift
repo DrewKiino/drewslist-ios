@@ -154,11 +154,11 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-//            cell.bookView?.setBook(model.listing?.book)
-//            model._listing.removeAllListeners()
-//        model._listing.listen(self) {[weak cell] listing in
-//          cell?.bookView?.setBook(listing?.book)
-//        }
+            cell.bookView?.setBook(model.listing?.book)
+            model._listing.removeAllListeners()
+        model._listing.listen(self) {[weak cell] listing in
+          cell?.bookView?.setBook(listing?.book)
+        }
         cell.setBook(model.book)
         return cell
       }
@@ -224,23 +224,23 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SliderCell", forIndexPath: indexPath) as? SliderCell {
-        //        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell._didSelectCell.removeAllListeners()
-        //        cell._didSelectCell.listen(self) { [weak self] toggle in
-        //          switch toggle {
-        //          case .Left:
-        //            self?.model.listing?.condition = "1"
-        //            return
-        //          case .Middle:
-        //            self?.model.listing?.condition = "2"
-        //            return
-        //          case .Right:
-        //            self?.model.listing?.condition = "3"
-        //            return
-        //          }
-        //        }
+//                cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell._didSelectCell.removeAllListeners()
+//                cell._didSelectCell.listen(self) { [weak self] toggle in
+//                  switch toggle {
+//                  case .Left:
+//                    self?.model.listing?.condition = "1"
+//                    return
+//                  case .Middle:
+//                    self?.model.listing?.condition = "2"
+//                    return
+//                  case .Right:
+//                    self?.model.listing?.condition = "3"
+//                    return
+//                  }
+//                }
         return cell
       }
       break

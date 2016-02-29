@@ -34,6 +34,18 @@ public class UserProfileController {
     getUserFromServer()
   }
   
+  public class func updateUserToServer(parameters: [String: AnyObject], callback: (User -> Void)? = nil) {
+    Alamofire.request(.POST, "\(ServerUrl.Default.getValue())/user/\(UserModel.sharedUser().user?._id ?? "")", parameters: parameters)
+    .response { req, res, data, error in
+      if let error = error {
+        log.error(error)
+      } else if let data = data, let json: JSON! = JSON(data: data) {
+        UserModel.setSharedUser(User(json: json))
+        callback?(User(json: json))
+      }
+    }
+  }
+  
   public func getUserFromServer() {
     // make sure the user_id exists
     guard let user_id = model.user?._id where model.shouldRefrainFromCallingServer == false else { return }

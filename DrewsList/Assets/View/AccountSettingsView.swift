@@ -18,6 +18,8 @@ import CoreMotion
 import Contacts
 import PermissionScope
 
+
+
 public class AccountSettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate{
   
   private let controller = AccountSettingsController()

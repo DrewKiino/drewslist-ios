@@ -22,6 +22,12 @@ public class ListViewContainer: UIViewController {
   
   public var doOnce = true
   
+  private let controller = DeleteListingController()
+  private var model: DeleteListingModel  { get { return controller.model } }
+  private var ScreenSize = UIScreen.mainScreen().bounds
+  private var TableView: DLTableView?
+
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -78,13 +84,7 @@ public class ListViewContainer: UIViewController {
   
   public func showEditButton() {
     hideEditButton()
-    let item = UIBarButtonItem(title: "Edit", style: .Plain, target: self, action: "editButtonPressed")
-    item.setTitleTextAttributes([
-      NSFontAttributeName: UIFont.asapRegular(16),
-      NSForegroundColorAttributeName: UIColor.whiteColor()
-    ], forState: .Normal)
-    
-    navigationItem.rightBarButtonItem = item
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editButtonPressed")
   }
   
   public func hideEditButton() {
@@ -110,7 +110,22 @@ public class ListViewContainer: UIViewController {
   }
  
   public func editButtonPressed() {
-    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
+//    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
+    let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
+    })
+    alertController.addAction(UIAlertAction(title: "Delete", style: .Default) { [weak self] action in
+      if let strongSelf = self {
+        self?.listView?.controller.serverCallbackFromDeletelIsting.removeAllListeners()
+        self?.listView?.controller.serverCallbackFromDeletelIsting.listen(strongSelf) { [weak self] didCallback in
+          log.debug(didCallback)
+        }
+      }
+      self?.listView?.controller.deleteListingFromServer()
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
   }
   
   // MARK: Realm Functions
@@ -134,6 +149,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   
   public init() {
     super.init(frame: CGRectZero)
+    
     setupDataBinding()
     setupTableView()
     
@@ -149,9 +165,8 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   }
   
   public func setListing(listing: Listing?) -> Bool {
-    guard let listing = listing else { return false }
     
-    controller.setListing(listing)
+    model.listing = listing
     
     tableView?.reloadData()
     
@@ -163,6 +178,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
   }
   
   private func setupTableView() {
+    tableView?.removeFromSuperview()
     tableView = DLTableView()
     tableView?.dataSource = self
     tableView?.delegate = self
@@ -176,6 +192,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     model._listing.listen(self) { [weak self] listing in
       self?.tableView?.reloadData()
     }
+    
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
@@ -214,6 +231,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     switch indexPath.row {
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+        
         cell.bookView?.setBook(model.listing?.book)
         model._listing.removeListener(self)
         model._listing.listen(self) { [weak cell] listing in
@@ -242,7 +260,6 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
       }
     case 2:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("ListerAttributesViewCell", forIndexPath: indexPath) as? ListerAttributesViewCell {
-//        cell.isUserListing = isUserListing
         cell.setListing(model.listing)
         cell.showSeparatorLine()
         cell._callButtonPressed.removeAllListeners()
@@ -259,7 +276,39 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         }
         
         return cell
+        
       }
+      break;
+    case 3:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+        cell.backgroundColor = .whiteColor()
+        cell.hideBothTopAndBottomBorders()
+        cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
+        cell.button?.cornerRadius = 2
+        cell.button?.buttonColor = .juicyOrange()
+        cell.button?.setTitle("Delete Book", forState: .Normal)
+        cell._onPressed.removeAllListeners()
+        cell._onPressed.listen(self) {[ weak self] bool in
+          //self?.controller.setBookID(self?.model.listing?._id)
+          //self?.controller.deleteListingFromServer()
+          //self?.dismissViewControllerAnimated(true, completion: nil)
+          
+          
+        }
+        
+        return cell
+      }
+      
+      
+      break;
+    case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.backgroundColor = .whiteColor()
+        
+        return cell
+      }
+
+      
     default: break
     }
     
