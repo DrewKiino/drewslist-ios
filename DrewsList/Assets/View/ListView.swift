@@ -110,10 +110,11 @@ public class ListViewContainer: UIViewController {
   }
  
   public func editButtonPressed() {
-//    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
     let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
-    })
+    // TODO: add Edit Listing
+//    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
+//      
+//    })
     alertController.addAction(UIAlertAction(title: "Delete", style: .Default) { [weak self] action in
       if let strongSelf = self {
         self?.listView?.controller.serverCallbackFromDeletelIsting.removeAllListeners()

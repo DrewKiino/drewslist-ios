@@ -20,7 +20,7 @@ public class ChatView: JSQMessagesViewController {
   // UI Controls
   private var refreshControl: UIRefreshControl?
   private var alertController: UIAlertController?
-  private var settingsButton: UIButton?
+  private var callButton: UIButton?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -68,7 +68,7 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public func layoutSubviews() {
-    settingsButton?.fillSuperview()
+    callButton?.fillSuperview()
   }
   
   public func setupButtons(){
@@ -76,14 +76,14 @@ public class ChatView: JSQMessagesViewController {
     var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screen.width/20, height: screen.width/20))
     resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
     
-    settingsButton = UIButton()
-    settingsButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
-    settingsButton?.setImage(resizedImage, forState: .Normal)
-    settingsButton?.frame = CGRectMake(0, 0, 30, 30)
-    settingsButton?.layer.cornerRadius = (settingsButton?.frame.width)! / 2
-    settingsButton?.layer.backgroundColor = UIColor.whiteColor().CGColor
+    callButton = UIButton()
+    callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+    callButton?.setImage(resizedImage, forState: .Normal)
+    callButton?.frame = CGRectMake(0, 0, 30, 30)
+    callButton?.layer.cornerRadius = (callButton?.frame.width)! / 2
+    callButton?.layer.backgroundColor = UIColor.whiteColor().CGColor
     
-    DLNavigationController.setRightBarButton(self, customView: settingsButton)
+    DLNavigationController.setRightBarButton(self, customView: callButton)
     myImage = nil
     resizedImage = nil
   }
