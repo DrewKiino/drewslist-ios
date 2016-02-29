@@ -56,49 +56,35 @@ public class ListController {
   
   public func deleteListingFromServer() {
     
-    log.debug(model.listing?._id)
-    
     // unwrap isbn and make sure it exists, then make sure there are no prior server calls executed
-    guard let list_id = model.listing?._id where model.shouldRefrainFromCallingServer == false else { return }
-    
-    log.debug(model.listing?._id)
+    guard let list_id = model.listing?._id else { return }
     
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     
     // make the request following the server's route pattern
     Alamofire.request(.DELETE, "\(ServerUrl.Default.getValue())/listing/\(list_id)")
-      // then using the builder pattern, chain a 'response' call after
-      .response { [weak self] req, res, data, error in
+    // then using the builder pattern, chain a 'response' call after
+    .response { [weak self] req, res, data, error in
+      
+      // unwrap error and check if it exists
+      if let error = error {
+        log.error(error)
+        // use JSON library to jsonify the results ( NSData => JSON )
+        // since the results is an array of objects, and we are only interested in the first book,
+        // we get the first result
+        self?.serverCallbackFromDeletelIsting.fire(false)
         
-        // unwrap error and check if it exists
-        if let error = error {
-          log.error(error)
-          // use JSON library to jsonify the results ( NSData => JSON )
-          // since the results is an array of objects, and we are only interested in the first book,
-          // we get the first result
-          self?.serverCallbackFromDeletelIsting.fire(false)
-          
-        } else if let data = data, let json: JSON! = JSON(data: data) {
-          log.debug(json)
-          // using ObjectMapper we quickly convert the json data into an actual object we can use
-          // then we set the model's book with the new book
-          self?.serverCallbackFromDeletelIsting.fire(true)
-          
-        } else {
-          self?.serverCallbackFromDeletelIsting.fire(false)
-        }
+      } else if let data = data, let json: JSON! = JSON(data: data) {
+        log.debug(json)
+        // using ObjectMapper we quickly convert the json data into an actual object we can use
+        // then we set the model's book with the new book
+        self?.serverCallbackFromDeletelIsting.fire(true)
         
-        // set refrain to false since we have finally gotten a response back
-        self?.model.shouldRefrainFromCallingServer = false
+      } else {
+        self?.serverCallbackFromDeletelIsting.fire(false)
+      }
     }
-    // regardless of receiving any responses, if we even got any since server migth be down
-    // we resume server calls after 30 seconds of inactivity
-    // invalidate  the first timer set from the last call
-    // then create a new one
-    refrainTimer?.invalidate()
-    refrainTimer = nil
-    refrainTimer = NSTimer.after(30.0) { [weak self] in self?.model.shouldRefrainFromCallingServer = false }
   }
   
   public func setListing(listing: Listing) { model.listing = listing }

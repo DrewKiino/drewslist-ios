@@ -299,7 +299,6 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       break
     case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.showTopBorder()
         cell.hideBottomBorder()
         cell.paddingLabel?.text = ""
         return cell

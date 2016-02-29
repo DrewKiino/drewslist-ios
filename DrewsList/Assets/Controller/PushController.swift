@@ -28,10 +28,20 @@ public class PushController {
     model._authorizationStatus.listen(self) { [weak self] bool in
       self?._didUpdateAuthorizationStatus.fire(bool)
     }
+    _didRegisterForRemoteNotificationsWithDeviceToken.removeListener(self)
+    _didRegisterForRemoteNotificationsWithDeviceToken.listen(self) { [weak self] bool in
+      self?.model.authorizationStatus = bool
+    }
   }
   
-  public func isRegisteredForRemoteNotifications() -> Bool {
+  public func isRegisteredForRemoteNotifications() -> Bool? {
+    
     model.authorizationStatus = UIApplication.sharedApplication().isRegisteredForRemoteNotifications()
+    
+    if UIApplication.sharedApplication().currentUserNotificationSettings()?.types.rawValue == 0 {
+      return nil
+    }
+    
     return model.authorizationStatus
   }
   
@@ -41,13 +51,21 @@ public class PushController {
   }
   
   public func showPermissions() {
-    let alertController = UIAlertController(title: "Permissions", message: "We send you push notifications to notify you with the latest app updates including chats, listings, etc!", preferredStyle: .Alert)
-    alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
-      if let nsurl = NSURL(string: UIApplicationOpenSettingsURLString) { UIApplication.sharedApplication().openURL(nsurl) }
-    })
-    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-    })
-    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+    
+    if isRegisteredForRemoteNotifications() == nil {
+      
+      UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil))
+      UIApplication.sharedApplication().registerForRemoteNotifications()
+      
+    } else {
+      let alertController = UIAlertController(title: "Permissions", message: "We send you push notifications to notify you with the latest app updates including chats, listings, etc!", preferredStyle: .Alert)
+      alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+        if let nsurl = NSURL(string: UIApplicationOpenSettingsURLString) { UIApplication.sharedApplication().openURL(nsurl) }
+        })
+      alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+        })
+      UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+    }
   }
 }
 

@@ -164,7 +164,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
           else { cell?.switchOff() }
         }
         
-        if pushController.isRegisteredForRemoteNotifications() {
+        if pushController.isRegisteredForRemoteNotifications() == true {
           cell.switchOn()
         } else {
           cell.switchOff()

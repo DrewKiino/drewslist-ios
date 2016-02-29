@@ -33,6 +33,8 @@ public enum ServerUrl {
   }
 }
 
+public let _didRegisterForRemoteNotificationsWithDeviceToken = Signal<Bool>()
+
 public let _applicationWillEnterForeground = Signal<Bool>()
 public let _applicationDidEnterBackground = Signal<Bool>()
 
@@ -146,11 +148,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       user?.deviceToken = deviceTokenString
       return user
     }
+    
+    _didRegisterForRemoteNotificationsWithDeviceToken.fire(true)
   }
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
     
     log.debug(userInfo)
+    
+    
   }
   
   private func setupRootView() {

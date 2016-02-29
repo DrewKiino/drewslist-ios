@@ -34,14 +34,13 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     tableView?.scrollEnabled = false
     tableView?.delegate = self
     tableView?.dataSource = self
-    tableView?.backgroundColor = .whiteColor()
     view.addSubview(tableView!)
     
     tableView?.fillSuperview()
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 5
+    return 4
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -73,18 +72,18 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
       }
       break
+//    case 2:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
+//        cell.showSeparatorLine()
+//        cell.titleButton?.setTitle("Help Center", forState: .Normal)
+//        cell._didSelectCell.removeAllListeners()
+//        cell._didSelectCell.listen(self) { [weak self] bool in
+//          log.debug("TODO: show help center view")
+//        }
+//        return cell
+//      }
+//      break
     case 2:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-        cell.showSeparatorLine()
-        cell.titleButton?.setTitle("Help Center", forState: .Normal)
-        cell._didSelectCell.removeAllListeners()
-        cell._didSelectCell.listen(self) { [weak self] bool in
-          log.debug("TODO: show help center view")
-        }
-        return cell
-      }
-      break
-    case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showSeparatorLine()
         cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
@@ -95,7 +94,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
       }
       break
-    case 4:
+    case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.hideArrowIcon()
         cell.titleButton?.setTitle("Log Out", forState: .Normal)

@@ -110,18 +110,24 @@ public class ListViewContainer: UIViewController {
   }
  
   public func editButtonPressed() {
-//    navigationController?.pushViewController(DeleteListingView().setListing(listView?.model.listing), animated: true)
     let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
-    })
+    // NOTE: for now
+//    alertController.addAction(UIAlertAction(title: "Edit", style: .Default) { [weak self] action in
+//    })
     alertController.addAction(UIAlertAction(title: "Delete", style: .Default) { [weak self] action in
-      if let strongSelf = self {
-        self?.listView?.controller.serverCallbackFromDeletelIsting.removeAllListeners()
-        self?.listView?.controller.serverCallbackFromDeletelIsting.listen(strongSelf) { [weak self] didCallback in
-          log.debug(didCallback)
+      let alertController = UIAlertController(title: "Delete", message: "Are you sure you want to delete this listing?", preferredStyle: .Alert)
+      alertController.addAction(UIAlertAction(title: "Yes", style: .Default) { [weak self] action in
+        if let strongSelf = self {
+          self?.listView?.controller.serverCallbackFromDeletelIsting.removeAllListeners()
+          self?.listView?.controller.serverCallbackFromDeletelIsting.listen(strongSelf) { [weak self] didCallback in
+            if didCallback == true { TabView.currentView()?.popViewControllerAnimated(true) }
+          }
         }
-      }
-      self?.listView?.controller.deleteListingFromServer()
+        self?.listView?.controller.deleteListingFromServer()
+      })
+      alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+      })
+      UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
     })
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
     })

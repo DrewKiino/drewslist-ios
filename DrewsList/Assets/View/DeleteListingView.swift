@@ -193,11 +193,8 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
             self?.controller.setBookID(self?.model.listing?._id)
             self?.controller.deleteListingFromServer()
             self?.dismissViewControllerAnimated(true, completion: nil)
-            
-          
         }
-
-          return cell
+        return cell
       }
 
 

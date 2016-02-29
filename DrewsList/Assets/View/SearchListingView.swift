@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class SearchListingView: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
+public class SearchListingView: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIScrollViewDelegate {
   
   private let controller = SearchListingController()
   private var model: SearchListingModel { get { return controller.model } }
@@ -202,5 +202,10 @@ public class SearchListingView: UIViewController, UITableViewDataSource, UITable
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 //    model.user = model.users[indexPath.row]
+  }
+  
+  public func scrollViewDidScroll(scrollView: UIScrollView) {
+    searchBarTextField?.resignFirstResponder()
+    log.debug("mark")
   }
 }

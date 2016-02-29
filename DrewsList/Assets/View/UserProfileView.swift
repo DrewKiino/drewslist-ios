@@ -440,6 +440,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
   public let label = UILabel()
+  public var collectionViewLayout: UICollectionViewFlowLayout?
   public var collectionView: UICollectionView?
   
   public let controller = UserProfileListingController()
@@ -469,14 +470,12 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   }
   
   private func setupCollectionView() {
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
     
-    _collectionViewFrame.listen(self) { [weak layout] frame in
-      layout?.itemSize = CGSizeMake(100, frame.height)
-    }
+    collectionViewLayout = UICollectionViewFlowLayout()
+    collectionViewLayout?.scrollDirection = .Horizontal
     
-    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+    collectionView?.removeFromSuperview()
+    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewLayout!)
     collectionView?.registerClass(ListCell.self, forCellWithReuseIdentifier: "ListCell")
     collectionView?.delegate = self
     collectionView?.dataSource = self
@@ -494,9 +493,13 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    setupCollectionView()
+    
     label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
     collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
     collectionViewFrame = collectionView!.frame
+    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
