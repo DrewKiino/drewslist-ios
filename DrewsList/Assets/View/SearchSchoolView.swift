@@ -49,7 +49,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
     
-    FBSDKController().createCustomEventForName("UserSearchSchool")
+    FBSDKController.createCustomEventForName("UserSearchSchool")
   }
   
   public override func viewDidAppear(animated: Bool) {

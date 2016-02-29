@@ -52,7 +52,7 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
     
     tableView?.fillSuperview()
     
-    FBSDKController().createCustomEventForName("UserTermPrivacy")
+    FBSDKController.createCustomEventForName("UserTermPrivacy")
   }
   
   // MARK: DLTableView delegates  

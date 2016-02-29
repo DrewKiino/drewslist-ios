@@ -36,7 +36,7 @@ public class ListViewContainer: UIViewController {
     
     listView?.fillSuperview()
     
-    FBSDKController().createCustomEventForName("UserList")
+    FBSDKController.createCustomEventForName("UserList")
   }
   
   public override func viewWillLayoutSubviews() {

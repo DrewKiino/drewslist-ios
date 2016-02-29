@@ -32,7 +32,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView?.fillSuperview()
     
     view.showActivityView()
-    FBSDKController().createCustomEventForName("UserChatHistory")
+    FBSDKController.createCustomEventForName("UserChatHistory")
   }
   
   public override func viewDidAppear(animated: Bool) {

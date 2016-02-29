@@ -55,7 +55,7 @@ public class SearchListingView: UIViewController, UITableViewDataSource, UITable
     
     searchBarTextField?.fillSuperview(left: 8, right: 8, top: 8, bottom: 8)
     
-    FBSDKController().createCustomEventForName("UserSearchListing")
+    FBSDKController.createCustomEventForName("UserSearchListing")
   }
   
   public override func viewDidAppear(animated: Bool) {

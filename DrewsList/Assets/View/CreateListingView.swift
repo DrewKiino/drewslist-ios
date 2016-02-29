@@ -44,7 +44,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
     
-    FBSDKController().createCustomEventForName("UserCreateListing")
+    FBSDKController.createCustomEventForName("UserCreateListing")
   }
   
   // MARK: Setup Functions

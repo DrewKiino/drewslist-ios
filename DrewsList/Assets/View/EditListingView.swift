@@ -43,7 +43,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
     
-    FBSDKController().createCustomEventForName("UserEditListing")
+    FBSDKController.createCustomEventForName("UserEditListing")
   }
   
   // MARK: Setup Functions

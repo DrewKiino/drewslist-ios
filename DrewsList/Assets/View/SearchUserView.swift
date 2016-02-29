@@ -50,7 +50,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
     
-    FBSDKController().createCustomEventForName("UserSearchUser")
+    FBSDKController.createCustomEventForName("UserSearchUser")
   }
   
   public override func viewDidAppear(animated: Bool) {

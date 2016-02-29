@@ -39,7 +39,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupTableView()
     tableView?.fillSuperview()
     
-    FBSDKController().createCustomEventForName("UserAccountSettings")
+    FBSDKController.createCustomEventForName("UserAccountSettings")
   }
   
   public override func viewWillAppear(animated: Bool) {

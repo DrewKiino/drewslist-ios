@@ -32,7 +32,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     
     view.showActivityView()
     
-    FBSDKController().createCustomEventForName("UserActivityFeed")
+    FBSDKController.createCustomEventForName("UserActivityFeed")
   }
   
   public override func viewDidAppear(animated: Bool) {

@@ -30,7 +30,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     setupScrollView()
     setupTableView()
     
-    FBSDKController().createCustomEventForName("UserProfileImagePicker")
+    FBSDKController.createCustomEventForName("UserProfileImagePicker")
   }
   
   public override func viewWillAppear(animated: Bool) {
