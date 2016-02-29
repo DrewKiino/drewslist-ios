@@ -84,6 +84,8 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: fbLoginButton!, padding: 0, height: 48)
     signUpOption?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 60)
     forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
+    
+    FBSDKController().createCustomEventForName("UserLogin")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -287,6 +289,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   public func loginButtonPressed() {
     dismissKeyboard()
     controller.loginUserToServer()
+    FBSDKController().createCustomEventForName("LoginButtonPressed")
   }
   
   public func signupButtonPressed() {

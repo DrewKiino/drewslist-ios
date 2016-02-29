@@ -19,6 +19,8 @@ public class ListFeedNavigationView: DLNavigationController {
     
     setRootViewTitle("Community")
     setupListFeedViewContainer()
+    
+    FBSDKController().createCustomEventForName("UserListFeed")
   }
   
   private func setupListFeedViewContainer() {

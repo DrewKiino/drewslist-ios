@@ -50,6 +50,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     selectPage(.Middle)
     
     view.backgroundColor = .whiteColor()
+    
+    FBSDKController().createCustomEventForName("UserCommunityFeed")
   }
   
   public override func viewWillAppear(animated: Bool) {

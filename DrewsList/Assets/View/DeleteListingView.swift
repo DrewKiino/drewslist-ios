@@ -38,6 +38,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     SetUpDataBinding()
     controller.viewDidLoad()
   
+    FBSDKController().createCustomEventForName("UserDeleteListing")
   }
 
 

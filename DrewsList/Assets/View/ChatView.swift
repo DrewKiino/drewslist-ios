@@ -34,6 +34,8 @@ public class ChatView: JSQMessagesViewController {
     setupDataBinding()
     setupRefreshControl()
     controller.viewDidLoad()
+    
+    FBSDKController().createCustomEventForName("UserChat")
   }
   
   public override func viewDidAppear(animated: Bool) {

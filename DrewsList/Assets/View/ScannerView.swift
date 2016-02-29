@@ -43,6 +43,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     setupHelpButton()
     setupSearchButton()
     setupFocusImageView()
+    
+    FBSDKController().createCustomEventForName("UserScanner")
   }
   
   public override func viewDidAppear(animated: Bool) {

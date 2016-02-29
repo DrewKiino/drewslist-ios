@@ -88,6 +88,8 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: signupButton!, padding: 0, height: 48)
     loginOption?.fillSuperview()
+    
+    FBSDKController().createCustomEventForName("UserSignup")
   }
   
   public override func viewDidAppear(animated: Bool) {
