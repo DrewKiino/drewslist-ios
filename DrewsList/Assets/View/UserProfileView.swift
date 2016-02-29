@@ -23,7 +23,7 @@ public class UserProfileViewContainer: DLNavigationController {
     setupSelf()
     setupProfileView()
     
-    FBSDKController().createCustomEventForName("UserProfileView")
+    FBSDKController.createCustomEventForName("UserProfileView")
   }
   
   public override func viewDidAppear(animated: Bool) {

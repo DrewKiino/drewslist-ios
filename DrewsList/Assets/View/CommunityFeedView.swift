@@ -51,7 +51,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     
     view.backgroundColor = .whiteColor()
     
-    FBSDKController().createCustomEventForName("UserCommunityFeed")
+    FBSDKController.createCustomEventForName("UserCommunityFeed")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -150,13 +150,13 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePage?._callButtonPressed.removeAllListeners()
     middlePage?._callButtonPressed.listen(self) { [weak self] listing in
       listing?.user?.phone?.callNumber()
-      FBSDKController().createCustomEventForName("Community_CallButtonPressed")
+      FBSDKController.createCustomEventForName("Community_CallButtonPressed")
     }
     middlePage?._chatButtonPressed.removeAllListeners()
     middlePage?._chatButtonPressed.listen(self) { [weak self] listing in
       self?.controller.readRealmUser()
       self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user).setListing(listing), animated: true)
-      FBSDKController().createCustomEventForName("Community_ChatButtonPressed")
+      FBSDKController.createCustomEventForName("Community_ChatButtonPressed")
     }
     middlePage?._bookProfilePressed.removeAllListeners()
     middlePage?._bookProfilePressed.listen(self) { [weak self] book in

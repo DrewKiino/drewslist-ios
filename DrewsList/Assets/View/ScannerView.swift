@@ -44,7 +44,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     setupSearchButton()
     setupFocusImageView()
     
-    FBSDKController().createCustomEventForName("UserScanner")
+    FBSDKController.createCustomEventForName("UserScanner")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -205,7 +205,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       SearchBookModel.sharedInstance()._book.listen(self) { [weak self] book in
         self?.presentCreateListingView(book)
       }
-      FBSDKController().createCustomEventForName("Scanner_SearchButtonSelected")
+      FBSDKController.createCustomEventForName("Scanner_SearchButtonSelected")
     }
   }
     

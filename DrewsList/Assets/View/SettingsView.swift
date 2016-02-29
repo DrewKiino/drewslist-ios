@@ -19,7 +19,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     setupSelf()
     setupTableView()
     
-    FBSDKController().createCustomEventForName("UserSettings")
+    FBSDKController.createCustomEventForName("UserSettings")
   }
   
   public override func viewDidAppear(animated: Bool) {

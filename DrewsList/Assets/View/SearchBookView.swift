@@ -56,7 +56,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     
     searchBarImageView?.image = Toucan(image: UIImage(named: "Icon-Search-1")).resize(searchBarImageView!.frame.size).image
     
-    FBSDKController().createCustomEventForName("UserSearchBook")
+    FBSDKController.createCustomEventForName("UserSearchBook")
   }
   
   public override func viewWillAppear(animated: Bool) {

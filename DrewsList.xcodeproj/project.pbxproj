@@ -1071,8 +1071,8 @@
 			baseConfigurationReference = 4A35E42C995D771093243E74 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: TotemV, LLC (8SJ3UJ3963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: TotemV, LLC (8SJ3UJ3963)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DrewsList/Info.plist;
@@ -1083,6 +1083,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "DrewsList/DrewsList-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1091,8 +1092,8 @@
 			baseConfigurationReference = 8AB9EEC771B9191ECF67A657 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: TotemV, LLC (8SJ3UJ3963)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: TotemV, LLC (8SJ3UJ3963)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DrewsList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
@@ -1102,6 +1103,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "DrewsList/DrewsList-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
