@@ -248,7 +248,6 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         cell._cellPressed.removeAllListeners()
         cell._cellPressed.listen(self) { [weak self] bool in
-          print("moo2")
           if bool == true {
             self?._bookProfilePressed.fire(self?.model.listing?.book)
           }
