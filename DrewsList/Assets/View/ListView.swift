@@ -377,18 +377,21 @@ public class ListerProfileViewCell: DLTableViewCell {
   private func setupNameLabel() {
     nameLabel = UILabel()
     nameLabel?.font = UIFont.asapRegular(12)
+    nameLabel?.textColor = .coolBlack()
     addSubview(nameLabel!)
   }
   
   private func setupListTypeLabel() {
     listTypeLabel = UILabel()
     listTypeLabel?.font = UIFont.asapBold(12)
+    listTypeLabel?.textColor = .coolBlack()
     addSubview(listTypeLabel!)
   }
   
   private func setupListDateTitle() {
     listDateTitle = UILabel()
     listDateTitle?.font = UIFont.asapRegular(12)
+    listDateTitle?.textColor = .coolBlack()
     listDateTitle?.textAlignment = .Right
     addSubview(listDateTitle!)
   }
@@ -398,6 +401,7 @@ public class ListerProfileViewCell: DLTableViewCell {
     listDateLabel = UILabel()
     listDateLabel?.font = UIFont.asapRegular(12)
     listDateLabel?.textAlignment = .Right
+    listDateLabel?.textColor = .coolBlack()
     addSubview(listDateLabel!)
   }
   
@@ -499,7 +503,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private func setupPriceLabel() {
     priceLabel = UILabel()
     priceLabel?.font = UIFont.asapRegular(12)
-    priceLabel?.textColor = UIColor.moneyGreen()
+    priceLabel?.textColor = .moneyGreen()
     addSubview(priceLabel!)
   }
   
@@ -518,12 +522,14 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private func setupConditionLabel() {
     conditionLabel = UILabel()
     conditionLabel?.font = UIFont.asapRegular(12)
+    conditionLabel?.textColor = .coolBlack()
     addSubview(conditionLabel!)
   }
   
   private func setupNotesTitle() {
     notesTitle = UILabel()
     notesTitle?.font = UIFont.asapBold(12)
+    notesTitle?.textColor = .coolBlack()
     addSubview(notesTitle!)
   }
   
@@ -556,7 +562,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
       
       let string1 = "Desired Price: \(listing?.getPriceText() ?? "")"
       let coloredString1 = NSMutableAttributedString(string: string1)
-      coloredString1.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 13))
+      coloredString1.addAttribute(NSForegroundColorAttributeName, value: UIColor.coolBlack(), range: NSRange(location: 0,length: 13))
       coloredString1.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 13))
       
       Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
@@ -605,7 +611,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
       let attributedString: NSAttributedString = NSAttributedString(string: listing?.notes ?? "", attributes: [
         NSParagraphStyleAttributeName: paragraphStyle!,
         NSBaselineOffsetAttributeName: NSNumber(float: 0),
-        NSForegroundColorAttributeName: UIColor.blackColor(),
+        NSForegroundColorAttributeName: UIColor.coolBlack(),
         NSFontAttributeName: UIFont.asapRegular(12)
       ])
       
@@ -630,6 +636,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
         notesTitle = nil
         
         self?.notesTextView?.fillSuperview()
+        self?.notesTextView?.contentInset = UIEdgeInsetsMake(-8.0, 0.0, 0.0, 0.0)
         
         self?.notesTextViewContainer?.layer.mask = nil
         

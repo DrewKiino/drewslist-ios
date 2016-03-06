@@ -84,13 +84,14 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 4, otherSize: 24)
+    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 4, otherSize: 48)
     
-    pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, rightPageTitleButton!], padding: 0)
+    pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, rightPageTitleButton!], padding: 8)
     
     pageSelector?.frame = rightPageTitleButton!.frame
     
-    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 32 - 112)
+//    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 32 - 112)
+    scrollView?.alignAndFill(align: .UnderCentered, relativeTo: pageTitleContainer!, padding: 0)
     
     wishListFeedView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: screen.width)
     saleListFeedView?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: wishListFeedView!, padding: 0, width: screen.width)
@@ -124,7 +125,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   private func setupLeftPageTitleButton() {
     leftPageTitleButton = UIButton()
     leftPageTitleButton?.setTitle("Buyers", forState: .Normal)
-    leftPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftPageTitleButton?.titleLabel?.font = .asapBold(12)
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
@@ -136,7 +137,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   private func setupRightPageTitleButton() {
     rightPageTitleButton = UIButton()
     rightPageTitleButton?.setTitle("Sellers", forState: .Normal)
-    rightPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightPageTitleButton?.titleLabel?.font = .asapBold(12)
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true

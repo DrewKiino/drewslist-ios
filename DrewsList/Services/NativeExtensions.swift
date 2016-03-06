@@ -33,6 +33,10 @@ extension UIColor {
   
   // MARK: Main App Colors
   
+  public class func coolBlack() -> UIColor {
+    return UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
+  }
+  
   public class func sexyGray() -> UIColor {
     return UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
   }
@@ -303,7 +307,7 @@ extension UIView {
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
-    loadingLabel.textColor = .blackColor()
+    loadingLabel.textColor = .coolBlack()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
     
