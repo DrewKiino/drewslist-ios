@@ -283,12 +283,14 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     forgotPasswordOption?.setTitleColor(.whiteColor(), forState: .Normal)
     forgotPasswordOption?.setTitle("|\tForgot Password?", forState: .Normal)
     forgotPasswordOption?.contentHorizontalAlignment = .Center
+    // TODO: make forgot password funcitonality
+    forgotPasswordOption?.hidden = true
     optionsContrainer?.addSubview(forgotPasswordOption!)
   }
 
   public func loginButtonPressed() {
     dismissKeyboard()
-    controller.loginUserToServer()
+    controller.authenticateUserToServer(false)
     FBSDKController.createCustomEventForName("Login_LoginButtonPressed")
   }
   
