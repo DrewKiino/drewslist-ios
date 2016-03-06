@@ -736,7 +736,7 @@ public class ListCell: UICollectionViewCell {
     matchUserImageView?.image = nil
     matchPriceLabel?.text = nil
     
-    if listing?.highestLister != nil {
+    if listing?.highestLister != nil && listing?.highestLister?.user?._id != listing?.user?._id {
       
       containerView?.layer.borderColor = UIColor.juicyOrange().CGColor
       containerView?.layer.borderWidth = 1.0
