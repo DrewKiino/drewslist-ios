@@ -358,7 +358,6 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
-      cell.showSeparatorLine()
       cell.isUserListing = model.user?._id == model.listings[indexPath.row].user?._id
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._callButtonPressed.removeAllListeners()
@@ -377,6 +376,8 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       cell.listView?._userProfilePressed.listen(self) { [weak self] user in
         self?._userImagePressed.fire(user)
       }
+      //      cell.showSeparatorLine()
+      cell.showTopBorder()
       
       return cell
     }

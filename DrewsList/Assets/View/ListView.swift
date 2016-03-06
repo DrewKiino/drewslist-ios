@@ -487,7 +487,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     
     chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 10, width: 30, height: 30)
     
-    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 30, height: 30)
+    callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 16, width: 30, height: 30)
     
     conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 3, width: 200, height: 12)
     

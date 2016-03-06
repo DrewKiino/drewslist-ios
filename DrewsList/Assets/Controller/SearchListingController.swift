@@ -32,7 +32,7 @@ public class SearchListingController {
   }
   
   public func searchSchool(query: String?) {
-    guard let queryString = createQueryString(query) where !model.shouldRefrainFromCallingServer else { return }
+    guard let queryString = createQueryString(checkForAcronyms(query)) where !model.shouldRefrainFromCallingServer else { return }
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -80,5 +80,13 @@ public class SearchListingController {
     }
     let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
     return "\(ServerUrl.Default.getValue())/listing/search?query=\(queryString)&limit=10"
+  }
+  
+  public func checkForAcronyms(query: String?) -> String? {
+    guard let query = query?.lowercaseString else { return nil }
+    switch query {
+      case "csula", "calstatela", "calstate la", "cal state la": return "California State University-Los Angeles"
+    default: return query
+    }
   }
 }

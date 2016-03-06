@@ -38,6 +38,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
+    setupRefreshControl()
+    
     controller.viewDidAppear()
   }
   
@@ -86,6 +88,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupRefreshControl() {
+    refreshControl?.removeFromSuperview()
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
     tableView?.addSubview(refreshControl!)
