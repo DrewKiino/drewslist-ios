@@ -131,7 +131,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     controller.shouldShowErrorMessage.removeAllListeners()
     controller.shouldShowErrorMessage.listen(self) { [weak self] bool in
       if bool {
-        let alertController = UIAlertController(title: "Sorry!", message: "We were unable to sign you up :(", preferredStyle: .Alert)
+        let alertController = UIAlertController(title: "Were sorry!", message: "We were unable to sign you up :(", preferredStyle: .Alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { [weak self] action in
         })
         self?.presentViewController(alertController, animated: true, completion: nil)
@@ -397,7 +397,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   public func signupButtonPressed() {
-    log.debug("sign up button pressed")
     dismissKeyboard()
     controller.validateInputs()
   }

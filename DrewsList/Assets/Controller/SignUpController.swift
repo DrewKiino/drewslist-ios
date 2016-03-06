@@ -59,8 +59,6 @@ public class SignUpController {
   
   public func createNewUserInServer() {
     
-    log.debug("mark")
-    
     guard let firstName = model.firstName,
           let lastName = model.lastName,
           let email = model.email,
@@ -112,12 +110,12 @@ public class SignUpController {
         
         if json["errmsg"].string != nil || json["error"].string != nil {
           
-          log.error(json)
+//          log.error(json)
           self?.shouldShowErrorMessage.fire(true)
           
         } else {
          
-          log.debug(json)
+//          log.debug(json)
           
           // create and  user object
           self?.model.user = User(json: json)
