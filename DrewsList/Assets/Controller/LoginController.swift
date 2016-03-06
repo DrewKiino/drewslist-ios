@@ -59,7 +59,7 @@ public class LoginController {
   public func checkIfUserIsLoggedIn() -> Bool {
     // check if user is already logged in
     if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
-      
+    
       // set the user's model
       model.user = user
       
@@ -71,11 +71,15 @@ public class LoginController {
     // check if user is logged into facebook
     } else if fbsdkController.userIsLoggedIntoFacebook() {
       
+      log.debug("mark")
+      
       fbsdkController.getUserAttributesFromFacebook()
       
     // if we already have a user, attempt to call the server to update the current user
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
+      
+      log.debug("mark2")
       
       tabView.presentViewController(LoginView(), animated: false) { bool in
         // else, log use out of facebook
@@ -168,6 +172,9 @@ public class LoginController {
         // write user object to realm
         self?.writeRealmUser()
         
+        let user = try! Realm().objects(RealmUser.self).first?.getUser()
+        log.debug(user?.getName())
+        
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         
@@ -239,61 +246,6 @@ public class LoginController {
       "friends": friends,
       "localAuth": localAuth
     ] as [String: AnyObject])
-    
-    // create a throttler
-    // this will disable this controllers server calls for 10 seconds
-    refrainTimer?.invalidate()
-    refrainTimer = nil
-    refrainTimer = NSTimer.after(60.0) { [weak self] in
-      self?.model.shouldRefrainFromCallingServer = false
-    }
-  }
-  
-  public func loginUserToServer() {
-    guard let email = model.email, let password = model.password else { return }
-    
-    // to safeguard against multiple server calls when the server has no more data
-    // to send back, we use a timer to disable this controller's server calls
-    model.shouldRefrainFromCallingServer = true
-    
-    Sockets.sharedInstance().emit("authenticateWithLocalAuth", [
-      "email": email,
-      "password": password,
-      "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
-    ] as [String: AnyObject])
-    
-    Sockets.sharedInstance().on("authenticateWithLocalAuth.response") { [weak self] json in
-      
-      if json["errmsg"].string != nil || json["error"].string != nil {
-
-        if json["error"].string?.containsString("email") == true {
-          self?.model._isValidEmail.fire(false)
-        } else if json["error"].string?.containsString("password") == true {
-          self?.model._isValidPassword.fire(false)
-        } else {
-          self?.model._serverError.fire(true)
-        }
-        
-      } else {
-        
-        // create and  user object
-        self?.model.user = User(json: json)
-        // set the shared user instance
-        UserController.setSharedUser(self?.model.user)
-        // write user object to realm
-        self?.writeRealmUser()
-        // set user online status to true
-        Sockets.sharedInstance().setOnlineStatus(true)
-        
-        self?.shouldDismissView.fire(true)
-      }
-      
-      // create a throttler
-      // this will disable this controllers server calls for 10 seconds
-      self?.refrainTimer?.invalidate()
-      self?.refrainTimer = nil
-      self?.model.shouldRefrainFromCallingServer = false
-    }
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds

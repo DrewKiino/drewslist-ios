@@ -28,7 +28,6 @@ public class UserProfileViewContainer: DLNavigationController {
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    log.debug(UserModel.sharedUser().user?._id)
     userProfileView?.viewDidAppear(animated)
   }
   
@@ -149,7 +148,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    log.debug(UserModel.sharedUser().user?._id)
     controller.viewDidAppear()
   }
   
