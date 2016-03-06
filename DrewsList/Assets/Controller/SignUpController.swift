@@ -18,7 +18,8 @@ public class SignUpController {
   public let userController = UserController()
   public let model =  SignUpModel()
   private var refrainTimer: NSTimer?
-
+  
+  public let shouldShowErrorMessage = Signal<Bool>()
   
   public init() {}
   
@@ -58,7 +59,6 @@ public class SignUpController {
   
   public func createNewUserInServer() {
     
-    
     guard let firstName = model.firstName,
           let lastName = model.lastName,
           let email = model.email,
@@ -67,20 +67,6 @@ public class SignUpController {
           let school = model.school,
           let state = model.state else
     { return }
-    log.debug(firstName)
-    log.debug(lastName)
-    log.debug(email)
-    log.debug(phone)
-    log.debug(password)
-    log.debug(school)
-    log.debug(state)
-    log.debug(model.firstName)
-    log.debug(model.lastName)
-    log.debug(model.email)
-    log.debug(model.phone)
-    log.debug(model.password)
-    log.debug(model.school)
-    log.debug(model.state)
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -113,25 +99,23 @@ public class SignUpController {
       encoding: .JSON
     )
     .response { [weak self] req, res, data, error in
-      log.debug(req)
-      log.debug(res)
-      log.debug(data)
+      
       if let error = error {
         
         log.error(error)
-        self?.model._serverError.fire(true)
+        
+        self?.shouldShowErrorMessage.fire(true)
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
         if json["errmsg"].string != nil || json["error"].string != nil {
           
-          log.error(json)
-          
-//          self?.model._serverError.fire(true)
+//          log.error(json)
+          self?.shouldShowErrorMessage.fire(true)
           
         } else {
          
-          log.debug(json)
+//          log.debug(json)
           
           // create and  user object
           self?.model.user = User(json: json)

@@ -128,6 +128,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   private func setupDataBinding() {
+    controller.shouldShowErrorMessage.removeAllListeners()
+    controller.shouldShowErrorMessage.listen(self) { [weak self] bool in
+      if bool {
+        let alertController = UIAlertController(title: "Were sorry!", message: "We were unable to sign you up :(", preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { [weak self] action in
+        })
+        self?.presentViewController(alertController, animated: true, completion: nil)
+      }
+    }
     model._isValidFirstName.removeAllListeners()
     model._isValidFirstName.listen(self) { [weak self] bool in
       if bool != true { self?.firstNameField?.placeholder = "First name can only contain letters or -" }

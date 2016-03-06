@@ -33,6 +33,10 @@ extension UIColor {
   
   // MARK: Main App Colors
   
+  public class func coolBlack() -> UIColor {
+    return UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
+  }
+  
   public class func sexyGray() -> UIColor {
     return UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
   }
@@ -255,10 +259,10 @@ extension UIView {
     activityView = nil
   }
   
-  public func showActivityView(heightOffset: CGFloat? = nil) {
+  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil) {
     dismissActivityView()
     var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    activityView.frame = CGRectMake(0, heightOffset ?? 0, screen.width, screen.height)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
     activityView.tag = 1337
     activityView.startAnimating()
     addSubview(activityView)
@@ -303,7 +307,7 @@ extension UIView {
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
-    loadingLabel.textColor = .blackColor()
+    loadingLabel.textColor = .coolBlack()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
     
@@ -494,10 +498,13 @@ extension UIImageView {
       // else set the new tag as the new url's hash value
       tag = url.hashValue
       image = nil
+      // show activity
+      showActivityView(nil, width: size?.width ?? frame.width, height: size?.height ?? frame.height)
       // begin image download
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
         self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
+        self?.dismissActivityView()
       }
     } else {
       dl_setImage(placeholder)

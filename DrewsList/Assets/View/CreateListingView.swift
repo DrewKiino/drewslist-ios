@@ -430,13 +430,13 @@ public class ToggleCell: DLTableViewCell {
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -470,11 +470,11 @@ public class ToggleCell: DLTableViewCell {
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
-          self?.rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
         })
       } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
           self?.rightToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
         })
       }
@@ -537,7 +537,7 @@ public class TripleToggleCell: DLTableViewCell {
     toggleSelector?.frame = middleToggleButton!.frame
     
     leftToggleButton?.imageView?.tintColor = .juicyOrange()
-    middleToggleButton?.imageView?.tintColor = .blackColor()
+    middleToggleButton?.imageView?.tintColor = .coolBlack()
     rightToggleButton?.imageView?.tintColor = .juicyOrange()
   }
   
@@ -575,19 +575,19 @@ public class TripleToggleCell: DLTableViewCell {
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     middleToggleButton = UIButton()
-    middleToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middleToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     middleToggleButton?.backgroundColor = .clearColor()
     middleToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(middleToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -621,7 +621,7 @@ public class TripleToggleCell: DLTableViewCell {
     {
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) || CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.imageView?.tintColor = .blackColor()
+          self?.leftToggleButton?.imageView?.tintColor = .coolBlack()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
         })
@@ -629,12 +629,12 @@ public class TripleToggleCell: DLTableViewCell {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.rightToggleButton?.imageView?.tintColor = .blackColor()
+          self?.rightToggleButton?.imageView?.tintColor = .coolBlack()
         })
       } else if CGRectIntersectsRect(middleToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.middleToggleButton?.imageView?.tintColor = .blackColor()
+          self?.middleToggleButton?.imageView?.tintColor = .coolBlack()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
         })
       }
@@ -792,7 +792,7 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
   private func setupInputTextField() {
     inputTextField = HoshiTextField()
-    inputTextField?.textColor = .blackColor()
+    inputTextField?.textColor = .coolBlack()
     inputTextField?.font = .asapRegular(16)
     inputTextField?.borderInactiveColor = UIColor.tableViewNativeSeparatorColor()
     inputTextField?.borderActiveColor = UIColor.sweetBeige()
@@ -956,7 +956,7 @@ public class BigButtonCell: DLTableViewCell {
     
     buttonLabel = UILabel()
     buttonLabel?.textAlignment = .Center
-    buttonLabel?.textColor = UIColor.whiteColor()
+    buttonLabel?.textColor = .whiteColor()
     buttonLabel?.font = .asapRegular(16)
     button?.customContentView.addSubview(buttonLabel!)
     

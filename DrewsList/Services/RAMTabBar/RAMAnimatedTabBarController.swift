@@ -25,7 +25,7 @@ import UIKit
 class RAMAnimatedTabBarItem: UITabBarItem {
 
     @IBOutlet weak var animation: RAMItemAnimation?
-    @IBInspectable var textColor = UIColor.blackColor()
+    @IBInspectable var textColor = UIColor.coolBlack()
 
     func playAnimation(icon: UIImageView, textLabel: UILabel){
         guard let animation = animation else {
@@ -85,7 +85,7 @@ public class RAMAnimatedTabBarController: UITabBarController {
                 // text
                 let textLabel = UILabel()
                 textLabel.text = item.title
-                textLabel.backgroundColor = UIColor.clearColor()
+                textLabel.backgroundColor = .clearColor()
                 textLabel.textColor = item.textColor
                 textLabel.font = UIFont.systemFontOfSize(10)
                 textLabel.textAlignment = NSTextAlignment.Center

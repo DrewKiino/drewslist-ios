@@ -422,7 +422,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     let alertController = UIAlertController(title: "Call Me Maybe?", message: "Please input your phone number, this will help other users get in touch with you much quicker.", preferredStyle: .Alert)
     alertController.addTextFieldWithConfigurationHandler() { textField in
       textField.font = .asapRegular(16)
-      textField.textColor = .blackColor()
+      textField.textColor = .coolBlack()
       textField.spellCheckingType = .No
       textField.autocorrectionType = .No
       textField.autocapitalizationType = .None

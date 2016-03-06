@@ -307,7 +307,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       
       buttonLabel = UILabel()
       buttonLabel?.textAlignment = .Center
-      buttonLabel?.textColor = UIColor.whiteColor()
+      buttonLabel?.textColor = .whiteColor()
       buttonLabel?.font = .asapRegular(16)
       button?.customContentView.addSubview(buttonLabel!)
       
