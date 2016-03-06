@@ -499,13 +499,13 @@ extension UIImageView {
       tag = url.hashValue
       image = nil
       // show activity
-      if let width = size?.width, let height = size?.height { showActivityView(nil, width: width, height: height) }
+      showActivityView(nil, width: size?.width ?? frame.width, height: size?.height ?? frame.height)
       // begin image download
-//      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
-//      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-//        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
-//        self?.dismissActivityView()
-//      }
+      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
+        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
+        self?.dismissActivityView()
+      }
     } else {
       dl_setImage(placeholder)
     }

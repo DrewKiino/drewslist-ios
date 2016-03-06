@@ -18,7 +18,8 @@ public class SignUpController {
   public let userController = UserController()
   public let model =  SignUpModel()
   private var refrainTimer: NSTimer?
-
+  
+  public let shouldShowErrorMessage = Signal<Bool>()
   
   public init() {}
   
@@ -57,6 +58,9 @@ public class SignUpController {
   }
   
   public func createNewUserInServer() {
+    
+    log.debug("mark")
+    
     guard let firstName = model.firstName,
           let lastName = model.lastName,
           let email = model.email,
@@ -97,24 +101,31 @@ public class SignUpController {
       encoding: .JSON
     )
     .response { [weak self] req, res, data, error in
-      
+      log.debug(req)
+      log.debug(res)
+      log.debug(data)
       if let error = error {
         
         log.error(error)
-        self?.model._serverError.fire(true)
+        self?.shouldShowErrorMessage.fire(true)
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
         if json["errmsg"].string != nil || json["error"].string != nil {
           
           log.error(json)
-          
-//          self?.model._serverError.fire(true)
+          self?.shouldShowErrorMessage.fire(true)
           
         } else {
+         
+          log.debug(json)
           
           // create and  user object
           self?.model.user = User(json: json)
+          
+          
+          // Set UserModel user
+          UserController.setSharedUser(self?.model.user)
           // write user object to realm
           self?.overwriteRealmUser()
         }

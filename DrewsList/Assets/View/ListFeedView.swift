@@ -272,7 +272,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     setupTableView()
     setupRefreshControl()
     
-    showActivityView(-132, width: nil, height: nil)
+    showActivityView(-116, width: nil, height: nil)
   }
   
   public required init?(coder aDecoder: NSCoder) {
