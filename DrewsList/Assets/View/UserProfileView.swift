@@ -125,7 +125,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     bgView?.layer.shadowColor = UIColor.clearColor().CGColor
     bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
     bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
-    bgView?.layer.shadowOpacity = 1.0
+    bgView?.layer.shadowOpacity = 0.5
     bgView?.layer.shadowRadius = 2
     bgView?.layer.masksToBounds = true
     bgView?.clipsToBounds = false
@@ -139,8 +139,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     originalBGViewFrame = bgViewTop?.frame
     
     // MARK: UI methods
-    view.showActivityView(-64)
-   
+    view.showActivityView(-64, width: nil, height: nil)
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -251,7 +250,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     profileUsername?.text = model.user?.username
     profileUsername?.font = UIFont.asapBold(24)
     profileUsername?.textAlignment = .Center
-    profileUsername?.textColor = UIColor.blackColor()
+    profileUsername?.textColor = .coolBlack()
     bgView?.addSubview(profileUsername!)
   }
   
@@ -475,7 +474,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   func applyPlainShadow(view: UIView) {
     let layer = view.layer
-    layer.shadowColor = UIColor.blackColor().CGColor
+    layer.shadowColor = UIColor.coolBlack().CGColor
     layer.shadowOffset = CGSize(width: 0, height: 0)
     layer.shadowOpacity = 0.4
     layer.shadowRadius = 3
@@ -641,7 +640,7 @@ public class ListCell: UICollectionViewCell {
     containerView?.backgroundColor = .whiteColor()
     containerView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
     containerView?.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-    containerView?.layer.shadowOpacity = 1.0
+    containerView?.layer.shadowOpacity = 0.5
     containerView?.layer.shadowRadius = 2
     containerView?.layer.masksToBounds = true
     containerView?.clipsToBounds = false
@@ -693,7 +692,7 @@ public class ListCell: UICollectionViewCell {
   
   private func setupMatchUserNameLabel() {
     matchUserNameLabel = UILabel()
-    matchUserNameLabel?.textColor = .blackColor()
+    matchUserNameLabel?.textColor = .coolBlack()
     matchUserNameLabel?.font = .asapRegular(12)
     matchUserNameLabel?.adjustsFontSizeToFitWidth = true
     matchUserNameLabel?.minimumScaleFactor = 0.1
@@ -724,7 +723,7 @@ public class ListCell: UICollectionViewCell {
     Async.background { [weak listing] in
       
       var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: \(listing?.getPriceText() ?? "")")
-      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 6))
+      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.coolBlack(), range: NSRange(location: 0,length: 6))
       coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 6))
       
       Async.main { [weak self] in

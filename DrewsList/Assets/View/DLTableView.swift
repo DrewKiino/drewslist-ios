@@ -321,7 +321,7 @@ public class TitleCell: DLTableViewCell {
   
   private func setupTitleTextLabel() {
     titleTextLabel = UILabel()
-    titleTextLabel?.textColor = .blackColor()
+    titleTextLabel?.textColor = .coolBlack()
     titleTextLabel?.font = .asapRegular(12)
     titleTextLabel?.adjustsFontSizeToFitWidth = true
     titleTextLabel?.minimumScaleFactor = 0.8
@@ -686,7 +686,7 @@ public class ChangeImageCell: DLTableViewCell {
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }
@@ -824,7 +824,7 @@ public class PickerCell: DLTableViewCell {
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }
@@ -838,6 +838,7 @@ public class PickerCell: DLTableViewCell {
     schoolName = "Cal State LA"
     schoolNameLabel?.text = schoolName
     schoolNameLabel?.textAlignment = .Right
+    schoolNameLabel?.textColor = .coolBlack()
     addSubview(arrowImgView!)
     addSubview(schoolNameLabel!)
     
@@ -903,7 +904,7 @@ public class BigImageCell: DLTableViewCell {
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }

@@ -168,6 +168,7 @@ public class ActivityCell: DLTableViewCell {
   
   private func setupActivityLabel() {
     activityLabel = UILabel()
+    activityLabel?.textColor = .coolBlack()
     activityLabel?.font = UIFont.asapRegular(12)
     activityLabel?.numberOfLines = 3
     activityLabel?.userInteractionEnabled = true

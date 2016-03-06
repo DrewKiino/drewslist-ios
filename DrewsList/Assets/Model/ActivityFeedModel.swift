@@ -137,7 +137,7 @@ public class Activity: Mappable {
       return message == "USER_LOCATION" ? nil :
         NSMutableAttributedString(string: (message ?? ""), attributes: [
           NSFontAttributeName: UIFont.asapRegular(12),
-          NSForegroundColorAttributeName: UIColor.blackColor()
+          NSForegroundColorAttributeName: UIColor.coolBlack()
         ])
     case .None: break
     }
@@ -158,13 +158,13 @@ public class Activity: Mappable {
       if message == "USER_LOCATION" {
         attributedString2 = NSMutableAttributedString(string: " sent you their location: ", attributes: [
           NSFontAttributeName: UIFont.asapRegular(12),
-          NSForegroundColorAttributeName: UIColor.blackColor()
+          NSForegroundColorAttributeName: UIColor.coolBlack()
         ])
       // if not, then create a regular message alert
       } else {
         attributedString2 = NSMutableAttributedString(string: " sent you a message: ", attributes: [
           NSFontAttributeName: UIFont.asapRegular(12),
-          NSForegroundColorAttributeName: UIColor.blackColor()
+          NSForegroundColorAttributeName: UIColor.coolBlack()
         ])
       }
       

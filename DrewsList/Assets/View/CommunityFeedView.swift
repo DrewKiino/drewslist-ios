@@ -100,7 +100,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupLeftPageTitleButton() {
     leftPageTitleButton = UIButton()
     leftPageTitleButton?.setTitle("Classrooms", forState: .Normal)
-    leftPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftPageTitleButton?.titleLabel?.font = .asapBold(12)
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
@@ -112,7 +112,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupMiddlePageTitleButton() {
     middlePageTitleButton = UIButton()
     middlePageTitleButton?.setTitle("Listings", forState: .Normal)
-    middlePageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middlePageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     middlePageTitleButton?.titleLabel?.font = .asapBold(12)
     middlePageTitleButton?.titleLabel?.textAlignment = .Center
     middlePageTitleButton?.titleLabel?.layer.masksToBounds = true
@@ -124,7 +124,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupRightPageTitleButton() {
     rightPageTitleButton = UIButton()
     rightPageTitleButton?.setTitle("Professors", forState: .Normal)
-    rightPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightPageTitleButton?.titleLabel?.font = .asapBold(12)
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true

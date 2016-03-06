@@ -79,7 +79,7 @@ public class BookView: UIView {
   private func setupSelf() {
     layer.shadowColor = UIColor.darkGrayColor().CGColor
     layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-    layer.shadowOpacity = 1.0
+    layer.shadowOpacity = 0.5
     layer.shadowRadius = 2
     layer.masksToBounds = true
     clipsToBounds = false
@@ -108,6 +108,7 @@ public class BookView: UIView {
   private func setupTitleLabel() {
     
     title = UILabel()
+    title?.textColor = .coolBlack()
     title?.font = UIFont.asapBold(16)
     title?.adjustsFontSizeToFitWidth = true
     title?.minimumScaleFactor = 0.5
@@ -118,6 +119,7 @@ public class BookView: UIView {
   
   private func setupAuthorLabel() {
     author = UILabel()
+    author?.textColor = .coolBlack()
     author?.font = UIFont.asapRegular(12)
     author?.numberOfLines = 2
     
@@ -126,6 +128,7 @@ public class BookView: UIView {
   
   private func setupEditionLabel() {
     edition = UILabel()
+    edition?.textColor = .coolBlack()
     edition?.font = UIFont.asapRegular(12)
     edition?.textColor = UIColor.sexyGray()
     
@@ -135,6 +138,7 @@ public class BookView: UIView {
   private func setupIsbnLabel() {
     
     isbn = UILabel()
+    isbn?.textColor = .coolBlack()
     isbn?.font = UIFont.asapRegular(12)
     isbn?.textColor = UIColor.sexyGray()
     
@@ -144,6 +148,7 @@ public class BookView: UIView {
   private func setupDescriptionLabel() {
     
     desc = UILabel()
+    desc?.textColor = .coolBlack()
     desc?.font = UIFont.asapRegular(12)
     desc?.numberOfLines = 4
     
