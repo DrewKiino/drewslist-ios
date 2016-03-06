@@ -224,7 +224,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     switch indexPath.row {
     case 0: return 166
     case 1: return 48
-    case 2: return 200
+    case 2: return 50
     default: return 0
     }
   }
@@ -479,15 +479,16 @@ public class ListerAttributesViewCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    priceLabel?.anchorInCorner(.TopLeft, xPad: 16, yPad: 16, width: 200, height: 12)
+    priceLabel?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 200, height: 12)
     
-    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 16, width: 30, height: 30)
+    chatButton?.anchorInCorner(.TopRight, xPad: 16, yPad: 10, width: 30, height: 30)
     
     callButton?.align(.ToTheLeftCentered, relativeTo: chatButton!, padding: 24, width: 30, height: 30)
     
-    conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 8, width: 200, height: 12)
+    conditionLabel?.align(.UnderMatchingLeft, relativeTo: priceLabel!, padding: 3, width: 200, height: 12)
     
-    notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 8, width: 200, height: 12)
+    notesTitle?.align(.UnderMatchingLeft, relativeTo: conditionLabel!, padding: 3, width: 200, height: 12)
+    
   }
   
   public override func setupSelf() {
@@ -499,7 +500,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private func setupPriceLabel() {
     priceLabel = UILabel()
     priceLabel?.font = UIFont.asapRegular(12)
-    priceLabel?.textColor = UIColor.moneyGreen()
+    priceLabel?.textColor = UIColor.juicyOrange()
     addSubview(priceLabel!)
   }
   
@@ -623,7 +624,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
         self?.notesTextViewContainer?.alignAndFillWidth(
           align: .UnderCentered,
           relativeTo: notesTitle,
-          padding: 11,
+          padding: 3,
           height: height
         )
         
