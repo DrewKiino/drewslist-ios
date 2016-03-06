@@ -57,6 +57,8 @@ public class SignUpController {
   }
   
   public func createNewUserInServer() {
+    
+    
     guard let firstName = model.firstName,
           let lastName = model.lastName,
           let email = model.email,
@@ -65,6 +67,20 @@ public class SignUpController {
           let school = model.school,
           let state = model.state else
     { return }
+    log.debug(firstName)
+    log.debug(lastName)
+    log.debug(email)
+    log.debug(phone)
+    log.debug(password)
+    log.debug(school)
+    log.debug(state)
+    log.debug(model.firstName)
+    log.debug(model.lastName)
+    log.debug(model.email)
+    log.debug(model.phone)
+    log.debug(model.password)
+    log.debug(model.school)
+    log.debug(model.state)
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -97,7 +113,9 @@ public class SignUpController {
       encoding: .JSON
     )
     .response { [weak self] req, res, data, error in
-      
+      log.debug(req)
+      log.debug(res)
+      log.debug(data)
       if let error = error {
         
         log.error(error)
@@ -112,9 +130,15 @@ public class SignUpController {
 //          self?.model._serverError.fire(true)
           
         } else {
+         
+          log.debug(json)
           
           // create and  user object
           self?.model.user = User(json: json)
+          
+          
+          // Set UserModel user
+          UserController.setSharedUser(self?.model.user)
           // write user object to realm
           self?.overwriteRealmUser()
         }
