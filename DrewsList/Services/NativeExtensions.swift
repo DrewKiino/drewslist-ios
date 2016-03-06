@@ -259,10 +259,10 @@ extension UIView {
     activityView = nil
   }
   
-  public func showActivityView(heightOffset: CGFloat? = nil) {
+  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil) {
     dismissActivityView()
     var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    activityView.frame = CGRectMake(0, heightOffset ?? 0, screen.width, screen.height)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
     activityView.tag = 1337
     activityView.startAnimating()
     addSubview(activityView)
@@ -498,11 +498,14 @@ extension UIImageView {
       // else set the new tag as the new url's hash value
       tag = url.hashValue
       image = nil
+      // show activity
+      if let width = size?.width, let height = size?.height { showActivityView(nil, width: width, height: height) }
       // begin image download
-      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
-      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
-      }
+//      SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
+//      }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
+//        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
+//        self?.dismissActivityView()
+//      }
     } else {
       dl_setImage(placeholder)
     }

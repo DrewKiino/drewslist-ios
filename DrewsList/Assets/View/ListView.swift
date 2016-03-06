@@ -495,7 +495,6 @@ public class ListerAttributesViewCell: DLTableViewCell {
   }
   
   public override func setupSelf() {
-    
     backgroundColor = .whiteColor()
   }
 

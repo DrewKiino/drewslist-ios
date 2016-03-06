@@ -139,8 +139,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     originalBGViewFrame = bgViewTop?.frame
     
     // MARK: UI methods
-    view.showActivityView(-64)
-   
+    view.showActivityView(-64, width: nil, height: nil)
   }
   
   public override func viewWillAppear(animated: Bool) {
