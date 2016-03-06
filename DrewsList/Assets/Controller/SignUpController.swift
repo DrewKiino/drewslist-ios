@@ -101,12 +101,11 @@ public class SignUpController {
       encoding: .JSON
     )
     .response { [weak self] req, res, data, error in
-      log.debug(req)
-      log.debug(res)
-      log.debug(data)
+      
       if let error = error {
         
         log.error(error)
+        
         self?.shouldShowErrorMessage.fire(true)
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
