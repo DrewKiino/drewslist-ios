@@ -50,9 +50,7 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
 //
 //    self.view.addSubview(myLabel)
     
-    tableView?.fillSuperview()
-    
-    tableView?.contentSize = CGSize(width: tableView!.frame.width, height: tableView!.frame.height + 100)
+    tableView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 116)
     
     FBSDKController.createCustomEventForName("UserTermPrivacy")
   }
@@ -87,6 +85,7 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
     tableView?.delegate = self
     tableView?.dataSource = self
     tableView?.backgroundColor = .whiteColor()
+    tableView?.showsVerticalScrollIndicator = true
     view.addSubview(tableView!)
   }
   
