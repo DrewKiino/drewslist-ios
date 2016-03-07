@@ -100,6 +100,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
         cell.paddingLabel?.text = "Account Info"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -149,6 +150,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Permissions"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -224,6 +226,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Other Options"
+        cell.paddingLabel?.textAlignment = .Left
           return cell
       }
       break

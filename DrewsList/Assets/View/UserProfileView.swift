@@ -119,7 +119,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     scrollView?.fillSuperview()
     
-    bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 200)
+    bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 300)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
     
     bgView?.layer.shadowColor = UIColor.clearColor().CGColor
@@ -131,7 +131,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     bgView?.clipsToBounds = false
     
     // set the profile image's layouts, then fetch image
-    profileImg?.anchorInCenter(width: 64, height: 64)
+    profileImg?.anchorInCenter(width: 165, height: 165)
     
     profileUsername?.alignAndFillWidth(align: .UnderCentered, relativeTo: profileImg!, padding: 8, height: 48)
     
@@ -403,6 +403,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         
         // set data
         cell.controller.model.bookList = listings
+        cell.label.font = UIFont.asapBold(13)
         
       } else {
         
@@ -416,6 +417,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
         
         cell.label.text = "I'm Buying"
+        cell.label.font = UIFont.asapBold(13)
         
         // set data
         cell.controller.model.bookList = listings
