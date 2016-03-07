@@ -65,7 +65,7 @@ public class BookView: UIView {
     
     activityView?.anchorInCenter(width: 24, height: 24)
     
-    title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  48)
+    title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  30)
     author?.alignAndFillWidth(align: .UnderCentered, relativeTo: title!, padding: 0, height: 24)
     edition?.alignAndFillWidth(align: .UnderCentered, relativeTo: author!, padding: 0, height: 12)
     isbn?.alignAndFillWidth(align: .UnderCentered, relativeTo: edition!, padding: 0, height: 12)
