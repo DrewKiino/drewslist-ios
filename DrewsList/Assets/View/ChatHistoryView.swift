@@ -149,7 +149,7 @@ public class ChatHistoryCell: DLTableViewCell {
     
     leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
     title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 8, width: screen.width - 100, height: 16)
-    arrow?.anchorInCorner(.TopRight, xPad: 8, yPad: 12, width: 12, height: 12)
+    arrow?.anchorAndFillEdge(.Right, xPad: 8, yPad: 20, otherSize: 12)
     timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
     message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 24)
     
@@ -164,7 +164,7 @@ public class ChatHistoryCell: DLTableViewCell {
   private func setupTitle() {
     title = UILabel()
     title?.textColor = .coolBlack()
-    title?.font = UIFont.asapRegular(12)
+    title?.font = UIFont.asapRegular(14)
     title?.numberOfLines = 1
     addSubview(title!)
   }
@@ -172,7 +172,7 @@ public class ChatHistoryCell: DLTableViewCell {
   private func setupTimestamp() {
     timestamp = UILabel()
     timestamp?.textColor = .coolBlack()
-    timestamp?.font = UIFont.asapRegular(10)
+    timestamp?.font = UIFont.asapRegular(12)
     timestamp?.textColor = .sexyGray()
     timestamp?.numberOfLines = 1
     addSubview(timestamp!)
@@ -186,7 +186,7 @@ public class ChatHistoryCell: DLTableViewCell {
   private func setupMessage() {
     message = UILabel()
     message?.textColor = .coolBlack()
-    message?.font = UIFont.asapRegular(10)
+    message?.font = UIFont.asapRegular(12)
     message?.textColor = .sexyGray()
     message?.numberOfLines = 2
     addSubview(message!)

@@ -126,7 +126,6 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
         cell._didSelectCell.listen(self) { [weak cell] list in
           self.model.user?.imageUrl = profileImgURLs[indexPath.row]
           self.navigationController?.popToRootViewControllerAnimated(true)
-          self.navigationController?.popToViewController(EditProfileView(), animated: true)
         }
       }
       cell.label?.textAlignment = .Center
