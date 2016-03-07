@@ -55,6 +55,8 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     originalTableViewFrame = tableView!.frame
     
     searchBarImageView?.image = Toucan(image: UIImage(named: "Icon-Search-1")).resize(searchBarImageView!.frame.size).image
+    
+    FBSDKController.createCustomEventForName("UserSearchBook")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -216,10 +218,14 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
       cell.setBook(model.books[indexPath.row])
-      
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] bool in
-        if bool == true { self?.model.book = self?.model.books[indexPath.row] }
+        if bool == true {
+          self?.model.book = self?.model.books[indexPath.row]
+          
+          self?.presentViewController(CreateListingView().setBook(self?.model.book), animated: true, completion: nil)
+          //presentViewController(CreateListingView().setBook(self.model.book), animated: true, completion: nil)
+        }
       }
       
       return cell

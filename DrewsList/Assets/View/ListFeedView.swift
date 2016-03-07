@@ -10,6 +10,36 @@ import Foundation
 import UIKit
 import Signals
 
+public class ListFeedNavigationView: DLNavigationController {
+  
+  public var listFeedViewContainer: ListFeedViewContainer?
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setRootViewTitle("Community")
+    setupListFeedViewContainer()
+    
+    FBSDKController.createCustomEventForName("UserListFeed")
+  }
+  
+  private func setupListFeedViewContainer() {
+    listFeedViewContainer = ListFeedViewContainer()
+    rootView?.view = listFeedViewContainer
+    
+    rootView?.navigationItem.rightBarButtonItem = UIBarButtonItem(
+      image: Toucan(image: UIImage(named: "Icon-Search-1")).resize(CGSize(width: 24, height: 24)).image,
+      style: UIBarButtonItemStyle.Done,
+      target: self,
+      action: "selectedSearchButton"
+    )
+  }
+  
+  public func selectedSearchButton() {
+    pushViewController(SearchListingView(), animated: true)
+  }
+}
+
 public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   private var scrollView: UIScrollView?
@@ -54,13 +84,14 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 4, otherSize: 24)
+    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 4, otherSize: 48)
     
-    pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, rightPageTitleButton!], padding: 0)
+    pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, rightPageTitleButton!], padding: 8)
     
     pageSelector?.frame = rightPageTitleButton!.frame
     
-    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 148 - 32)
+//    scrollView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 32, otherSize: screen.height - 32 - 112)
+    scrollView?.alignAndFill(align: .UnderCentered, relativeTo: pageTitleContainer!, padding: 0)
     
     wishListFeedView?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: screen.width)
     saleListFeedView?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: wishListFeedView!, padding: 0, width: screen.width)
@@ -94,7 +125,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   private func setupLeftPageTitleButton() {
     leftPageTitleButton = UIButton()
     leftPageTitleButton?.setTitle("Buyers", forState: .Normal)
-    leftPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftPageTitleButton?.titleLabel?.font = .asapBold(12)
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
@@ -106,7 +137,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   private func setupRightPageTitleButton() {
     rightPageTitleButton = UIButton()
     rightPageTitleButton?.setTitle("Sellers", forState: .Normal)
-    rightPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightPageTitleButton?.titleLabel?.font = .asapBold(12)
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true
@@ -241,7 +272,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     setupTableView()
     setupRefreshControl()
     
-    showActivityView(-132)
+    showActivityView(-116, width: nil, height: nil)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -321,15 +352,12 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//    if model.listings.count > 0 { return model.listings.count + 1 }
-//    else { return 0 }
     return model.listings.count
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("ListFeedCell", forIndexPath: indexPath) as? ListFeedCell where model.listings.count > indexPath.row {
-      cell.showSeparatorLine()
       cell.isUserListing = model.user?._id == model.listings[indexPath.row].user?._id
       cell.listView?.setListing(model.listings[indexPath.row])
       cell.listView?._callButtonPressed.removeAllListeners()
@@ -348,6 +376,8 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
       cell.listView?._userProfilePressed.listen(self) { [weak self] user in
         self?._userImagePressed.fire(user)
       }
+      //      cell.showSeparatorLine()
+      cell.showTopBorder()
       
       return cell
     }

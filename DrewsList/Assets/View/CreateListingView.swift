@@ -43,6 +43,8 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     saveButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserCreateListing")
   }
   
   // MARK: Setup Functions
@@ -299,7 +301,6 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
       break
     case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.showTopBorder()
         cell.hideBottomBorder()
         cell.paddingLabel?.text = ""
         return cell
@@ -311,7 +312,7 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
     return UITableViewCell()
   }
   
-  
+ 
   // MARK: Class Functions
   
   public func setBook(book: Book?) -> Self {
@@ -322,21 +323,21 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
   public func dismissAndPresentListingFeed() {
     if  let tabView = presentingViewController as? TabView,
         let scannerView = (tabView.viewControllers?.filter { $0 is ScannerView })?.first as? ScannerView,
-        let communityFeedView = (tabView.viewControllers?.filter { $0 is CommunityFeedView })?.first as? CommunityFeedView
+//        let communityFeedView = (tabView.viewControllers?.filter { $0 is CommunityFeedView })?.first as? CommunityFeedView
+        let listFeedView = (tabView.viewControllers?.filter { $0 is ListFeedNavigationView })?.first as? ListFeedNavigationView
     {
       // dismiss view and go back to scanner view
-      scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak communityFeedView] in
+      scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak listFeedView] in
         // setup scanner view to start new session
         scannerView?.previewLayer?.hidden = false
         scannerView?.session?.startRunning()
         tabView?.selectedIndex = 0
-        communityFeedView?.selectMiddlePage()
         if self?.model.listing?.listType == "buying" {
-          communityFeedView?.middlePage?.selectLeftPage()
-          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "buying")
+          listFeedView?.listFeedViewContainer?.selectLeftPage()
+          listFeedView?.listFeedViewContainer?.getListingsFromServer(0, listing: "buying")
         } else if self?.model.listing?.listType == "selling" {
-          communityFeedView?.middlePage?.selectRightPage()
-          communityFeedView?.middlePage?.getListingsFromServer(0, listing: "selling")
+          listFeedView?.listFeedViewContainer?.selectRightPage()
+          listFeedView?.listFeedViewContainer?.getListingsFromServer(0, listing: "selling")
         }
       }
     }
@@ -429,13 +430,13 @@ public class ToggleCell: DLTableViewCell {
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -469,11 +470,11 @@ public class ToggleCell: DLTableViewCell {
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
-          self?.rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
         })
       } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
           self?.rightToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
         })
       }
@@ -536,7 +537,7 @@ public class TripleToggleCell: DLTableViewCell {
     toggleSelector?.frame = middleToggleButton!.frame
     
     leftToggleButton?.imageView?.tintColor = .juicyOrange()
-    middleToggleButton?.imageView?.tintColor = .blackColor()
+    middleToggleButton?.imageView?.tintColor = .coolBlack()
     rightToggleButton?.imageView?.tintColor = .juicyOrange()
   }
   
@@ -574,19 +575,19 @@ public class TripleToggleCell: DLTableViewCell {
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     middleToggleButton = UIButton()
-    middleToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middleToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     middleToggleButton?.backgroundColor = .clearColor()
     middleToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(middleToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -620,7 +621,7 @@ public class TripleToggleCell: DLTableViewCell {
     {
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) || CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.imageView?.tintColor = .blackColor()
+          self?.leftToggleButton?.imageView?.tintColor = .coolBlack()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
         })
@@ -628,12 +629,12 @@ public class TripleToggleCell: DLTableViewCell {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.rightToggleButton?.imageView?.tintColor = .blackColor()
+          self?.rightToggleButton?.imageView?.tintColor = .coolBlack()
         })
       } else if CGRectIntersectsRect(middleToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.middleToggleButton?.imageView?.tintColor = .blackColor()
+          self?.middleToggleButton?.imageView?.tintColor = .coolBlack()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
         })
       }
@@ -791,7 +792,7 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
   private func setupInputTextField() {
     inputTextField = HoshiTextField()
-    inputTextField?.textColor = .blackColor()
+    inputTextField?.textColor = .coolBlack()
     inputTextField?.font = .asapRegular(16)
     inputTextField?.borderInactiveColor = UIColor.tableViewNativeSeparatorColor()
     inputTextField?.borderActiveColor = UIColor.sweetBeige()
@@ -955,7 +956,7 @@ public class BigButtonCell: DLTableViewCell {
     
     buttonLabel = UILabel()
     buttonLabel?.textAlignment = .Center
-    buttonLabel?.textColor = UIColor.whiteColor()
+    buttonLabel?.textColor = .whiteColor()
     buttonLabel?.font = .asapRegular(16)
     button?.customContentView.addSubview(buttonLabel!)
     

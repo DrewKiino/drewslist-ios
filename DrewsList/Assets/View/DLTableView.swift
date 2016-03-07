@@ -321,7 +321,7 @@ public class TitleCell: DLTableViewCell {
   
   private func setupTitleTextLabel() {
     titleTextLabel = UILabel()
-    titleTextLabel?.textColor = .blackColor()
+    titleTextLabel?.textColor = .coolBlack()
     titleTextLabel?.font = .asapRegular(12)
     titleTextLabel?.adjustsFontSizeToFitWidth = true
     titleTextLabel?.minimumScaleFactor = 0.8
@@ -562,12 +562,15 @@ public class BookViewCell: DLTableViewCell {
   
   private func setupBookView() {
     bookView = BookView()
-    bookView?._cellPressed.removeAllListeners()
-    bookView?._cellPressed.listen(self) { [weak self] bool in
-      if bool == true { self?._cellPressed.fire(bool) }
+    bookView?._bookViewPressed.removeAllListeners()
+    bookView?._bookViewPressed.listen(self) { [weak self] bool in
+      self?._cellPressed.fire(true)
     }
     addSubview(bookView!)
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
   }
+  
   
   public func setBook(book: Book?) {
     bookView?.setBook(book)
@@ -683,7 +686,7 @@ public class ChangeImageCell: DLTableViewCell {
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }
@@ -821,7 +824,7 @@ public class PickerCell: DLTableViewCell {
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }
@@ -835,6 +838,7 @@ public class PickerCell: DLTableViewCell {
     schoolName = "Cal State LA"
     schoolNameLabel?.text = schoolName
     schoolNameLabel?.textAlignment = .Right
+    schoolNameLabel?.textColor = .coolBlack()
     addSubview(arrowImgView!)
     addSubview(schoolNameLabel!)
     
@@ -895,14 +899,12 @@ public class BigImageCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
-    pressGesture.minimumPressDuration = 0.01
-    addGestureRecognizer(pressGesture)
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "pressed:"))
   }
   
   private func setupLabel() {
     label = UILabel()
-    label?.textColor = .blackColor()
+    label?.textColor = .coolBlack()
     label?.font = .asapRegular(16)
     addSubview(label!)
   }

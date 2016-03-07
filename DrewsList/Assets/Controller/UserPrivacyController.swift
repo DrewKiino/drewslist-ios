@@ -43,7 +43,6 @@ public class UserPrivacyController {
   }
   
   public func updateUserPrivacySettingsInServer() {
-    log.debug(UserModel.sharedUser().user?.privatePhoneNumber)
     Alamofire.request(.POST, "\(ServerUrl.Default.getValue())/user/\(UserModel.sharedUser().user?._id ?? "")", parameters: [
       "privatePhoneNumber": UserModel.sharedUser().user?.privatePhoneNumber ?? false
     ] as [ String: AnyObject ])
@@ -52,9 +51,7 @@ public class UserPrivacyController {
         log.error(error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
         UserModel.setSharedUser(User(json: json))
-        log.debug(UserModel.sharedUser().user?.privatePhoneNumber)
       }
     }
   }
-  
 }

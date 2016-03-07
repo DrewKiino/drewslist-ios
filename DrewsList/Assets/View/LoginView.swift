@@ -84,10 +84,23 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: fbLoginButton!, padding: 0, height: 48)
     signUpOption?.anchorAndFillEdge(.Left, xPad: 0, yPad: 0, otherSize: 60)
     forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserLogin")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+   
+    // Google Analytics
+    let name = "LoginView" // Get view name
+    
+    // [START screen_view_hit_swift]
+    let tracker = GAI.sharedInstance().defaultTracker
+    tracker.set(kGAIScreenName, value: name)
+    
+    let builder = GAIDictionaryBuilder.createScreenView()
+    tracker.send(builder.build() as [NSObject : AnyObject])
+    // [END screen_view_hit_swift]
     
     checkIfUserHasSeenOnboardingView()
     
@@ -270,12 +283,15 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     forgotPasswordOption?.setTitleColor(.whiteColor(), forState: .Normal)
     forgotPasswordOption?.setTitle("|\tForgot Password?", forState: .Normal)
     forgotPasswordOption?.contentHorizontalAlignment = .Center
+    // TODO: make forgot password funcitonality
+    forgotPasswordOption?.hidden = true
     optionsContrainer?.addSubview(forgotPasswordOption!)
   }
 
   public func loginButtonPressed() {
     dismissKeyboard()
-    controller.loginUserToServer()
+    controller.authenticateUserToServer(false)
+    FBSDKController.createCustomEventForName("Login_LoginButtonPressed")
   }
   
   public func signupButtonPressed() {
@@ -408,7 +424,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     let alertController = UIAlertController(title: "Call Me Maybe?", message: "Please input your phone number, this will help other users get in touch with you much quicker.", preferredStyle: .Alert)
     alertController.addTextFieldWithConfigurationHandler() { textField in
       textField.font = .asapRegular(16)
-      textField.textColor = .blackColor()
+      textField.textColor = .coolBlack()
       textField.spellCheckingType = .No
       textField.autocorrectionType = .No
       textField.autocapitalizationType = .None

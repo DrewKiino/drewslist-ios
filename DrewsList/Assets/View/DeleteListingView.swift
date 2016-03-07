@@ -32,10 +32,13 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    title = "Your Book"
+    
+    title = ""
     SetUpTableView()
     SetUpDataBinding()
     controller.viewDidLoad()
+  
+    FBSDKController.createCustomEventForName("UserDeleteListing")
   }
 
 
@@ -77,10 +80,11 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       self?.TableView!.reloadData()
     }
      //setup controller's databinding DBG
-    controller.GetBookFromServer()
+    controller.deleteListingFromServer()
   
   }
   
+
   
   
   
@@ -119,36 +123,34 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     break;
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
-        cell.backgroundColor = .whiteColor()
-        cell.setBook(model.book)
+        cell.bookView?.setBook(model.listing?.book)
+        model._listing.removeAllListeners()
+        model._listing.listen(self) { [weak cell] listing in
+          cell?.bookView?.setBook(listing?.book)
+        //cell.backgroundColor = .whiteColor()
+      }
+        
         return cell
       }
       break;
-    case 2:
-      if let Cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
-        
-        Cell.backgroundColor = .whiteColor()
-       
-        return Cell
-      }
-      
+//    case 2:
+//      if let Cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
+//        
+//        Cell.backgroundColor = .whiteColor()
+//       
+//        return Cell
+//      }
+  //      break;
+//    case 3:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//      cell.showSeparatorLine()
+//      cell.hideBothTopAndBottomBorders()
+//      cell.backgroundColor = .whiteColor()
+//        
+//      return cell
+//      }
       break;
-    case 3:
-      if let Cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
-        
-         Cell.backgroundColor = .whiteColor()
-        
-             }
-      break;
-    case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-      cell.showSeparatorLine()
-      cell.hideBothTopAndBottomBorders()
-      cell.backgroundColor = .whiteColor()
-        
-      return cell
-      }
-        case 5:
+        case 4:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
         cell.backgroundColor = .whiteColor()
@@ -156,7 +158,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break;
-    case 6:
+    case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         cell.backgroundColor = .whiteColor()
         cell.hideBothTopAndBottomBorders()
@@ -173,7 +175,32 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         return cell
       }
       break;
+//    case 6:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//        cell.hideBothTopAndBottomBorders()
+//        return cell
+//      }
+      break;
     case 7:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+          cell.backgroundColor = .whiteColor()
+          cell.hideBothTopAndBottomBorders()
+          cell.button?.fillSuperview(left: screen.width / 30, right: screen.width / 30, top: 0, bottom: 0)
+          cell.button?.cornerRadius = 2
+          cell.button?.buttonColor = .juicyOrange()
+          cell.button?.setTitle("Delete Book", forState: .Normal)
+          cell._onPressed.removeAllListeners()
+          cell._onPressed.listen(self) {[ weak self] bool in
+            self?.controller.setBookID(self?.model.listing?._id)
+            self?.controller.deleteListingFromServer()
+            self?.dismissViewControllerAnimated(true, completion: nil)
+        }
+        return cell
+      }
+
+
+      break;
+    case 8:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.backgroundColor = .whiteColor()
         
@@ -189,6 +216,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
        return DLTableViewCell()
   
 }
+  
   
  
   
@@ -279,7 +307,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       
       buttonLabel = UILabel()
       buttonLabel?.textAlignment = .Center
-      buttonLabel?.textColor = UIColor.whiteColor()
+      buttonLabel?.textColor = .whiteColor()
       buttonLabel?.font = .asapRegular(16)
       button?.customContentView.addSubview(buttonLabel!)
       

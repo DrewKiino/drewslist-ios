@@ -22,16 +22,21 @@ public let screen = UIScreen.mainScreen().bounds
 public enum ServerUrl {
   case Local
   case Staging
+  case Production
   case Default
   public func getValue() -> String {
     switch self {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
+    case .Production: return "https://drewslist-production.herokuapp.com"
 //    case .Default: return "http://localhost:1337"
     case .Default: return "https://drewslist-staging.herokuapp.com"
+//    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
 }
+
+public let _didRegisterForRemoteNotificationsWithDeviceToken = Signal<Bool>()
 
 public let _applicationWillEnterForeground = Signal<Bool>()
 public let _applicationDidEnterBackground = Signal<Bool>()
@@ -53,6 +58,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
+    
+    // [START tracker_swift]
+    // Configure tracker from GoogleService-Info.plist.
+    var configureError:NSError?
+    GGLContext.sharedInstance().configureWithError(&configureError)
+    assert(configureError == nil, "Error configuring Google services: \(configureError)")
+    
+    // Optional: configure GAI options.
+    var gai = GAI.sharedInstance()
+    gai.trackUncaughtExceptions = true  // report uncaught exceptions
+    gai.logger.logLevel = GAILogLevel.Verbose  // remove before app release
+    // [END tracker_swift]
     
     setupRootView()
     
@@ -134,11 +151,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       user?.deviceToken = deviceTokenString
       return user
     }
+    
+    _didRegisterForRemoteNotificationsWithDeviceToken.fire(true)
   }
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
     
     log.debug(userInfo)
+    
+    
   }
   
   private func setupRootView() {
@@ -146,7 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // init the root view
     var tabView: TabView? = TabView()
     
-//    var tabView: AccountSettingsView? = AccountSettingsView()
+//    var tabView: SearchListingView? = SearchListingView()
 //    var tabView: LoginView? = LoginView()
     
     /*

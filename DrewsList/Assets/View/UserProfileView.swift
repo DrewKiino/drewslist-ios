@@ -22,6 +22,8 @@ public class UserProfileViewContainer: DLNavigationController {
     
     setupSelf()
     setupProfileView()
+    
+    FBSDKController.createCustomEventForName("UserProfileView")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -84,6 +86,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public var wishListView: UICollectionView?
   public var arrow: UIImageView?
   public var isOtherUser: Bool?
+  public var callButton: UIButton?
+  public var chatButton: UIButton?
+  
   
   // if you know there are variables that classes outside of this class
   // aren't going to be used, or that unit tests dont need to know about it
@@ -120,7 +125,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     bgView?.layer.shadowColor = UIColor.clearColor().CGColor
     bgView?.layer.shadowPath = UIBezierPath(roundedRect: bgView!.bounds, cornerRadius: 0).CGPath
     bgView?.layer.shadowOffset = CGSize(width: 0, height: 1.0)
-    bgView?.layer.shadowOpacity = 1.0
+    bgView?.layer.shadowOpacity = 0.5
     bgView?.layer.shadowRadius = 2
     bgView?.layer.masksToBounds = true
     bgView?.clipsToBounds = false
@@ -134,8 +139,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     originalBGViewFrame = bgViewTop?.frame
     
     // MARK: UI methods
-    view.showActivityView(-64)
-    
+    view.showActivityView(-64, width: nil, height: nil)
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -144,7 +148,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
     controller.viewDidAppear()
   }
   
@@ -163,13 +166,16 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     descriptionTextView?.alignAndFillWidth(
       align: .UnderCentered,
       relativeTo: bgView!,
-      padding: 16,
-      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
+      padding: 0,
+      height: 50
+      //      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
     )
+    descriptionTextView?.backgroundColor = .whiteColor()
+    
     
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
-    scrollView?.contentSize = CGSizeMake(screen.width, 1000)
+    scrollView?.contentSize = CGSizeMake(screen.width, 830)
   }
   
   // MARK: Data Binding
@@ -181,8 +187,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if self?.isOtherUser == true { self?.title = "User Profile" }
       else { self?.title = "Profile" }
     }
+    controller.isLoadingUserDataFromServer.removeAllListeners()
+    controller.isLoadingUserDataFromServer.listen(self) { [weak self] isLoading in
+      DLNavigationController.showActivityAnimation(self, leftHandSide: true)
+    }
     controller.didLoadUserDataFromServer.removeAllListeners()
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
+      
+      DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
+      
       if didLoad {
         self?.bookShelf?.reloadData()
       }
@@ -236,7 +249,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     profileUsername?.text = model.user?.username
     profileUsername?.font = UIFont.asapBold(24)
     profileUsername?.textAlignment = .Center
-    profileUsername?.textColor = UIColor.blackColor()
+    profileUsername?.textColor = .coolBlack()
     bgView?.addSubview(profileUsername!)
   }
   
@@ -269,6 +282,35 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         //settingsButton.action
         // TODO: check if user is self
         self.navigationItem.rightBarButtonItem = settingsButton
+      }
+      if (isOtherUser) {
+        let iconWidth = screen.width / 12
+        
+        var myImage = UIImage(named: "Icon-CallButton")
+        var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+        
+        callButton = UIButton()
+        callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+        callButton?.setImage(resizedImage, forState: .Normal)
+        callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+        callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
+       
+        myImage = UIImage(named: "Icon-MessageButton")
+        resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+        
+        chatButton = UIButton()
+        chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
+        chatButton?.setImage(resizedImage, forState: .Normal)
+        chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+        
+        descriptionTextView?.addSubview(callButton!)
+        descriptionTextView?.addSubview(chatButton!)
+        
+        
+        myImage = nil
+        resizedImage = nil
       }
     }
   }
@@ -310,6 +352,15 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     navigationController?.pushViewController(SettingsView(), animated: true)
   }
   
+  public func callFriend(){
+    self.model.user?.phone?.callNumber()
+  }
+  
+  public func chatFriend(){
+    TabView.currentView()?.pushViewController(ChatView().setUsers(UserModel.sharedUser().user, friend: model.user), animated: true)
+  }
+  
+  
   // MARK: Table View Delegates
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -317,6 +368,19 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    switch indexPath.row {
+    case 0:
+      if (model.user?.listings.filter { $0.listType == "selling" })?.first == nil {
+        return 0
+      }
+      break
+    case 1:
+      if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
+        return 0
+      }
+      break
+    default: break
+    }
     return 235
   }
   
@@ -331,7 +395,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
         
         cell.label.text =  "I'm Selling"
-        print(model.user?.listings[0].notes)
+        
         // set data
         cell.controller.model.bookList = listings
         cell.label.font = UIFont.asapBold(13)
@@ -344,6 +408,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       break
     case 1:
       cell.tag = 1
+
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
         
         cell.label.text = "I'm Buying"
@@ -410,7 +475,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   func applyPlainShadow(view: UIView) {
     let layer = view.layer
-    layer.shadowColor = UIColor.blackColor().CGColor
+    layer.shadowColor = UIColor.coolBlack().CGColor
     layer.shadowOffset = CGSize(width: 0, height: 0)
     layer.shadowOpacity = 0.4
     layer.shadowRadius = 3
@@ -421,6 +486,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
   public let label = UILabel()
+  public var collectionViewLayout: UICollectionViewFlowLayout?
   public var collectionView: UICollectionView?
   
   public let controller = UserProfileListingController()
@@ -450,14 +516,12 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   }
   
   private func setupCollectionView() {
-    let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .Horizontal
     
-    _collectionViewFrame.listen(self) { [weak layout] frame in
-      layout?.itemSize = CGSizeMake(100, frame.height)
-    }
+    collectionViewLayout = UICollectionViewFlowLayout()
+    collectionViewLayout?.scrollDirection = .Horizontal
     
-    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+    collectionView?.removeFromSuperview()
+    collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewLayout!)
     collectionView?.registerClass(ListCell.self, forCellWithReuseIdentifier: "ListCell")
     collectionView?.delegate = self
     collectionView?.dataSource = self
@@ -475,9 +539,13 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    setupCollectionView()
+    
     label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
     collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
     collectionViewFrame = collectionView!.frame
+    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
@@ -573,7 +641,7 @@ public class ListCell: UICollectionViewCell {
     containerView?.backgroundColor = .whiteColor()
     containerView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
     containerView?.layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-    containerView?.layer.shadowOpacity = 1.0
+    containerView?.layer.shadowOpacity = 0.5
     containerView?.layer.shadowRadius = 2
     containerView?.layer.masksToBounds = true
     containerView?.clipsToBounds = false
@@ -616,7 +684,7 @@ public class ListCell: UICollectionViewCell {
   
   private func setupMatchPriceLabel() {
     matchPriceLabel = UILabel()
-    matchPriceLabel?.textColor = .juicyOrange()
+    matchPriceLabel?.textColor = .whiteColor()
     matchPriceLabel?.font = .asapBold(12)
     matchPriceLabel?.adjustsFontSizeToFitWidth = true
     matchPriceLabel?.minimumScaleFactor = 0.1
@@ -625,7 +693,7 @@ public class ListCell: UICollectionViewCell {
   
   private func setupMatchUserNameLabel() {
     matchUserNameLabel = UILabel()
-    matchUserNameLabel?.textColor = .blackColor()
+    matchUserNameLabel?.textColor = .coolBlack()
     matchUserNameLabel?.font = .asapRegular(12)
     matchUserNameLabel?.adjustsFontSizeToFitWidth = true
     matchUserNameLabel?.minimumScaleFactor = 0.1
@@ -643,21 +711,20 @@ public class ListCell: UICollectionViewCell {
   public func setListing(listing: Listing?) {
     
     self.listing = listing
-    loadListingIntoView()
   }
   
   private func loadListingIntoView() {
     
     // load book image once the image view's frame has been set
-    bookImageView?.dl_setImageFromUrl(listing?.book?.getImageUrl(), animated: true)
+    bookImageView?.dl_setImageFromUrl(listing?.book?.getImageUrl())
     
     // set user price label
     bookPriceLabel?.text = nil
     
     Async.background { [weak listing] in
       
-      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: $\(listing?.getPriceText() ?? "")")
-      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.blackColor(), range: NSRange(location: 0,length: 6))
+      var coloredString: NSMutableAttributedString? = NSMutableAttributedString(string: "Price: \(listing?.getPriceText() ?? "")")
+      coloredString?.addAttribute(NSForegroundColorAttributeName, value: UIColor.coolBlack(), range: NSRange(location: 0,length: 6))
       coloredString?.addAttribute(NSFontAttributeName, value: UIFont.asapRegular(12), range: NSRange(location: 0,length: 6))
       
       Async.main { [weak self] in
@@ -671,13 +738,19 @@ public class ListCell: UICollectionViewCell {
     matchUserImageView?.image = nil
     matchPriceLabel?.text = nil
     
-    if listing?.highestLister != nil {
+    if listing?.highestLister != nil && listing?.highestLister?.user?._id != listing?.user?._id {
+      
+      containerView?.layer.borderColor = UIColor.juicyOrange().CGColor
+      containerView?.layer.borderWidth = 1.0
+      
+      matchInfoView?.backgroundColor = .juicyOrange()
+      
       // unhide the match info view
       matchInfoView?.hidden = false
       // set highest matcher's user imagee
       matchUserImageView?.dl_setImageFromUrl(listing?.highestLister?.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
       // set highest matcher's list price
-      matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") $\(listing?.highestLister?.getPriceText() ?? "")"
+      matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") \(listing?.highestLister?.getPriceText() ?? "")"
       // resize the container view
       containerView?.removeConstraints(containerView!.constraints)
       containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)

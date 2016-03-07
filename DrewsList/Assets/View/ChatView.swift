@@ -20,6 +20,7 @@ public class ChatView: JSQMessagesViewController {
   // UI Controls
   private var refreshControl: UIRefreshControl?
   private var alertController: UIAlertController?
+  private var callButton: UIButton?
   
   // private vars
   private let incomingBubble = JSQMessagesBubbleImageFactory()
@@ -33,6 +34,8 @@ public class ChatView: JSQMessagesViewController {
     setupDataBinding()
     setupRefreshControl()
     controller.viewDidLoad()
+    
+    FBSDKController.createCustomEventForName("UserChat")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -58,8 +61,37 @@ public class ChatView: JSQMessagesViewController {
     // set chat view title to friend's title
     title = model.friend?.getName()
     inputToolbar?.translucent = false
+    
+    //settingsButton.action
+    // TODO: check if user is self
+    
     // hide attachment button
 //    inputToolbar?.contentView?.leftBarButtonItem?.hidden = true
+  }
+  
+  public func layoutSubviews() {
+    callButton?.fillSuperview()
+  }
+  
+  public func setupButtons(){
+    var myImage = UIImage(named: "Icon-CallButton")
+    var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screen.width/20, height: screen.width/20))
+    resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+    
+    callButton = UIButton()
+    callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+    callButton?.setImage(resizedImage, forState: .Normal)
+    callButton?.frame = CGRectMake(0, 0, 30, 30)
+    callButton?.layer.cornerRadius = (callButton?.frame.width)! / 2
+    callButton?.layer.backgroundColor = UIColor.whiteColor().CGColor
+    
+    DLNavigationController.setRightBarButton(self, customView: callButton)
+    myImage = nil
+    resizedImage = nil
+  }
+  
+  public func callFriend(){
+    self.model.friend?.phone?.callNumber()
   }
   
   private func setupDataBinding() {
@@ -103,6 +135,7 @@ public class ChatView: JSQMessagesViewController {
       if didReceive {
         // show activity animation on nav bar
         DLNavigationController.hideActivityAnimation(self)
+        self?.setupButtons()
       }
     }
     

@@ -24,6 +24,12 @@ public class ListModel {
   
   public let _serverCallbackFromFindListing = Signal<Bool>()
   public var serverCallbackFromFindListing: Bool = false { didSet { _serverCallbackFromFindListing => serverCallbackFromFindListing } }
+  
+  public let _book = Signal<Book?>()
+  public var book: Book? { didSet {_book => book } }
+  
+  public let _serverCallbackFromDeleteListing = Signal<Bool>()
+  public var serverCallbackFromDeletelIsting: Bool = false { didSet { _serverCallbackFromDeleteListing => serverCallbackFromDeletelIsting } }
 }
 
 public class Listing: Mappable {
@@ -133,6 +139,7 @@ public class Listing: Mappable {
     condition     <- map["condition"]
     createdAt     <- map["createdAt"]
     updatedAt     <- map["updatedAt"]
+    highestLister <- map["highestLister"]
     
 //    if (user      == nil) { user      <- map["user"] }
 //    if (book      == nil) { book      <- map["book"] }
@@ -144,6 +151,5 @@ public class Listing: Mappable {
 //    if (createdAt == _id) { createdAt <- map["createdAt"] }
 //    if (updatedAt == _id) { updatedAt <- map["updatedAt"] }
     
-//    highestLister <- map["highestLister"]
   }
 }

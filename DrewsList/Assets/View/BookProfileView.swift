@@ -38,6 +38,8 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     setupDataBinding()
     
     controller.viewDidLoad()
+    
+    FBSDKController.createCustomEventForName("UserBookProfile")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -78,7 +80,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public func setBook(book: Book?) -> Self {
-    if let book = book { model.book = book }
+    model.book = book
     return self
   }
   
@@ -300,7 +302,6 @@ public class RatingsCell: DLTableViewCell {
     cosmosView?.settings.fillMode = .Precise
     cosmosView?.settings.emptyBorderColor = .juicyOrange()
     cosmosView?.settings.filledBorderColor = .juicyOrange()
-    
     addSubview(cosmosView!)
   }
   

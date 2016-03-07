@@ -45,6 +45,7 @@ public class EditListingController {
       let notes = model.listing?.notes
       where model.shouldRefrainFromCallingServer == false else
     { return }
+    
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern

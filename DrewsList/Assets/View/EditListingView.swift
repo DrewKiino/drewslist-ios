@@ -42,6 +42,8 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     saveButton?.anchorInCorner(.BottomRight, xPad: 8, yPad: 8, width: 64, height: 24)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserEditListing")
   }
   
   // MARK: Setup Functions
@@ -86,7 +88,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     headerTitle = UILabel()
     headerTitle?.text = "Edit Your Listing"
     headerTitle?.textAlignment = .Center
-    headerTitle?.font = UIFont.asapBold(16)
+    headerTitle?.font = .asapBold(16)
     headerTitle?.textColor = .whiteColor()
     headerView?.addSubview(headerTitle!)
     
@@ -97,7 +99,7 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     headerView?.addSubview(cancelButton!)
     
     saveButton = UIButton()
-    saveButton?.setTitle("List It", forState: .Normal)
+    saveButton?.setTitle("", forState: .Normal)
     saveButton?.titleLabel?.font = UIFont.asapRegular(16)
     saveButton?.addTarget(self, action: "upload", forControlEvents: .TouchUpInside)
     headerView?.addSubview(saveButton!)
@@ -154,6 +156,11 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 1:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+            cell.bookView?.setBook(model.listing?.book)
+            model._listing.removeAllListeners()
+        model._listing.listen(self) {[weak cell] listing in
+          cell?.bookView?.setBook(listing?.book)
+        }
         cell.setBook(model.book)
         return cell
       }
@@ -219,23 +226,23 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
       break
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SliderCell", forIndexPath: indexPath) as? SliderCell {
-        //        cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
-        //        cell._didSelectCell.removeAllListeners()
-        //        cell._didSelectCell.listen(self) { [weak self] toggle in
-        //          switch toggle {
-        //          case .Left:
-        //            self?.model.listing?.condition = "1"
-        //            return
-        //          case .Middle:
-        //            self?.model.listing?.condition = "2"
-        //            return
-        //          case .Right:
-        //            self?.model.listing?.condition = "3"
-        //            return
-        //          }
-        //        }
+//                cell.leftToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition1")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell.middleToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition2")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell.rightToggleButton?.setImage(Toucan(image: UIImage(named: "Icon-Condition3")).resize(CGSize(width: 24, height: 24)).image, forState: .Normal)
+//                cell._didSelectCell.removeAllListeners()
+//                cell._didSelectCell.listen(self) { [weak self] toggle in
+//                  switch toggle {
+//                  case .Left:
+//                    self?.model.listing?.condition = "1"
+//                    return
+//                  case .Middle:
+//                    self?.model.listing?.condition = "2"
+//                    return
+//                  case .Right:
+//                    self?.model.listing?.condition = "3"
+//                    return
+//                  }
+//                }
         return cell
       }
       break
@@ -288,15 +295,16 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
         return cell
       }
       break
-    case 12:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
-        cell.buttonLabel?.text = "Delete Listing"
-        cell._onPressed.removeAllListeners()
-        cell._onPressed.listen(self) { [weak self] bool in /*self?.controller.deleteListingFromServer()*/ }
-        return cell
-      }
+//    case 12:
+//      if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
+//        cell.buttonLabel?.text = "Delete Listing"
+//        cell._onPressed.removeAllListeners()
+//        cell._onPressed.listen(self) { [weak self] bool in
+//          self?.controller.deleteListingFromServer() }
+//        return cell
+//      }
       break
-    case 13:
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showTopBorder()
         cell.hideBottomBorder()
@@ -431,13 +439,13 @@ private var leftToggleButton: UIButton?
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -471,11 +479,11 @@ private var leftToggleButton: UIButton?
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
-          self?.rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
           })
       } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+          self?.leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
           self?.rightToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
           })
       }
@@ -538,7 +546,7 @@ public class tripleToggleCell: DLTableViewCell {
     toggleSelector?.frame = middleToggleButton!.frame
     
     leftToggleButton?.imageView?.tintColor = .juicyOrange()
-    middleToggleButton?.imageView?.tintColor = .blackColor()
+    middleToggleButton?.imageView?.tintColor = .coolBlack()
     rightToggleButton?.imageView?.tintColor = .juicyOrange()
   }
   
@@ -576,19 +584,19 @@ public class tripleToggleCell: DLTableViewCell {
     toggleContainer?.addGestureRecognizer(press)
     
     leftToggleButton = UIButton()
-    leftToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftToggleButton?.backgroundColor = .clearColor()
     leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(leftToggleButton!)
     
     middleToggleButton = UIButton()
-    middleToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middleToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     middleToggleButton?.backgroundColor = .clearColor()
     middleToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(middleToggleButton!)
     
     rightToggleButton = UIButton()
-    rightToggleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightToggleButton?.backgroundColor = .clearColor()
     rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
     toggleContainer?.addSubview(rightToggleButton!)
@@ -622,7 +630,7 @@ public class tripleToggleCell: DLTableViewCell {
     {
       if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) || CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
         UIView.animate({ [weak self] in
-          self?.leftToggleButton?.imageView?.tintColor = .blackColor()
+          self?.leftToggleButton?.imageView?.tintColor = .coolBlack()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
           })
@@ -630,12 +638,12 @@ public class tripleToggleCell: DLTableViewCell {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
           self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.rightToggleButton?.imageView?.tintColor = .blackColor()
+          self?.rightToggleButton?.imageView?.tintColor = .coolBlack()
           })
       } else if CGRectIntersectsRect(middleToggleButton.frame, selector.frame) {
         UIView.animate({ [weak self] in
           self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
-          self?.middleToggleButton?.imageView?.tintColor = .blackColor()
+          self?.middleToggleButton?.imageView?.tintColor = .coolBlack()
           self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
           })
       }
@@ -773,7 +781,7 @@ public class InputtextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
   private func setupInputTextField() {
     inputTextField = HoshiTextField()
-    inputTextField?.textColor = .blackColor()
+    inputTextField?.textColor = .coolBlack()
     inputTextField?.font = .asapRegular(16)
     inputTextField?.borderInactiveColor = UIColor.tableViewNativeSeparatorColor()
     inputTextField?.borderActiveColor = UIColor.sweetBeige()
@@ -938,7 +946,7 @@ public class bigButtonCell: DLTableViewCell {
     
     buttonLabel = UILabel()
     buttonLabel?.textAlignment = .Center
-    buttonLabel?.textColor = UIColor.whiteColor()
+    buttonLabel?.textColor = .whiteColor()
     buttonLabel?.font = .asapRegular(16)
     button?.customContentView.addSubview(buttonLabel!)
     

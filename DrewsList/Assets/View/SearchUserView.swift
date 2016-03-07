@@ -49,6 +49,8 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     searchBarImageView?.align(.ToTheRightCentered, relativeTo: searchBarTextField!, padding: 5, width: 25, height: 25)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserSearchUser")
   }
   
   public override func viewDidAppear(animated: Bool) {

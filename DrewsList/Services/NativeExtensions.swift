@@ -33,6 +33,10 @@ extension UIColor {
   
   // MARK: Main App Colors
   
+  public class func coolBlack() -> UIColor {
+    return UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
+  }
+  
   public class func sexyGray() -> UIColor {
     return UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
   }
@@ -50,6 +54,14 @@ extension UIColor {
   }
   
   // NOTE: Highlight Color
+  
+  public class func superSexyPurple() -> UIColor {
+    return UIColor(red: 177/255, green: 107/255, blue: 245/255, alpha: 1.0)
+  }
+  
+  public class func lightJuicyOrange() -> UIColor {
+    return UIColor(red: 245/255, green: 177/255, blue: 107/255, alpha: 1.0)
+  }
   
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
@@ -82,7 +94,30 @@ extension UIColor {
 
 extension Int {
   
-  public func callNumber() { if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) } }
+  public func toFormattedPhoneNumberText() -> NSMutableString {
+    let string: NSMutableString = NSMutableString(string: String(self))
+    if string.length == 11 {
+      string.insertString("-", atIndex: 0)
+      string.insertString("-", atIndex: 4)
+      string.insertString("-", atIndex: 8)
+    } else if string.length == 10 {
+      string.insertString("-", atIndex: 3)
+      string.insertString("-", atIndex: 7)
+    } else if string.length == 7 {
+      string.insertString("-", atIndex: 3)
+    }
+    return string
+  }
+  
+  public func callNumber() {
+    let alertController = UIAlertController(title: self.toFormattedPhoneNumberText() as String, message: "Would you like to call this number?", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
+      if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
+  }
 }
 
 extension UIFont {
@@ -185,7 +220,7 @@ extension String {
     var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
     let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
     mutstring = nil
-    return rect.height
+    return rect.height * 1.25 + screen.height * 0.25
   }
 }
 
@@ -214,10 +249,20 @@ extension UIView {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
   }
   
-  public func showActivityView(heightOffset: CGFloat? = nil) {
+  public func showActivityBarItem() {
+    dismissActivityView()
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView.frame = CGRectMake(screen.width - 32, 24, 24, 24)
+    activityView.tag = 1337
+    activityView.startAnimating()
+    addSubview(activityView)
+    activityView = nil
+  }
+  
+  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil) {
     dismissActivityView()
     var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    activityView.frame = CGRectMake(0, heightOffset ?? 0, screen.width, screen.height)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
     activityView.tag = 1337
     activityView.startAnimating()
     addSubview(activityView)
@@ -262,7 +307,7 @@ extension UIView {
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
-    loadingLabel.textColor = .blackColor()
+    loadingLabel.textColor = .coolBlack()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
     
@@ -448,47 +493,22 @@ extension UIImageView {
   
   public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode? = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
     if let url = url, let nsurl = NSURL(string: url) {
+      // set the tag with the url's unique hash value
+      if tag == url.hashValue { return }
+      // else set the new tag as the new url's hash value
+      tag = url.hashValue
+      image = nil
+      // show activity
+      showActivityView(nil, width: size?.width ?? frame.width, height: size?.height ?? frame.height)
+      // begin image download
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-        Async.background { [weak self] in
-          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: fitMode ?? .Crop)
-          
-          if maskWithEllipse == true { toucan?.maskWithEllipse() }
-          
-          Async.main { [weak self] in
-            
-            if animated == true { self?.alpha = 0.0 }
-            
-            if let block = block {
-              block(image: toucan?.image)
-            } else {
-             
-              self?.image = toucan?.image
-            }
-            
-            if animated == true {
-              UIView.animateWithDuration(0.7) { [weak self] in
-                self?.alpha = 1.0
-              }
-            }
-            
-            toucan = nil
-          }
-        }
+        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
+        self?.dismissActivityView()
       }
     } else {
       dl_setImage(placeholder)
     }
-//    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
-//      .CacheMemoryOnly,
-//      .ContinueInBackground,
-//      .ProgressiveDownload,
-//      .AvoidAutoSetImage,
-//      .LowPriority
-//    ]) { image, error, cache, url in
-//      completionHandler?(image, error, cache, url)
-//    }
-    
   }
   
   public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {

@@ -43,6 +43,8 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     setupHelpButton()
     setupSearchButton()
     setupFocusImageView()
+    
+    FBSDKController.createCustomEventForName("UserScanner")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -203,6 +205,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       SearchBookModel.sharedInstance()._book.listen(self) { [weak self] book in
         self?.presentCreateListingView(book)
       }
+      FBSDKController.createCustomEventForName("Scanner_SearchButtonSelected")
     }
   }
     
@@ -301,7 +304,6 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       var isbn: String? = metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }.first?.stringValue
       
       // pass the acquired isbn to the controller
-      print("ISBN!")
       controller.getBookFromServer(isbn)
       
       // deinit the isbn string

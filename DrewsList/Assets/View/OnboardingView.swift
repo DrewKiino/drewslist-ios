@@ -33,6 +33,8 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupOnboardingView()
+    
+    FBSDKController.createCustomEventForName("UserOnboarding")
   }
   
   public override func viewDidAppear(animated: Bool) {

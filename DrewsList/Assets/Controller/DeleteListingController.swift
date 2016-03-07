@@ -23,7 +23,8 @@ public class DeleteListingController {
   
   public func viewDidLoad() {
   
-    GetBookFromServer()
+    //GetBookFromServer()
+    deleteListingFromServer()
     
     
   }
@@ -33,13 +34,70 @@ public class DeleteListingController {
   }
   
   
+  
   //MARK: Server Methods
   public func deleteListingFromServer() {
-  
+    guard let listing_id = model.listing?._id else { return }
+    print(listing_id)
+    model.shouldRefrainFromCallingServer = true
+    
+    Alamofire.request(.DELETE, ServerUrl.Default.getValue() + "/listing/\(listing_id)")
+
+      .response { [weak self] req, res, data, error in
+        if let error = error {
+          log.error(error)
+        } else if let data = data, let json: JSON! = JSON(data: data) {
+          
+          //create and userobject
+          self?.model.book = Book(json: json)
+          
+        }
+        
+        //Throttler created
+        self?.refrainTimer?.invalidate()
+        self?.refrainTimer = nil
+        self?.refrainTimer = NSTimer.after(1.0) { [weak self] in
+          //allow the controller to do server calls once more
+          self?.model.shouldRefrainFromCallingServer = false
+          
+        }
+        
+    }
     
     
+    //In case no response
+    refrainTimer?.invalidate()
+    refrainTimer = nil
+    refrainTimer = NSTimer.after(60.0) { [weak self] in
+      //disable loading screen
+      self?.model.shouldRefrainFromCallingServer = false
+      
+    }
   }
   
+
+  
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
   public func GetBookFromServer() {
     guard let book_id = model.book?._id else { return }
     
@@ -90,12 +148,14 @@ public class DeleteListingController {
   public func getBook() -> Book? { return model.book }
 
   
-  // MARK: Realm Functions
-  //  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
-  //  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
+   MARK: Realm Functions
+    public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
+    public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(model.user), update: true) } }
         
         
-  }
+
+*/
+
 
 
 

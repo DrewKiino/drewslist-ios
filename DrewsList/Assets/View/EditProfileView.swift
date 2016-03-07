@@ -16,6 +16,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private var model: EditProfileModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
+//  private let profileImagePicker = ProfileImagePickerView()
   
   
   
@@ -25,7 +26,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     setupSelf()
     setupDataBinding()
     setUpTableView()
-    
+    FBSDKController.createCustomEventForName("UserEditProfile")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -34,6 +35,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   public override func viewWillDisappear(animated: Bool) {
     controller.writeRealmUser()
+    super.viewWillDisappear(animated)
   }
   
   public override func viewWillLayoutSubviews() {
@@ -113,7 +115,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           cell.label?.font = .asapRegular(16)
           
           cell.setupUser(model.user)
-          
+          cell._didSelectCell.removeAllListeners()
           cell._didSelectCell.listen( self ) { [weak self] bool in
             self?.presentImagePicker()
           }
@@ -140,7 +142,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
           
           cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
-          cell.inputTextField?.text = model.user?.username
+          cell.inputTextField?.text = UserModel.sharedUser().user?.username
           cell.inputTextField?.font = .asapRegular(16)
           
           cell._inputTextFieldString.listen(self) { [weak self] string in
@@ -177,25 +179,8 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     return cell
   }
   
-  public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
-  {
-    if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      model.profileImage = pickedImage
-    }
-   // TODO: change image from image picker to server URL
-    dismissViewControllerAnimated(true, completion: nil)
-  }
-  
-  public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    dismissViewControllerAnimated(true, completion: nil)
-  }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//    if (indexPath.row == 1){
-//      return screen.height / 60
-//    } else {
-//      return screen.height / 15
-//    }
     switch (indexPath.row) {
       case 0:
         return screen.height / 20

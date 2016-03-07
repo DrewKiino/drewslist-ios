@@ -32,6 +32,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView?.fillSuperview()
     
     view.showActivityView()
+    FBSDKController.createCustomEventForName("UserChatHistory")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -162,6 +163,7 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupTitle() {
     title = UILabel()
+    title?.textColor = .coolBlack()
     title?.font = UIFont.asapRegular(12)
     title?.numberOfLines = 1
     addSubview(title!)
@@ -169,6 +171,7 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupTimestamp() {
     timestamp = UILabel()
+    timestamp?.textColor = .coolBlack()
     timestamp?.font = UIFont.asapRegular(10)
     timestamp?.textColor = .sexyGray()
     timestamp?.numberOfLines = 1
@@ -182,6 +185,7 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupMessage() {
     message = UILabel()
+    message?.textColor = .coolBlack()
     message?.font = UIFont.asapRegular(10)
     message?.textColor = .sexyGray()
     message?.numberOfLines = 2

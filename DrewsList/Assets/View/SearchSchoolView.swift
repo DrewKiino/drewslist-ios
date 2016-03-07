@@ -48,6 +48,8 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     searchBarImageView?.alignAndFill(align: .ToTheRightCentered, relativeTo: searchBarTextField!, padding: 8)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserSearchSchool")
   }
   
   public override func viewDidAppear(animated: Bool) {

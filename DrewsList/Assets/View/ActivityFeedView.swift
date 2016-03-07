@@ -31,10 +31,14 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     setupRefreshControl()
     
     view.showActivityView()
+    
+    FBSDKController.createCustomEventForName("UserActivityFeed")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
+    setupRefreshControl()
     
     controller.viewDidAppear()
   }
@@ -84,6 +88,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   }
   
   private func setupRefreshControl() {
+    refreshControl?.removeFromSuperview()
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
     tableView?.addSubview(refreshControl!)
@@ -166,6 +171,7 @@ public class ActivityCell: DLTableViewCell {
   
   private func setupActivityLabel() {
     activityLabel = UILabel()
+    activityLabel?.textColor = .coolBlack()
     activityLabel?.font = UIFont.asapRegular(12)
     activityLabel?.numberOfLines = 3
     activityLabel?.userInteractionEnabled = true

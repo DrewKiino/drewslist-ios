@@ -45,14 +45,9 @@ public class ListFeedController {
         self?.shouldRefreshViews.fire(false)
       } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
         
-        
         // for each listing in the JSON response, append it to the listings array
         // in the list feed model
-        for json in jsonArray {
-//          log.debug(json)
-          self?.model.listings.append(Listing(json: json))
-        }
-        
+        for json in jsonArray { if let listing: Listing! = Listing(json: json) where listing.user != nil { self?.model.listings.append(listing) } }
         
         self?.shouldRefreshViews.fire(true)
       }
