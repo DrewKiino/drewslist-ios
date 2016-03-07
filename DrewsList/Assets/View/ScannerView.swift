@@ -301,7 +301,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       }
       
       // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-      var isbn: String? = metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }.first?.stringValue
+      var isbn: String? = (metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }).first?.stringValue
       
       // pass the acquired isbn to the controller
       controller.getBookFromServer(isbn)
