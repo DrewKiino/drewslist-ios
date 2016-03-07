@@ -289,7 +289,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       if (isOtherUser) {
         let iconWidth = screen.width / 12
         
-        var myImage = UIImage(named: "Icon-CallButton")
+        var myImage = UIImage(named: "Call Icon-2")
         var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
         resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
         
@@ -300,7 +300,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
         callButton?.hidden = true
        
-        myImage = UIImage(named: "Icon-MessageButton")
+        myImage = UIImage(named: "Message Icon-1")
         resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
         resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
         

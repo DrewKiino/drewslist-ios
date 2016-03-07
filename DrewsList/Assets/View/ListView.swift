@@ -569,7 +569,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
       Async.main { [weak self] in self?.priceLabel?.attributedText = coloredString1 }
       
       // init toucan
-      var toucan1: Toucan? = Toucan(image: UIImage(named: "Icon-CallButton")!).resize(self?.callButton?.frame.size)
+      var toucan1: Toucan? = Toucan(image: UIImage(named: "Call Icon-2")!).resize(self?.callButton?.frame.size)
       
       Async.main { [weak self] in
         self?.callButton?.hidden = false
@@ -578,7 +578,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
         toucan1 = nil
       }
       
-      var toucan2: Toucan? = Toucan(image: UIImage(named: "Icon-MessageButton")!).resize(self?.chatButton?.frame.size)
+      var toucan2: Toucan? = Toucan(image: UIImage(named: "Message Icon-1")!).resize(self?.chatButton?.frame.size)
       
       Async.main { [weak self] in
         self?.chatButton?.hidden = false
