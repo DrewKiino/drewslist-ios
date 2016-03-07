@@ -34,7 +34,6 @@ public class EditProfileController {
   
   public func setUsername(string: String?) {
     UserModel.sharedUser().user?.username = string
-    updateUserInServer()
   }
   
   public func updateUserInServer() {

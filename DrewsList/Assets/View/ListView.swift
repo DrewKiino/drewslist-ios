@@ -504,6 +504,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
     priceLabel = UILabel()
     priceLabel?.font = UIFont.asapRegular(12)
     priceLabel?.textColor = UIColor.juicyOrange()
+    priceLabel?.textColor = .moneyGreen()
     addSubview(priceLabel!)
   }
   
