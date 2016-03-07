@@ -204,6 +204,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       self?.profileImg?.dl_setImageFromUrl(self?.model.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
       self?.bgViewTop?.dl_setImageFromUrl(self?.model.user?.bgImage, placeholder: UIImage(named: "background_books_1"))
       
+      self?.callButton?.hidden = false
+      self?.chatButton?.hidden = false
+      
       // MARK: Texts
       self?.profileUsername?.text = self?.model.user?.getName()
       self?.descriptionTextView?.text = self?.model.user?.description
@@ -295,6 +298,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         callButton?.setImage(resizedImage, forState: .Normal)
         callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
         callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
+        callButton?.hidden = true
        
         myImage = UIImage(named: "Icon-MessageButton")
         resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
@@ -304,6 +308,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
         chatButton?.setImage(resizedImage, forState: .Normal)
         chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+        chatButton?.hidden = true
         
         descriptionTextView?.addSubview(callButton!)
         descriptionTextView?.addSubview(chatButton!)

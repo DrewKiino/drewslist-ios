@@ -44,6 +44,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   
   private var scrollView: UIScrollView?
   private var pageTitleContainer: UIView?
+  private var pageTitleBorderFrame: UIView?
   private var leftPageTitleButton: UIButton?
   private var rightPageTitleButton: UIButton?
   private var pageSelector: UIView?
@@ -84,7 +85,10 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 4, otherSize: 48)
+    pageTitleContainer?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 55)
+    
+    pageTitleBorderFrame?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 56)
+    pageTitleBorderFrame?.backgroundColor = .tableViewNativeSeparatorColor()
     
     pageTitleContainer?.groupAndFill(group: .Horizontal, views: [leftPageTitleButton!, rightPageTitleButton!], padding: 8)
     
@@ -107,9 +111,11 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   }
   
   private func setupPageTitleContainer() {
+    pageTitleBorderFrame = UIView()
+    addSubview(pageTitleBorderFrame!)
+    
     pageTitleContainer = UIView()
     pageTitleContainer?.backgroundColor = .whiteColor()
-    pageTitleContainer?.layer.cornerRadius = 8.0
     addSubview(pageTitleContainer!)
   }
   
@@ -272,7 +278,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     setupTableView()
     setupRefreshControl()
     
-    showActivityView(-116, width: nil, height: nil)
+    showActivityView(-119, width: nil, height: nil)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -377,7 +383,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
         self?._userImagePressed.fire(user)
       }
       //      cell.showSeparatorLine()
-      cell.showTopBorder()
+      cell.showBottomBorder()
       
       return cell
     }

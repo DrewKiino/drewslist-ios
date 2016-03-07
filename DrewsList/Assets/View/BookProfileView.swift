@@ -98,19 +98,26 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
-        cell.paddingLabel?.text = "Information"
+        cell.paddingLabel?.text = "About This Book"
         
         return cell
       }
       break;
     case 1:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.hideBothTopAndBottomBorders()
+        cell.backgroundColor = .whiteColor()
+        return cell
+      }
+      break;
+    case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
         cell.label?.text = model.book?.authors.first?.name ?? "Author"
         cell.label?.font = .asapItalic(12)
         return cell
       }
       break;
-    case 2:
+    case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as? LabelCell {
         cell.label?.text = model.book?.title ?? "Book"
         cell.label?.font = .asapBold(32)
@@ -119,18 +126,18 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 3:
+    case 4:
       if  let cell = tableView.dequeueReusableCellWithIdentifier("RatingsCell", forIndexPath: indexPath) as? RatingsCell {
         cell.set(rating: model.book?.averageRating)
       }
       break;
-    case 4:
+    case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
         cell.imageUrl = model.book?.getImageUrl()
         return cell
       }
       break;
-    case 5:
+    case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "ISBN:"
         cell.titleLabel?.font = .asapBold(12)
@@ -140,7 +147,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 6:
+    case 7:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Binding:"
@@ -150,7 +157,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 7:
+    case 8:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Edition:"
@@ -161,7 +168,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         
       }
       break;
-    case 8:
+    case 9:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Publisher:"
@@ -173,7 +180,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         
       }
       break;
-    case 9:
+    case 10:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Page Count:"
@@ -184,7 +191,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 10:
+    case 11:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Categories:"
@@ -195,7 +202,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
         return cell
       }
       break;
-    case 11:
+    case 12:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Maturity Rating:"
@@ -207,7 +214,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       }
       break;
       
-    case 12:
+    case 13:
       
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         
@@ -219,19 +226,12 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       
       break;
       
-    case 13:
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextViewCell", forIndexPath: indexPath) as? InputTextViewCell {
         cell.backgroundColor = .whiteColor()
         cell.inputTextView?.text = model.book?.description ?? "No description"
         cell.inputTextView?.textColor = .sexyGray()
         cell.inputTextView?.userInteractionEnabled = false
-        
-        return cell
-      }
-      break;
-    case 14:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.paddingLabel?.text = "Options"
         
         return cell
       }
@@ -265,10 +265,14 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
 
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch (indexPath.row) {
+    case 1:
+      return 16
     case 4:
-      return 175
-    case 13:
-      if let string = model.book?.description, let height: CGFloat = string.height(screen.width) { return height + 100 }
+      return 24
+    case 5:
+      return 200
+    case 14:
+      if let string = model.book?.description, let height: CGFloat = string.height(screen.width, paddingHeight: false) { return height }
     case 15:
       return 64
     default: break

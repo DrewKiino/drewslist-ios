@@ -216,11 +216,11 @@ extension String {
     default: return string }
   }
   
-  func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{
+  func height(width: CGFloat, font: UIFont? = nil, paddingHeight: Bool? = nil) -> CGFloat{
     var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
     let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
     mutstring = nil
-    return rect.height * 1.25 + screen.height * 0.25
+    return paddingHeight == true ? rect.height * 1.25 + screen.height * 0.25 : rect.height * 1.25
   }
 }
 

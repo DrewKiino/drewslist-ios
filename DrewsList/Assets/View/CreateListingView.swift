@@ -857,7 +857,7 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    inputTextView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 16, otherSize: bounds.height - 16)
+    inputTextView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: bounds.height)
   }
   
   public override func setupSelf() {
@@ -877,6 +877,7 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
     inputTextView?.font = .asapRegular(12)
     inputTextView?.placeholderColor = .sexyGray()
     inputTextView?.delegate = self
+//    inputTextView?.contentInset = UIEdgeInsetsMake(-8.0, 0.0, 0.0, 0.0)
     addSubview(inputTextView!)
   }
   
