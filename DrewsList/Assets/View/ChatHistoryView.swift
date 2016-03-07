@@ -150,7 +150,8 @@ public class ChatHistoryCell: DLTableViewCell {
     leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
     title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 8, width: screen.width - 100, height: 16)
     arrow?.anchorAndFillEdge(.Right, xPad: 8, yPad: 20, otherSize: 12)
-    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
+//    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
+    timestamp?.anchorInCorner(.TopRight, xPad: 12, yPad: 12, width: 48, height: 16)
     message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 24)
     
     set(chatModel: chatModel)
