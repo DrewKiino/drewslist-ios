@@ -101,7 +101,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
       case 0:
         if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
           cell.paddingLabel?.text = "Profile Image"
-          cell.paddingLabel?.textAlignment = .Center
+          cell.paddingLabel?.textAlignment = .Left
           cell.backgroundColor = .paradiseGray()
           return cell
         }
@@ -123,7 +123,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
       case 2:
         if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
           cell.paddingLabel?.text = "Profile Bio"
-          cell.paddingLabel?.textAlignment = .Center
+          cell.paddingLabel?.textAlignment = .Left
           cell.backgroundColor = .paradiseGray()
           return cell
         }
@@ -135,7 +135,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           cell.addSubview(label)
           label.text = "Username"
           label.textColor = .sexyGray()
-          label.font = .asapRegular(16)
+          label.font = .asapRegular(15)
           let xPad = screen.width / 30
           label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
           
@@ -161,7 +161,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
         if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
           cell.label?.text = "Change School"
           cell.label?.textColor = .sexyGray()
-          cell.label?.font = UIFont.asapRegular(16)
+          cell.label?.font = UIFont.asapRegular(15)
           
           //cell.setupUser(model.user)
           

@@ -298,8 +298,9 @@ public class RatingsCell: DLTableViewCell {
   private func setupRatingsView() {
     cosmosView = CosmosView()
     cosmosView?.settings.fillMode = .Precise
-    cosmosView?.settings.borderColorEmpty = .juicyOrange()
-    cosmosView?.settings.colorFilled = .juicyOrange()
+    cosmosView?.settings.emptyBorderColor = .juicyOrange()
+    cosmosView?.settings.filledBorderColor = .juicyOrange()
+    
     addSubview(cosmosView!)
   }
   
