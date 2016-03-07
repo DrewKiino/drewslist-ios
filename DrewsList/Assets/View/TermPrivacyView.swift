@@ -52,6 +52,8 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
     
     tableView?.fillSuperview()
     
+    tableView?.contentSize = CGSize(width: tableView!.frame.width, height: tableView!.frame.height + 100)
+    
     FBSDKController.createCustomEventForName("UserTermPrivacy")
   }
   
