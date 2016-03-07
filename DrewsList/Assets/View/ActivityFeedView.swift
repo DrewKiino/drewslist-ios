@@ -154,7 +154,7 @@ public class ActivityCell: DLTableViewCell {
     
     leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
     rightImageView?.anchorToEdge(.Right, padding: 8, width: 36, height: 36)
-    activityLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftImageView!, padding: 12, width: frame.width)
+    activityLabel?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftImageView!, padding: 12, width: screen.width - 72)
     
     set(activity)
   }
