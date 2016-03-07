@@ -86,6 +86,12 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   private func setupSelf() {
     title = "Edit Profile"
+    let saveButton = UIBarButtonItem(title: "Save", style: .Plain, target: self, action: "save")
+    self.navigationItem.rightBarButtonItem = saveButton
+  }
+  
+  private func save() {
+    controller.updateUserInServer()
   }
   
   // MARK: UITableView Classes
