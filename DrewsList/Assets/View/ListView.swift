@@ -503,11 +503,7 @@ public class ListerAttributesViewCell: DLTableViewCell {
   private func setupPriceLabel() {
     priceLabel = UILabel()
     priceLabel?.font = UIFont.asapRegular(12)
-<<<<<<< HEAD
     priceLabel?.textColor = UIColor.juicyOrange()
-=======
-    priceLabel?.textColor = .moneyGreen()
->>>>>>> origin/master
     addSubview(priceLabel!)
   }
   

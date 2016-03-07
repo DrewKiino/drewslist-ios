@@ -873,6 +873,8 @@ public class BigImageCell: DLTableViewCell {
   
   public let _didSelectCell = Signal<Bool>()
   
+  public var imageUrl: String?
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
@@ -894,6 +896,7 @@ public class BigImageCell: DLTableViewCell {
     bigImageView?.anchorAndFillEdge(.Left, xPad: screen.width / 10, yPad: yPad, otherSize: frame.height - yPad * 2)
     label?.anchorAndFillEdge(.Right, xPad: screen.width / 10, yPad: screen.width / 30, otherSize: screen.width * (2 / 3))
     
+    downloadImageFromURL()
   }
   
   public override func setupSelf() {
@@ -931,16 +934,8 @@ public class BigImageCell: DLTableViewCell {
     }
   }
   
-  public func downloadImageFromURL(url: String?){
-    bigImageView?.dl_setImageFromUrl(url, size: bigImageView?.frame.size, maskWithEllipse: true) { [weak self] image in
-      
-      self?.bigImageView?.alpha = 0.0
-      self?.bigImageView?.image = image
-      
-      UIView.animateWithDuration(0.1) { [weak self] in
-        self?.bigImageView?.alpha = 1.0
-      }
-    }
+  public func downloadImageFromURL(){
+    bigImageView?.dl_setImageFromUrl(imageUrl, maskWithEllipse: true)
   }
   
 }

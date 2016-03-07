@@ -21,16 +21,31 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   private var profileImgURLs: [String]?
   private var profileImgNames: [String]?
   
+  // Navigation Header Views
+  private var headerView: UIView?
+  private var cancelButton: UIButton?
+  //  private var chooseButton: UIButton?
+  private var headerTitle: UILabel?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     setupSelf()
     setupDataBinding()
+    setupHeaderView()
     setupProfileImages()
     setupScrollView()
     setupTableView()
     
     FBSDKController.createCustomEventForName("UserProfileImagePicker")
+    
+    headerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
+    headerTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
+    cancelButton?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 8, width: 64, height: 24)
+    
+    tableView?.alignAndFill(align: .UnderCentered, relativeTo: headerView!, padding: 0)
+//    tableView?.fillSuperview()
+    tableView?.contentSize = CGSizeMake(screen.width, screen.height * 2)
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -46,11 +61,38 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
-    tableView?.fillSuperview()
-    tableView?.contentSize = CGSizeMake(screen.width, screen.height * 2)
   }
   
   // MARK: setup view functions
+  
+  private func setupHeaderView() {
+    headerView = UIView()
+    headerView?.backgroundColor = .soothingBlue()
+    view.addSubview(headerView!)
+    
+    headerTitle = UILabel()
+    headerTitle?.text = "Edit Profile Image"
+    headerTitle?.textAlignment = .Center
+    headerTitle?.font = UIFont.asapBold(16)
+    headerTitle?.textColor = .whiteColor()
+    headerView?.addSubview(headerTitle!)
+    
+    cancelButton = UIButton()
+    cancelButton?.setTitle("Cancel", forState: .Normal)
+    cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
+    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    headerView?.addSubview(cancelButton!)
+    
+    //    chooseButton = UIButton()
+    //    chooseButton?.setTitle("Choose", forState: .Normal)
+    //    chooseButton?.titleLabel?.font = UIFont.asapRegular(16)
+    //    chooseButton?.addTarget(self, action: "choose", forControlEvents: .TouchUpInside)
+    //    headerView?.addSubview(chooseButton!)
+  }
+  
+  public func cancel() {
+    dismissViewControllerAnimated(true, completion: nil)
+  }
   
   public func setupProfileImages(){
     if let fbProfileImageURL = self.model.fbProfileImageURL {
@@ -78,6 +120,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     tableView?.scrollEnabled = true
     tableView?.delegate = self
     tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
     view.addSubview(tableView!)
   }
   
@@ -121,31 +164,27 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
       if let profileImgURLs = profileImgURLs, profileImgNames = profileImgNames {
-        cell.downloadImageFromURL(profileImgURLs[indexPath.row])
+        cell.imageUrl = profileImgURLs[indexPath.row]
         cell.label?.text = profileImgNames[indexPath.row]
-        cell._didSelectCell.listen(self) { [weak cell] list in
-          self.model.user?.imageUrl = profileImgURLs[indexPath.row]
-          self.navigationController?.popToRootViewControllerAnimated(true)
+        cell._didSelectCell.listen(self) { [weak self] list in
+          self?.model.user?.imageUrl = profileImgURLs[indexPath.row]
+//          self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+//          self?.dismissViewControllerAnimated(true, completion: nil)
+//          self?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+//          TabView.currentView()?.dismissViewControllerAnimated(true, completion: nil)
+//          TabView.currentView()?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+          self?.dismissViewControllerAnimated(true, completion: nil)
         }
       }
       cell.label?.textAlignment = .Center
       
-      
       return cell
-      
-    } else {
-      log.error("Cell not found: ProfileImagePickerView.swift")
-      return UITableViewCell()
     }
    
+    return DLTableViewCell()
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     return screen.height / 9
   }
-  
-  public func cancel() {
-  
-  }
-  
 }

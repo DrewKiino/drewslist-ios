@@ -26,6 +26,9 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     setupSelf()
     setupDataBinding()
     setUpTableView()
+    
+    tableView?.fillSuperview()
+    
     FBSDKController.createCustomEventForName("UserEditProfile")
   }
   
@@ -36,11 +39,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   public override func viewWillDisappear(animated: Bool) {
     controller.writeRealmUser()
     super.viewWillDisappear(animated)
-  }
-  
-  public override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
-    tableView?.fillSuperview()
   }
   
   // MARK: setup view functions
@@ -69,15 +67,9 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     model.user = user
   }
   
-//  private func presentImagePicker() {
-//    let picker = UIImagePickerController()
-//    picker.delegate = self
-//    picker.sourceType = .PhotoLibrary
-//    picker.allowsEditing = false
-//    presentViewController(picker, animated: true, completion: nil)
-//  }
   private func presentImagePicker() {
-    navigationController?.pushViewController(ProfileImagePickerView(), animated: true)
+//    navigationController?.pushViewController(ProfileImagePickerView(), animated: true)
+    presentViewController(ProfileImagePickerView(), animated: true, completion: nil)
   }
   
   private func presentSchoolPicker() {
@@ -86,6 +78,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   private func setupSelf() {
     title = "Edit Profile"
+    view.backgroundColor = .whiteColor()
   }
   
   // MARK: UITableView Classes
@@ -122,57 +115,59 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           return cell
         }
         break
-      case 2:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-          cell.paddingLabel?.text = "Profile Bio"
-          cell.paddingLabel?.textAlignment = .Center
-          cell.backgroundColor = .paradiseGray()
-          return cell
-        }
-        break
-      case 3:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-          
-          let label = UILabel()
-          cell.addSubview(label)
-          label.text = "Username"
-          label.textColor = .sexyGray()
-          label.font = .asapRegular(16)
-          let xPad = screen.width / 30
-          label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
-          
-          cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
-          cell.inputTextField?.text = UserModel.sharedUser().user?.username
-          cell.inputTextField?.font = .asapRegular(16)
-          
-          cell._inputTextFieldString.listen(self) { [weak self] string in
-            self?.controller.setUsername(string)
-          }
-          return cell
-        }
-        break
-      
-      case 4:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-          cell.hideBothTopAndBottomBorders()
-          return cell
-        }
-      break
-      
-      case 5:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
-          cell.label?.text = "Change School"
-          cell.label?.textColor = .sexyGray()
-          cell.label?.font = UIFont.asapRegular(16)
-          
-          //cell.setupUser(model.user)
-          
-          cell._didSelectCell.listen( self ) { [weak self] bool in
-            self?.presentSchoolPicker()
-          }
-          return cell
-        }
-        break
+//      case 2:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//          cell.paddingLabel?.text = "Profile Bio"
+//          cell.paddingLabel?.textAlignment = .Center
+//          cell.backgroundColor = .paradiseGray()
+//          return cell
+//        }
+//        break
+//      case 3:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+//          
+//          let label = UILabel()
+//          cell.addSubview(label)
+//          label.text = "Username"
+//          label.textColor = .sexyGray()
+//          label.font = .asapRegular(16)
+//          let xPad = screen.width / 30
+//          label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
+//          
+//          cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
+//          cell.inputTextField?.text = UserModel.sharedUser().user?.username
+//          cell.inputTextField?.font = .asapRegular(16)
+//          
+//          cell._inputTextFieldString.listen(self) { [weak self] string in
+//            self?.controller.setUsername(string)
+//          }
+//          return cell
+//        }
+//        break
+//      
+//      case 4:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//          cell.hideBothTopAndBottomBorders()
+//          return cell
+//        }
+//      break
+//      
+//      case 5:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
+//          cell.label?.text = "Change School"
+//          cell.label?.textColor = .sexyGray()
+//          cell.label?.font = UIFont.asapRegular(16)
+//          
+//          //cell.setupUser(model.user)
+//          
+//          cell._didSelectCell.removeAllListeners()
+//          cell._didSelectCell.listen( self ) { [weak self] bool in
+//            self?.presentSchoolPicker()
+//          }
+//          
+//          return cell
+//        }
+//        break
       default:
         break
     }
@@ -181,28 +176,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    switch (indexPath.row) {
-      case 0:
-        return screen.height / 20
-      case 1:
-        return screen.height / 15
-      case 2:
-        return screen.height / 20
-      case 3:
-        return screen.height / 15
-      case 4:
-        // Padding between USERNAME and CHANGE SCHOOL
-        return screen.height / 80
-      case 5:
-        return screen.height / 15
-      default:
-        return 0
+    switch indexPath.row {
+    case 0: return 24
+    default: break
     }
-    
-    
-   
+    return 48
   }
-  
-  
 }
 
