@@ -175,7 +175,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
-    scrollView?.contentSize = CGSizeMake(screen.width, 830)
+    scrollView?.contentSize = CGSizeMake(screen.width, 908)
   }
   
   // MARK: Data Binding
@@ -183,7 +183,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   private func setupDataBinding() {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      self?.view.dismissActivityView()
       if self?.isOtherUser == true { self?.title = "User Profile" }
       else { self?.title = "Profile" }
     }
@@ -195,6 +194,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
       
       DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
+      
+      self?.view.dismissActivityView()
       
       if didLoad {
         self?.bookShelf?.reloadData()

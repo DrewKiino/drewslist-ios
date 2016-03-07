@@ -63,15 +63,6 @@ public class ListViewContainer: UIViewController {
       )
       self?.doOnce = false
     }
-    // FIXME: these signal listeners aren't being used??
-    listView?._bookProfilePressed.removeAllListeners()
-    listView?._bookProfilePressed.listen(self) { [weak self] book in
-      self?.navigationController?.pushViewController(BookProfileView().setBook(book), animated: true)
-    }
-    listView?._userProfilePressed.removeAllListeners()
-    listView?._userProfilePressed.listen(self) { [weak self] user in
-      self?.navigationController?.pushViewController(UserProfileView().setUser(user), animated: true)
-    }
     listView?.model._listing.removeAllListeners()
     listView?.model._listing.listen(self) { [weak self] listing in
       if listing?.user?._id == UserModel.sharedUser().user?._id {
@@ -205,7 +196,7 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
     model._shouldRefrainFromCallingServer.removeAllListeners()
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
       if bool == true {
-        self?.showActivityView()
+        self?.showActivityView(-64, width: nil, height: nil)
         self?.tableView?.hidden = true
       }
     }
@@ -248,9 +239,9 @@ public class ListView: UIView, UITableViewDataSource, UITableViewDelegate {
         
         cell._cellPressed.removeAllListeners()
         cell._cellPressed.listen(self) { [weak self] bool in
-          if bool == true {
-            self?._bookProfilePressed.fire(self?.model.listing?.book)
-          }
+//          if bool == true {
+//            self?._bookProfilePressed.fire(self?.model.listing?.book)
+//          }
         }
         
         return cell

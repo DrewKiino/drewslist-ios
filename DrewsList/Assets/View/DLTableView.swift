@@ -577,6 +577,7 @@ public class BookViewCell: DLTableViewCell {
   }
   
   public func cellPressed() {
+    TabView.currentView()?.pushViewController(BookProfileView().setBook(bookView?.book), animated: true)
     _cellPressed => true
   }
 }

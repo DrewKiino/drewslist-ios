@@ -86,6 +86,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     forgotPasswordOption?.alignAndFill(align: .ToTheRightCentered, relativeTo: signUpOption!, padding: 0)
     
     FBSDKController.createCustomEventForName("UserLogin")
+    
+    // log the user out off facebook everytime the login view has been loaded
+    logUserOutOfFacebook()
   }
   
   public override func viewDidAppear(animated: Bool) {

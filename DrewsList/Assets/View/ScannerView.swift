@@ -314,6 +314,14 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   public override func prefersStatusBarHidden() -> Bool {
     return true
   }
+  
+  public func hideHeaderView() {
+    topView?.hidden = true
+  }
+  
+  public func showTopView() {
+    topView?.hidden = false
+  }
 }
 
 public class DiscoveredBarCodeView: UIView {
