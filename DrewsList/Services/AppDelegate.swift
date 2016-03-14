@@ -68,7 +68,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Optional: configure GAI options.
     var gai = GAI.sharedInstance()
     gai.trackUncaughtExceptions = true  // report uncaught exceptions
+    // if the url does not point to the production URL, then allow logging
     gai.logger.logLevel = GAILogLevel.Verbose  // remove before app release
+    if ServerUrl.Default.getValue() == ServerUrl.Production.getValue() {
+      // remove logging
+      gai.logger.logLevel = GAILogLevel.None
+      Atlantis.Configuration.logLevel = .None
+    }
     // [END tracker_swift]
     
     setupRootView()
