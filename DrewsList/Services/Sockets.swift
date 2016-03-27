@@ -100,7 +100,6 @@ public class Sockets {
       }
     }
     socket.on("dataReady") { data, socket in
-      log.debug(data)
     }
     socket.on("setOnlineStatus.response") { [weak self] data, socket in
       guard let jsonArray = JSON(data).array else { return }

@@ -24,19 +24,20 @@ public class ScannerController: NSObject {
     // refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     
-    Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=\(isbn)")
+    Alamofire.request(.GET, ServerUrl.Default.getValue()+"/book/search?query=\(isbn)")
     // then using the builder pattern, chain a response call after
     .response { [weak self] req, res, data, error in
       
       log.debug(req?.URLString)
       
+      
       // unwrap error and check if it exists
       if let error = error {
+        
         log.error(error)
         // use JSON library to jsonify the results ( NSData => JSON )
         // since the results is an array of objects, we get the first name
       } else if let data = data, let json = JSON(data: data).array?.first {
-        
         self?.model.book = Book(json: json)
       }
       
@@ -52,5 +53,7 @@ public class ScannerController: NSObject {
   
   public func get_ShouldHideBorder() -> Signal<Bool> { return model._shouldHideBorder }
   
-  public func get_Book() -> Signal<Book?> { return model._book }
+  public func get_Book() -> Signal<Book?> {
+    return model._book
+  }
 }

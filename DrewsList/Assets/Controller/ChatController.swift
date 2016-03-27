@@ -119,14 +119,6 @@ public class ChatController {
   
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
     
-//    log.debug(model.user)
-//    log.debug(model.user?._id)
-//    log.debug(model.user?.getName())
-//    log.debug(model.friend)
-//    log.debug(model.friend?._id)
-//    log.debug(model.friend?.getName())
-//    log.debug(model.session_id)
-//    log.debug(model.room_id)
     
     guard let user = model.user,
           let _id = user._id,

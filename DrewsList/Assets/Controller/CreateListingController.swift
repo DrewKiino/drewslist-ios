@@ -120,7 +120,7 @@ public class CreateListingController {
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
-    Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=\(isbn)")
+    Alamofire.request(.GET, ServerUrl.Default.getValue()+"/book/search?query=\(isbn)")
     // then using the builder pattern, chain a 'response' call after
     .response { [weak self] req, res, data, error in
       // unwrap error and check if it exists

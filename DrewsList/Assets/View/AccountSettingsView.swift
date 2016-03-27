@@ -257,7 +257,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   }
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    log.debug(indexPath.row)
   }
   
   func configure() {
