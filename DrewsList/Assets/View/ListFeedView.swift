@@ -346,7 +346,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     
-    if let notes = model.listings[indexPath.row].notes where !notes.isEmpty {
+    if !model.listings.isEmpty, let notes = model.listings[indexPath.row].notes where !notes.isEmpty {
       
       let height = NSAttributedString(string: notes).heightWithConstrainedWidth(screen.width)
       
