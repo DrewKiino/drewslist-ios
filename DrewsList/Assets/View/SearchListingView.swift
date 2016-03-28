@@ -208,6 +208,5 @@ public class SearchListingView: UIViewController, UITableViewDataSource, UITable
   
   public func scrollViewDidScroll(scrollView: UIScrollView) {
     searchBarTextField?.resignFirstResponder()
-    log.debug("mark")
   }
 }

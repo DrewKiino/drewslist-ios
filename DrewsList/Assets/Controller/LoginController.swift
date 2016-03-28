@@ -71,7 +71,6 @@ public class LoginController {
     // check if user is logged into facebook
     } else if fbsdkController.userIsLoggedIntoFacebook() {
       
-      log.debug("mark")
       
       fbsdkController.getUserAttributesFromFacebook()
       
@@ -79,7 +78,6 @@ public class LoginController {
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
       
-      log.debug("mark2")
       
       tabView.presentViewController(LoginView(), animated: false) { bool in
         // else, log use out of facebook
@@ -173,7 +171,6 @@ public class LoginController {
         self?.writeRealmUser()
         
         let user = try! Realm().objects(RealmUser.self).first?.getUser()
-        log.debug(user?.getName())
         
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)

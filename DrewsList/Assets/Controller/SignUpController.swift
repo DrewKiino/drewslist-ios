@@ -115,7 +115,6 @@ public class SignUpController {
           
         } else {
          
-//          log.debug(json)
           
           // create and  user object
           self?.model.user = User(json: json)
