@@ -222,6 +222,10 @@ extension String {
     mutstring = nil
     return paddingHeight == true ? rect.height * 1.25 + screen.height * 0.25 : rect.height * 1.4
   }
+  
+  public func substringWithRange(start: Int, length: Int) -> String {
+    return NSString(string: self).substringWithRange(NSRange(location: start, length: length))
+  }
 }
 
 extension NSMutableAttributedString {
@@ -235,6 +239,52 @@ extension NSMutableAttributedString {
       appendAttributedString(attributedString)
     }
     return self
+  }
+}
+
+extension UIViewController {
+  
+  public enum UIType {
+    case LeftBarButton
+    case RightBarButton
+  }
+  
+  public func showAlert(title: String, message: String) {
+    var alertController: UIAlertController! = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func showActivity(uiType: UIType) {
+    var activityIndicator: UIActivityIndicatorView! = UIActivityIndicatorView()
+    activityIndicator.startAnimating()
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    }
+    activityIndicator = nil
+  }
+  
+  public func hideActivity() {
+    navigationItem.leftBarButtonItem = nil
+    navigationItem.rightBarButtonItem = nil
+  }
+  
+  public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: target, action: "cancel")
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
+      break
+    }
   }
 }
 

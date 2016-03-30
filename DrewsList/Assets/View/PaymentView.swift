@@ -1,0 +1,147 @@
+//
+//  PaymentView.swift
+//  DrewsList
+//
+//  Created by Andrew Aquino on 3/30/16.
+//  Copyright © 2016 Totem. All rights reserved.
+//
+
+import Foundation
+import Neon
+
+public class PaymentView: DLNavigationController, UITableViewDataSource, UITableViewDelegate {
+  
+  private let controller = PaymentController()
+  private var model: PaymentModel { get { return controller.model } }
+  
+  private var tableView: DLTableView?
+  
+  public override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    setRootViewTitle("Payment")
+    setupTableView()
+    
+    tableView?.fillSuperview()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    controller.getPaymentInfoFromServer()
+  }
+  
+  public override func setupDataBinding() {
+    super.setupDataBinding()
+    model._cards.removeAllListeners()
+    model._cards.listen(self) { [weak self] cards in
+      self?.tableView?.reloadData()
+    }
+  }
+  
+  private func setupTableView() {
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    rootView?.view.addSubview(tableView!)
+  }
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    switch indexPath.row {
+    case 0: return 36
+    case 1: return 24
+    default: return 48
+    }
+  }
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return model.cards.count + 2
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    switch indexPath.row {
+    case 0:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
+        cell.titleButton?.setTitle("Add Payment", forState: .Normal)
+        cell.onClick = { [weak self] in
+          self?.pushViewController(PaymentInputView(), animated: true)
+        }
+        return cell
+      }
+      break
+    case 1:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Cards"
+        return cell
+      }
+      break
+    default:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("CardInfoCell", forIndexPath: indexPath) as? CardInfoCell {
+        cell.cardType = model.cards[indexPath.row - 2].type
+        cell.cardNumber = model.cards[indexPath.row - 2].number
+        return cell
+      }
+      break
+    }
+    
+    return DLTableViewCell()
+  }
+}
+
+public class CardInfoCell: DLTableViewCell {
+  
+  private var containerView: UIView?
+  
+  private var cardImageView: UIImageView?
+  private var cardLabel: UILabel?
+  
+  public var cardNumber: String? {
+    didSet {
+      if let number = cardNumber {
+        cardLabel?.text = "PERSONAL **** \(number)"
+      }
+    }
+  }
+  
+  public var cardType: String? {
+    didSet {
+      if let cardType = cardType {
+        cardImageView?.dl_setImage(UIImage(named: cardType))
+      }
+    }
+  }
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupContainerView()
+    setupCardView()
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    containerView?.fillSuperview(left: 8, right: 8, top: 8, bottom: 8)
+    
+    cardImageView?.anchorToEdge(.Left, padding: 8, width: 24, height: 24)
+    cardLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: cardImageView!, padding: 8, height: 36)
+  }
+  
+  private func setupContainerView() {
+    containerView = UIView()
+    containerView?.layer.borderColor = UIColor.coolBlack().CGColor
+    containerView?.layer.borderWidth = 1.0
+    containerView?.layer.cornerRadius = 5.0
+    addSubview(containerView!)
+  }
+  
+  private func setupCardView() {
+    cardImageView = UIImageView()
+    containerView?.addSubview(cardImageView!)
+    
+    cardLabel = UILabel()
+    cardLabel?.textColor = .coolBlack()
+    cardLabel?.font = .asapRegular(12)
+    containerView?.addSubview(cardLabel!)
+  }
+}

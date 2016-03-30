@@ -66,6 +66,11 @@ pod 'FBSDKLoginKit', '~> 4.10.0'
 # google
 pod 'Google/Analytics'
 
+# payments 
+pod 'Stripe'
+pod "CreditCardValidator"
+
+
 #####################################
 # unit testing
 

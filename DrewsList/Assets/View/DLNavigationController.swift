@@ -18,6 +18,11 @@ public class DLNavigationController: UINavigationController {
     super.viewDidLoad()
     setupRootView()
     setupSelf()
+    setupDataBinding()
+  }
+  
+  public func setupDataBinding() {
+    
   }
   
   public class func showActivityAnimation(view: UIViewController?, leftHandSide: Bool = false) {

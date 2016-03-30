@@ -74,10 +74,14 @@ public class DLTableView: UITableView {
     
     // MARK: Book Profile
     registerClass(RatingsCell.self, forCellReuseIdentifier: "RatingsCell")
+   
+    // MARK: Payments
+    registerClass(CardInfoCell.self, forCellReuseIdentifier: "CardInfoCell")
+    registerClass(PaymentInputCell.self, forCellReuseIdentifier: "PaymentInputCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false
-    backgroundColor = .paradiseGray()
+    backgroundColor = .whiteColor()
     separatorColor = .clearColor()
     
     addGestureRecognizer(UITapGestureRecognizer(target: self, action: "resignFirstResponder"))
@@ -203,7 +207,7 @@ public class PaddingCell: DLTableViewCell {
   
   private func setupPaddingLabel() {
     paddingLabel = UILabel()
-    paddingLabel?.textColor = .sexyGray()
+    paddingLabel?.textColor = .coolBlack()
     paddingLabel?.textAlignment = .Center
     paddingLabel?.font = .asapRegular(12)
     paddingLabel?.adjustsFontSizeToFitWidth = true
@@ -334,6 +338,8 @@ public class FullTitleCell: DLTableViewCell {
   public var titleButton: UIButton?
   public var rightImageView: UIImageView?
   
+  public var onClick: (() -> Void)?
+  
   public let _didSelectCell = Signal<Bool>()
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -399,6 +405,7 @@ public class FullTitleCell: DLTableViewCell {
       self?.backgroundColor = .whiteColor()
     }
     _didSelectCell => true
+    onClick?()
   }
   
   public func hideArrowIcon() {

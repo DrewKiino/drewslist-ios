@@ -54,7 +54,8 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     rootView?.view.addSubview(tableView!)
   }
   
-  private func setupDataBinding() {
+  public override func setupDataBinding() {
+    super.setupDataBinding()
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
     }
