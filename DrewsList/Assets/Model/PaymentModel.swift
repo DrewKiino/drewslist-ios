@@ -9,7 +9,7 @@
 import Foundation
 import Signals
 
-public typealias CardInfo = (card_id: String?, number: String?, type: String?)
+public typealias CardInfo = (card_id: String?, number: String?, type: String?, isDefault: Bool)
 
 public class PaymentModel {
   

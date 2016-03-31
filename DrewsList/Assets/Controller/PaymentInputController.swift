@@ -88,8 +88,8 @@ public class PaymentInputController {
             self?.model.cards.removeAll(keepCapacity: false)
             
             for json in jsonArray {
-              if let card_id = json["card_id"].string, let number = json["cardNumber"].string, let type = json["cardType"].string {
-                self?.model.cards.append((card_id, number, type) as CardInfo)
+              if let card_id = json["card_id"].string, let number = json["cardNumber"].string, let type = json["cardType"].string, let isDefault = json["default"].bool {
+                self?.model.cards.append((card_id, number, type, isDefault) as CardInfo)
               }
             }
           }

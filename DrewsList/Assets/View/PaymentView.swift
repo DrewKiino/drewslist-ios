@@ -20,7 +20,7 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
     super.viewDidLoad()
     
     // DEBUG
-    UserModel.setSharedUser(User().set(_id: "56fc6ed591b87e3965cca2df"))
+    UserModel.setSharedUser(User().set(_id: "56fc6fda767d3c456b38eb88"))
     
     setRootViewTitle("Payment")
     setupTableView()
@@ -80,13 +80,42 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
       break
     default:
       if let cell = tableView.dequeueReusableCellWithIdentifier("CardInfoCell", forIndexPath: indexPath) as? CardInfoCell {
+        
         cell.cardType = model.cards[indexPath.row - 2].type
         cell.cardNumber = model.cards[indexPath.row - 2].number
+        cell.isDefault = model.cards[indexPath.row - 2].isDefault
+        
         cell.onSelect = { [weak self] in
+          
           if let card_id = self?.model.cards[indexPath.row - 2].card_id, let number = self?.model.cards[indexPath.row - 2].number {
+            
             var alertController: UIAlertController! = UIAlertController(title: "Edit Card", message: "PERSONAL **** \(number)", preferredStyle: .ActionSheet)
+            
+            if self?.model.cards[indexPath.row - 2].isDefault == false {
+              alertController.addAction(UIAlertAction(title: "Make Default", style: .Default) { action in
+                
+                self?.rootView?.showActivity(.RightBarButton)
+                
+                self?.controller.changeDefaultCard(card_id) { (json, error) in
+                  
+                  self?.rootView?.hideActivity()
+                  
+                  self?.tableView?.reloadData()
+                  
+                  if error != nil || json["statusCode"].int == 404 {
+                    self?.rootView?.showAlert("Our apologies!", message: "An error has occurred and we are unable to set your default card. \u{1F623}")
+                  }
+                }
+              })
+            }
+            
             alertController.addAction(UIAlertAction(title: "Delete", style: .Destructive) { action in
+              
+              self?.rootView?.showActivity(.RightBarButton)
+              
               self?.controller.deleteCardInServer(card_id) { (json, error) in
+                
+                self?.rootView?.hideActivity()
                 
                 self?.tableView?.reloadData()
                 
@@ -95,9 +124,12 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
                 }
               }
             })
+            
             alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
             })
+            
             self?.presentViewController(alertController, animated: true, completion: nil)
+            
             alertController = nil
           }
         }
@@ -116,6 +148,8 @@ public class CardInfoCell: DLTableViewCell {
   
   private var cardImageView: UIImageView?
   private var cardLabel: UILabel?
+  
+  public var isDefault: Bool = false
   
   public var cardNumber: String? {
     didSet {
@@ -151,11 +185,12 @@ public class CardInfoCell: DLTableViewCell {
     
     cardImageView?.anchorToEdge(.Left, padding: 8, width: 24, height: 24)
     cardLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: cardImageView!, padding: 8, height: 36)
+    
+    containerView?.layer.borderColor = isDefault ? UIColor.juicyOrange().CGColor : UIColor.coolBlack().CGColor
   }
   
   private func setupContainerView() {
     containerView = UIView()
-    containerView?.layer.borderColor = UIColor.coolBlack().CGColor
     containerView?.layer.borderWidth = 1.0
     containerView?.layer.cornerRadius = 5.0
     addSubview(containerView!)

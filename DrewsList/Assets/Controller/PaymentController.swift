@@ -90,12 +90,31 @@ public class PaymentController {
     }
   }
   
+  public func changeDefaultCard(card_id: String?, completionBlock: HTTPCompletionBlock? = nil) {
+    if let card_id = card_id, let user_id = UserModel.sharedUser().user?._id {
+      Alamofire.request(.POST, ServerUrl.Local.getValue() + "/payment/changeDefaultCard", parameters: [
+        "user_id": user_id,
+        "card_id": card_id
+        ] as [ String: AnyObject ])
+      .response { [weak self] (request, response, data: NSData?, error: NSError?) in
+        
+        completionBlock?(json: JSON(data: data ?? NSData()), error: error)
+        
+        if let error = error {
+          log.error(error)
+        }
+        
+        self?.parseCards(data)
+      }
+    }
+  }
+  
   public func parseCards(data: NSData?) {
     if let data = data, let jsonArray: [JSON] = JSON(data: data)["payments"].array {
       model.cards.removeAll(keepCapacity: false)
       for json in jsonArray {
-        if let card_id = json["card_id"].string, let number = json["cardNumber"].string, let type = json["cardType"].string {
-          model.cards.append((card_id, number, type) as CardInfo)
+        if let card_id = json["card_id"].string, let number = json["cardNumber"].string, let type = json["cardType"].string, let isDefault = json["default"].bool {
+          model.cards.append((card_id, number, type, isDefault) as CardInfo)
         }
       }
     }
