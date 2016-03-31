@@ -19,4 +19,13 @@ public class DLViewController: UIViewController {
   public func setupSelf() {
     
   }
+  
+  public func setNavBarTitle(title: String) {
+    var label: UILabel! = UILabel(frame: CGRectMake(0, 0, 160, 20))
+    label.textColor = .whiteColor()
+    label.font = .asapBold(16)
+    label.text = title
+    navigationItem.titleView = label
+    label = nil
+  }
 }

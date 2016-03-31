@@ -9,7 +9,7 @@
 import Foundation
 import Neon
 
-public class PaymentView: DLNavigationController, UITableViewDataSource, UITableViewDelegate {
+public class PaymentView: DLViewController, UITableViewDataSource, UITableViewDelegate {
   
   private let controller = PaymentController()
   private var model: PaymentModel { get { return controller.model } }
@@ -19,11 +19,11 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    // DEBUG
-    UserModel.setSharedUser(User().set(_id: "56fc6fda767d3c456b38eb88"))
+    setNavBarTitle("Manage Payments")
+    title = "Manage Payments"
     
-    setRootViewTitle("Payment")
     setupTableView()
+    setupDataBinding()
     
     tableView?.fillSuperview()
   }
@@ -34,8 +34,7 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
     controller.getPaymentInfoFromServer()
   }
   
-  public override func setupDataBinding() {
-    super.setupDataBinding()
+  public func setupDataBinding() {
     model._cards.removeAllListeners()
     model._cards.listen(self) { [weak self] cards in
       self?.tableView?.reloadData()
@@ -46,7 +45,7 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
     tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
-    rootView?.view.addSubview(tableView!)
+    view.addSubview(tableView!)
   }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -67,7 +66,7 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         cell.titleButton?.setTitle("Add Payment", forState: .Normal)
         cell.onClick = { [weak self] in
-          self?.pushViewController(PaymentInputView(), animated: true)
+          self?.navigationController?.pushViewController(PaymentInputView(), animated: true)
         }
         return cell
       }
@@ -94,16 +93,16 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
             if self?.model.cards[indexPath.row - 2].isDefault == false {
               alertController.addAction(UIAlertAction(title: "Make Default", style: .Default) { action in
                 
-                self?.rootView?.showActivity(.RightBarButton)
+                self?.showActivity(.RightBarButton)
                 
                 self?.controller.changeDefaultCard(card_id) { (json, error) in
                   
-                  self?.rootView?.hideActivity()
+                  self?.hideActivity()
                   
                   self?.tableView?.reloadData()
                   
                   if error != nil || json["statusCode"].int == 404 {
-                    self?.rootView?.showAlert("Our apologies!", message: "An error has occurred and we are unable to set your default card. \u{1F623}")
+                    self?.showAlert("Our apologies!", message: "An error has occurred and we are unable to set your default card. \u{1F623}")
                   }
                 }
               })
@@ -111,16 +110,16 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
             
             alertController.addAction(UIAlertAction(title: "Delete", style: .Destructive) { action in
               
-              self?.rootView?.showActivity(.RightBarButton)
+              self?.showActivity(.RightBarButton)
               
               self?.controller.deleteCardInServer(card_id) { (json, error) in
                 
-                self?.rootView?.hideActivity()
+                  self?.hideActivity()
                 
                 self?.tableView?.reloadData()
                 
                 if error != nil || json["statusCode"].int == 404 {
-                  self?.rootView?.showAlert("Our apologies!", message: "An error has occurred and we are unable to delete your card. \u{1F623}")
+                  self?.showAlert("Our apologies!", message: "An error has occurred and we are unable to delete your card. \u{1F623}")
                 }
               }
             })

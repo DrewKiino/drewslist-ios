@@ -40,6 +40,7 @@ public class PaymentInputView: DLViewController, UITableViewDelegate, UITableVie
     
     view.backgroundColor = .whiteColor()
     
+    setNavBarTitle("Add Payment")
     title = "Add Payment"
   }
   

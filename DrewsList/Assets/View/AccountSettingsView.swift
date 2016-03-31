@@ -61,7 +61,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
-    title = "Account Setting"
+    title = "Account Settings"
   }
 
   private func setupDataBinding() {
@@ -90,7 +90,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 14
+    return 15
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -100,7 +100,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
         cell.paddingLabel?.text = "Account Info"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -150,7 +149,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Permissions"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -164,6 +162,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         
         pushController._didUpdateAuthorizationStatus.removeListener(self)
         pushController._didUpdateAuthorizationStatus.listen(self) { [weak self, weak cell] bool in
+          
           if bool { cell?.switchOn() }
           else { cell?.switchOff() }
         }
@@ -225,12 +224,26 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.paddingLabel?.text = "Other Options"
-        cell.paddingLabel?.textAlignment = .Left
-          return cell
+        cell.paddingLabel?.text = "Payments"
+        return cell
       }
       break
     case 12:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
+        cell.titleButton?.setTitle("Manage Payments", forState: .Normal)
+        cell.onClick = { [weak self] in
+          self?.navigationController?.pushViewController(PaymentView(), animated: true)
+        }
+        return cell
+      }
+      break
+    case 13:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+        cell.paddingLabel?.text = "Other Options"
+        return cell
+      }
+      break
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)
@@ -243,13 +256,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 13:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.hideBottomBorder()
-        cell.paddingLabel?.text = "Drew's List by TotemV.LLC"
-        return cell
-      }
-      break
     default: break
     }
     
@@ -258,12 +264,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
   }
-  
-  func configure() {
-    title = "Account Settings"
-    tableView?.contentInset.bottom = 40
-  }
-
 
   
   private func setupPushPermissions() {

@@ -99,13 +99,22 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
   }
   
   public func showPermissions() {
-    let alertController = UIAlertController(title: "Permissions", message: "We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!", preferredStyle: .Alert)
-    alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
-      UIApplication.sharedApplication().openURL(NSURL(string: UIApplicationOpenSettingsURLString)!)
+    
+    
+    if CLLocationManager.authorizationStatus().rawValue == 0 {
+      setupLocationManager()
+      locationManager?.requestWhenInUseAuthorization()
+    } else if CLLocationManager.authorizationStatus().rawValue > 0 {
+      let alertController = UIAlertController(title: "Permissions", message: "We use your location to help you meet up with potential buyers/sellers! As well as making it easier for us to find matches for you!", preferredStyle: .Alert)
+      alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+        NSTimer.after(0.2) {
+          if let nsurl = NSURL(string: UIApplicationOpenSettingsURLString) { UIApplication.sharedApplication().openURL(nsurl) }
+        }
       })
-    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-      })
-    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+      alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+        })
+      UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+    }
   }
   
   public func locationManager(manager: CLLocationManager, didUpdateToLocation newLocation: CLLocation, fromLocation oldLocation: CLLocation) {

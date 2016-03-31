@@ -722,63 +722,6 @@ public class ChangeImageCell: DLTableViewCell {
       if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
     }
   }
-  
-//  public func setupUserImage(user : User?){
-//  
-//    profileImgView?.alpha = 0.0
-//    
-//    Async.background { [weak self, weak user] in
-//      guard let user = user else { return }
-//      
-//      let duration: NSTimeInterval = 0.5
-//      
-//      // MARK: Images
-//      if user.imageUrl != nil {
-//        
-//        self?.profileImgView?.dl_setImageFromUrl(user.imageUrl) { [weak self] image, error, cache, url in
-//          // NOTE: correct way to handle memory management with toucan
-//          // init toucan and pass in the arguments directly in the parameter headers
-//          // do the resizing in the background
-//          var toucan: Toucan? = Toucan(image: image).resize(self?.profileImgView?.frame.size).maskWithEllipse()
-//          
-//          Async.main { [weak self] in
-//            
-//            // set the image view's image
-//            self?.profileImgView?.image = toucan?.image
-//            
-//            // stop the loading animation
-//            //self?.view.hideLoadingScreen()
-//            
-//            // animate
-//            UIView.animateWithDuration(duration) { [weak self] in
-//              self?.profileImgView?.alpha = 1.0
-//            }
-//            
-//            // deinit toucan
-//            toucan = nil
-//          }
-//        }
-//      } else {
-//        
-//        var toucan: Toucan? = Toucan(image: UIImage(named: "profile-placeholder")).resize(self?.profileImgView?.frame.size, fitMode: .Crop).maskWithEllipse()
-//        
-//        Async.main { [weak self] in
-//          
-//          self?.profileImgView?.image = toucan?.image
-//          
-//          // stop the loading animation
-//          //self?.view.hideLoadingScreen()
-//          
-//          UIView.animateWithDuration(duration) { [weak self] in
-//            self?.profileImgView?.alpha = 1.0
-//          }
-//          
-//          toucan = nil
-//        }
-//      }
-//  
-//  }
-//}
 }
 
 public class PickerCell: DLTableViewCell {
@@ -823,13 +766,6 @@ public class PickerCell: DLTableViewCell {
     addGestureRecognizer(pressGesture)
   }
   
-  public func setupUser(user: User?){
-    guard let user = user else { return }
-    
-    let duration: NSTimeInterval = 0.2
-   // FIXME: grab user from server for school name
-  }
-  
   private func setupLabel() {
     label = UILabel()
     label?.textColor = .coolBlack()
@@ -862,13 +798,6 @@ public class PickerCell: DLTableViewCell {
       if self.pointInside(sender.locationInView(self), withEvent: nil) { select() }
     }
   }
-  
-  // FIXME: Setup the User's School
-  
-//  public func setupUserSchool(user : User?){
-//  
-//  
-//  }
 }
 
 
@@ -876,7 +805,6 @@ public class BigImageCell: DLTableViewCell {
   
   public var label: UILabel?
   public var imageURL: String?
-  public var imageToucan: Toucan?
   public var bigImageView: UIImageView?
   
   public let _didSelectCell = Signal<Bool>()
@@ -887,9 +815,6 @@ public class BigImageCell: DLTableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
     setupLabel()
-    setupProfileImgView()
-    layoutSubviews()
-    //profileImgView?.anchorToEdge(.Right, padding: 0, width: 10, height: 10)
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -898,6 +823,9 @@ public class BigImageCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
+    
+    setupProfileImgView()
+    
     hideBothTopAndBottomBorders()
     
     let yPad = screen.width / 50
@@ -921,12 +849,8 @@ public class BigImageCell: DLTableViewCell {
   }
   
   private func setupProfileImgView(){
+    bigImageView?.removeFromSuperview()
     bigImageView = UIImageView()
-    let defaultImg = UIImage(named: "profile-placeholder")
-    imageToucan = Toucan(image: defaultImg).resize(CGSize(width: frame.width, height: frame.width)).maskWithEllipse()
-//    imageToucan = Toucan(image: defaultImg).maskWithEllipse()
-
-    bigImageView?.image = imageToucan?.image
     addSubview(bigImageView!)
     
   }
@@ -943,7 +867,7 @@ public class BigImageCell: DLTableViewCell {
   }
   
   public func downloadImageFromURL(){
-    bigImageView?.dl_setImageFromUrl(imageUrl, maskWithEllipse: true)
+    bigImageView?.dl_setImageFromUrl(imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
   }
   
 }
