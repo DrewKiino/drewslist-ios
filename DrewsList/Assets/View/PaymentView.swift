@@ -19,6 +19,9 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    // DEBUG
+    UserModel.setSharedUser(User().set(_id: "56fc6ed591b87e3965cca2df"))
+    
     setRootViewTitle("Payment")
     setupTableView()
     
@@ -79,6 +82,25 @@ public class PaymentView: DLNavigationController, UITableViewDataSource, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("CardInfoCell", forIndexPath: indexPath) as? CardInfoCell {
         cell.cardType = model.cards[indexPath.row - 2].type
         cell.cardNumber = model.cards[indexPath.row - 2].number
+        cell.onSelect = { [weak self] in
+          if let card_id = self?.model.cards[indexPath.row - 2].card_id, let number = self?.model.cards[indexPath.row - 2].number {
+            var alertController: UIAlertController! = UIAlertController(title: "Edit Card", message: "PERSONAL **** \(number)", preferredStyle: .ActionSheet)
+            alertController.addAction(UIAlertAction(title: "Delete", style: .Destructive) { action in
+              self?.controller.deleteCardInServer(card_id) { (json, error) in
+                
+                self?.tableView?.reloadData()
+                
+                if error != nil || json["statusCode"].int == 404 {
+                  self?.rootView?.showAlert("Our apologies!", message: "An error has occurred and we are unable to delete your card. \u{1F623}")
+                }
+              }
+            })
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+            })
+            self?.presentViewController(alertController, animated: true, completion: nil)
+            alertController = nil
+          }
+        }
         return cell
       }
       break
@@ -111,8 +133,12 @@ public class CardInfoCell: DLTableViewCell {
     }
   }
   
+  public var onSelect: (() -> Void)?
+  
   public override func setupSelf() {
     super.setupSelf()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selected"))
     
     setupContainerView()
     setupCardView()
@@ -143,5 +169,9 @@ public class CardInfoCell: DLTableViewCell {
     cardLabel?.textColor = .coolBlack()
     cardLabel?.font = .asapRegular(12)
     containerView?.addSubview(cardLabel!)
+  }
+  
+  public func selected() {
+    onSelect?()
   }
 }

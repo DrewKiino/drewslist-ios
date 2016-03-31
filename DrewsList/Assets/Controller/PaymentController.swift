@@ -55,10 +55,26 @@ public class PaymentController {
     }
   }
   
+  public func deleteCardInServer(card_id: String?, completionBlock: HTTPCompletionBlock? = nil) {
+    if let user_id = UserModel.sharedUser().user?._id, let card_id = card_id {
+      Alamofire.request(.POST, ServerUrl.Local.getValue() + "/payment/deleteCard", parameters: [
+        "user_id": user_id,
+        "card_id": card_id
+      ] as [ String: AnyObject ])
+      .response { [weak self] (request, response, data: NSData?, error: NSError?) in
+        
+        completionBlock?(json: JSON(data: data ?? NSData()), error: error)
+        
+        if let error = error {
+          log.error(error)
+        }
+        
+        self?.parseCards(data)
+      }
+    }
+  }
+  
   public func getPaymentInfoFromServer() {
-    
-    // DEBUG
-    UserModel.setSharedUser(User().set(_id: "56fc4a137238d7cb0903639c"))
     
     assert(UserModel.sharedUser().user?._id != nil, "user_id should not be nil")
     
@@ -67,17 +83,19 @@ public class PaymentController {
       .response { [weak self] req, res, data, error in
         if let error = error {
           log.error(error)
-        } else if let data = data, let jsonArray: [JSON] = JSON(data: data)["payments"].array {
-          
-          self?.model.cards.removeAll(keepCapacity: false)
-          
-          log.debug(jsonArray)
-          
-          for json in jsonArray {
-            if let number = json["cardNumber"].string, let type = json["cardType"].string {
-              self?.model.cards.append((number, type) as CardInfo)
-            }
-          }
+        }
+        
+        self?.parseCards(data)
+      }
+    }
+  }
+  
+  public func parseCards(data: NSData?) {
+    if let data = data, let jsonArray: [JSON] = JSON(data: data)["payments"].array {
+      model.cards.removeAll(keepCapacity: false)
+      for json in jsonArray {
+        if let card_id = json["card_id"].string, let number = json["cardNumber"].string, let type = json["cardType"].string {
+          model.cards.append((card_id, number, type) as CardInfo)
         }
       }
     }

@@ -73,8 +73,6 @@ public class PaymentInputView: DLViewController, UITableViewDelegate, UITableVie
           self?.cardParams = cardParams
           self?.validCard = isValid
         }
-        cell.onSelect = {
-        }
         return cell
       }
       break
@@ -110,13 +108,11 @@ public class PaymentInputView: DLViewController, UITableViewDelegate, UITableVie
         } else {
           
           self?.controller.saveTokenToServer(token, cardParams: self?.cardParams) { [weak self] (json, error) in
-            self?.controller.createCustomerInServer(token) { [weak self] (json, error) in
-              
-              self?.setButton(.RightBarButton, title: "Save", target: self, selector: "save")
-              
-              if json["error"].string == nil {
-                self?.navigationController?.popViewControllerAnimated(true)
-              }
+            
+            self?.setButton(.RightBarButton, title: "Save", target: self, selector: "save")
+            
+            if json["error"].string == nil {
+              self?.navigationController?.popViewControllerAnimated(true)
             }
           }
         }
@@ -133,12 +129,8 @@ public class PaymentInputCell: DLTableViewCell, STPPaymentCardTextFieldDelegate 
   
   public var validCard: validCardCallback?
   
-  public var onSelect: (() -> Void)?
-  
   public override func setupSelf() {
     super.setupSelf()
-    
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selected"))
     
     setupTextField()
   }
@@ -161,10 +153,6 @@ public class PaymentInputCell: DLTableViewCell, STPPaymentCardTextFieldDelegate 
   
   public func paymentCardTextFieldDidChange(textField: STPPaymentCardTextField) {
     validCard?(cardParams: textField.cardParams, isValid: textField.valid)
-  }
-  
-  public func selected() {
-    onSelect?()
   }
 }
 
