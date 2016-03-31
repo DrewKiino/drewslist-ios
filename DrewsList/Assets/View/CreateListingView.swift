@@ -327,7 +327,6 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
         let listFeedView = (tabView.viewControllers?.filter { $0 is ListFeedNavigationView })?.first as? ListFeedNavigationView
     {
       // dismiss view and go back to scanner view
-      scannerView.hideHeaderView()
       scannerView.dismissViewControllerAnimated(false) { [weak self, weak scannerView, weak tabView, weak listFeedView] in
         // setup scanner view to start new session
         scannerView?.previewLayer?.hidden = false
@@ -340,7 +339,6 @@ public class CreateListingView: UIViewController, UITableViewDelegate, UITableVi
           listFeedView?.listFeedViewContainer?.selectRightPage()
           listFeedView?.listFeedViewContainer?.getListingsFromServer(0, listing: "selling")
         }
-        scannerView?.showTopView()
       }
     }
   }
