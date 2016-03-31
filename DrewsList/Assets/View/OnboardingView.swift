@@ -191,11 +191,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   
   public func setOnboardingAsBeenSeen() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write {
-        userDefaults.didShowOnboarding = true
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
+    UserModel.hasSeenOnboarding = true
   }
 }

@@ -11,7 +11,7 @@ import AVFoundation
 import Neon
 import Async
 
-public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelegate, UITextFieldDelegate {
   
   // MARK: Properties
   
@@ -31,6 +31,11 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   private var searchPulse: LFTPulseAnimation?
   private var searchBookView: SearchBookView?
   
+  // Search Bar
+  private var searchBarContainer: UIView?
+  private var searchBarTextField: UITextField?
+  private var searchBarImageView: UIImageView?
+  
   private let controller = ScannerController()
   private var model: ScannerModel { get { return controller.getModel() } }
   
@@ -43,6 +48,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     setupHelpButton()
     setupSearchButton()
     setupFocusImageView()
+    setupSearchBar()
     
     FBSDKController.createCustomEventForName("UserScanner")
   }
@@ -68,6 +74,10 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
+    searchBarContainer?.anchorToEdge(.Top, padding: 0, width: 0, height: 48)
+    searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 48)
+    searchBarImageView?.alignAndFill(align: .ToTheRightCentered, relativeTo: searchBarTextField!, padding: 8)
+    
     pulseContainer?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
     searchButton?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
     searchPulse?.anchorInCenter(width: 60, height: 60)
@@ -82,6 +92,28 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   }
 
     // MARK: Setup
+  
+  private func setupSearchBar() {
+    
+    searchBarContainer = UIView()
+    searchBarContainer?.backgroundColor = .soothingBlue()
+    view.addSubview(searchBarContainer!)
+    
+    searchBarTextField = UITextField()
+    searchBarTextField?.backgroundColor = .whiteColor()
+    searchBarTextField?.layer.cornerRadius = 2.0
+    searchBarTextField?.font = .asapRegular(16)
+    searchBarTextField?.delegate = self
+    searchBarTextField?.autocapitalizationType = .Words
+    searchBarTextField?.spellCheckingType = .No
+    //    searchBarTextField?.autocorrectionType = .No
+    searchBarTextField?.clearButtonMode = .Always
+    searchBarContainer?.addSubview(searchBarTextField!)
+    
+    searchBarImageView = UIImageView()
+    searchBarContainer?.addSubview(searchBarImageView!)
+    
+  }
   
   private func setupDataBinding() {
     
@@ -136,67 +168,6 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     view.addSubview(focusImageView!)
   }
   
-  public func toggleHelp() {
-    
-    Async.background { [weak self] in
-      
-      if self?.helpButton?.tag == 1 {
-        
-        self?.helpButton?.tag = 0
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "help-button")).resize(self?.helpButton?.frame.size)
-        
-        Async.main { [weak self] in
-          
-          self?.helpButton?.alpha = 0.0
-          
-          UIView.animateWithDuration(
-            0.2,
-            delay: 0.0,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 1.0,
-            options: .CurveEaseInOut,
-            animations: { [weak self] in
-              self?.helpButton?.alpha = 1.0
-              self?.helpButton?.frame.size = CGSizeMake(48, 48)
-              self?.helpButton?.setImage(toucan?.image, forState: .Normal)
-            },
-            completion: nil
-          )
-          
-          toucan = nil
-        }
-      
-      } else {
-        
-        self?.helpButton?.tag = 1
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "Icon-PopOver")).resize(self?.helpButton?.frame.size)
-
-        Async.main { [weak self] in
-          
-          self?.helpButton?.alpha = 0.0
-          
-          UIView.animateWithDuration(
-            0.2,
-            delay: 0.0,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 1.0,
-            options: .CurveEaseInOut,
-            animations: { [weak self] in
-              self?.helpButton?.alpha = 1.0
-              self?.helpButton?.frame.size = CGSizeMake(225, 225)
-              self?.helpButton?.setImage(toucan?.image, forState: .Normal)
-            },
-            completion: nil
-          )
-          
-          toucan = nil
-        }
-      }
-    }
-  }
-    
   public func searchButtonSelected() {
     if let searchBookView = self.searchBookView {
       presentViewController(searchBookView, animated: true, completion: nil)
@@ -220,16 +191,11 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   
   private func setupScanner() {
     
-    var captureDevice: AVCaptureDevice? = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-    var inputDevice: AVCaptureDeviceInput? = try? AVCaptureDeviceInput(device: captureDevice)
-    captureDevice = nil
-    
     session = AVCaptureSession()
-    session?.addInput(inputDevice)
-    inputDevice = nil
-    
+    session?.addInput(try? AVCaptureDeviceInput(device: AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)))
+
     setupPreviewLayer()
-    
+
     identifiedBorder = DiscoveredBarCodeView(frame: view.bounds)
     identifiedBorder?.backgroundColor = UIColor.clearColor()
     identifiedBorder?.hidden = true
@@ -267,7 +233,9 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   public func translatePoints(points : [AnyObject], fromView : UIView, toView: UIView) -> [CGPoint]? {
+    
     var translatedPoints : [CGPoint] = []
+    
     for point in points {
       
       guard let dict = point as? NSDictionary,
@@ -283,16 +251,14 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     return translatedPoints
   }
   
-  private var x: UIView?
-  
   public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
     for data in metadataObjects {
       
       guard let metaData = data as? AVMetadataObject,
         let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject,
         let identifiedBorder = identifiedBorder,
-        let view = view,
-        let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
+        let view = view
+//        let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
         else { return }
       
       UIView.animate { [weak self, weak transformed] in
@@ -301,7 +267,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
       }
       
       // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-      var isbn: String? = (metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }).first?.stringValue
+      var isbn: String? = (metadataObjects.filter { ($0.type == AVMetadataObjectTypeEAN8Code) || ($0.type == AVMetadataObjectTypeEAN13Code) }).first?.stringValue
       
       // pass the acquired isbn to the controller
       controller.getBookFromServer(isbn)

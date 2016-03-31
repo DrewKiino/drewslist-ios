@@ -95,6 +95,8 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
           alertController.addAction(UIAlertAction(title: "Yes, I'm sure.", style: .Default) { [weak self] action in
             LoginController.logOut()
             self?.navigationController?.popToRootViewControllerAnimated(true)
+            UserModel.hasSeenOnboarding = true
+            UserModel.hasSeenOnboarding = true
           })
           alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
           })

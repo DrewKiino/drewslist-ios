@@ -59,29 +59,23 @@ public class SignUpController {
   
   public func createNewUserInServer() {
     
-    guard let firstName = model.firstName,
-          let lastName = model.lastName,
-          let email = model.email,
-          let phone = model.phone,
-          let password = model.password,
-          let school = model.school,
-          let state = model.state else
-    { return }
-    
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    /*
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    image,
-    bgImage,
-    description,
-    */
+    let phone: String = model.phone ?? ""
+    let school: String = model.user?.school ?? ""
+    let state: String = model.user?.state ?? ""
+    let firstName: String = model.user?.firstName ?? ""
+    let lastName: String = model.user?.lastName ?? ""
+    let email: String = model.email ?? ""
+    let password: String = model.password ?? ""
+    
+    // user settings
+    let deviceToken: String = UserModel.deviceToken ?? ""
+    let hasSeenTermsAndPrivacy: Bool = UserModel.hasSeenTermsAndPrivacy ?? false
+    let hasSeenOnboardingView: Bool = UserModel.hasSeenOnboarding ?? false
+    let currentUUID: String = NSUUID().UUIDString
     
     Alamofire.request(
       .POST,
@@ -94,7 +88,11 @@ public class SignUpController {
         "password": password,
         "school": school,
         "state": state,
-        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
+        // user settings
+        "deviceToken": deviceToken,
+        "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+        "hasSeenOnboardingView": hasSeenOnboardingView,
+        "currentUUID": currentUUID
       ] as [String: AnyObject],
       encoding: .JSON
     )

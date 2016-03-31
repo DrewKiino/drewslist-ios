@@ -30,8 +30,8 @@ public enum ServerUrl {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
     case .Production: return "https://drewslist-production.herokuapp.com"
-    case .Default: return "http://localhost:1337"
-//    case .Default: return "https://drewslist-staging.herokuapp.com"
+//    case .Default: return "http://localhost:1337"
+    case .Default: return "https://drewslist-staging.herokuapp.com"
 //    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
@@ -45,7 +45,6 @@ public let _applicationDidEnterBackground = Signal<Bool>()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
-  private let userController = UserController()
   private let loginController = LoginController()
   
   var window: UIWindow?
@@ -64,9 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     *                  Software Logs                              *
     *                                                             *
     **************************************************************/
-    // figure out if user defaults already exist
-    // if it doesn't, create one and persist it.
-    if userController.readUserDefaults() == nil { userController.writeNewUserDefaults() }
     // configure Atlantis Logger
     Atlantis.Configuration.hasColoredLogs = true
     /**************************************************************
@@ -80,9 +76,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let gai = GAI.sharedInstance()
     gai.trackUncaughtExceptions = true  // report uncaught exceptions
     // if the url does not point to the production URL, then allow logging
-    gai.logger.logLevel = GAILogLevel.Verbose  // remove before app release
+    gai.logger.logLevel = GAILogLevel.None // remove before app release
     if ServerUrl.Default.getValue() == ServerUrl.Production.getValue() {
-      gai.logger.logLevel = GAILogLevel.None
       Atlantis.Configuration.logLevel = .None
     }
     /**************************************************************
@@ -163,16 +158,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let deviceTokenString = (deviceToken.description as NSString).stringByTrimmingCharactersInSet(NSCharacterSet( charactersInString: "<>")) as String
     
-    // set the device token as the default device token in the user defaults
-    userController.updateUserDefaults { defaults in
-      defaults.deviceToken = deviceTokenString
-    }
-    
     // get the device token string, then read the current realm user, and update it with the new device token
-    userController.updateUserToServer { user in
-      user?.deviceToken = deviceTokenString
-      return user
-    }
+    UserModel.deviceToken = deviceTokenString
     
     _didRegisterForRemoteNotificationsWithDeviceToken.fire(true)
   }

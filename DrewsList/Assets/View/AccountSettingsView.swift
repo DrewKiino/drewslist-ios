@@ -162,7 +162,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         
         pushController._didUpdateAuthorizationStatus.removeListener(self)
         pushController._didUpdateAuthorizationStatus.listen(self) { [weak self, weak cell] bool in
-          
           if bool { cell?.switchOn() }
           else { cell?.switchOff() }
         }
@@ -194,6 +193,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         
         locationController._didUpdateAuthorizationStatus.removeListener(self)
         locationController._didUpdateAuthorizationStatus.listen(self) { [weak self, weak cell] bool in
+          log.debug(bool)
           if bool { cell?.switchOn() }
           else { cell?.switchOff() }
         }

@@ -107,15 +107,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     
     checkIfUserHasSeenOnboardingView()
     
-    if drewslistLogo?.image == nil {
-      Async.background { [weak self] in
-        var toucan: Toucan? = Toucan(image: UIImage(named: "DrewsListLogo_Login-1")).resize(self?.drewslistLogo?.frame.size)
-        Async.main { [weak self] in
-          self?.drewslistLogo?.image = toucan?.image
-          toucan = nil
-        }
-      }
-    }
+    drewslistLogo?.dl_setImage(UIImage(named: "DrewsListLogo_Login-1"))
     
     showUI()
   }
@@ -168,6 +160,10 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     controller.shouldPresentPhoneInputView.removeAllListeners()
     controller.shouldPresentPhoneInputView.listen(self) { [weak self] bool in
       self?.presentPhoneNumberInputView()
+    }
+    controller.shouldPresentSchoolInputView.removeAllListeners()
+    controller.shouldPresentSchoolInputView.listen(self) { [weak self] bool in
+      self?.presentSchoolInputView()
     }
   }
   
@@ -312,16 +308,13 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   }
   
   public func checkIfUserHasSeenOnboardingView() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      if !userDefaults.didShowOnboarding {
-        presentViewController(OnboardingView(), animated: true) { [weak self] in
-          self?.view.hideLoadingScreen()
-        }
-      } else {
-        view.hideLoadingScreen()
+    if !UserModel.hasSeenOnboarding {
+      presentViewController(OnboardingView(), animated: true) { [weak self] in
+        self?.view.hideLoadingScreen()
       }
+    } else {
+      view.hideLoadingScreen()
     }
-    NSTimer.after(1.0) { [weak self] in self?.view.hideLoadingScreen() }
   }
   
   public func hideUI() {
@@ -424,7 +417,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   }
   
   public func presentPhoneNumberInputView() {
-    let alertController = UIAlertController(title: "Call Me Maybe?", message: "Please input your phone number, this will help other users get in touch with you much quicker.", preferredStyle: .Alert)
+    var alertController: UIAlertController! = UIAlertController(title: "Call Me Maybe?", message: "Please input your phone number, this will help other users get in touch with you much quicker.", preferredStyle: .Alert)
     alertController.addTextFieldWithConfigurationHandler() { textField in
       textField.font = .asapRegular(16)
       textField.textColor = .coolBlack()
@@ -441,15 +434,37 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       } else {
         self?.logUserOutOfFacebook()
         self?.dismissKeyboard()
-        let alertController2 = UIAlertController(title: "Sorry", message: "The number you entered didn't seem to be a valid phone number.", preferredStyle: .Alert)
+        var alertController2: UIAlertController! = UIAlertController(title: "Sorry", message: "The number you entered didn't seem to be a valid phone number.", preferredStyle: .Alert)
           alertController2.addAction(UIAlertAction(title: "Ok", style: .Cancel) { [weak self] action in
         })
         self?.presentViewController(alertController2, animated: true, completion: nil)
+        alertController2 = nil
       }
     })
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
     })
     presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func presentSchoolInputView() {
+    var alertController: UIAlertController! = UIAlertController(title: "Which College?", message: "Please tell us which college you currently attend, will attend, or have attended. Whichever really! If you don't have one it's fine, just choose the college nearest you!", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Ok", style: .Default) { [weak self] action in
+      self?.presentViewController(SearchSchoolView().setOnDismiss { [weak self] school in
+        if let school = school {
+          self?.model.user?.school = school.name
+          self?.model.user?.state = school.state
+          self?.controller.authenticateUserToServer(false)
+        } else {
+          self?.logUserOutOfFacebook()
+          self?.dismissKeyboard()
+        }
+      }, animated: true, completion: nil)
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
   }
   
   public func logUserOutOfFacebook() {
