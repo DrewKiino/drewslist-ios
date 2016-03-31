@@ -175,7 +175,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
     
-    scrollView?.contentSize = CGSizeMake(screen.width, 908)
+    scrollView?.contentSize = CGSizeMake(screen.width,
+      425
+      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 0)
+      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 0)
+    )
   }
   
   // MARK: Data Binding

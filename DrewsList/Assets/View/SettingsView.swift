@@ -74,17 +74,6 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
       }
       break
-//    case 2:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-//        cell.showSeparatorLine()
-//        cell.titleButton?.setTitle("Help Center", forState: .Normal)
-//        cell._didSelectCell.removeAllListeners()
-//        cell._didSelectCell.listen(self) { [weak self] bool in
-//          log.debug("TODO: show help center view")
-//        }
-//        return cell
-//      }
-//      break
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showSeparatorLine()

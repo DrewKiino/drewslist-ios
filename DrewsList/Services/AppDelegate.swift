@@ -52,6 +52,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     
+    // connect to server
+    Sockets.sharedInstance().connect()
+    
     // figure out if user defaults already exist 
     // if it doesn't, create one and persist it.
     if userController.readUserDefaults() == nil { userController.writeNewUserDefaults() }
@@ -72,8 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     gai.logger.logLevel = GAILogLevel.Verbose  // remove before app release
     if ServerUrl.Default.getValue() == ServerUrl.Production.getValue() {
       // remove logging
-      gai.logger.logLevel = GAILogLevel.None
-      Atlantis.Configuration.logLevel = .None
+//      gai.logger.logLevel = GAILogLevel.None
+//      Atlantis.Configuration.logLevel = .None
     }
     // [END tracker_swift]
     
@@ -84,9 +87,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // remove the back button
     UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
-    
-    // connect to server
-    Sockets.sharedInstance().connect()
     
     // MARK: User Auth
     loginController.checkIfUserIsLoggedIn()
@@ -163,7 +163,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
     
-    log.debug(userInfo)
     
     
   }

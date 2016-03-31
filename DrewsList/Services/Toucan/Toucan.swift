@@ -568,7 +568,7 @@ public class Toucan : NSObject {
      - returns: Resized image within bounds
      */
     static func drawImageInBounds(image: UIImage?, bounds : CGRect?) -> UIImage? {
-      return drawImageWithClosure(size: bounds?.size) { [weak image] (weak size: CGSize, weak context: CGContext) -> () in
+      return drawImageWithClosure(size: bounds?.size) { [weak image] (size: CGSize, context: CGContext) -> () in
         var _bounds: CGRect? = bounds
         if let bounds = _bounds { image?.drawInRect(bounds) }
         image = nil

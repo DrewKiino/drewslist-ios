@@ -30,7 +30,7 @@ public class ProfileImagePickerController {
     pictureRequest.startWithCompletionHandler({
       (connection, result, error: NSError!) -> Void in
       if error == nil {
-        if let url = result["data"]["url"]{
+        if let url = result["data"]??["url"]{
           self.model.fbProfileImageURL = "\(url)"
         }
       } else {
