@@ -30,7 +30,6 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   
   //  School List
   private var tableView: DLTableView?
-  private var originalTableViewFrame: CGRect?
   private var lastKeyboardFrame: CGRect?
   
   // MVC
@@ -40,20 +39,38 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
  // MARK: Lifecycle
   public override func viewDidLoad() {
     super.viewDidLoad()
+    
     setupDataBinding()
-    setupScanner()
-    setupFocusImageView()
+    
+    if UIDevice.currentDevice().name.hasSuffix("Simulator"){ // Code executing on Simulator
+    } else{ // Code executing on Device
+      setupScanner()
+      setupFocusImageView()
+    }
+    
     setupSearchBar()
+    setupTableView()
+    
+    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
     
     FBSDKController.createCustomEventForName("UserScanner")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    
+    focusImageView?.tintColor = .juicyOrange()
+    focusImageView?.hidden = false
+    searchBarContainer?.hidden = false
   }
   
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    
     session?.startRunning()
   }
   
@@ -63,38 +80,43 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
+    
     session?.stopRunning()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    searchBarContainer?.anchorToEdge(.Top, padding: 20, width: screen.width, height: 48)
-    searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 16)
+    searchBarContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 20, otherSize: 36)
+    searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 32)
     
-    focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
-    focusImageView?.center = CGPointMake(CGRectGetMidX(previewLayer!.frame), CGRectGetMidY(previewLayer!.frame))
+    if let previewLayer = previewLayer {
+      focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
+      focusImageView?.center = CGPointMake(CGRectGetMidX(previewLayer.frame), CGRectGetMidY(previewLayer.frame))
 
-    focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image
+      focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+      focusImageView?.tintColor = .juicyOrange()
+    }
   }
 
     // MARK: Setup
   
   public override func setupSelf() {
     super.setupSelf()
-
-    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
   }
   
   private func setupSearchBar() {
     
     searchBarContainer = UIView()
-    searchBarContainer?.backgroundColor = .clearColor()
+    searchBarContainer?.backgroundColor = .whiteColor()
+    searchBarContainer?.layer.cornerRadius = 5.0
+    searchBarContainer?.userInteractionEnabled = true
+    searchBarContainer?.multipleTouchEnabled = false
+
     view.addSubview(searchBarContainer!)
     
     searchBarTextField = UITextField()
     searchBarTextField?.backgroundColor = .whiteColor()
-    searchBarTextField?.layer.cornerRadius = 2.0
     searchBarTextField?.font = .asapRegular(16)
     searchBarTextField?.delegate = self
     searchBarTextField?.autocapitalizationType = .Words
@@ -108,26 +130,47 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   
   private func setupDataBinding() {
     
-    controller.model._shouldHideBorder.removeAllListeners()
-    controller.model._shouldHideBorder.listen(self) { [weak self] bool in
-      self?.identifiedBorder?.hidden = bool
+    model.showRequestActivity.removeAllListeners()
+    model.showRequestActivity.listen(self) { [weak self] bool in
+      if bool { self?.view.showActivityView(style: (self?.tableView?.alpha == 0.0) ? .White : .Gray)
+      } else { self?.view.dismissActivityView() }
     }
     
-    controller.model._book.removeAllListeners()
-    controller.model._book.listen(self) { [weak self] book in
-      self?.presentCreateListingView(book)
+    model._shouldHideBorder.removeAllListeners()
+    model._shouldHideBorder.listen(self) { [weak self] bool in
+      self?.identifiedBorder?.hidden = bool
     }
     
 //    searchBookView
     
     model._books.removeAllListeners()
     model._books.listen(self) { [weak self] books in
+      
+      self?.view.dismissActivityView()
+      
+      self?.tableView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 64, otherSize: ((self?.model.books.count == 1) ? 166 : (screen.height - (self?.lastKeyboardFrame?.height ?? 0) - 72)))
       self?.tableView?.reloadData()
+      
+      if books.count == 0 {
+        
+        self?.tableView?.hidden = true
+        self?.showAlert("Sorry!", message: "We did not find any matches!")
+        
+      } else {
+        
+        self?.tableView?.hidden = false
+        
+        UIView.animateWithDuration(0.2, animations: { [weak self] in
+          self?.tableView?.alpha = 1.0
+        }) { [weak self] bool in
+          self?.tableView?.setContentOffset(CGPointZero, animated:true)
+        }
+      }
     }
     
     model._book.removeAllListeners()
     model._book.listen(self) { [weak self] book in
-      self?.cancel()
+      self?.presentCreateListingView(book)
     }
     
     model._shouldRefrainFromCallingServer.removeAllListeners()
@@ -146,8 +189,11 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     
   public func presentCreateListingView(book: Book?) {
     
+    focusImageView?.tintColor = .whiteColor()
+    focusImageView?.hidden = true
     previewLayer?.hidden = true
     identifiedBorder?.hidden = true
+    searchBarContainer?.hidden = true
     session?.stopRunning()
     
     presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
@@ -217,26 +263,22 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
     for data in metadataObjects {
       
-      guard let metaData = data as? AVMetadataObject,
-        let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject,
-        let identifiedBorder = identifiedBorder,
-        let view = view
-//        let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
-        else { return }
-      
-      UIView.animate { [weak self, weak transformed] in
-        guard let transformed = transformed else { return }
-        self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
+      if  let metaData = data as? AVMetadataObject, let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject, let identifiedBorder = identifiedBorder {
+        
+        UIView.animate { [weak self, weak transformed] in
+          guard let transformed = transformed else { return }
+          self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
+        }
+        
+        // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
+        var isbn: String? = (metadataObjects.filter { ($0.type == AVMetadataObjectTypeEAN8Code) || ($0.type == AVMetadataObjectTypeEAN13Code) }).first?.stringValue
+        
+        // pass the acquired isbn to the controller
+        controller.getBookFromServer(isbn)
+        
+        // deinit the isbn string
+        isbn = nil
       }
-      
-      // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-      var isbn: String? = (metadataObjects.filter { ($0.type == AVMetadataObjectTypeEAN8Code) || ($0.type == AVMetadataObjectTypeEAN13Code) }).first?.stringValue
-      
-      // pass the acquired isbn to the controller
-      controller.getBookFromServer(isbn)
-      
-      // deinit the isbn string
-      isbn = nil
     }
   }
   
@@ -245,7 +287,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   public func viewTapped() {
-    searchBarTextField?.resignFirstResponder()
+    resignFirstResponder()
   }
   
   private func setupTableView() {
@@ -253,6 +295,9 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     tableView?.delegate = self
     tableView?.dataSource = self
     tableView?.showsVerticalScrollIndicator = true
+    tableView?.backgroundColor = .whiteColor()
+    tableView?.layer.cornerRadius = 5.0
+    tableView?.alpha = 0.0
     view.addSubview(tableView!)
   }
   
@@ -260,7 +305,9 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   
   public override func resignFirstResponder() -> Bool {
     super.resignFirstResponder()
+    
     searchBarTextField?.resignFirstResponder()
+    
     return true
   }
   
@@ -273,6 +320,15 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   // MARK: TextField Delegates
+  
+  public func textFieldDidBeginEditing(textField: UITextField) {
+    if textField.text?.characters.count > 0 {
+      UIView.animate(duration: 0.2) { [weak self] in
+        self?.tableView?.alpha = 1.0
+      }
+    }
+  }
+  
   public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
     if let text = textField.text {
       // this means the user inputted a backspace
@@ -285,7 +341,6 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   public func textFieldShouldReturn(textField: UITextField) -> Bool {
-    controller.searchBook()
     resignFirstResponder()
     return false
   }
@@ -310,7 +365,6 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
           self?.model.book = self?.model.books[indexPath.row]
           
           self?.presentViewController(CreateListingView().setBook(self?.model.book), animated: true, completion: nil)
-          //presentViewController(CreateListingView().setBook(self.model.book), animated: true, completion: nil)
         }
       }
       
@@ -323,22 +377,26 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     model.book = model.books[indexPath.row]
   }
   
-  public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let frame = lastKeyboardFrame where screen.height - frame.height < scrollView.panGestureRecognizer.locationInView(self.view).y {
-      resignFirstResponder()
+  // MARK: Keyboard observers
+  func keyboardWillShow(notification: NSNotification) {
+    
+    focusImageView?.hidden = true
+    
+    if let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue() {
+      lastKeyboardFrame = keyboardFrame
     }
   }
   
-  // MARK: Keyboard observers
-  func keyboardWillShow(notification: NSNotification) {
-    if let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue(), let originalFrame = originalTableViewFrame {
-      lastKeyboardFrame = keyboardFrame
-      if let frame = tableView?.frame { tableView?.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.width, originalFrame.height - keyboardFrame.height) }
-    }
+  func keyboardDidShow(notification: NSNotification) {
   }
   
   func keyboardWillHide(notification: NSNotification) {
-    if let frame = originalTableViewFrame { tableView?.frame = frame }
+    
+    focusImageView?.hidden = false
+    
+    UIView.animate(duration: 0.2) { [weak self] in
+      self?.tableView?.alpha = 0.0
+    }
   }
 }
 

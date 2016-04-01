@@ -17,6 +17,8 @@ public class ScannerModel {
   
   public class func sharedInstance() -> ScannerModel { return Singleton.scannerModel }
   
+  public var showRequestActivity = Signal<Bool>()
+  
   public let _searchString = Signal<String?>()
   public var searchString: String? { didSet { _searchString => searchString } }
   

@@ -17,7 +17,7 @@ public class DLViewController: UIViewController {
   }
   
   public func setupSelf() {
-    
+    view.backgroundColor = .whiteColor()
   }
   
   public func setNavBarTitle(title: String) {

@@ -76,7 +76,7 @@ public class TabView: UITabBarController {
     selectedIndex = 3
     
     // fixture selected index
-    selectedIndex = 0
+    selectedIndex = 2
     
     // dealloc reference view controllers
 //    communityView = nil
