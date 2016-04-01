@@ -11,7 +11,7 @@ import AVFoundation
 import Neon
 import Async
 
-public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjectsDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // MARK: Properties
   
@@ -23,6 +23,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   public var session: AVCaptureSession?
   
   private var focusImageView: UIImageView?
+  private var keyboardActive: Bool = false
 
   // Search Bar
   private var searchBarContainer: UIView?
@@ -40,6 +41,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    setupSelf()
     setupDataBinding()
     
     if UIDevice.currentDevice().name.hasSuffix("Simulator"){ // Code executing on Simulator
@@ -51,7 +53,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     setupSearchBar()
     setupTableView()
     
-    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
+    rootView?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
     
     FBSDKController.createCustomEventForName("UserScanner")
   }
@@ -81,18 +83,21 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
     
+    // remove text on search bar if user leaves view
+    searchBarTextField?.text = nil
+    
     session?.stopRunning()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    searchBarContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 20, otherSize: 36)
+    searchBarContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 36)
     searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 32)
     
     if let previewLayer = previewLayer {
       focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
-      focusImageView?.center = CGPointMake(CGRectGetMidX(previewLayer.frame), CGRectGetMidY(previewLayer.frame))
+      focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen))
 
       focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
       focusImageView?.tintColor = .juicyOrange()
@@ -101,8 +106,9 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
 
     // MARK: Setup
   
-  public override func setupSelf() {
-    super.setupSelf()
+  private func setupSelf() {
+    title = "Drew's List"
+    rootView?.view.backgroundColor = .whiteColor()
   }
   
   private func setupSearchBar() {
@@ -113,7 +119,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     searchBarContainer?.userInteractionEnabled = true
     searchBarContainer?.multipleTouchEnabled = false
 
-    view.addSubview(searchBarContainer!)
+    rootView?.view.addSubview(searchBarContainer!)
     
     searchBarTextField = UITextField()
     searchBarTextField?.backgroundColor = .whiteColor()
@@ -125,15 +131,18 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
 //    searchBarTextField?.autocorrectionType = .No
     searchBarTextField?.clearButtonMode = .Always
     searchBarContainer?.addSubview(searchBarTextField!)
-    
   }
   
-  private func setupDataBinding() {
+  public override func setupDataBinding() {
+    super.setupDataBinding()
     
     model.showRequestActivity.removeAllListeners()
     model.showRequestActivity.listen(self) { [weak self] bool in
-      if bool { self?.view.showActivityView(style: (self?.tableView?.alpha == 0.0) ? .White : .Gray)
-      } else { self?.view.dismissActivityView() }
+      if bool {
+        self?.rootView?.showActivity(.RightBarButton)
+      } else {
+        self?.rootView?.hideActivity()
+      }
     }
     
     model._shouldHideBorder.removeAllListeners()
@@ -146,9 +155,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     model._books.removeAllListeners()
     model._books.listen(self) { [weak self] books in
       
-      self?.view.dismissActivityView()
-      
-      self?.tableView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 64, otherSize: ((self?.model.books.count == 1) ? 166 : (screen.height - (self?.lastKeyboardFrame?.height ?? 0) - 72)))
+      self?.tableView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 48, otherSize: ((self?.model.books.count == 1) ? 166 : (screen.height - (self?.lastKeyboardFrame?.height ?? 0) - 116)))
       self?.tableView?.reloadData()
       
       if books.count == 0 {
@@ -156,7 +163,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
         self?.tableView?.hidden = true
         self?.showAlert("Sorry!", message: "We did not find any matches!")
         
-      } else {
+      } else if self?.keyboardActive == true {
         
         self?.tableView?.hidden = false
         
@@ -172,15 +179,11 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     model._book.listen(self) { [weak self] book in
       self?.presentCreateListingView(book)
     }
-    
-    model._shouldRefrainFromCallingServer.removeAllListeners()
-    model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
-    }
   }
   
   private func setupFocusImageView() {
     focusImageView = UIImageView()
-    view.addSubview(focusImageView!)
+    rootView?.view.addSubview(focusImageView!)
   }
   
   public func searchButtonSelected() {
@@ -194,6 +197,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     previewLayer?.hidden = true
     identifiedBorder?.hidden = true
     searchBarContainer?.hidden = true
+    searchBarTextField?.text = nil
     session?.stopRunning()
     
     presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
@@ -201,25 +205,28 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   
   private func setupScanner() {
     
-    session = AVCaptureSession()
-    session?.addInput(try? AVCaptureDeviceInput(device: AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)))
-
-    setupPreviewLayer()
-
-    identifiedBorder = DiscoveredBarCodeView(frame: view.bounds)
-    identifiedBorder?.backgroundColor = UIColor.clearColor()
-    identifiedBorder?.hidden = true
-    
-    view.addSubview(identifiedBorder!)
-    
-    /* Check for metadata */
-    var output: AVCaptureMetadataOutput? = AVCaptureMetadataOutput()
-    session?.addOutput(output)
-    output?.metadataObjectTypes = output?.availableMetadataObjectTypes
-    output?.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
-    output = nil
-    
-    session?.startRunning()
+    if let view = rootView?.view {
+      
+      session = AVCaptureSession()
+      session?.addInput(try? AVCaptureDeviceInput(device: AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)))
+      
+      setupPreviewLayer()
+      
+      identifiedBorder = DiscoveredBarCodeView(frame: view.bounds)
+      identifiedBorder?.backgroundColor = UIColor.clearColor()
+      identifiedBorder?.hidden = true
+      
+      view.addSubview(identifiedBorder!)
+      
+      /* Check for metadata */
+      var output: AVCaptureMetadataOutput? = AVCaptureMetadataOutput()
+      session?.addOutput(output)
+      output?.metadataObjectTypes = output?.availableMetadataObjectTypes
+      output?.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
+      output = nil
+      
+      session?.startRunning()
+    }
   }
   
   /* Add the preview layer here */
@@ -230,7 +237,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     previewLayer?.position = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds))
     previewLayer?.zPosition = -1
     
-    view.layer.addSublayer(previewLayer!)
+    rootView?.view.layer.addSublayer(previewLayer!)
   }
   
   public func resetTimer() {
@@ -298,7 +305,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     tableView?.backgroundColor = .whiteColor()
     tableView?.layer.cornerRadius = 5.0
     tableView?.alpha = 0.0
-    view.addSubview(tableView!)
+    rootView?.view.addSubview(tableView!)
   }
   
   // MARK: Functions
@@ -307,6 +314,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
     super.resignFirstResponder()
     
     searchBarTextField?.resignFirstResponder()
+    searchBarTextField?.text = nil
     
     return true
   }
@@ -358,6 +366,7 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+      cell.bookView?.canShowBookProfile = false
       cell.setBook(model.books[indexPath.row])
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] bool in
@@ -388,9 +397,12 @@ public class ScannerView: DLViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   func keyboardDidShow(notification: NSNotification) {
+    keyboardActive = true
   }
   
   func keyboardWillHide(notification: NSNotification) {
+    
+    keyboardActive = false
     
     focusImageView?.hidden = false
     

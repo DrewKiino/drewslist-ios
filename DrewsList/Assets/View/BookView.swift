@@ -31,6 +31,8 @@ public class BookView: UIView {
   
   public var book: Book?
   
+  public var canShowBookProfile: Bool = true
+  
   public let _bookViewPressed = Signal<Bool>()
   
   public init() {
@@ -88,7 +90,7 @@ public class BookView: UIView {
   }
   
   public func pressed() {
-    TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true)
+    if canShowBookProfile { TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true) }
     _bookViewPressed => true
   }
   
