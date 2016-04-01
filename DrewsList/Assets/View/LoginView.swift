@@ -153,7 +153,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     controller.shouldDismissView.listen(self) { [weak self] user in
       self?.dismissKeyboard()
       if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
-        tabView.selectedIndex = 0
+        tabView.selectedIndex = 2
         tabView.dismissViewControllerAnimated(true, completion: nil)
       }
     }

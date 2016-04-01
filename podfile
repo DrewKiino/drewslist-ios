@@ -37,6 +37,7 @@ pod 'LTMorphingLabel', '~> 0.1.1'
 pod 'CWStatusBarNotification', '~> 2.3.4'
 pod 'KMPlaceholderTextView', '~> 1.1.1'
 pod 'Cosmos', '~> 1.2.1'
+pod 'MIBadgeButton-Swift'
 
 # pubsub libs
 pod 'Signals', '~> 2.3.0'
@@ -68,7 +69,7 @@ pod 'Google/Analytics'
 
 # payments 
 pod 'Stripe'
-pod "CreditCardValidator"
+pod 'CreditCardValidator'
 
 
 #####################################

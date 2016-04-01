@@ -12,6 +12,7 @@ import Neon
 import SDWebImage
 import Signals
 import Async
+import MIBadgeButton_Swift
 
 public class UserProfileViewContainer: DLNavigationController {
   
@@ -177,8 +178,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     scrollView?.contentSize = CGSizeMake(screen.width,
       425
-      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 0)
-      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 0)
+//      + 300
+//      + 225
+      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 48)
+//      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 48)
+      + 225
     )
   }
   
@@ -290,8 +294,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         //settingsButton.action
         // TODO: check if user is self
         self.navigationItem.rightBarButtonItem = settingsButton
-      }
-      if (isOtherUser) {
+        
+      } else {
+        
         let iconWidth = screen.width / 12
         
         var myImage = UIImage(named: "Call Icon-2")
@@ -381,12 +386,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     switch indexPath.row {
     case 0:
       if (model.user?.listings.filter { $0.listType == "selling" })?.first == nil {
-        return 0
+        return 48
       }
       break
     case 1:
       if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
-        return 0
+        return 48
       }
       break
     default: break
@@ -402,33 +407,29 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     case 0:
       
       cell.tag = 0
+      cell.label?.text =  "I'm Selling"
+      
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label.text =  "I'm Selling"
         
         // set data
         cell.controller.model.bookList = listings
-        cell.label.font = UIFont.asapBold(13)
+        cell.label?.font = UIFont.asapBold(13)
         
-      } else {
-        
-        cell.label.text =  nil
+        cell.backgroundColor = .redColor()
       }
       
       break
     case 1:
+      
       cell.tag = 1
+      cell.label?.text = "I'm Buying"
 
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
         
-        cell.label.text = "I'm Buying"
-        cell.label.font = UIFont.asapBold(13)
+        cell.label?.font = UIFont.asapBold(13)
         
         // set data
         cell.controller.model.bookList = listings
-        
-      } else {
-        cell.label.text = nil
       }
 
       break
@@ -495,7 +496,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
-  public let label = UILabel()
+  public var label: UILabel?
+  public var badgeButton: MIBadgeButton?
+  
   public var collectionViewLayout: UICollectionViewFlowLayout?
   public var collectionView: UICollectionView?
   
@@ -512,11 +515,27 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupDataBinding()
     setupCollectionView()
-    setupLabel()
+    setupAttributes()
   }
   
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    setupCollectionView()
+    
+    label?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 0, width: 76, height: 36)
+    
+    badgeButton?.align(.ToTheRightCentered, relativeTo: label!, padding: 0, width: 48, height: 48)
+    badgeButton?.badgeEdgeInsets = UIEdgeInsetsMake(20, -12, 0, 0)
+    badgeButton?.badgeString = ((label?.text == "I'm Selling") ? "5 Available Listings" : nil)
+    
+    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label!, padding: 0)
+    collectionViewFrame = collectionView!.frame
+    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
   }
   
   private func setupDataBinding() {
@@ -541,21 +560,19 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     addSubview(collectionView!)
   }
   
-  private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(16)
-    label.textColor = UIColor.sexyGray()
-    addSubview(label)
+  private func setupAttributes() {
+    label = UILabel()
+    label?.font = UIFont.systemFontOfSize(16)
+    label?.textColor = UIColor.coolBlack()
+    addSubview(label!)
+    
+    badgeButton = MIBadgeButton(type: .ContactAdd)
+    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    addSubview(badgeButton!)
   }
   
-  public override func layoutSubviews() {
-    super.layoutSubviews()
+  public func badgeButtonPressed() {
     
-    setupCollectionView()
-    
-    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
-    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
-    collectionViewFrame = collectionView!.frame
-    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
