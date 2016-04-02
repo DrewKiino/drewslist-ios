@@ -79,6 +79,9 @@ public class DLTableView: UITableView {
     registerClass(CardInfoCell.self, forCellReuseIdentifier: "CardInfoCell")
     registerClass(PaymentInputCell.self, forCellReuseIdentifier: "PaymentInputCell")
     
+    // MARK: Listings
+    registerClass(SelectableTitleCell.self, forCellReuseIdentifier: "SelectableTitleCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .whiteColor()

@@ -249,9 +249,10 @@ extension UIViewController {
     case RightBarButton
   }
   
-  public func showAlert(title: String, message: String) {
+  public func showAlert(title: String, message: String, completionBlock: (() -> Void)? = nil) {
     var alertController: UIAlertController! = UIAlertController(title: title, message: message, preferredStyle: .Alert)
     alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+      completionBlock?()
     })
     presentViewController(alertController, animated: true, completion: nil)
     alertController = nil

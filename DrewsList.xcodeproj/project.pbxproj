@@ -72,6 +72,7 @@
 		EE2824D31C30A43D00969E74 /* EditListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2824D21C30A43D00969E74 /* EditListingController.swift */; };
 		EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */; };
 		EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */; };
+		EE3253AF1CAF40140005D071 /* ListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3253AE1CAF40140005D071 /* ListingsView.swift */; };
 		EE367DC41C69191300B88CA0 /* FBSDKModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE367DC31C69191300B88CA0 /* FBSDKModel.swift */; };
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
 		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
@@ -229,6 +230,7 @@
 		EE2824D21C30A43D00969E74 /* EditListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditListingController.swift; sourceTree = "<group>"; };
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
+		EE3253AE1CAF40140005D071 /* ListingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListingsView.swift; sourceTree = "<group>"; };
 		EE367DC31C69191300B88CA0 /* FBSDKModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBSDKModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				EE85033B1CA9E3B0009F0935 /* PaymentInputView.swift */,
 				EEA1C7331CAC49CF00692447 /* PaymentView.swift */,
 				EEA1C7351CAC698000692447 /* DLViewController.swift */,
+				EE3253AE1CAF40140005D071 /* ListingsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -946,6 +949,7 @@
 				EEA1C7321CAC496300692447 /* PaymentModel.swift in Sources */,
 				39FE52291C4C364400FDFDC4 /* DeleteListingController.swift in Sources */,
 				4F966CE61C27623900CECCC6 /* EditProfileModel.swift in Sources */,
+				EE3253AF1CAF40140005D071 /* ListingsView.swift in Sources */,
 				EE1B737C1C236FE500BD942C /* ListFeedController.swift in Sources */,
 				EED8BADC1C45E9CE00EDB30D /* PushController.swift in Sources */,
 				399971DE1C14D1FF008C30FC /* SignUpController.swift in Sources */,

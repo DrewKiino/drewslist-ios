@@ -37,9 +37,14 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupSelf()
     setupDataBinding()
     setupTableView()
-    tableView?.fillSuperview()
-    
+  
     FBSDKController.createCustomEventForName("UserAccountSettings")
+  }
+  
+  public override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+    
+    tableView?.fillSuperview()
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -86,11 +91,15 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   // MARK: TableView Delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    return 24
+    switch indexPath.row {
+    case 0, 7, 11, 14: return 24
+    case 16: return 100
+    default: return 36
+    }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 15
+    return 17
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -193,7 +202,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         
         locationController._didUpdateAuthorizationStatus.removeListener(self)
         locationController._didUpdateAuthorizationStatus.listen(self) { [weak self, weak cell] bool in
-          log.debug(bool)
           if bool { cell?.switchOn() }
           else { cell?.switchOff() }
         }
@@ -224,7 +232,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-        cell.paddingLabel?.text = "Payments"
+        cell.paddingLabel?.text = "Main Options"
         return cell
       }
       break
@@ -238,12 +246,21 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       }
       break
     case 13:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
+        cell.titleButton?.setTitle("Manage Listings", forState: .Normal)
+        cell.onClick = { [weak self] in
+          self?.navigationController?.pushViewController(ListingsView(), animated: true)
+        }
+        return cell
+      }
+      break
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Other Options"
         return cell
       }
       break
-    case 14:
+    case 15:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)
@@ -261,10 +278,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     
     return DLTableViewCell()
   }
-  
-  public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-  }
-
   
   private func setupPushPermissions() {
   }

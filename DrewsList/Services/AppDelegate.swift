@@ -30,8 +30,8 @@ public enum ServerUrl {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
     case .Production: return "https://drewslist-production.herokuapp.com"
-//    case .Default: return "http://localhost:1337"
-    case .Default: return "https://drewslist-staging.herokuapp.com"
+    case .Default: return "http://localhost:1337"
+//    case .Default: return "https://drewslist-staging.herokuapp.com"
 //    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
@@ -174,10 +174,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     var tabView: TabView? = TabView()
-//    var tabView: ScannerView? = ScannerView()
+//    var tabView: ListingsView? = ListingsView()
     
 //    var tabView: SearchListingView? = SearchListingView()
-//    var tabView: LoginView? = LoginView()
+//    var tabView: AccountSettingsView? = AccountSettingsView()
     
     /*
     * Use this code to get the bounds of the screen

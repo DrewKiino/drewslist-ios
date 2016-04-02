@@ -942,8 +942,8 @@ public class BigButtonCell: DLTableViewCell {
   private func setupButton() {
     
     button = SwiftyCustomContentButton()
-    button?.buttonColor         = .sweetBeige()
-    button?.highlightedColor    = .juicyOrange()
+    button?.buttonColor         = .juicyOrange()
+    button?.highlightedColor    = .lightJuicyOrange()
     button?.shadowColor         = .clearColor()
     button?.disabledButtonColor = .grayColor()
     button?.disabledShadowColor = .darkGrayColor()

@@ -107,6 +107,10 @@ public class User: Mappable {
   
   public let _hasSeenOnboardingView = Signal<Bool>()
   public var hasSeenOnboardingView: Bool = false { didSet { _hasSeenOnboardingView => hasSeenOnboardingView } }
+  
+  // MARK: User Listings
+  public let _freeListings = Signal<Int?>()
+  public var freeListings: Int? { didSet { _freeListings => freeListings } }
  
   public init() {}
   
@@ -139,6 +143,9 @@ public class User: Mappable {
     privatePhoneNumber      <- map["privatePhoneNumber"]
     hasSeenTermsAndPrivacy  <- map["hasSeenTermsAndPrivacy"]
     hasSeenOnboardingView   <- map["hasSeenOnboardingView"]
+    
+    // user listings
+    freeListings            <- map["freeListings"]
   }
   
   public func getName() -> String? {

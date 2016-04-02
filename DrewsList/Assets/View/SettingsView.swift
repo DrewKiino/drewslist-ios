@@ -88,6 +88,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.hideArrowIcon()
+        cell.showSeparatorLine()
         cell.titleButton?.setTitle("Log Out", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
@@ -102,7 +103,6 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
           })
           TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
         }
-        cell.showBottomBorder()
         return cell
       }
       break

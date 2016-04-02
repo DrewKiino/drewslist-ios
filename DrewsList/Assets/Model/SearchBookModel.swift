@@ -17,6 +17,8 @@ public class SearchBookModel {
   
   public class func sharedInstance() -> SearchBookModel { return Singleton.searchBookModel }
   
+  public var showRequestActivity = Signal<Bool>()
+  
   public let _searchString = Signal<String?>()
   public var searchString: String? { didSet { _searchString => searchString } }
   
