@@ -44,7 +44,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     setupSelf()
     setupDataBinding()
     
-    if UIDevice.currentDevice().name.hasSuffix("Simulator"){ // Code executing on Simulator
+    if UIDevice.currentDevice().name.hasSuffix("Simulator") { // Code executing on Simulator
     } else{ // Code executing on Device
       setupScanner()
       setupFocusImageView()
@@ -163,7 +163,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
         self?.tableView?.hidden = true
         self?.showAlert("Sorry!", message: "We did not find any matches!")
         
-      } else if self?.keyboardActive == true {
+      } else if self?.keyboardActive == false {
         
         self?.tableView?.hidden = false
         
@@ -192,6 +192,23 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     
   public func presentCreateListingView(book: Book?) {
     
+    var alertController: UIAlertController! = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    alertController.addAction(UIAlertAction(title: "I'm Buying", style: .Default) { [weak self, weak alertController] action in
+      self?.hideUI()
+      self?.presentViewController(CreateListingView().setBook(book).setListType("buying"), animated: true, completion: nil)
+    })
+    alertController.addAction(UIAlertAction(title: "I'm Selling", style: .Default) { [weak self, weak alertController] action in
+      self?.hideUI()
+      self?.presentViewController(CreateListingView().setBook(book).setListType("selling"), animated: true, completion: nil)
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+      self?.searchBarTextField?.text = nil
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func hideUI() {
     focusImageView?.tintColor = .whiteColor()
     focusImageView?.hidden = true
     previewLayer?.hidden = true
@@ -199,8 +216,6 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     searchBarContainer?.hidden = true
     searchBarTextField?.text = nil
     session?.stopRunning()
-    
-    presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
   }
   
   private func setupScanner() {
@@ -315,6 +330,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     
     searchBarTextField?.resignFirstResponder()
     searchBarTextField?.text = nil
+    model.lastSearchString = nil
     
     return true
   }
@@ -372,8 +388,6 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
       cell._cellPressed.listen(self) { [weak self] bool in
         if bool == true {
           self?.model.book = self?.model.books[indexPath.row]
-          
-          self?.presentViewController(CreateListingView().setBook(self?.model.book), animated: true, completion: nil)
         }
       }
       

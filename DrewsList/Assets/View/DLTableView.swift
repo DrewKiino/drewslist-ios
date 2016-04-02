@@ -463,7 +463,7 @@ public class SwitchCell: DLTableViewCell {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
-    multipleTouchEnabled = false
+    multipleTouchEnabled = true
     
     let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
     pressGesture.minimumPressDuration = 0.01
@@ -476,12 +476,14 @@ public class SwitchCell: DLTableViewCell {
     titleLabel?.font = .asapRegular(12)
     titleLabel?.adjustsFontSizeToFitWidth = true
     titleLabel?.minimumScaleFactor = 0.8
+    titleLabel?.multipleTouchEnabled = true
     addSubview(titleLabel!)
   }
   
   public func setupSwitchImageView() {
     switchImageView = UIImageView(image: UIImage(named: "check")?.imageWithRenderingMode(.AlwaysTemplate))
     switchImageView?.tintColor = .juicyOrange()
+    switchImageView?.multipleTouchEnabled = true
     addSubview(switchImageView!)
   }
   
@@ -874,3 +876,603 @@ public class BigImageCell: DLTableViewCell {
   }
   
 }
+
+
+public class ToggleCell: DLTableViewCell {
+  
+  public enum Toggle {
+    case Left
+    case Right
+    public func getValue() -> Bool {
+      switch self {
+      case .Left: return true
+      case .Right: return false
+      }
+    }
+  }
+  
+  public var leftToggleButton: UIButton?
+  public var rightToggleButton: UIButton?
+  private var toggleSelector: UIView?
+  private var toggleContainer: UIView?
+  private var toggle: Toggle = .Left// setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupToggleViews()
+    
+    toggleContainer?.fillSuperview()
+    toggleContainer?.groupAndFill(group: .Horizontal, views: [leftToggleButton!, rightToggleButton!], padding: 8)
+    
+    toggleSelector?.frame = leftToggleButton!.frame
+    //    leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+  }
+  
+  public override func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupToggleViews() {
+    toggleContainer = UIView()
+    toggleContainer?.backgroundColor = .whiteColor()
+    toggleContainer?.multipleTouchEnabled = true
+    addSubview(toggleContainer!)
+    
+    toggleSelector = UIView()
+    toggleSelector?.backgroundColor = .juicyOrange()
+    toggleSelector?.layer.cornerRadius = 8.0
+    toggleContainer?.addSubview(toggleSelector!)
+    
+    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    press.minimumPressDuration = 0.01
+    
+    toggleContainer?.addGestureRecognizer(press)
+    
+    leftToggleButton = UIButton()
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+    leftToggleButton?.backgroundColor = .clearColor()
+    leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(leftToggleButton!)
+    
+    rightToggleButton = UIButton()
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+    rightToggleButton?.backgroundColor = .clearColor()
+    rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(rightToggleButton!)
+  }
+  
+  public func dragSelector(sender: UILongPressGestureRecognizer) {
+    if (sender.state == .Began) {
+    } else if (sender.state == .Ended){
+      snapToToggle(sender.locationInView(self))
+      //      animateToggleIntersections()
+    } else  if pointInside(sender.locationInView(self), withEvent: nil),
+      let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      let leftLimit = leftToggleButton.center.x
+      let rightLimit = rightToggleButton.center.x
+      let newCenter = selector.center.x - (selector.center.x - sender.locationInView(self).x)
+      
+      if newCenter > leftLimit && newCenter < rightLimit {
+        UIView.animate({ [unowned selector] in selector.center.x = newCenter })
+      }
+    }
+  }
+  
+  private func animateToggleIntersections() {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+          })
+      } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+          self?.rightToggleButton?.setTitleColor(.whiteColor(), forState: .Normal)
+          })
+      }
+    }
+  }
+  
+  private func snapToToggle(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = leftToggleButton.center.x
+          })
+        toggle = .Left
+      } else if CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = rightToggleButton.center.x
+          })
+        toggle = .Right
+      } else {
+        UIView.animate({ [unowned selector] in
+          selector.center.x = leftToggleButton.center.x
+          })
+        toggle = .Left
+      }
+      
+    }
+    
+    _didSelectCell => toggle
+  }
+}
+
+public class TripleToggleCell: DLTableViewCell {
+  
+  public enum Toggle {
+    case Left
+    case Middle
+    case Right
+  }
+  
+  private var leftToggleButton: UIButton?
+  private var middleToggleButton: UIButton?
+  private var rightToggleButton: UIButton?
+  private var toggleSelector: UIView?
+  private var toggleContainer: UIView?
+  private var toggle: Toggle = .Middle // setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupToggleViews()
+    
+    toggleContainer?.fillSuperview()
+    toggleContainer?.groupAndFill(group: .Horizontal, views: [leftToggleButton!, middleToggleButton!, rightToggleButton!], padding: 8)
+    
+    toggleSelector?.frame = middleToggleButton!.frame
+    
+    leftToggleButton?.imageView?.tintColor = .juicyOrange()
+    middleToggleButton?.imageView?.tintColor = .coolBlack()
+    rightToggleButton?.imageView?.tintColor = .juicyOrange()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    leftToggleButton?.setImage(leftToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+    middleToggleButton?.setImage(middleToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+    rightToggleButton?.setImage(rightToggleButton?.imageView?.image?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+  }
+  
+  public override func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupToggleViews() {
+    toggleContainer = UIView()
+    toggleContainer?.backgroundColor = .whiteColor()
+    toggleContainer?.multipleTouchEnabled = true
+    addSubview(toggleContainer!)
+    
+    toggleSelector = UIView()
+    toggleSelector?.backgroundColor = .sweetBeige()
+    toggleSelector?.layer.cornerRadius = 8.0
+    toggleContainer?.addSubview(toggleSelector!)
+    
+    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    press.minimumPressDuration = 0.01
+    
+    toggleContainer?.addGestureRecognizer(press)
+    
+    leftToggleButton = UIButton()
+    leftToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+    leftToggleButton?.backgroundColor = .clearColor()
+    leftToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(leftToggleButton!)
+    
+    middleToggleButton = UIButton()
+    middleToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+    middleToggleButton?.backgroundColor = .clearColor()
+    middleToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(middleToggleButton!)
+    
+    rightToggleButton = UIButton()
+    rightToggleButton?.setTitleColor(.coolBlack(), forState: .Normal)
+    rightToggleButton?.backgroundColor = .clearColor()
+    rightToggleButton?.titleLabel?.font = UIFont.asapRegular(16)
+    toggleContainer?.addSubview(rightToggleButton!)
+  }
+  
+  public func dragSelector(sender: UILongPressGestureRecognizer) {
+    if (sender.state == .Began) {
+    } else if (sender.state == .Ended){
+      snapToToggle(sender.locationInView(self))
+      animateToggleIntersections(sender.locationInView(self))
+    } else  if pointInside(sender.locationInView(self), withEvent: nil),
+      let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      let leftLimit = leftToggleButton.center.x
+      let rightLimit = rightToggleButton.center.x
+      let newCenter = selector.center.x - (selector.center.x - sender.locationInView(self).x)
+      
+      if newCenter > leftLimit && newCenter < rightLimit {
+        UIView.animate({ [unowned selector] in selector.center.x = newCenter })
+      }
+    }
+  }
+  
+  private func animateToggleIntersections(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let middleToggleButton = middleToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectIntersectsRect(leftToggleButton.frame, selector.frame) || CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .coolBlack()
+          self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
+          })
+      } else if CGRectIntersectsRect(rightToggleButton.frame, selector.frame) || CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.middleToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.rightToggleButton?.imageView?.tintColor = .coolBlack()
+          })
+      } else if CGRectIntersectsRect(middleToggleButton.frame, selector.frame) {
+        UIView.animate({ [weak self] in
+          self?.leftToggleButton?.imageView?.tintColor = .juicyOrange()
+          self?.middleToggleButton?.imageView?.tintColor = .coolBlack()
+          self?.rightToggleButton?.imageView?.tintColor = .juicyOrange()
+          })
+      }
+    }
+  }
+  
+  private func snapToToggle(senderLocation: CGPoint) {
+    if  let selector = toggleSelector,
+      let leftToggleButton = leftToggleButton,
+      let middleToggleButton = middleToggleButton,
+      let rightToggleButton = rightToggleButton
+    {
+      if CGRectContainsPoint(leftToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = leftToggleButton.center.x })
+        toggle = .Left
+      } else if CGRectContainsPoint(middleToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = middleToggleButton.center.x })
+        toggle = .Middle
+      } else if CGRectContainsPoint(rightToggleButton.frame, senderLocation) {
+        UIView.animate({ [unowned selector] in selector.center.x = rightToggleButton.center.x })
+        toggle = .Right
+      } else {
+        UIView.animate({ [unowned selector] in selector.center.x = middleToggleButton.center.x })
+        toggle = .Middle
+      }
+    }
+    
+    _didSelectCell => toggle
+  }
+}
+
+public class SliderCell: DLTableViewCell {
+  
+  // Could add toggle to switch highlight
+  public enum Toggle {
+    case left
+    case middle
+    case right
+  }
+  
+  private var container = UIView?()
+  private var slider = UISlider?()
+  private var leftFace = UIImageView?()
+  private var middleFace = UIImageView?()
+  private var rightFace = UIImageView?()
+  private var toggle: Toggle = .middle // setting default
+  
+  public let _didSelectCell = Signal<Toggle>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    
+    backgroundColor = .whiteColor()
+    
+    setupSlider()
+    setupFaces()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    container?.fillSuperview()
+    slider?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 48)
+    leftFace?.anchorInCorner(.BottomLeft, xPad: 0, yPad: 0, width: 24, height: 24)
+    leftFace?.align(.UnderMatchingLeft, relativeTo: slider!, padding: 0, width: 24, height: 24)
+    middleFace?.anchorInCenter(width: 24, height: 24)
+    middleFace?.align(.UnderCentered, relativeTo: slider!, padding: 0, width: 24, height: 24)
+    rightFace?.anchorInCorner(.BottomRight, xPad: 0, yPad: 0, width: 24, height: 24)
+    rightFace?.align(.UnderMatchingRight, relativeTo: slider!, padding: 0, width: 24, height: 24)
+  }
+  
+  public func setupSlider() {
+    container = UIView()
+    slider = UISlider()
+    slider!.minimumValue = 0
+    slider!.minimumTrackTintColor = .juicyOrange()
+    slider!.maximumValue = 2
+    slider!.maximumTrackTintColor = .juicyOrange()
+    slider!.setValue(1.0, animated: false)
+    slider!.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+    container!.addSubview(slider!)
+  }
+  
+  public func setupFaces() {
+    leftFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition1")).image)
+    leftFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(leftFace!)
+    
+    middleFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition2")).image)
+    middleFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(middleFace!)
+    
+    rightFace = UIImageView(image:Toucan(image: UIImage(named: "Icon-Condition3")).image)
+    rightFace?.frame = CGRect(x: 0,y: 0,width: 25,height: 25)
+    container?.addSubview(rightFace!)
+    
+    addSubview(container!)
+  }
+  
+  public func sliderChanged(sender: UISlider) {
+    slider!.value = roundf(slider!.value)
+    switch slider!.value {
+    case 0:
+      toggle = .left
+      break
+    case 1:
+      toggle = .middle
+      break
+    case 2:
+      toggle = .right
+      break
+    default:
+      break
+    }
+    self._didSelectCell.fire(toggle)
+  }
+  
+}
+
+public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
+  
+  public var inputTextField: HoshiTextField?
+  
+  public let _inputTextFieldString = Signal<String?>()
+  
+  public let _isFirstResponder = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupInputTextField()
+    
+    inputTextField?.fillSuperview(left: 14, right: 14, top: 2, bottom: 2)
+    
+    separatorLine.frame = CGRectMake(14, 0, bounds.size.width - 1, 1)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    hideBothTopAndBottomBorders()
+  }
+  
+  public override func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupInputTextField() {
+    inputTextField = HoshiTextField()
+    inputTextField?.textColor = .coolBlack()
+    inputTextField?.font = .asapRegular(16)
+    inputTextField?.borderInactiveColor = .soothingBlue()
+    inputTextField?.borderActiveColor = .juicyOrange()
+    inputTextField?.placeholderColor = .sexyGray()
+    inputTextField?.delegate = self
+    addSubview(inputTextField!)
+  }
+  
+  public func textFieldDidBeginEditing(textField: UITextField) {
+    _isFirstResponder => true
+  }
+  
+  public func textFieldDidEndEditing(textField: UITextField) {
+    _isFirstResponder => false
+  }
+  
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    inputTextField?.resignFirstResponder()
+    
+    return true
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        _inputTextFieldString.fire(NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1)))
+        // else, user has inputted some new strings
+      } else { _inputTextFieldString.fire(text + string) }
+    }
+    return true
+  }
+}
+
+public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
+  
+  public var titleLabel: UILabel?
+  public var inputTextView: KMPlaceholderTextView?
+  
+  public let _inputTextViewString = Signal<String?>()
+  
+  public let _isFirstResponder = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupTitleLabel()
+    setupInputTextView()
+    
+    titleLabel?.anchorAndFillEdge(.Top, xPad: 8, yPad: 2, otherSize: 12)
+    
+    separatorLine.frame = CGRectMake(8, 0, bounds.size.width - 1, 1)
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    inputTextView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: bounds.height)
+  }
+  
+  public override func setupSelf() {
+    backgroundColor = .whiteColor()
+    hideBothTopAndBottomBorders()
+  }
+  
+  private func setupTitleLabel() {
+    titleLabel = UILabel()
+    titleLabel?.font = .asapRegular(10)
+    titleLabel?.textColor = .sexyGray()
+    addSubview(titleLabel!)
+  }
+  
+  private func setupInputTextView() {
+    inputTextView  = KMPlaceholderTextView()
+    inputTextView?.font = .asapRegular(12)
+    inputTextView?.placeholderColor = .sexyGray()
+    inputTextView?.delegate = self
+    addSubview(inputTextView!)
+  }
+  
+  public func textViewDidBeginEditing(textView: UITextView) {
+    _isFirstResponder => true
+  }
+  
+  public func textViewDidEndEditing(textView: UITextView) {
+  }
+  
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    inputTextView?.resignFirstResponder()
+    
+    return true
+  }
+  
+  public func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    if let string = textView.text {
+      // this means the user inputted a backspace
+      if text.characters.count == 0 && string.characters.count > 0 {
+        _inputTextViewString.fire(NSString(string: string).substringWithRange(NSRange(location: 0, length: string.characters.count - 1)))
+        // else, user has inputted some new strings
+      } else { _inputTextViewString.fire(string + text) }
+    }
+    return true
+  }
+}
+
+public class BigButtonCell: DLTableViewCell {
+  
+  private var indicator: UIActivityIndicatorView?
+  public var button: SwiftyCustomContentButton?
+  public var buttonLabel: UILabel?
+  
+  public let _onPressed = Signal<Bool>()
+  
+  public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    setupSelf()
+    setupButton()
+  }
+  
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    button?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 48)
+    indicator?.anchorAndFillEdge(.Left, xPad: 16, yPad: 2, otherSize: 24)
+    buttonLabel?.fillSuperview(left: 40, right: 40, top: 2, bottom: 2)
+  }
+  
+  public override func setupSelf() {
+    backgroundColor = .whiteColor()
+  }
+  
+  private func setupButton() {
+    
+    button = SwiftyCustomContentButton()
+    button?.buttonColor         = .juicyOrange()
+    button?.highlightedColor    = .lightJuicyOrange()
+    button?.shadowColor         = .clearColor()
+    button?.disabledButtonColor = .grayColor()
+    button?.disabledShadowColor = .darkGrayColor()
+    button?.shadowHeight        = 0
+    button?.cornerRadius        = 8
+    button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
+    button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+    
+    indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    button?.customContentView.addSubview(indicator!)
+    
+    buttonLabel = UILabel()
+    buttonLabel?.textAlignment = .Center
+    buttonLabel?.textColor = .whiteColor()
+    buttonLabel?.font = .asapRegular(16)
+    button?.customContentView.addSubview(buttonLabel!)
+    
+    addSubview(button!)
+  }
+  
+  public func pressed() {
+    _onPressed => true
+  }
+}
+

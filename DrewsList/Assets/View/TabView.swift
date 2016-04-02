@@ -13,6 +13,14 @@ import RealmSwift
 
 public class TabView: UITabBarController {
   
+  private struct Singleton {
+    static let tabView = TabView()
+  }
+  
+  public class func sharedInstance() -> TabView {
+    return Singleton.tabView
+  }
+  
   private let controller = TabController()
   private var model: TabModel { get { return controller.model } }
   private let socket = Sockets.sharedInstance()

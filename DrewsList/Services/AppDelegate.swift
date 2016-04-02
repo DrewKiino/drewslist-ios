@@ -173,7 +173,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-    var tabView: TabView? = TabView()
+    var tabView: TabView? = TabView.sharedInstance()
 //    var tabView: ListingsView? = ListingsView()
     
 //    var tabView: SearchListingView? = SearchListingView()

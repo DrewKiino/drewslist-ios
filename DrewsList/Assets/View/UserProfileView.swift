@@ -119,6 +119,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     // MARK: Neon Layouts
     
     scrollView?.fillSuperview()
+    scrollView?.hidden = true
     
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 300)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
@@ -167,18 +168,17 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       align: .UnderCentered,
       relativeTo: bgView!,
       padding: 4,
-      height: descriptionTextView!.frame.size.height < 50 ? descriptionTextView!.frame.size.height : 50
+      height: descriptionTextView!.frame.size.height < 36 ? descriptionTextView!.frame.size.height : 36
     )
     
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
+    bookShelf?.align(.UnderCentered, relativeTo: descriptionTextView!, padding: 8, width: screen.width, height: 600)
     
     scrollView?.contentSize = CGSizeMake(screen.width,
       425
 //      + 300
 //      + 225
-      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 48)
-//      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 48)
-      + 225
+      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 260: 48)
+      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 260 : 48)
     )
   }
   
@@ -198,6 +198,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     controller.didLoadUserDataFromServer.listen(self) { [weak self] didLoad in
       
       DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
+      
+      self?.scrollView?.hidden = false
       
       self?.view.dismissActivityView()
       
@@ -225,7 +227,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
           padding: 4,
           //      height: isOtherUser == true ? 50 : 0
           //      height: 50
-          height: descriptionTextView.frame.size.height < 50 ? descriptionTextView.frame.size.height : 50
+          height: descriptionTextView.frame.size.height < 36 ? descriptionTextView.frame.size.height : 36
         )
       }
     }
@@ -407,7 +409,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     }
     return 235
   }
-  
+
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     guard let cell = tableView.dequeueReusableCellWithIdentifier("UserProfileListView", forIndexPath: indexPath) as? UserProfileListView else { return DLTableViewCell() }
@@ -417,18 +419,18 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
       cell.tag = 0
       cell.label?.text =  "I'm Selling"
+      cell.label?.font = .asapBold(16)
       
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
         
         // set data
         cell.controller.model.bookList = listings
-        cell.label?.font = UIFont.asapBold(13)
-        
-        cell.backgroundColor = .redColor()
       }
         
       cell.onBadgeButtonPress = { [weak self] in
-        self?.presentViewController(SearchBookView(), animated: true, completion: nil)
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("selling"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
       
       break
@@ -436,17 +438,18 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
       cell.tag = 1
       cell.label?.text = "I'm Buying"
+      cell.label?.font = .asapBold(16)
       
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label?.font = UIFont.asapBold(13)
         
         // set data
         cell.controller.model.bookList = listings
       }
       
       cell.onBadgeButtonPress = { [weak self] in
-        self?.presentViewController(SearchBookView(), animated: true, completion: nil)
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("buying"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
 
       break
@@ -546,7 +549,11 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     
     setupCollectionView()
     
-    label?.anchorInCorner(.BottomLeft, xPad: 8, yPad: 0, width: 76, height: 36)
+    if model.bookList.isEmpty {
+      label?.anchorToEdge(.Left, padding: 8, width: 76, height: 36)
+    } else {
+      label?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 76, height: 36)
+    }
     
     badgeButton?.align(.ToTheRightCentered, relativeTo: label!, padding: 0, width: 48, height: 48)
     badgeButton?.badgeEdgeInsets = UIEdgeInsetsMake(20, -12, 0, 0)
