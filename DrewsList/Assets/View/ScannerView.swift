@@ -97,7 +97,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     
     if let previewLayer = previewLayer {
       focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
-      focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen))
+      focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen) - 64)
 
       focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
       focusImageView?.tintColor = .juicyOrange()
@@ -163,7 +163,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
         self?.tableView?.hidden = true
         self?.showAlert("Sorry!", message: "We did not find any matches!")
         
-      } else if self?.keyboardActive == false {
+      } else if self?.keyboardActive == true {
         
         self?.tableView?.hidden = false
         

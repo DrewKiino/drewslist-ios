@@ -72,11 +72,11 @@ public class ScannerController {
           
           log.debug("books found: \(jsonArray.count)")
           
-          var books: [Book]? = []
+          var books: [Book]! = []
           
-          for json in jsonArray { books?.append(Book(json: json)) }
+          for json in jsonArray { books.append(Book(json: json)) }
           
-          self?.model.books = books!
+          self?.model.books = books
           
           books = nil
         }

@@ -184,6 +184,10 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   
   // MARK: Data Binding
   
+  public func getUserFromServer() {
+    controller.getUserFromServer(true)
+  }
+  
   private func setupDataBinding() {
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
@@ -547,8 +551,6 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    setupCollectionView()
-    
     if model.bookList.isEmpty {
       label?.anchorToEdge(.Left, padding: 8, width: 76, height: 36)
     } else {
@@ -584,6 +586,7 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     collectionView?.backgroundColor = UIColor.whiteColor()
     collectionView?.showsHorizontalScrollIndicator = false
     collectionView?.multipleTouchEnabled = true
+    
     addSubview(collectionView!)
   }
   
@@ -703,6 +706,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupBookImageView() {
+    bookImageView?.removeFromSuperview()
     bookImageView = UIImageView()
     bookImageView?.userInteractionEnabled = true
     bookImageView?.backgroundColor = .whiteColor()
@@ -763,8 +767,8 @@ public class ListCell: UICollectionViewCell {
   }
   
   public func setListing(listing: Listing?) {
-    
     self.listing = listing
+    loadListingIntoView()
   }
   
   private func loadListingIntoView() {

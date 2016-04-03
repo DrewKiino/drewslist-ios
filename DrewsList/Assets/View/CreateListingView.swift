@@ -435,18 +435,12 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   }
  
   public func dismissAndPresentListingFeed() {
-    if let listFeedView = (TabView.sharedInstance().viewControllers?.filter { $0 is ListFeedNavigationView })?.first as? ListFeedNavigationView {
-      log.debug(model.listType)
-      if model.listType == "buying" {
-        listFeedView.listFeedViewContainer?.selectLeftPage()
-        listFeedView.listFeedViewContainer?.getListingsFromServer(0, listing: "buying")
-      } else {
-        listFeedView.listFeedViewContainer?.selectRightPage()
-        listFeedView.listFeedViewContainer?.getListingsFromServer(0, listing: "selling")
+    dismissViewControllerAnimated(false) { [weak self] bool in
+      TabView.sharedInstance().selectedIndex = 4
+      if let userProfileViewContainer = TabView.currentView() as? UserProfileViewContainer {
+        userProfileViewContainer.userProfileView?.getUserFromServer()
       }
     }
-    TabView.sharedInstance().selectedIndex = 0
-    dismissViewControllerAnimated(false, completion: nil)
   }
   
   public func cancel() {

@@ -515,6 +515,7 @@ import SDWebImage
 extension UIImageView {
   
   public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
+    
     Async.background { [weak self] in
       
       var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: fitMode)
