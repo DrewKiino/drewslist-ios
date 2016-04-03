@@ -321,9 +321,10 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("How are fees calculated?", forState: .Normal)
+        cell.hideArrowIcon()
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self ] bool in
-          self?.showAlert("How are listing fees calculated?", message: "We know tons of book prices vary from $5 to even over $100! We charge a flat rate of $0.99 cents or %5 of the list price, whichever is greater. Also, we only charge 'For Sale' listings and we slighty modify the listing fee to prevent sneaky list pricing. We think that this is a fair pricing system that also allows us to pay for our servers and other incremental costs. We are continually working on making Drew's List as efficient and as servicable as possible for anyone, students especially! Our goal is to cut out the middle man and create a marketplace made for students by students! Thank for you for supporting us! Please tell all your friends! \u{1F64F}")
+          self?.showAlert("", message: "Listing Fees are calculated at a flat rate of $0.99 per listing. By agreeing to scan in your fingerprint, you agree to have Apple charge your payment method on file for the amount as listed. Refer a Friend to Drew’s List to get a free listing.")
         }
         
         return cell
