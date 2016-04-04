@@ -57,7 +57,8 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
     view.backgroundColor = .whiteColor()
   }
   
-  private func setupDataBinding() {
+  public override func setupDataBinding() {
+    super.setupDataBinding()
     controller.didGetActivityHistoryFromServer.removeAllListeners()
     controller.didGetActivityHistoryFromServer.listen(self) { [weak self] didGet in
       if didGet {

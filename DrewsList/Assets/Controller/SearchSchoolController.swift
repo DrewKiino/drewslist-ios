@@ -76,8 +76,15 @@ public class SearchSchoolController {
       model.schools.removeAll(keepCapacity: false)
       return nil
     }
-    let queryString = String(string.componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
+    let queryString = String(autocompleteSchoolName(string).componentsSeparatedByString(" ").reduce("") { "\($0)+\($1)" }.characters.dropFirst())
     return "\(serverUrl)?q=\(queryString)&limit=100"
+  }
+  
+  public func autocompleteSchoolName(string: String) -> String {
+    switch string.lowercaseString {
+    case "csula", "calstatela", "calstate la", "calstate los angeles": return "California State University-Los Angeles"
+    default: return string
+    }
   }
 }
 

@@ -32,6 +32,8 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   private var originalTableViewFrame: CGRect?
   private var lastKeyboardFrame: CGRect?
   
+  public var onDismissBlock: (() -> Void)?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -62,6 +64,10 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   public override func viewWillAppear(animated: Bool) {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    
+    searchBarTextField?.text = nil
+    model.lastSearchString = nil
+    model.books.removeAll(keepCapacity: false)
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -186,6 +192,11 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     controller.searchBook()
   }
   
+  public func setOnDismiss(block: () -> Void) -> Self {
+    onDismissBlock = block
+    return self
+  }
+  
   // MARK: TextField Delegates
   public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
     if let text = textField.text {
@@ -218,13 +229,16 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
       cell.setBook(model.books[indexPath.row])
+      cell.bookView?.canShowBookProfile = false
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] bool in
         if bool == true {
+          
           self?.model.book = self?.model.books[indexPath.row]
           
-          self?.presentViewController(CreateListingView().setBook(self?.model.book), animated: true, completion: nil)
-          //presentViewController(CreateListingView().setBook(self.model.book), animated: true, completion: nil)
+          self?.dismissViewControllerAnimated(true, completion: nil)
+          
+          self?.onDismissBlock?()
         }
       }
       

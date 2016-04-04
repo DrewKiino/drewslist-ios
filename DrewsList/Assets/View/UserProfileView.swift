@@ -12,6 +12,7 @@ import Neon
 import SDWebImage
 import Signals
 import Async
+import MIBadgeButton_Swift
 
 public class UserProfileViewContainer: DLNavigationController {
   
@@ -106,7 +107,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     super.viewDidLoad()
     
     setupSelf()
-    setupDataBinding()
     setupScrollView()
     setupBGView()
     setupProfileImg()
@@ -114,10 +114,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     setupBookshelf()
     setupUsernameLabel()
     setupButtons()
+    setupDataBinding()
     
     // MARK: Neon Layouts
     
     scrollView?.fillSuperview()
+    scrollView?.hidden = true
     
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 300)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
@@ -162,27 +164,29 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    descriptionTextView?.sizeToFit()
     descriptionTextView?.alignAndFillWidth(
       align: .UnderCentered,
       relativeTo: bgView!,
-      padding: 0,
-      height: 50
-      //      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
+      padding: 4,
+      height: descriptionTextView!.frame.size.height < 36 ? descriptionTextView!.frame.size.height : 36
     )
-    descriptionTextView?.backgroundColor = .whiteColor()
     
-    
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
+    bookShelf?.align(.UnderCentered, relativeTo: descriptionTextView!, padding: 8, width: screen.width, height: 600)
     
     scrollView?.contentSize = CGSizeMake(screen.width,
       425
-      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 0)
-      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 0)
+//      + 300
+//      + 225
+      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 260: 48)
+      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 260 : 48)
     )
   }
   
   // MARK: Data Binding
+  
+  public func getUserFromServer() {
+    controller.getUserFromServer(true)
+  }
   
   private func setupDataBinding() {
     model._user.removeAllListeners()
@@ -199,6 +203,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
       DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
       
+      self?.scrollView?.hidden = false
+      
       self?.view.dismissActivityView()
       
       if didLoad {
@@ -214,7 +220,20 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
       // MARK: Texts
       self?.profileUsername?.text = self?.model.user?.getName()
-      self?.descriptionTextView?.text = self?.model.user?.description
+      self?.descriptionTextView?.text = self?.model.user?.school
+      
+      if let bgView = self?.bgView, let descriptionTextView = self?.descriptionTextView {
+        descriptionTextView.text = "\(self?.model.user?.school != nil ? "Student at \(self?.model.user?.school ?? "")" : "")"
+        descriptionTextView.sizeToFit()
+        descriptionTextView.alignAndFillWidth(
+          align: .UnderCentered,
+          relativeTo: bgView,
+          padding: 4,
+          //      height: isOtherUser == true ? 50 : 0
+          //      height: 50
+          height: descriptionTextView.frame.size.height < 36 ? descriptionTextView.frame.size.height : 36
+        )
+      }
     }
   }
   
@@ -266,6 +285,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     descriptionTextView?.editable = false
     descriptionTextView?.showsVerticalScrollIndicator = false
     descriptionTextView?.font = .asapRegular(12)
+    descriptionTextView?.backgroundColor = .whiteColor()
+    descriptionTextView?.textColor = .coolBlack()
     scrollView?.addSubview(descriptionTextView!)
   }
   
@@ -280,48 +301,47 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   private func setupButtons() {
-    if let isOtherUser = self.isOtherUser {
-      if (!isOtherUser){
-        let myImage = UIImage(named: "Icon-SettingsGear")
-        let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
-        
-        let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
-        
-        //settingsButton.action
-        // TODO: check if user is self
-        self.navigationItem.rightBarButtonItem = settingsButton
-      }
-      if (isOtherUser) {
-        let iconWidth = screen.width / 12
-        
-        var myImage = UIImage(named: "Call Icon-2")
-        var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
-        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
-        
-        callButton = UIButton()
-        callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
-        callButton?.setImage(resizedImage, forState: .Normal)
-        callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
-        callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
-        callButton?.hidden = true
-       
-        myImage = UIImage(named: "Message Icon-1")
-        resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
-        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
-        
-        chatButton = UIButton()
-        chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
-        chatButton?.setImage(resizedImage, forState: .Normal)
-        chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
-        chatButton?.hidden = true
-        
-        descriptionTextView?.addSubview(callButton!)
-        descriptionTextView?.addSubview(chatButton!)
-        
-        
-        myImage = nil
-        resizedImage = nil
-      }
+    if isOtherUser == false {
+      let myImage = UIImage(named: "Icon-SettingsGear")
+      let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
+      
+      let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+      
+      //settingsButton.action
+      // TODO: check if user is self
+      self.navigationItem.rightBarButtonItem = settingsButton
+      
+    } else {
+      
+      let iconWidth = screen.width / 12
+      
+      var myImage = UIImage(named: "Call Icon-2")
+      var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+      resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+      
+      callButton = UIButton()
+      callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+      callButton?.setImage(resizedImage, forState: .Normal)
+      callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+      callButton?.alpha = isOtherUser == true ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
+      callButton?.hidden = true
+     
+      myImage = UIImage(named: "Message Icon-1")
+      resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+      resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+      
+      chatButton = UIButton()
+      chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
+      chatButton?.setImage(resizedImage, forState: .Normal)
+      chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
+      chatButton?.hidden = true
+      
+      descriptionTextView?.addSubview(callButton!)
+      descriptionTextView?.addSubview(chatButton!)
+      
+      
+      myImage = nil
+      resizedImage = nil
     }
   }
   
@@ -381,19 +401,19 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     switch indexPath.row {
     case 0:
       if (model.user?.listings.filter { $0.listType == "selling" })?.first == nil {
-        return 0
+        return 48
       }
       break
     case 1:
       if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
-        return 0
+        return 48
       }
       break
     default: break
     }
     return 235
   }
-  
+
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     guard let cell = tableView.dequeueReusableCellWithIdentifier("UserProfileListView", forIndexPath: indexPath) as? UserProfileListView else { return DLTableViewCell() }
@@ -402,33 +422,38 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     case 0:
       
       cell.tag = 0
+      cell.label?.text =  "I'm Selling"
+      cell.label?.font = .asapBold(16)
+      
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label.text =  "I'm Selling"
         
         // set data
         cell.controller.model.bookList = listings
-        cell.label.font = UIFont.asapBold(13)
+      }
         
-      } else {
-        
-        cell.label.text =  nil
+      cell.onBadgeButtonPress = { [weak self] in
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("selling"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
       
       break
     case 1:
+      
       cell.tag = 1
-
+      cell.label?.text = "I'm Buying"
+      cell.label?.font = .asapBold(16)
+      
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label.text = "I'm Buying"
-        cell.label.font = UIFont.asapBold(13)
         
         // set data
         cell.controller.model.bookList = listings
-        
-      } else {
-        cell.label.text = nil
+      }
+      
+      cell.onBadgeButtonPress = { [weak self] in
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("buying"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
 
       break
@@ -495,7 +520,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
-  public let label = UILabel()
+  public var label: UILabel?
+  public var badgeButton: MIBadgeButton?
+  
   public var collectionViewLayout: UICollectionViewFlowLayout?
   public var collectionView: UICollectionView?
   
@@ -508,15 +535,36 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   public let _didSelectListing = Signal<String?>()
   public let _didSelectMatch = Signal<String?>()
   
+  public var onBadgeButtonPress: (() -> Void)?
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupDataBinding()
     setupCollectionView()
-    setupLabel()
+    setupAttributes()
   }
   
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    if model.bookList.isEmpty {
+      label?.anchorToEdge(.Left, padding: 8, width: 76, height: 36)
+    } else {
+      label?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 76, height: 36)
+    }
+    
+    badgeButton?.align(.ToTheRightCentered, relativeTo: label!, padding: 0, width: 48, height: 48)
+    badgeButton?.badgeEdgeInsets = UIEdgeInsetsMake(20, -12, 0, 0)
+    badgeButton?.badgeString = ((label?.text == "I'm Selling") ? "\(UserModel.sharedUser().user?.freeListings ?? 0)" : nil)
+    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    
+    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label!, padding: 0)
+    collectionViewFrame = collectionView!.frame
+    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
   }
   
   private func setupDataBinding() {
@@ -538,24 +586,19 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     collectionView?.backgroundColor = UIColor.whiteColor()
     collectionView?.showsHorizontalScrollIndicator = false
     collectionView?.multipleTouchEnabled = true
+    
     addSubview(collectionView!)
   }
   
-  private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(16)
-    label.textColor = UIColor.sexyGray()
-    addSubview(label)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
+  private func setupAttributes() {
+    label = UILabel()
+    label?.font = UIFont.systemFontOfSize(16)
+    label?.textColor = UIColor.coolBlack()
+    addSubview(label!)
     
-    setupCollectionView()
-    
-    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
-    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
-    collectionViewFrame = collectionView!.frame
-    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
+    badgeButton = MIBadgeButton(type: .ContactAdd)
+    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    addSubview(badgeButton!)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
@@ -588,6 +631,10 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     }
     
     return UICollectionViewCell()
+  }
+  
+  public func badgeButtonPressed() {
+    onBadgeButtonPress?()
   }
 }
 
@@ -659,6 +706,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupBookImageView() {
+    bookImageView?.removeFromSuperview()
     bookImageView = UIImageView()
     bookImageView?.userInteractionEnabled = true
     bookImageView?.backgroundColor = .whiteColor()
@@ -719,8 +767,8 @@ public class ListCell: UICollectionViewCell {
   }
   
   public func setListing(listing: Listing?) {
-    
     self.listing = listing
+    loadListingIntoView()
   }
   
   private func loadListingIntoView() {

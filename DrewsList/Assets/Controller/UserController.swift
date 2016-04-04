@@ -28,35 +28,26 @@ public class UserController {
   public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return UserModel.sharedUser() }
   
   // MARK: Realm Functions
-  func readUserDefaults() -> UserDefaults? { if let defaults =  try! Realm().objects(UserDefaults.self).first { return defaults } else { return nil } }
-  func writeNewUserDefaults() { try! Realm().write { try! Realm().delete(Realm().objects(UserDefaults.self)); try! Realm().add(UserDefaults(), update: true) } }
-  func updateUserDefaults(writeBlock: ((defaults: UserDefaults) -> Void)? = nil) { if let defaults = readUserDefaults() { try! Realm().write { writeBlock?(defaults: defaults) } } }
-  
-  // MARK: Realm Functions
   func readRealmUser() -> RealmUser? { if let realmUser =  try! Realm().objects(RealmUser.self).first { return realmUser } else { return nil } }
   func writeRealmUser(user: User?) -> User? { if let user = user { try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) }; return user } else { return nil } }
   
   // MARK: User Functions
-  func updateUserToServer(updateBlock: ((user: User?) -> User?)? = nil) {
-    if let user = updateBlock?(user: model.user ?? UserController.sharedUser().user), let user_id = user._id {
-      
-      Alamofire.request(
-        .POST,
-        ServerUrl.Default.getValue() + "/user/\(user_id)",
-        parameters: [
-          "deviceToken": user.deviceToken ?? "",
-          "image": user.imageUrl ?? ""
-          
-          ] as [String: AnyObject],
-        encoding: .JSON
-        )
-        .response { [weak self] req, res, data, error in
-          if let error = error {
+  public class func updateUserToServer(updateBlock: (user: User?) -> User?) {
+    if let user = updateBlock(user: UserModel.sharedUser().user), let user_id = user._id {
+      Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/\(user_id)", parameters: [
+        "deviceToken": user.deviceToken ?? "",
+        "image": user.imageUrl ?? ""
+      ] as [String: AnyObject], encoding: .JSON)
+      .response { req, res, data, error in
+        if let error = error {
+          log.error(error)
+        } else if let data = data, let json: JSON! = JSON(data: data) {
+          if let error = json["error"].string {
             log.error(error)
-          } else if let data = data, let json: JSON! = JSON(data: data) {
-            log.info("server: received device token.")
-            self?.model.user = User(json: json)
+          } else {
+            UserModel.setSharedUser(User(json: json))
           }
+        }
       }
     }
   }
@@ -72,7 +63,7 @@ public class UserController {
       .response { req, res, data, error in
         if let error = error {
           log.error(error)
-        } else if let data = data, let json: JSON! = JSON(data: data) {
+        } else {
           LoginController.logOut()
         }
       }

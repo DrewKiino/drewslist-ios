@@ -61,7 +61,7 @@ public class CreateListingController {
     guard let user_id = model.user?._id,
           let book_id = model.book?._id,
           let price = model.listing?.price,
-          let listType = model.listing?.listType,
+          let listType = model.listType ?? model.listing?.listType,
           let condition = model.listing?.condition,
           let cover = model.listing?.cover,
           let notes = model.listing?.notes
@@ -83,7 +83,8 @@ public class CreateListingController {
         "listType": listType,
         "condition": Int(condition) ?? 2,
         "cover": cover,
-        "notes": notes
+        "notes": notes,
+        "listingFee": model.listingFee
       ] as [String: AnyObject],
       encoding: .JSON
     )
@@ -98,6 +99,11 @@ public class CreateListingController {
         self?.model.serverCallbackFromUploadlIsting = false
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
+        if json["error"].string == nil {
+          UserModel.setSharedUser(User(json: json))
+        } else {
+          log.error(json["error"].string)
+        }
         // using ObjectMapper we quickly convert the json data into an actual object we can use
         // then we set the model's book with the new book
         self?.model.serverCallbackFromUploadlIsting = true

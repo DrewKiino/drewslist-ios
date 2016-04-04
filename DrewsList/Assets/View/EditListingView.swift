@@ -795,7 +795,6 @@ public class InputtextFieldCell: DLTableViewCell, UITextFieldDelegate {
   }
   
   public func textFieldDidEndEditing(textField: UITextField) {
-    _isFirstResponder => false
   }
   
   public override func resignFirstResponder() -> Bool {

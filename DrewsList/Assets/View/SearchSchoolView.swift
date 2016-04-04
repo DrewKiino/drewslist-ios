@@ -29,6 +29,8 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   //  School List
   private var tableView: UITableView?
   
+  public var onDismiss: ((school: School?) -> Void)?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -138,12 +140,18 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   // MARK: Functions
   public func cancel() {
     searchBarTextField?.resignFirstResponder()
-    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    presentingViewController?.dismissViewControllerAnimated(true) { [weak self] in
+      self?.onDismiss?(school: self?.model.school)
+      self?.onDismiss = nil
+    }
   }
   
   public func choose() {
     searchBarTextField?.resignFirstResponder()
-    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    presentingViewController?.dismissViewControllerAnimated(true) { [weak self] in
+      self?.onDismiss?(school: self?.model.school)
+      self?.onDismiss = nil
+    }
   }
   
   // MARK: TextField Delegates
@@ -180,6 +188,11 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     model.school = model.schools[indexPath.row]
+  }
+  
+  public func setOnDismiss(completionBlock: (school: School?) -> Void) -> Self {
+    onDismiss = completionBlock
+    return self
   }
 }
 

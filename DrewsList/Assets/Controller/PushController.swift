@@ -40,32 +40,32 @@ public class PushController {
     
     if UIApplication.sharedApplication().currentUserNotificationSettings()?.types.rawValue == 0 {
       return nil
+    } else if UIApplication.sharedApplication().currentUserNotificationSettings()?.types.rawValue > 0 {
+      return true
     }
     
     return model.authorizationStatus
   }
   
   public func registerForRemoteNotifications() {
-    // MARK: remote notification register fixtures
     UIApplication.sharedApplication().registerForRemoteNotifications()
   }
   
   public func showPermissions() {
     
-    if isRegisteredForRemoteNotifications() == nil {
-      
-      UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil))
-      UIApplication.sharedApplication().registerForRemoteNotifications()
-      
-    } else {
-      let alertController = UIAlertController(title: "Permissions", message: "We send you push notifications to notify you with the latest app updates including chats, listings, etc!", preferredStyle: .Alert)
-      alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+    UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil))
+    UIApplication.sharedApplication().registerForRemoteNotifications()
+    
+    let alertController = UIAlertController(title: "Permissions", message: "We send you push notifications to notify you with the latest app updates including chats, listings, etc!", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Open app settings", style: UIAlertActionStyle.Default) { action in
+      NSTimer.after(0.2) {
         if let nsurl = NSURL(string: UIApplicationOpenSettingsURLString) { UIApplication.sharedApplication().openURL(nsurl) }
-        })
-      alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-        })
-      UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
-    }
+      }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    
+    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
   }
 }
 

@@ -41,7 +41,7 @@ public class ProfileImagePickerController {
   }
   
   public func updateUserInServer() {
-    UserController.sharedInstance().updateUserToServer() { [weak self] user in
+    UserController.updateUserToServer() { [weak self] user in
       user?.imageUrl = self?.model.user?.imageUrl
       return user
     }
