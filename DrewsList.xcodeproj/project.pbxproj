@@ -102,6 +102,8 @@
 		EE7400EB1C710A0300277D31 /* SearchListingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7400EA1C710A0300277D31 /* SearchListingModel.swift */; };
 		EE7400ED1C710A0E00277D31 /* SearchListingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7400EC1C710A0E00277D31 /* SearchListingController.swift */; };
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
+		EE802DB81CB562B100AB4D08 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE802DB71CB562B100AB4D08 /* StoreKit.framework */; };
+		EE802DBA1CB5630F00AB4D08 /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE802DB91CB5630F00AB4D08 /* IAPView.swift */; };
 		EE85033C1CA9E3B0009F0935 /* PaymentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85033B1CA9E3B0009F0935 /* PaymentInputView.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
@@ -260,6 +262,8 @@
 		EE7400EA1C710A0300277D31 /* SearchListingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchListingModel.swift; sourceTree = "<group>"; };
 		EE7400EC1C710A0E00277D31 /* SearchListingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchListingController.swift; sourceTree = "<group>"; };
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
+		EE802DB71CB562B100AB4D08 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		EE802DB91CB5630F00AB4D08 /* IAPView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPView.swift; sourceTree = "<group>"; };
 		EE85033B1CA9E3B0009F0935 /* PaymentInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInputView.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -304,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				69C059934EF1052D34354EB7 /* Pods.framework in Frameworks */,
+				EE802DB81CB562B100AB4D08 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +493,7 @@
 				EEA1C7331CAC49CF00692447 /* PaymentView.swift */,
 				EEA1C7351CAC698000692447 /* DLViewController.swift */,
 				EE3253AE1CAF40140005D071 /* ListingsView.swift */,
+				EE802DB91CB5630F00AB4D08 /* IAPView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -655,6 +661,7 @@
 		FE0642FB75D7FCC6A3A6833B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EE802DB71CB562B100AB4D08 /* StoreKit.framework */,
 				57626CC0C64AD000DE5434DD /* Pods.framework */,
 			);
 			name = Frameworks;
@@ -732,6 +739,11 @@
 					EE07FE241BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = 8SJ3UJ3963;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					EE07FE381BE11D1E00A10F05 = {
 						CreatedOnToolsVersion = 7.1;
@@ -896,6 +908,7 @@
 				3FF074121C68360900AAE0E7 /* FBSDKController.swift in Sources */,
 				EE2824D11C30A43600969E74 /* EditListingModel.swift in Sources */,
 				EE53E75D1C2D00C900A32613 /* TabController.swift in Sources */,
+				EE802DBA1CB5630F00AB4D08 /* IAPView.swift in Sources */,
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */,
