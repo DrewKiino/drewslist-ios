@@ -11,14 +11,16 @@ import StoreKit
 
 public class IAPView: UIViewController {
   
-  public static let prefix: String = "com.totemv.drewslistios."
-  private static let listingFee: String = prefix + "DL_ListingFee"
-  
+  private let controller = IAPController()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
+    view.backgroundColor = .whiteColor()
     
+    controller.requestProducts() { (bool, products) in
+      log.debug("mark")
+    }
     
   }
 }

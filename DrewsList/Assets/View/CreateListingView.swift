@@ -135,16 +135,16 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
     case 0, 2, 5, 7, 10: return 24
-    case 3, 4, 11, 12, 13: return 36
+    case 3, 4, 11, 12: return 36
     case 6, 9: return 88
     case 1: return 168
-    case 15: return 200
+    case 14: return 300
     default: return 48
     }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 16
+    return 15
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -290,6 +290,12 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
         cell._inputTextFieldString.listen(self) { [weak self] text in
           if let text = text { self?.model.listing?.price = Double(text) }
         }
+        cell.didBeginEditingBlock = { [weak self] in
+          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: "dismissKeyboard")
+        }
+        cell.didEndEditingBlock = { [weak self] in
+          self?.rootView?.hideButton(.RightBarButton)
+        }
         return cell
       }
       break
@@ -307,6 +313,12 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
         cell._inputTextViewString.listen(self) { [weak self] text in
           self?.model.listing?.notes = text
         }
+        cell.didBeginEditingBlock = { [weak self] in
+          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: "dismissKeyboard")
+        }
+        cell.didEndEditingBlock = { [weak self] in
+          self?.rootView?.hideButton(.RightBarButton)
+        }
         return cell
       }
       break
@@ -320,11 +332,11 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
-        cell.titleButton?.setTitle("How are fees calculated?", forState: .Normal)
+        cell.titleButton?.setTitle("How are Listing fees calculated?", forState: .Normal)
         cell.hideArrowIcon()
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self ] bool in
-          self?.showAlert("", message: "Listing Fees are calculated at a flat rate of $0.99 per listing. By agreeing to scan in your fingerprint, you agree to have Apple charge your payment method on file for the amount as listed. Refer a Friend to Drew’s List to get a free listing.")
+          self?.showAlert("How are Listing fees calculated?", message: "Listing Fees are calculated at a flat rate of $0.99 per listing. By agreeing to scan in your fingerprint, you agree to have Apple charge your payment method on file for the amount as listed. Refer a Friend to Drew’s List to get a free listing!")
         }
         
         return cell
@@ -345,28 +357,15 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
     case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
-        cell.titleButton?.setTitle("Refer a Friend", forState: .Normal)
+        cell.titleButton?.setTitle("Buy Listings", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self ] bool in
-          self?.pushViewController(PaymentView(), animated: true)
         }
         
         return cell
       }
       break
     case 14:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        
-        cell.titleButton?.setTitle("Buy Listings", forState: .Normal)
-        cell._didSelectCell.removeAllListeners()
-        cell._didSelectCell.listen(self) { [weak self ] bool in
-          self?.pushViewController(PaymentView(), animated: true)
-        }
-        
-        return cell
-      }
-      break
-    case 15:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         
         if model.listType == "selling", let freeListings = UserModel.sharedUser().user?.freeListings {
@@ -374,6 +373,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
           model.listing?._price.removeAllListeners()
           model.listing?._price.listen(self) { [weak self, weak cell] askingPrice in
             
+            /*
             if let askingPrice = askingPrice, let actualPrice = self?.model.book?.getListPrice() where freeListings == 0 {
               
               // I PRESENT TO YOU THE LISTING FEE ALGORITHM
@@ -399,8 +399,9 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
               
               self?.model.listingFee = 0.99
             }
+            */
           }
-          
+
           if freeListings > 0 { // set default listing fee (default is $0.99 cents)
             
             cell.button?.setTitle("List for Sale (\(freeListings) Free)", forState: .Normal)

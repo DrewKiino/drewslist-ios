@@ -1277,6 +1277,9 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
   public let _isFirstResponder = Signal<Bool>()
   
+  public var didBeginEditingBlock: (() -> Void)?
+  public var didEndEditingBlock: (() -> Void)?
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupSelf()
@@ -1314,10 +1317,12 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
   
   public func textFieldDidBeginEditing(textField: UITextField) {
     _isFirstResponder => true
+    didBeginEditingBlock?()
   }
   
   public func textFieldDidEndEditing(textField: UITextField) {
     _isFirstResponder => false
+    didEndEditingBlock?()
   }
   
   public override func resignFirstResponder() -> Bool {
@@ -1338,6 +1343,10 @@ public class InputTextFieldCell: DLTableViewCell, UITextFieldDelegate {
     }
     return true
   }
+  
+  public func dismissKeyboard() {
+    inputTextField?.resignFirstResponder()
+  }
 }
 
 public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
@@ -1348,6 +1357,9 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   public let _inputTextViewString = Signal<String?>()
   
   public let _isFirstResponder = Signal<Bool>()
+  
+  public var didBeginEditingBlock: (() -> Void)?
+  public var didEndEditingBlock: (() -> Void)?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -1391,9 +1403,11 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
   
   public func textViewDidBeginEditing(textView: UITextView) {
     _isFirstResponder => true
+    didBeginEditingBlock?()
   }
   
   public func textViewDidEndEditing(textView: UITextView) {
+    didEndEditingBlock?()
   }
   
   public override func resignFirstResponder() -> Bool {
@@ -1413,6 +1427,10 @@ public class InputTextViewCell: DLTableViewCell, UITextViewDelegate {
       } else { _inputTextViewString.fire(string + text) }
     }
     return true
+  }
+  
+  public func dismissKeyboard() {
+    inputTextView?.resignFirstResponder()
   }
 }
 

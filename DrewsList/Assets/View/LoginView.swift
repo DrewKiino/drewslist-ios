@@ -149,12 +149,13 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       if bool != true { self?.loginButtonIndicator?.stopAnimating() }
       else { self?.loginButtonIndicator?.startAnimating() }
     }
-    controller.shouldDismissView.removeAllListeners()
-    controller.shouldDismissView.listen(self) { [weak self] user in
-      self?.dismissKeyboard()
-      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
-        tabView.selectedIndex = 2
-        tabView.dismissViewControllerAnimated(true, completion: nil)
+    controller.shouldDismissView = { [weak self] (title, message) in
+      if let title = title, message = message {
+        self?.showAlert(title, message: message) { [weak self] in
+          self?.presentReferralInputView()
+        }
+      } else {
+        self?.dismissView()
       }
     }
     controller.shouldPresentPhoneInputView.removeAllListeners()
@@ -164,6 +165,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     controller.shouldPresentSchoolInputView.removeAllListeners()
     controller.shouldPresentSchoolInputView.listen(self) { [weak self] bool in
       self?.presentSchoolInputView()
+    }
+    controller.shouldPresentReferralInputView = { [weak self] in
+      self?.presentReferralInputView()
     }
   }
   
@@ -180,6 +184,12 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   private func setupDrewslistLogo() {
     drewslistLogo = UIImageView()
     containerView?.addSubview(drewslistLogo!)
+  }
+  
+  public func dismissView() {
+    dismissKeyboard()
+    TabView.sharedInstance().selectedIndex = 2
+    TabView.sharedInstance().dismissViewControllerAnimated(true, completion: nil)
   }
   
   public func dismissKeyboard() {
@@ -297,6 +307,9 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
     activityView?.startAnimating()
     hideUI { [weak self] bool in
       self?.containerView?.hidden = true
+      // reset the school state
+      SearchSchoolModel.sharedInstance().school = nil
+      // present the view
       self?.presentViewController(SignUpView(), animated: false) { [weak self] in
         self?.activityView?.stopAnimating()
       }
@@ -442,6 +455,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       }
     })
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+      self?.logUserOutOfFacebook()
     })
     presentViewController(alertController, animated: true, completion: nil)
     alertController = nil
@@ -454,6 +468,7 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
         if let school = school {
           self?.model.user?.school = school.name
           self?.model.user?.state = school.state
+          self?.model.shouldAskForReferral = true
           self?.controller.authenticateUserToServer(false)
         } else {
           self?.logUserOutOfFacebook()
@@ -462,6 +477,33 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       }, animated: true, completion: nil)
     })
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+      self?.logUserOutOfFacebook()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  //KAB7X1N
+  public func presentReferralInputView() {
+    
+    var alertController: UIAlertController! = UIAlertController(title: "Referral Code?", message: "Add your friend's referral code below and get an additional free Listing for you and your friend! (Recommended)", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler() { textField in
+      textField.font = .asapRegular(16)
+      textField.textColor = .coolBlack()
+      textField.spellCheckingType = .No
+      textField.autocorrectionType = .No
+      textField.autocapitalizationType = .None
+      textField.clearButtonMode = .Always
+    }
+    alertController.addAction(UIAlertAction(title: "Validate", style: .Default) { [weak self, weak alertController] action in
+      self?.model.shouldAskForReferral = true
+      self?.model.referralCode = alertController?.textFields?.first?.text
+      self?.controller.authenticateUserToServer(false)
+    })
+    alertController.addAction(UIAlertAction(title: "Skip", style: .Cancel) { [weak self] action in
+      self?.model.shouldAskForReferral = false
+      self?.model.referralCode = nil
+      self?.dismissView()
     })
     presentViewController(alertController, animated: true, completion: nil)
     alertController = nil

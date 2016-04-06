@@ -111,6 +111,9 @@ public class User: Mappable {
   // MARK: User Listings
   public let _freeListings = Signal<Int?>()
   public var freeListings: Int? { didSet { _freeListings => freeListings } }
+  
+  // MARK: Referral System
+  public var didAskForReferral: Bool?
  
   public init() {}
   
@@ -146,6 +149,9 @@ public class User: Mappable {
     
     // user listings
     freeListings            <- map["freeListings"]
+    
+    // referral system
+    didAskForReferral       <- map["didAskForReferral"]
   }
   
   public func getName() -> String? {

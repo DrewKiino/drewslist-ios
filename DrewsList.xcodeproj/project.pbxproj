@@ -104,6 +104,7 @@
 		EE79D3B31BFFDF0000F60EE1 /* UserController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE79D3B21BFFDF0000F60EE1 /* UserController.swift */; };
 		EE802DB81CB562B100AB4D08 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE802DB71CB562B100AB4D08 /* StoreKit.framework */; };
 		EE802DBA1CB5630F00AB4D08 /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE802DB91CB5630F00AB4D08 /* IAPView.swift */; };
+		EE802DBC1CB56B5A00AB4D08 /* IAPController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE802DBB1CB56B5A00AB4D08 /* IAPController.swift */; };
 		EE85033C1CA9E3B0009F0935 /* PaymentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE85033B1CA9E3B0009F0935 /* PaymentInputView.swift */; };
 		EE8918AE1C11684500FCF031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918AD1C11684500FCF031 /* AppDelegate.swift */; };
 		EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918B81C1169A800FCF031 /* LoginView.swift */; };
@@ -264,6 +265,7 @@
 		EE79D3B21BFFDF0000F60EE1 /* UserController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserController.swift; sourceTree = "<group>"; };
 		EE802DB71CB562B100AB4D08 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EE802DB91CB5630F00AB4D08 /* IAPView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPView.swift; sourceTree = "<group>"; };
+		EE802DBB1CB56B5A00AB4D08 /* IAPController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPController.swift; sourceTree = "<group>"; };
 		EE85033B1CA9E3B0009F0935 /* PaymentInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInputView.swift; sourceTree = "<group>"; };
 		EE8918AD1C11684500FCF031 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE8918B81C1169A800FCF031 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -534,6 +536,7 @@
 				EE7400EC1C710A0E00277D31 /* SearchListingController.swift */,
 				EE0C92E91CAC411100996739 /* PaymentInputController.swift */,
 				EEA1C72F1CAC494F00692447 /* PaymentController.swift */,
+				EE802DBB1CB56B5A00AB4D08 /* IAPController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -878,6 +881,7 @@
 				EE2824CF1C30A43000969E74 /* EditListingView.swift in Sources */,
 				4FCF2A091C309B5600091408 /* BookProfileController.swift in Sources */,
 				EE67C15C1C30B06300AC60DB /* SearchBookController.swift in Sources */,
+				EE802DBC1CB56B5A00AB4D08 /* IAPController.swift in Sources */,
 				39B35FF61C4A19340084007D /* TermPrivacyController.swift in Sources */,
 				4FEB00DF1C7530B800A041F7 /* ProfileImagePickerController.swift in Sources */,
 				EE007AF41C1E1E7C0088ACBF /* SweetAlert.swift in Sources */,

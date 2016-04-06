@@ -92,14 +92,14 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0, 7, 11, 14: return 24
-    case 16: return 100
+    case 0, 7, 11, 13: return 24
+    case 15: return 100
     default: return 36
     }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 17
+    return 16
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -238,15 +238,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
-        cell.titleButton?.setTitle("Manage Payments", forState: .Normal)
-        cell.onClick = { [weak self] in
-          self?.navigationController?.pushViewController(PaymentView(), animated: true)
-        }
-        return cell
-      }
-      break
-    case 13:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         cell.titleButton?.setTitle("Manage Listings", forState: .Normal)
         cell.onClick = { [weak self] in
           self?.navigationController?.pushViewController(ListingsView(), animated: true)
@@ -254,13 +245,13 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 14:
+    case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Other Options"
         return cell
       }
       break
-    case 15:
+    case 14:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)

@@ -192,8 +192,18 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     }
     
     model._user.removeAllListeners()
-    model._user.listen(self) { user in
-      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.dismissViewControllerAnimated(true, completion: nil) }
+    model._user.listen(self) { [weak self] user in
+      self?.presentReferralInputView()
+    }
+    
+    controller.shouldDismissView = { [weak self] (title, message) in
+      if let title = title, message = message {
+        self?.showAlert(title, message: message) { [weak self] in
+          self?.presentReferralInputView()
+        }
+      } else {
+        self?.dismissView()
+      }
     }
   }
   
@@ -555,5 +565,32 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     default: break
     }
     return false
+  }
+  
+  // KAB7X1N
+  
+  public func presentReferralInputView() {
+    var alertController: UIAlertController! = UIAlertController(title: "Referral Code?", message: "Add your friend's referral code below and get an additional free Listing for you and your friend! (Recommended)", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler() { textField in
+      textField.font = .asapRegular(16)
+      textField.textColor = .coolBlack()
+      textField.spellCheckingType = .No
+      textField.autocorrectionType = .No
+      textField.autocapitalizationType = .None
+      textField.clearButtonMode = .Always
+    }
+    alertController.addAction(UIAlertAction(title: "Validate", style: .Default) { [weak self, weak alertController] action in
+      self?.controller.validateReferralCode(self?.model.user?._id, referralCode: alertController?.textFields?.first?.text)
+    })
+    alertController.addAction(UIAlertAction(title: "Skip", style: .Cancel) { [weak self] action in
+      self?.dismissView()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func dismissView() {
+    TabView.sharedInstance().selectedIndex = 2
+    TabView.sharedInstance().dismissViewControllerAnimated(true, completion: nil)
   }
 }

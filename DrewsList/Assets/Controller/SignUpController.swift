@@ -21,6 +21,8 @@ public class SignUpController {
   
   public let shouldShowErrorMessage = Signal<Bool>()
   
+  public var shouldDismissView: ((title: String?, message: String?) -> Void)?
+  
   public init() {}
   
   public func viewDidAppear() {
@@ -64,10 +66,10 @@ public class SignUpController {
     model.shouldRefrainFromCallingServer = true
     
     let phone: String = model.phone ?? ""
-    let school: String = model.user?.school ?? ""
-    let state: String = model.user?.state ?? ""
-    let firstName: String = model.user?.firstName ?? ""
-    let lastName: String = model.user?.lastName ?? ""
+    let school: String = model.school ?? ""
+    let state: String = model.state ?? ""
+    let firstName: String = model.firstName ?? ""
+    let lastName: String = model.lastName ?? ""
     let email: String = model.email ?? ""
     let password: String = model.password ?? ""
     
@@ -79,7 +81,7 @@ public class SignUpController {
     
     Alamofire.request(
       .POST,
-      ServerUrl.Default.getValue() + "/user",
+      ServerUrl.Default.getValue() + "/user/authenticateUser",
       parameters: [
         "firstName": firstName,
         "lastName": lastName,
@@ -117,11 +119,8 @@ public class SignUpController {
           // create and  user object
           self?.model.user = User(json: json)
           
-          
           // Set UserModel user
           UserController.setSharedUser(self?.model.user)
-          // write user object to realm
-          self?.overwriteRealmUser()
         }
       }
       
@@ -138,6 +137,24 @@ public class SignUpController {
     refrainTimer = nil
     refrainTimer = NSTimer.after(60.0) { [weak self] in
       self?.model.shouldRefrainFromCallingServer = false
+    }
+  }
+  
+  public func validateReferralCode(user_id: String?, referralCode: String?) {
+    if let user_id = user_id, referralCode = referralCode {
+      Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/validateReferralCode", parameters: [
+        "user_id": user_id,
+        "referralCode": referralCode
+      ])
+      .response() { [weak self] req, res, data, error in
+        log.debug(JSON(data: data!))
+        if let error = error {
+          log.error(error)
+        } else if let data = data, json: JSON! = JSON(data: data), title = json["_title"].string, message = json["_message"].string  {
+          log.debug("mark")
+          self?.shouldDismissView?(title: title, message: message)
+        }
+      }
     }
   }
   

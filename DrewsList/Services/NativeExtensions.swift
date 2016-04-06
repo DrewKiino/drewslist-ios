@@ -249,7 +249,7 @@ extension UIViewController {
     case RightBarButton
   }
   
-  public func showAlert(title: String, message: String, completionBlock: (() -> Void)? = nil) {
+  public func showAlert(title: String?, message: String?, completionBlock: (() -> Void)? = nil) {
     var alertController: UIAlertController! = UIAlertController(title: title, message: message, preferredStyle: .Alert)
     alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
       completionBlock?()
@@ -284,6 +284,17 @@ extension UIViewController {
       break
     case .RightBarButton:
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
+      break
+    }
+  }
+  
+  public func hideButton(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
       break
     }
   }

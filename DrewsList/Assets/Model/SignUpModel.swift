@@ -46,6 +46,8 @@ public class SignUpModel {
   public let _state = Signal<String?>()
   public var state: String? { didSet { _state => state } }
   
+  public var referralCode: String? 
+  
   public let _shouldRefrainFromCallingServer = Signal<Bool>()
   public var shouldRefrainFromCallingServer: Bool = false { didSet { _shouldRefrainFromCallingServer => shouldRefrainFromCallingServer } }
   

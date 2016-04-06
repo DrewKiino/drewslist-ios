@@ -38,5 +38,12 @@ public class LoginModel {
   public let _shouldLogout = Signal<Bool>()
   public var shouldLogout: Bool = false { didSet { _shouldLogout => shouldLogout } }
   
+  // referral system
+  
+  public var shouldAskForReferral: Bool = false
+  
+  public var referralCode: String?
+
+  
   public var isCurrentlyAuthenticatingUserWithFacebook: Bool = false
 }

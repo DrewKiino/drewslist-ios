@@ -25,9 +25,10 @@ public class LoginController {
   private let userController = UserController()
   private let fbsdkController = FBSDKController()
   
-  public let shouldDismissView = Signal<Bool>()
   public let shouldPresentPhoneInputView = Signal<Bool>()
   public let shouldPresentSchoolInputView = Signal<()>()
+  public var shouldPresentReferralInputView: (() -> Void)?
+  public var shouldDismissView: ((title: String?, message: String?) -> Void)?
   
   private var refrainTimer: NSTimer?
   
@@ -69,7 +70,7 @@ public class LoginController {
       getUserFromServer()
       
       // dismiss the view
-      shouldDismissView.fire(true)
+      shouldDismissView?(title: nil, message: nil)
       
     // check if user is logged into facebook
     } else if fbsdkController.userIsLoggedIntoFacebook() {
@@ -114,7 +115,8 @@ public class LoginController {
         // set the shared user instance
         UserController.setSharedUser(self?.model.user)
         // dismiss the view
-        self?.shouldDismissView.fire(true)
+        self?.shouldDismissView?(title: nil, message: nil)
+
         
       // user does not exist in database
       } else {
@@ -176,8 +178,11 @@ public class LoginController {
           self?.shouldPresentPhoneInputView.fire(true)
         } else if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
           self?.shouldPresentSchoolInputView.fire()
+        } else if let title = json["_title"].string, message = json["_message"].string {
+          log.debug("mark")
+          self?.shouldDismissView?(title: title, message: message)
         } else {
-          self?.shouldDismissView.fire(true)
+          self?.shouldPresentReferralInputView?()
         }
       }
       
@@ -227,6 +232,10 @@ public class LoginController {
       ] as [String: AnyObject ])
     }
     
+    // referral system
+    let referralCode: String = model.referralCode ?? ""
+    let shouldAskForReferral: Bool = model.shouldAskForReferral
+    
     Sockets.sharedInstance().emit("authenticateUser", [
       "email": email,
       "password": password,
@@ -255,7 +264,10 @@ public class LoginController {
       "deviceToken": deviceToken,
       "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
       "hasSeenOnboardingView": hasSeenOnboardingView,
-      "currentUUID": currentUUID
+      "currentUUID": currentUUID,
+      // referral system
+      "referralCode": referralCode,
+      "shouldAskForReferral": shouldAskForReferral
     ] as [String: AnyObject])
     
     // create a throttler
@@ -272,6 +284,8 @@ public class LoginController {
   }
   
   public class func logOut() {
+    // remove all shared models
+    SearchSchoolController.clearCache()
     // deletes the current user, then will log user out.
     UserModel.unsetSharedUser()
     // log out of facebook if they are logged in
