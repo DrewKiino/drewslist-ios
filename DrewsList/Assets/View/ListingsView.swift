@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import Neon
 
 public class ListingsView: DLViewController, UITableViewDataSource, UITableViewDelegate {
   
@@ -43,7 +45,7 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 6
+    return 7
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -77,6 +79,13 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
       }
       break
     case 4:
+      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleWithTextFieldCell", forIndexPath: indexPath) as? TitleWithTextFieldCell {
+        cell.titleLabel?.text = "Referral Code"
+        cell.titleTextField?.text = UserModel.sharedUser().user?.referralCode
+        return cell
+      }
+      break
+    case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Refer a Friend!", forState: .Normal)
@@ -84,7 +93,7 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
         return cell
       }
       break
-    case 5:
+    case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Share this App!", forState: .Normal)
@@ -98,6 +107,46 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
     return DLTableViewCell()
   }
 }
+
+public class TitleWithTextFieldCell: DLTableViewCell, UITextFieldDelegate {
+  
+  public var titleLabel: UILabel?
+  public var titleTextField: UITextField?
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    setupUI()
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
+    titleTextField?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
+  }
+  
+  private func setupUI() {
+    titleLabel = UILabel()
+    titleLabel?.textColor = .sexyGray()
+    titleLabel?.font = .asapRegular(12)
+    titleLabel?.adjustsFontSizeToFitWidth = true
+    titleLabel?.minimumScaleFactor = 0.8
+    addSubview(titleLabel!)
+    
+    titleTextField = UITextField()
+    titleTextField?.textColor = .coolBlack()
+    titleTextField?.font = .asapRegular(16)
+    titleTextField?.delegate = self
+    // TODO: TEXTFIELD HAS TO BE EDITABLE
+    addSubview(titleTextField!)
+  }
+  
+  public func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    return false
+  }
+}
+
 
 public class SelectableTitleCell: DLTableViewCell {
   

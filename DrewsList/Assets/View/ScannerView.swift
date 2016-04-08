@@ -60,10 +60,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    focusImageView?.tintColor = .juicyOrange()
-    focusImageView?.hidden = false
-    searchBarContainer?.hidden = false
+    resetUI()
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -202,7 +199,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
       self?.presentViewController(CreateListingView().setBook(book).setListType("selling"), animated: true, completion: nil)
     })
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
-      self?.searchBarTextField?.text = nil
+      self?.resetUI()
     })
     presentViewController(alertController, animated: true, completion: nil)
     alertController = nil
@@ -216,6 +213,14 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     searchBarContainer?.hidden = true
     searchBarTextField?.text = nil
     session?.stopRunning()
+  }
+  
+  public func resetUI() {
+    searchBarTextField?.text = nil
+    focusImageView?.tintColor = .juicyOrange()
+    focusImageView?.hidden = false
+    searchBarContainer?.hidden = false
+    focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen) - 64)
   }
   
   private func setupScanner() {
@@ -236,7 +241,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
       /* Check for metadata */
       var output: AVCaptureMetadataOutput? = AVCaptureMetadataOutput()
       session?.addOutput(output)
-      output?.metadataObjectTypes = output?.availableMetadataObjectTypes
+      output?.metadataObjectTypes = [AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeEAN13Code]
       output?.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
       output = nil
       
@@ -285,21 +290,19 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
     for data in metadataObjects {
       
-      if  let metaData = data as? AVMetadataObject, let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject, let identifiedBorder = identifiedBorder {
+      if  let metaData = data as? AVMetadataObject,
+          let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject
+//          let identifiedBorder = identifiedBorder
+      {
         
         UIView.animate { [weak self, weak transformed] in
           guard let transformed = transformed else { return }
           self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
         }
         
-        // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-        var isbn: String? = (metadataObjects.filter { ($0.type == AVMetadataObjectTypeEAN8Code) || ($0.type == AVMetadataObjectTypeEAN13Code) }).first?.stringValue
-        
-        // pass the acquired isbn to the controller
-        controller.getBookFromServer(isbn)
-        
-        // deinit the isbn string
-        isbn = nil
+        if let isbn: String? = metadataObjects.first?.stringValue {
+          controller.getBookFromServer(isbn)
+        }
       }
     }
   }

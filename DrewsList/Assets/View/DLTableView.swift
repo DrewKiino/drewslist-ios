@@ -81,6 +81,7 @@ public class DLTableView: UITableView {
     
     // MARK: Listings
     registerClass(SelectableTitleCell.self, forCellReuseIdentifier: "SelectableTitleCell")
+    registerClass(TitleWithTextFieldCell.self, forCellReuseIdentifier: "TitleWithTextFieldCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false

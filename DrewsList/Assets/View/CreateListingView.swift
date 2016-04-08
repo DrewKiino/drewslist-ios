@@ -17,6 +17,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   
   private let controller = CreateListingController()
   private var model: CreateListingModel { get { return controller.getModel() } }
+  private let iapController = IAPController()
   
   // Navigation Header Views
   private var headerView: UIView?
@@ -55,6 +56,15 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
     rootView?.view.backgroundColor = .whiteColor()
     
     rootView?.setButton(.LeftBarButton, title: "Cancel", target: self, selector: "dismiss")
+    
+    iapController.requestProducts()
+    iapController.transactionInProgressBlock = { [weak self] inProgress in
+      if inProgress {
+        self?.rootView?.showActivity(.RightBarButton)
+      } else {
+        self?.rootView?.hideActivity()
+      }
+    }
   }
   
   public override func setupDataBinding() {
@@ -360,6 +370,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
         cell.titleButton?.setTitle("Buy Listings", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self ] bool in
+          self?.showBuyListingsView()
         }
         
         return cell
@@ -369,38 +380,6 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
         
         if model.listType == "selling", let freeListings = UserModel.sharedUser().user?.freeListings {
-          
-          model.listing?._price.removeAllListeners()
-          model.listing?._price.listen(self) { [weak self, weak cell] askingPrice in
-            
-            /*
-            if let askingPrice = askingPrice, let actualPrice = self?.model.book?.getListPrice() where freeListings == 0 {
-              
-              // I PRESENT TO YOU THE LISTING FEE ALGORITHM
-              let assumedListingFee: Double = actualPrice * 0.05
-              let actualListingFee: Double = max(askingPrice * 0.05, 0.99)
-              let modifier: Double = pow(actualPrice, (1 / askingPrice))
-              let modifiedFee: Double = (assumedListingFee * modifier) / 2.0
-              let decidingFee: Double = max(actualListingFee, modifiedFee)
-              
-              cell?.button?.setTitle("List for Sale ($\(decidingFee))", forState: .Normal)
-              
-              self?.model.listingFee = decidingFee
-              
-            } else if freeListings > 0 {
-              
-              cell?.button?.setTitle("List for Sale (\(freeListings) Free)", forState: .Normal)
-              
-              self?.model.listingFee = 0.00
-              
-            } else {
-              
-              cell?.button?.setTitle("List for Sale ($0.99)", forState: .Normal)
-              
-              self?.model.listingFee = 0.99
-            }
-            */
-          }
 
           if freeListings > 0 { // set default listing fee (default is $0.99 cents)
             
@@ -478,6 +457,21 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   public func showHeaderButtons() {
     cancelButton?.hidden = false
     saveButton?.hidden = false
+  }
+  
+  public func showBuyListingsView() {
+    if let products = iapController.products where !products.isEmpty {
+      var alertController: UIAlertController! = UIAlertController(title: "Buy Listings", message: "", preferredStyle: .ActionSheet)
+      for product in products {
+        alertController.addAction(UIAlertAction(title: "1 \(product.localizedTitle) ($\(product.price))", style: .Default) { [weak self, weak product] action in
+          self?.iapController.purchaseProduct(product)
+        })
+      }
+      alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+      })
+      presentViewController(alertController, animated: true, completion: nil)
+      alertController = nil
+    }
   }
 }
 

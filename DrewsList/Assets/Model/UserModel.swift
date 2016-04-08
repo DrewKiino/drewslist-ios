@@ -113,7 +113,7 @@ public class User: Mappable {
   public var freeListings: Int? { didSet { _freeListings => freeListings } }
   
   // MARK: Referral System
-  public var didAskForReferral: Bool?
+  public var referralCode: String?
  
   public init() {}
   
@@ -149,9 +149,7 @@ public class User: Mappable {
     
     // user listings
     freeListings            <- map["freeListings"]
-    
-    // referral system
-    didAskForReferral       <- map["didAskForReferral"]
+    referralCode            <- map["referralCode"]
   }
   
   public func getName() -> String? {

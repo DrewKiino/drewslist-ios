@@ -53,7 +53,6 @@ public class ScannerController {
       self?.model.shouldRefrainFromCallingServer = false
     }
     
-    NSTimer.after(30.0) { [weak self] in self?.model.shouldRefrainFromCallingServer = false }
   }
   
   public func searchBook() {
