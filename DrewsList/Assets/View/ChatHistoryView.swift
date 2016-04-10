@@ -105,8 +105,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
       cell.showSeparatorLine()
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] chatModel in
-        self?.controller.readRealmUser()
-        self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
+        self?.pushViewController(ChatView().setUsers(UserModel.sharedUser().user, friend: chatModel?.friend), animated: true)
       }
       
       cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date().isRecent() ?? false) ? .paradiseGray() : .whiteColor()

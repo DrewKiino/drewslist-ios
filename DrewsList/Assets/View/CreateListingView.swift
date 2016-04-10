@@ -17,7 +17,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   
   private let controller = CreateListingController()
   private var model: CreateListingModel { get { return controller.getModel() } }
-  private let iapController = IAPController()
+  private let iapController = IAPController.sharedInstance()
   
   // Navigation Header Views
   private var headerView: UIView?
@@ -62,7 +62,14 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
       if inProgress {
         self?.rootView?.showActivity(.RightBarButton)
       } else {
-        self?.rootView?.hideActivity()
+        self?.rootView?.hideActivity(.RightBarButton)
+      }
+    }
+    iapController.transactionSuccessBlock = { [weak self] success in
+      if success {
+      } else {
+        self?.showAlert("Our Apologies!", message: "We are unable to process your request.")
+        self?.rootView?.hideActivity(.RightBarButton)
       }
     }
   }
@@ -288,7 +295,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
         cell.hideBothTopAndBottomBorders()
         cell.inputTextField?.placeholder = "Price ($USD)"
-        cell.inputTextField?.text = "5.0"
+        cell.inputTextField?.text = "20.0"
         cell.inputTextField?.keyboardType = .DecimalPad
         cell._isFirstResponder.removeAllListeners()
         cell._isFirstResponder.listen(self) { [weak self] bool in
@@ -346,7 +353,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
         cell.hideArrowIcon()
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self ] bool in
-          self?.showAlert("How are Listing fees calculated?", message: "Listing Fees are calculated at a flat rate of $0.99 per listing. By agreeing to scan in your fingerprint, you agree to have Apple charge your payment method on file for the amount as listed. Refer a Friend to Drew’s List to get a free listing!")
+          self?.showAlert("How are Listing fees calculated?", message: "Listing Fees are calculated at a flat rate of $2.99 per listing. By agreeing to scan in your fingerprint or tapping the \'Buy\' button to confirm your In-App purchase, you agree to have Apple charge your payment method on file for the amount as listed. Refer a friend to Drew’s List by using your Referral Code to get a free listing!")
         }
         
         return cell

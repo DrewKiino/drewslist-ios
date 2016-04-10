@@ -108,12 +108,10 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
       if bool == true {
         self?.searchButton?.userInteractionEnabled = false
-        self?.searchButton?.setTitle("", forState: .Normal)
-        self?.searchActivityView?.startAnimating()
+        self?.showActivity(.RightBarButton)
       } else {
-        self?.searchActivityView?.stopAnimating()
-        self?.searchButton?.setTitle("Search", forState: .Normal)
         self?.searchButton?.userInteractionEnabled = true
+        self?.hideActivity(.RightBarButton)
       }
     }
   }
@@ -135,15 +133,6 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
     cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
-    
-    searchButton = UIButton()
-    searchButton?.setTitle("Search", forState: .Normal)
-    searchButton?.titleLabel?.font = UIFont.asapRegular(16)
-    searchButton?.addTarget(self, action: "search", forControlEvents: .TouchUpInside)
-    headerView?.addSubview(searchButton!)
-    
-    searchActivityView = UIActivityIndicatorView()
-    searchButton?.addSubview(searchActivityView!)
   }
   
   private func setupSearchBar() {

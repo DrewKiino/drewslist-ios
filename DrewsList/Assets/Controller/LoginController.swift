@@ -113,7 +113,7 @@ public class LoginController {
         // create and  user object
         self?.model.user = User(json: json)
         // set the shared user instance
-        UserController.setSharedUser(self?.model.user)
+        UserModel.setSharedUser(self?.model.user)
         // dismiss the view
         self?.shouldDismissView?(title: nil, message: nil)
 
@@ -179,7 +179,6 @@ public class LoginController {
         } else if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
           self?.shouldPresentSchoolInputView.fire()
         } else if let title = json["_title"].string, message = json["_message"].string {
-          log.debug("mark")
           self?.shouldDismissView?(title: title, message: message)
         } else {
           self?.shouldPresentReferralInputView?()

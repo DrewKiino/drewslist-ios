@@ -138,7 +138,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
       if bool {
         self?.rootView?.showActivity(.RightBarButton)
       } else {
-        self?.rootView?.hideActivity()
+        self?.rootView?.hideActivity(.RightBarButton)
       }
     }
     

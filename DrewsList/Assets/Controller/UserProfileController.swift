@@ -31,7 +31,6 @@ public class UserProfileController {
   
   public func viewDidAppear() {
     if isOtherUser == false { model.user = UserModel.sharedUser().user }
-    getUserFromServer()
   }
   
   public class func updateUserToServer(parameters: [String: AnyObject], callback: (User -> Void)? = nil) {

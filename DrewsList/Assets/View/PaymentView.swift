@@ -97,7 +97,7 @@ public class PaymentView: DLViewController, UITableViewDataSource, UITableViewDe
                 
                 self?.controller.changeDefaultCard(card_id) { (json, error) in
                   
-                  self?.hideActivity()
+                  self?.hideActivity(.RightBarButton)
                   
                   self?.tableView?.reloadData()
                   
@@ -114,7 +114,7 @@ public class PaymentView: DLViewController, UITableViewDataSource, UITableViewDe
               
               self?.controller.deleteCardInServer(card_id) { (json, error) in
                 
-                  self?.hideActivity()
+                  self?.hideActivity(.RightBarButton)
                 
                 self?.tableView?.reloadData()
                 

@@ -97,9 +97,9 @@ extension Int {
   public func toFormattedPhoneNumberText() -> NSMutableString {
     let string: NSMutableString = NSMutableString(string: String(self))
     if string.length == 11 {
-      string.insertString("-", atIndex: 0)
-      string.insertString("-", atIndex: 4)
-      string.insertString("-", atIndex: 8)
+      string.insertString("-", atIndex: 1)
+      string.insertString("-", atIndex: 5)
+      string.insertString("-", atIndex: 9)
     } else if string.length == 10 {
       string.insertString("-", atIndex: 3)
       string.insertString("-", atIndex: 7)
@@ -240,6 +240,11 @@ extension NSMutableAttributedString {
     }
     return self
   }
+  
+  func setColor(color: UIColor) -> Self {
+    addAttribute(NSForegroundColorAttributeName, value: color, range: NSMakeRange(0, string.characters.count - 1))
+    return self
+  }
 }
 
 extension UIViewController {
@@ -272,9 +277,15 @@ extension UIViewController {
     activityIndicator = nil
   }
   
-  public func hideActivity() {
-    navigationItem.leftBarButtonItem = nil
-    navigationItem.rightBarButtonItem = nil
+  public func hideActivity(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
+      break
+    }
   }
   
   public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {

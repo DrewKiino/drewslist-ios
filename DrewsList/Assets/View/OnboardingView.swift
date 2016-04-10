@@ -177,7 +177,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
       if view == pushPermissionsLaterButton { view.removeFromSuperview() }
       else if view == pushPermissionsAcceptButton { view.removeFromSuperview() }
       else if view == getStartedButton { view.removeFromSuperview() }
-//      else if view == skipButton { view.removeFromSuperview() }
     }
   }
   

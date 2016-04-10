@@ -115,6 +115,7 @@
 		EE8918CB1C1169BA00FCF031 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8918C91C1169BA00FCF031 /* LoginController.swift */; };
 		EE9243291BFFCF38002D97AF /* ChatHistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */; };
 		EE92432B1BFFCF61002D97AF /* ChatHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */; };
+		EE9F92361CB9F1A200B28BA0 /* DLHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9F92351CB9F1A200B28BA0 /* DLHTTP.swift */; };
 		EEA0F0B41BF2CFF100FC5FE5 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */; };
 		EEA1C7301CAC494F00692447 /* PaymentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA1C72F1CAC494F00692447 /* PaymentController.swift */; };
 		EEA1C7321CAC496300692447 /* PaymentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA1C7311CAC496300692447 /* PaymentModel.swift */; };
@@ -276,6 +277,7 @@
 		EE8918C91C1169BA00FCF031 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		EE9243281BFFCF38002D97AF /* ChatHistoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryModel.swift; sourceTree = "<group>"; };
 		EE92432A1BFFCF61002D97AF /* ChatHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatHistoryController.swift; sourceTree = "<group>"; };
+		EE9F92351CB9F1A200B28BA0 /* DLHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DLHTTP.swift; sourceTree = "<group>"; };
 		EEA0F0B31BF2CFF100FC5FE5 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EEA1C72F1CAC494F00692447 /* PaymentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentController.swift; sourceTree = "<group>"; };
 		EEA1C7311CAC496300692447 /* PaymentModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentModel.swift; sourceTree = "<group>"; };
@@ -537,15 +539,9 @@
 				EE0C92E91CAC411100996739 /* PaymentInputController.swift */,
 				EEA1C72F1CAC494F00692447 /* PaymentController.swift */,
 				EE802DBB1CB56B5A00AB4D08 /* IAPController.swift */,
+				EE9F92351CB9F1A200B28BA0 /* DLHTTP.swift */,
 			);
 			path = Controller;
-			sourceTree = "<group>";
-		};
-		EE3C94991BF30FC500E228A9 /* Fixtures */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		EE4B44421C2663260069E452 /* Toucan */ = {
@@ -646,19 +642,10 @@
 			isa = PBXGroup;
 			children = (
 				EE3C94941BF30F1A00E228A9 /* Controller */,
-				EE3C94991BF30FC500E228A9 /* Fixtures */,
 				EE3C94921BF30F1500E228A9 /* Model */,
-				EEE2AA071C28A1A60093DB46 /* Temp */,
 				EE3C94931BF30F1700E228A9 /* View */,
 			);
 			path = Assets;
-			sourceTree = "<group>";
-		};
-		EEE2AA071C28A1A60093DB46 /* Temp */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Temp;
 			sourceTree = "<group>";
 		};
 		FE0642FB75D7FCC6A3A6833B /* Frameworks */ = {
@@ -916,6 +903,7 @@
 				EE55200C1C23B9D3008EF831 /* CommunityFeedView.swift in Sources */,
 				EE8918BD1C1169A800FCF031 /* LoginView.swift in Sources */,
 				EED779E31C151DF200D172BE /* UserProfileListingController.swift in Sources */,
+				EE9F92361CB9F1A200B28BA0 /* DLHTTP.swift in Sources */,
 				3F4CA3AF1C0BEB0E00CFC84D /* ScannerController.swift in Sources */,
 				3F4CA3AD1C0BE99A00CFC84D /* BookController.swift in Sources */,
 				EE27AB471C2B7A7200EEFA4D /* AccountSettingsModel.swift in Sources */,

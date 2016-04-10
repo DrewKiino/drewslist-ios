@@ -31,8 +31,8 @@ public enum ServerUrl {
     case .Staging: return "https://drewslist-staging.herokuapp.com"
     case .Production: return "https://drewslist-production.herokuapp.com"
 //    case .Default: return "http://localhost:1337"
-    case .Default: return "https://drewslist-staging.herokuapp.com"
-//    case .Default: return "https://drewslist-production.herokuapp.com"
+//    case .Default: return "https://drewslist-staging.herokuapp.com"
+    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
 }
@@ -45,7 +45,7 @@ public let _applicationDidEnterBackground = Signal<Bool>()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
-  private let loginController = LoginController()
+  private let iapController = IAPController.sharedInstance()
   
   var window: UIWindow?
   
@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // if the url does not point to the production URL, then allow logging
     gai.logger.logLevel = GAILogLevel.None // remove before app release
     if ServerUrl.Default.getValue() == ServerUrl.Production.getValue() {
-      Atlantis.Configuration.logLevel = .None
+//      Atlantis.Configuration.logLevel = .None
     }
     /**************************************************************
     *                                                             *
@@ -103,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     *                                                             *
     **************************************************************/
     // user auth checkup
-    loginController.checkIfUserIsLoggedIn()
+    LoginController.sharedInstance().checkIfUserIsLoggedIn()
     // Facebook Integration
     return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
   }
@@ -173,10 +173,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   private func setupRootView() {
     
     // init the root view
-//    var tabView: TabView? = TabView.sharedInstance()
+    var tabView: TabView? = TabView.sharedInstance()
 //    var tabView: IAPView? = IAPView()
     
-    var tabView: CreateListingView? = CreateListingView()
+//    var tabView: CreateListingView? = CreateListingView()
 //    var tabView: SignUpView? = SignUpView()
     
     /*
