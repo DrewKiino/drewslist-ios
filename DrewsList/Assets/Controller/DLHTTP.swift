@@ -26,7 +26,7 @@ public class DLHTTP {
     }
   }
   
-  public class func GET(endPoint: String, parameters: [ String: AnyObject ], responseBlock: DLHTTPResponseBlock) {
+  public class func GET(endPoint: String, parameters: [ String: AnyObject ]? = nil, responseBlock: DLHTTPResponseBlock) {
     Alamofire.request(.GET, ServerUrl.Default.getValue() + endPoint, parameters: parameters)
     .response { (req, res, data, error) in
       if let error = error {

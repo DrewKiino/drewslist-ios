@@ -12,6 +12,8 @@ import RealmSwift
 import Alamofire
 import SwiftyJSON
 
+public typealias UserControllerServerResponseBlock = (user: User?) -> Void
+
 public class UserController {
   
   private struct Singleton {
@@ -32,7 +34,7 @@ public class UserController {
   func writeRealmUser(user: User?) -> User? { if let user = user { try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) }; return user } else { return nil } }
   
   // MARK: User Functions
-  public class func updateUserToServer(updateBlock: (user: User?) -> User?) {
+  public class func updateUserToServer(updateBlock: (user: User?) -> User?, completionBlock: UserControllerServerResponseBlock? = nil) {
     if let user = updateBlock(user: UserModel.sharedUser().user), let user_id = user._id {
       Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/\(user_id)", parameters: [
         "deviceToken": user.deviceToken ?? "",
@@ -46,6 +48,7 @@ public class UserController {
             log.error(error)
           } else {
             UserModel.setSharedUser(User(json: json))
+            completionBlock?(user: User(json: json))
           }
         }
       }
@@ -71,5 +74,15 @@ public class UserController {
     alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
     })
     TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
+  }
+  
+  public class func getUserFromServer() {
+    if let user_id = UserModel.sharedUser().user?._id {
+      DLHTTP.GET("/user/find", parameters: [ "_id": user_id ] as [ String: AnyObject ]) { (json, error) in
+        if let json = json {
+          UserModel.setSharedUser(User(json: json))
+        }
+      }
+    }
   }
 }

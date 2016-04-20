@@ -93,7 +93,7 @@ public class ChatHistoryController {
       }
     }
     
-    socket.emit("chatHistory.getChatHistory", [ "user_id": model.user?._id ?? "" ])
+    socket.emit("chatHistory.getChatHistory", objects: [ "user_id": model.user?._id ?? "" ])
   }
   
   // MARK: Deprecated, using server for getting user's chat history now

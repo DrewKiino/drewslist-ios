@@ -49,14 +49,9 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   }
   
   public override func viewWillAppear(animated: Bool) {
-    
-    controller.readRealmUser()
   }
   
   public override func viewWillDisappear(animated: Bool) {
-    controller.writeRealmUser()
-    controller.updateUserInServer()
-    
   }
   
   public override func viewWillLayoutSubviews() {
@@ -125,13 +120,10 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     // setup view's databinding
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      self?.model.fbProfileImageURL = user?.imageUrl
+      self?.model.fbProfileImageURL = user?.facebook_image
       self?.setupProfileImages()
       self?.tableView!.reloadData()
     }
-    
-    // setup controller's databinding
-    controller.setupDataBinding()
   }
   
   public func setUser(user: User?) {
@@ -157,7 +149,16 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
       cell._didSelectCell.removeAllListeners()
       cell._didSelectCell.listen(self) { [weak self] list in
         self?.model.user?.imageUrl = self?.profileImgURLs[indexPath.row]
-        self?.dismissViewControllerAnimated(true, completion: nil)
+        UserController.updateUserToServer({ (user) -> User? in
+          user?.imageUrl = self?.model.user?.imageUrl
+          return user
+        }) { [weak self] user in
+          self?.dismissViewControllerAnimated(true) { bool in
+            if let editProfileView = TabView.currentView()?.visibleViewController as? EditProfileView {
+              editProfileView.setUser(user)
+            }
+          }
+        }
       }
       cell.label?.textAlignment = .Center
       

@@ -174,7 +174,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // init the root view
     var tabView: TabView? = TabView.sharedInstance()
-//    var tabView: IAPView? = IAPView()
+//    var tabView: ListFeedNavigationView? = ListFeedNavigationView()
     
 //    var tabView: CreateListingView? = CreateListingView()
 //    var tabView: SignUpView? = SignUpView()

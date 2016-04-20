@@ -80,14 +80,14 @@ public class ActivityFeedController {
       }
     }
     
-    socket.emit("activityFeed.getActivityHistory", [ "user_id": model.user?._id ?? "" ])
+    socket.emit("activityFeed.getActivityHistory", objects: [ "user_id": model.user?._id ?? "" ])
   }
   
   public func markActivitiesAsSeen() {
     socket.on("activityFeed.markActivitiesAsSeen.response") { [weak self] json in
     }
     
-    socket.emit("activityFeed.markActivitiesAsSeen", [ "user_id": model.user?._id ?? "" ])
+    socket.emit("activityFeed.markActivitiesAsSeen", objects: [ "user_id": model.user?._id ?? "" ])
   }
   
   // MARK: Realm Functions

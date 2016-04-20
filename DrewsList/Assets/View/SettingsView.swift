@@ -26,6 +26,14 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     super.viewDidAppear(animated)
   }
   
+  
+  public override func viewDidDisappear(animated: Bool) {
+    if let userProfileView = TabView.currentView()?.visibleViewController as? UserProfileView {
+      log.debug("mark")
+      userProfileView.setUser(UserModel.sharedUser().user)
+    }
+  }
+  
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
     title = "Settings"

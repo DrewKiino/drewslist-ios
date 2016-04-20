@@ -196,44 +196,36 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     scrollView?.addSubview(wishListFeedView!)
   }
   
-  public func selectLeftPage(animated: Bool = true) {
+  public func selectLeftPage() {
     shouldDisableScrollDetection = true
-    scrollView?.setContentOffset(CGPointMake(0, 0), animated: animated)
+    scrollView?.setContentOffset(CGPointMake(0, 0), animated: true)
     selectPage(.Left)
   }
   
-  public func selectRightPage(animated: Bool = true) {
+  public func selectRightPage() {
     shouldDisableScrollDetection = true
-    scrollView?.setContentOffset(CGPointMake(screen.width, 0), animated: animated)
-    selectPage(.Right, animated: animated)
+    scrollView?.setContentOffset(CGPointMake(screen.width, 0), animated: true)
+    selectPage(.Right)
   }
   
-  public func selectPage(page: ListFeedPage, animated: Bool = true) {
+  public func selectPage(page: ListFeedPage) {
     let duration: NSTimeInterval = 0.7
     let damping: CGFloat = 0.5
     let velocity: CGFloat = 1.0
     switch page {
     case .Left:
-      if animated {
-        UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-          self?.pageSelector?.frame = self!.leftPageTitleButton!.frame
-          }, completion: { [weak self] bool in
-            self?.shouldDisableScrollDetection = false
-          })
-      } else {
-        pageSelector?.frame = leftPageTitleButton!.frame
-      }
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.leftPageTitleButton!.frame
+      }, completion: { [weak self] bool in
+        self?.shouldDisableScrollDetection = false
+      })
       break
     case .Right:
-      if animated {
-        UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
-          self?.pageSelector?.frame = self!.rightPageTitleButton!.frame
-        }, completion: { [weak self] bool in
-          self?.shouldDisableScrollDetection = false
-        })
-      } else {
-        pageSelector?.frame = leftPageTitleButton!.frame
-      }
+      UIView.animateWithDuration(duration, delay: 0, usingSpringWithDamping: damping, initialSpringVelocity: velocity, options: .CurveEaseInOut, animations: { [weak self] in
+        self?.pageSelector?.frame = self!.rightPageTitleButton!.frame
+      }, completion: { [weak self] bool in
+        self?.shouldDisableScrollDetection = false
+      })
       break
     }
   }

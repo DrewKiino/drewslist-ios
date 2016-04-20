@@ -9,18 +9,27 @@
 import Foundation
 import UIKit
 import Neon
+import Signals
+import Social
 
 public class ListingsView: DLViewController, UITableViewDataSource, UITableViewDelegate {
   
   private var tableView: DLTableView?
+  
+  private let resignFirstResponderSignal = Signal<()>()
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     
     setupSelf()
     setupTableView()
+    setupDataBinding()
     
     tableView?.fillSuperview()
+  }
+  
+  public override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
   }
   
   public override func setupSelf() {
@@ -34,8 +43,23 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
     tableView?.dataSource = self
     tableView?.backgroundColor = .whiteColor()
     
+    tableView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
+    
     view.addSubview(tableView!)
   }
+  
+  private func setupDataBinding() {
+    UserModel.sharedUser()._user.removeListener(self)
+    UserModel.sharedUser()._user.listen(self) { [weak self] user in
+      self?.tableView?.reloadData()
+    }
+  }
+  
+  public func dismissKeyboard() {
+    resignFirstResponderSignal => ()
+  }
+  
+  // MARK: Table View Functions
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
@@ -79,16 +103,27 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
       }
       break
     case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleWithTextFieldCell", forIndexPath: indexPath) as? TitleWithTextFieldCell {
-        cell.titleLabel?.text = "Referral Code"
-        cell.titleTextField?.text = UserModel.sharedUser().user?.referralCode
+      if let cell = tableView.dequeueReusableCellWithIdentifier("SelectableTitleCell", forIndexPath: indexPath) as? SelectableTitleCell {
+        cell.titleLabel?.text = "Copy This Referral Code:"
+        cell.selectableTextView?.text = UserModel.sharedUser().user?.referralCode
+        resignFirstResponderSignal.removeListener(cell)
+        resignFirstResponderSignal.listen(cell) { [weak cell] in
+          cell?.resignFirstResponder()
+        }
         return cell
       }
       break
     case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
-        cell.titleButton?.setTitle("Refer a Friend!", forState: .Normal)
+        cell.titleButton?.setTitle("Share on Twitter!", forState: .Normal)
+        cell.onClick = { [weak self] in
+          if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter){
+            self?.presentViewController(SLComposeViewController(forServiceType: SLServiceTypeTwitter), animated: true, completion: nil)
+          } else {
+            self?.showAlert("Accounts", message: "Please login to a Twitter account to share.")
+          }
+        }
         
         return cell
       }
@@ -96,7 +131,15 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
     case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
-        cell.titleButton?.setTitle("Share this App!", forState: .Normal)
+        cell.titleButton?.setTitle("Share on Facebook!", forState: .Normal)
+        cell.onClick = { [weak self] in
+          
+          if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook){
+            self?.presentViewController(SLComposeViewController(forServiceType: SLServiceTypeFacebook), animated: true, completion: nil)
+          } else {
+            self?.showAlert("Accounts", message: "Please login to a Facebook account to share.")
+          }
+        }
         
         return cell
       }
@@ -108,58 +151,17 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
   }
 }
 
-public class TitleWithTextFieldCell: DLTableViewCell, UITextFieldDelegate {
-  
-  public var titleLabel: UILabel?
-  public var titleTextField: UITextField?
-  
-  public override func setupSelf() {
-    super.setupSelf()
-    
-    setupUI()
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
-    titleTextField?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
-  }
-  
-  private func setupUI() {
-    titleLabel = UILabel()
-    titleLabel?.textColor = .sexyGray()
-    titleLabel?.font = .asapRegular(12)
-    titleLabel?.adjustsFontSizeToFitWidth = true
-    titleLabel?.minimumScaleFactor = 0.8
-    addSubview(titleLabel!)
-    
-    titleTextField = UITextField()
-    titleTextField?.textColor = .coolBlack()
-    titleTextField?.font = .asapRegular(16)
-    titleTextField?.delegate = self
-    // TODO: TEXTFIELD HAS TO BE EDITABLE
-    addSubview(titleTextField!)
-  }
-  
-  public func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-    return false
-  }
-}
-
-
 public class SelectableTitleCell: DLTableViewCell {
   
   public var titleLabel: UILabel?
-  public var titleTextLabel: UILabel?
-  public var buttonLabel: UIButton?
+  public var selectableTextView: UITextView?
+  public var executeOnTap: (() -> Void)?
   
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupSelf()
     setupTitleLabel()
     setupTitleTextLabel()
-    setupButtonLabel()
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -169,14 +171,17 @@ public class SelectableTitleCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 80)
-    titleTextLabel?.alignAndFillWidth(align: .ToTheRightCentered, relativeTo: titleLabel!, padding: 8, height: 24)
-    buttonLabel?.anchorToEdge(.Right, padding: 8, width: 36, height: 36)
+    titleLabel?.anchorAndFillEdge(.Left, xPad: 8, yPad: 0, otherSize: 120)
+//    titleLabel?.backgroundColor = .redColor()
+    selectableTextView?.anchorAndFillEdge(.Right, xPad: 8, yPad: 0, otherSize: 120)
+//    selectableTextView?.backgroundColor = .blueColor()
   }
   
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "onTap"))
   }
   
   private func setupTitleLabel() {
@@ -189,18 +194,26 @@ public class SelectableTitleCell: DLTableViewCell {
   }
   
   private func setupTitleTextLabel() {
-    titleTextLabel = UILabel()
-    titleTextLabel?.textColor = .coolBlack()
-    titleTextLabel?.font = .asapRegular(12)
-    titleTextLabel?.adjustsFontSizeToFitWidth = true
-    titleTextLabel?.minimumScaleFactor = 0.8
-    addSubview(titleTextLabel!)
+    selectableTextView = UITextView()
+    selectableTextView?.textColor = .coolBlack()
+    selectableTextView?.font = .asapBold(16)
+    selectableTextView?.editable = false
+    selectableTextView?.textAlignment = .Right
+    addSubview(selectableTextView!)
   }
   
-  private func setupButtonLabel() {
-    buttonLabel = UIButton(type: .ContactAdd)
-//    buttonLabel?.titleLabel?.font = .asapRegular(12)
-//    buttonLabel?.setTitleColor(.coolBlack(), forState: .Normal)
-    addSubview(buttonLabel!)
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    selectableTextView?.resignFirstResponder()
+    
+    return true
+  }
+  
+  public func onTap() {
+    
+    
+    
+    executeOnTap?()
   }
 }

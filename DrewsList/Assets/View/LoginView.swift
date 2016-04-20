@@ -402,6 +402,8 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
   // MARK: Delegates
   public func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
     
+    log.debug("marl")
+    
     // show the user there was an error if the fbsdk login did not succeed
     if let error = error {
       log.error(error)
@@ -501,9 +503,14 @@ public class LoginView: UIViewController, UITextFieldDelegate, FBSDKLoginButtonD
       self?.controller.authenticateUserToServer(false)
     })
     alertController.addAction(UIAlertAction(title: "Skip", style: .Cancel) { [weak self] action in
-      self?.model.shouldAskForReferral = false
-      self?.model.referralCode = nil
-      self?.dismissView()
+      UserController.updateUserToServer({ [weak self] (user) -> User? in
+        user?.hasSeenReferralView = true
+        return user
+      }, completionBlock: { [weak self] (user) -> Void in
+        self?.model.shouldAskForReferral = false
+        self?.model.referralCode = nil
+        self?.dismissView()
+      })
     })
     presentViewController(alertController, animated: true, completion: nil)
     alertController = nil

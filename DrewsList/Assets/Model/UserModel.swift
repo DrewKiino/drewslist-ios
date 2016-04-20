@@ -114,6 +114,8 @@ public class User: Mappable {
   
   // MARK: Referral System
   public var referralCode: String?
+  public var hasSeenReferralView: Bool = false
+  public var hasSeenInitialFreeListingView: Bool = false
  
   public init() {}
   
@@ -126,30 +128,32 @@ public class User: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
-    _id                     <- map["_id"]
-    email                   <- map["email"]
-    phone                   <- map["phone"]
-    firstName               <- map["firstName"]
-    lastName                <- map["lastName"]
-    username                <- map["username"]
-    school                  <- map["school"]
-    imageUrl                <- map["image"]
-    bgImage                 <- map["bgImage"]
-    description             <- map["description"]
-    deviceToken             <- map["deviceToken"]
-    listings                <- map["listings"]
+    _id                           <- map["_id"]
+    email                         <- map["email"]
+    phone                         <- map["phone"]
+    firstName                     <- map["firstName"]
+    lastName                      <- map["lastName"]
+    username                      <- map["username"]
+    school                        <- map["school"]
+    imageUrl                      <- map["image"]
+    bgImage                       <- map["bgImage"]
+    description                   <- map["description"]
+    deviceToken                   <- map["deviceToken"]
+    listings                      <- map["listings"]
     
     // facebookk
-    facebook_image          <- map["faceobook_image"]
+    facebook_image                <- map["facebook_image"]
     
     // user settings
-    privatePhoneNumber      <- map["privatePhoneNumber"]
-    hasSeenTermsAndPrivacy  <- map["hasSeenTermsAndPrivacy"]
-    hasSeenOnboardingView   <- map["hasSeenOnboardingView"]
+    privatePhoneNumber            <- map["privatePhoneNumber"]
+    hasSeenTermsAndPrivacy        <- map["hasSeenTermsAndPrivacy"]
+    hasSeenOnboardingView         <- map["hasSeenOnboardingView"]
     
     // user listings
-    freeListings            <- map["freeListings"]
-    referralCode            <- map["referralCode"]
+    freeListings                  <- map["freeListings"]
+    referralCode                  <- map["referralCode"]
+    hasSeenReferralView           <- map["hasSeenReferralView"]
+    hasSeenInitialFreeListingView <- map["hasSeenInitialFreeListingView"]
   }
   
   public func getName() -> String? {

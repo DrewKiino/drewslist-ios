@@ -16,9 +16,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private var model: EditProfileModel { get { return controller.model } }
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
-//  private let profileImagePicker = ProfileImagePickerView()
-  
-  
   
   public override func viewDidLoad() {
     super.viewDidLoad()

@@ -96,9 +96,11 @@ public class ListViewContainer: UIViewController {
     return self
   }
   
-  public func isUserListing() -> Self {
-    listView?.isUserListing = true
-    title = "Your Listing"
+  public func isUserListing(isUserListing: Bool?) -> Self {
+    if let isUserListing = isUserListing {
+      listView?.isUserListing = isUserListing
+      title = isUserListing ? "Your Listing" : "Listing Information"
+    }
     return self
   }
  

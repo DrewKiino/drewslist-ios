@@ -179,9 +179,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     bookShelf?.align(.UnderCentered, relativeTo: descriptionTextView!, padding: 8, width: screen.width, height: 600)
     
     scrollView?.contentSize = CGSizeMake(screen.width,
-      425
-      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 260: 48)
-      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 260 : 48)
+      900
+//      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 260: 48)
+//      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 260 : 48)
     )
     
     callButton?.hidden = model.user?.privatePhoneNumber == true ? true : isOtherUser == true ? false : true
@@ -474,13 +474,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // add databinding to cells
     cell._didSelectListing.removeAllListeners()
-    cell._didSelectListing.listen(self) { [weak navigationController] list_id in
-      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(), animated: true)
+    cell._didSelectListing.listen(self) { [weak self, weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(self?.model.user?._id == UserModel.sharedUser().user?._id), animated: true)
     }
     
     cell._didSelectMatch.removeAllListeners()
-    cell._didSelectMatch.listen(self) { [weak navigationController] list_id in
-      navigationController?.pushViewController(ListViewContainer().setList_id(list_id), animated: true)
+    cell._didSelectMatch.listen(self) { [weak self, weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(self?.model.user?._id == UserModel.sharedUser().user?._id), animated: true)
     }
     
     return cell

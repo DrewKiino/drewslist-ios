@@ -180,8 +180,10 @@ public class LoginController {
           self?.shouldPresentSchoolInputView.fire()
         } else if let title = json["_title"].string, message = json["_message"].string {
           self?.shouldDismissView?(title: title, message: message)
-        } else {
+        } else if self?.model.user?.hasSeenInitialFreeListingView == false {
           self?.shouldPresentReferralInputView?()
+        } else {
+          self?.shouldDismissView?(title: nil, message: nil)
         }
       }
       
@@ -235,7 +237,7 @@ public class LoginController {
     let referralCode: String = model.referralCode ?? ""
     let shouldAskForReferral: Bool = model.shouldAskForReferral
     
-    Sockets.sharedInstance().emit("authenticateUser", [
+    Sockets.sharedInstance().emit("authenticateUser", objects: [
       "email": email,
       "password": password,
       "phone" : phone,
@@ -267,7 +269,7 @@ public class LoginController {
       // referral system
       "referralCode": referralCode,
       "shouldAskForReferral": shouldAskForReferral
-    ] as [String: AnyObject])
+    ] as [String: AnyObject], forceConnection: true)
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds

@@ -81,7 +81,6 @@ public class DLTableView: UITableView {
     
     // MARK: Listings
     registerClass(SelectableTitleCell.self, forCellReuseIdentifier: "SelectableTitleCell")
-    registerClass(TitleWithTextFieldCell.self, forCellReuseIdentifier: "TitleWithTextFieldCell")
     
     allowsSelection = false
     showsVerticalScrollIndicator = false
@@ -351,10 +350,6 @@ public class FullTitleCell: DLTableViewCell {
     setupSelf()
     setupTitleLabel()
     setupRightImageView()
-    
-    titleButton?.anchorAndFillEdge(.Left, xPad: 10, yPad: 0, otherSize: screen.width)
-    rightImageView?.anchorToEdge(.Right, padding: 0, width: 12, height: 16)
-    rightImageView?.image = Toucan(image: UIImage(named: "Icon-GreyChevron")?.imageWithRenderingMode(.AlwaysTemplate)).resize(rightImageView?.frame.size, fitMode: .Clip).image
   }
   
   public required init?(coder aDecoder: NSCoder) {
@@ -373,6 +368,8 @@ public class FullTitleCell: DLTableViewCell {
     super.setupSelf()
     
     backgroundColor = .whiteColor()
+    
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellTapped"))
   }
   
   private func setupTitleLabel() {
@@ -391,6 +388,8 @@ public class FullTitleCell: DLTableViewCell {
   public func setupRightImageView() {
     rightImageView = UIImageView()
     rightImageView?.tintColor = .sexyGray()
+    rightImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellTapped"))
+    rightImageView?.userInteractionEnabled = true
     addSubview(rightImageView!)
   }
   
@@ -408,6 +407,10 @@ public class FullTitleCell: DLTableViewCell {
     UIView.animate { [weak self] in
       self?.backgroundColor = .whiteColor()
     }
+    cellTapped()
+  }
+  
+  public func cellTapped() {
     _didSelectCell => true
     onClick?()
   }
