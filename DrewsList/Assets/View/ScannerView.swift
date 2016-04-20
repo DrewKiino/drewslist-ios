@@ -11,7 +11,7 @@ import AVFoundation
 import Neon
 import Async
 
-public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjectsDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
   
   // MARK: Properties
   
@@ -23,36 +23,53 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   public var session: AVCaptureSession?
   
   private var focusImageView: UIImageView?
+  private var keyboardActive: Bool = false
 
-  private var topView: UIView?
-  private var helpButton: UIButton?
-  private var searchButton: UIButton?
-  private var pulseContainer: UIView?
-  private var searchPulse: LFTPulseAnimation?
-  private var searchBookView: SearchBookView?
+  // Search Bar
+  private var searchBarContainer: UIView?
+  private var searchBarTextField: UITextField?
   
+  //  School List
+  private var tableView: DLTableView?
+  private var lastKeyboardFrame: CGRect?
+  
+  // MVC
   private let controller = ScannerController()
-  private var model: ScannerModel { get { return controller.getModel() } }
+  private var model: ScannerModel { get { return controller.model } }
   
  // MARK: Lifecycle
   public override func viewDidLoad() {
     super.viewDidLoad()
+    
+    setupSelf()
     setupDataBinding()
-    setupScanner()
-    setupTopView()
-    setupHelpButton()
-    setupSearchButton()
-    setupFocusImageView()
+    
+    if UIDevice.currentDevice().name.hasSuffix("Simulator") { // Code executing on Simulator
+    } else{ // Code executing on Device
+      setupScanner()
+      setupFocusImageView()
+    }
+    
+    setupSearchBar()
+    setupTableView()
+    
+    rootView?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
     
     FBSDKController.createCustomEventForName("UserScanner")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    resetUI()
   }
   
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    
     session?.startRunning()
   }
   
@@ -62,188 +79,174 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
+    
+    // remove text on search bar if user leaves view
+    searchBarTextField?.text = nil
+    
     session?.stopRunning()
   }
   
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    pulseContainer?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
-    searchButton?.anchorInCorner(.BottomLeft, xPad: screen.width / 30, yPad: 0, width: screen.width / 10, height: screen.width / 10)
-    searchPulse?.anchorInCenter(width: 60, height: 60)
-
-    helpButton?.setImage(Toucan(image: UIImage(named: "help-button")).resize(helpButton!.frame.size).image, forState: .Normal)
-    searchButton?.setImage(Toucan(image: UIImage(named: "search-button")).resize(searchButton!.frame.size).image, forState: .Normal)
+    searchBarContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 36)
+    searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 32)
     
-    focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
-    focusImageView?.center = CGPointMake(CGRectGetMidX(previewLayer!.frame), CGRectGetMidY(previewLayer!.frame))
+    if let previewLayer = previewLayer {
+      focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
+      focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen) - 64)
 
-    focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image
+      focusImageView?.image = Toucan(image: UIImage(named: "Icon-CameraFocus")).resize(focusImageView?.frame.size).image?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+      focusImageView?.tintColor = .juicyOrange()
+    }
   }
 
     // MARK: Setup
   
-  private func setupDataBinding() {
+  private func setupSelf() {
+    title = "Drew's List"
+    rootView?.view.backgroundColor = .whiteColor()
+  }
+  
+  private func setupSearchBar() {
     
-    controller.get_ShouldHideBorder().removeAllListeners()
-    controller.get_ShouldHideBorder().listen(self) { [weak self] bool in
-      self?.identifiedBorder?.hidden = bool
+    searchBarContainer = UIView()
+    searchBarContainer?.backgroundColor = .whiteColor()
+    searchBarContainer?.layer.cornerRadius = 5.0
+    searchBarContainer?.userInteractionEnabled = true
+    searchBarContainer?.multipleTouchEnabled = false
+
+    rootView?.view.addSubview(searchBarContainer!)
+    
+    searchBarTextField = UITextField()
+    searchBarTextField?.backgroundColor = .whiteColor()
+    searchBarTextField?.font = .asapRegular(16)
+    searchBarTextField?.delegate = self
+    searchBarTextField?.autocapitalizationType = .Words
+    searchBarTextField?.spellCheckingType = .No
+    searchBarTextField?.placeholder = "Search by Title, ISBN, Author, etc."
+//    searchBarTextField?.autocorrectionType = .No
+    searchBarTextField?.clearButtonMode = .Always
+    searchBarContainer?.addSubview(searchBarTextField!)
+  }
+  
+  public override func setupDataBinding() {
+    super.setupDataBinding()
+    
+    model.showRequestActivity.removeAllListeners()
+    model.showRequestActivity.listen(self) { [weak self] bool in
+      if bool {
+        self?.rootView?.showActivity(.RightBarButton)
+      } else {
+        self?.rootView?.hideActivity(.RightBarButton)
+      }
     }
     
-    controller.get_Book().removeAllListeners()
-    controller.get_Book().listen(self) { [weak self] book in
-      self?.presentCreateListingView(book)
+    model._shouldHideBorder.removeAllListeners()
+    model._shouldHideBorder.listen(self) { [weak self] bool in
+      self?.identifiedBorder?.hidden = bool
     }
     
 //    searchBookView
     
-  }
-  
-  private func setupTopView() {
-    topView = UIView()
-    view.addSubview(topView!)
-    topView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: screen.height / 12)
-  }
-  
-  private func setupHelpButton() {
-    helpButton = UIButton()
-    helpButton?.layer.zPosition = 2.0
-    helpButton?.addTarget(self, action: "toggleHelp", forControlEvents: .TouchUpInside)
-    topView?.addSubview(helpButton!)
-  }
-  
-  private func setupSearchButton() {
-    searchButton = UIButton()
-    pulseContainer = UIView()
-    searchBookView = SearchBookView()
+    model._books.removeAllListeners()
+    model._books.listen(self) { [weak self] books in
+      
+      self?.tableView?.anchorAndFillEdge(.Top, xPad: 8, yPad: 48, otherSize: ((self?.model.books.count == 1) ? 166 : (screen.height - (self?.lastKeyboardFrame?.height ?? 0) - 116)))
+      self?.tableView?.reloadData()
+      
+      if books.count == 0 {
+        
+        self?.tableView?.hidden = true
+        self?.showAlert("Sorry!", message: "We did not find any matches!")
+        
+      } else if self?.keyboardActive == true {
+        
+        self?.tableView?.hidden = false
+        
+        UIView.animateWithDuration(0.2, animations: { [weak self] in
+          self?.tableView?.alpha = 1.0
+        }) { [weak self] bool in
+          self?.tableView?.setContentOffset(CGPointZero, animated:true)
+        }
+      }
+    }
     
-    searchPulse = LFTPulseAnimation(repeatCount: Float.infinity, radius: 30, position: pulseContainer!.center)
-    searchPulse?.animationDuration = NSTimeInterval(2.0)
-    
-    pulseContainer?.layer.insertSublayer(searchPulse!, below: pulseContainer!.layer)
-    searchPulse?.backgroundColor = UIColor.juicyOrange().CGColor
-    
-    
-    searchButton?.layer.zPosition = 2.0
-    searchButton?.addTarget(self, action: "searchButtonSelected", forControlEvents:  .TouchUpInside)
-    topView?.addSubview(pulseContainer!)
-    topView?.addSubview(searchButton!)
-    
+    model._book.removeAllListeners()
+    model._book.listen(self) { [weak self] book in
+      self?.presentCreateListingView(book)
+    }
   }
   
   private func setupFocusImageView() {
     focusImageView = UIImageView()
-    view.addSubview(focusImageView!)
+    rootView?.view.addSubview(focusImageView!)
   }
   
-  public func toggleHelp() {
-    
-    Async.background { [weak self] in
-      
-      if self?.helpButton?.tag == 1 {
-        
-        self?.helpButton?.tag = 0
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "help-button")).resize(self?.helpButton?.frame.size)
-        
-        Async.main { [weak self] in
-          
-          self?.helpButton?.alpha = 0.0
-          
-          UIView.animateWithDuration(
-            0.2,
-            delay: 0.0,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 1.0,
-            options: .CurveEaseInOut,
-            animations: { [weak self] in
-              self?.helpButton?.alpha = 1.0
-              self?.helpButton?.frame.size = CGSizeMake(48, 48)
-              self?.helpButton?.setImage(toucan?.image, forState: .Normal)
-            },
-            completion: nil
-          )
-          
-          toucan = nil
-        }
-      
-      } else {
-        
-        self?.helpButton?.tag = 1
-        
-        var toucan: Toucan? = Toucan(image: UIImage(named: "Icon-PopOver")).resize(self?.helpButton?.frame.size)
-
-        Async.main { [weak self] in
-          
-          self?.helpButton?.alpha = 0.0
-          
-          UIView.animateWithDuration(
-            0.2,
-            delay: 0.0,
-            usingSpringWithDamping: 0.5,
-            initialSpringVelocity: 1.0,
-            options: .CurveEaseInOut,
-            animations: { [weak self] in
-              self?.helpButton?.alpha = 1.0
-              self?.helpButton?.frame.size = CGSizeMake(225, 225)
-              self?.helpButton?.setImage(toucan?.image, forState: .Normal)
-            },
-            completion: nil
-          )
-          
-          toucan = nil
-        }
-      }
-    }
-  }
-    
   public func searchButtonSelected() {
-    if let searchBookView = self.searchBookView {
-      presentViewController(searchBookView, animated: true, completion: nil)
-      
-      SearchBookModel.sharedInstance()._book.removeListener(self)
-      SearchBookModel.sharedInstance()._book.listen(self) { [weak self] book in
-        self?.presentCreateListingView(book)
-      }
-      FBSDKController.createCustomEventForName("Scanner_SearchButtonSelected")
-    }
+    FBSDKController.createCustomEventForName("Scanner_SearchButtonSelected")
   }
     
   public func presentCreateListingView(book: Book?) {
     
+    var alertController: UIAlertController! = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    alertController.addAction(UIAlertAction(title: "I'm Buying", style: .Default) { [weak self, weak alertController] action in
+      self?.hideUI()
+      self?.presentViewController(CreateListingView().setBook(book).setListType("buying"), animated: true, completion: nil)
+    })
+    alertController.addAction(UIAlertAction(title: "I'm Selling", style: .Default) { [weak self, weak alertController] action in
+      self?.hideUI()
+      self?.presentViewController(CreateListingView().setBook(book).setListType("selling"), animated: true, completion: nil)
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { [weak self] action in
+      self?.resetUI()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func hideUI() {
+    focusImageView?.tintColor = .whiteColor()
+    focusImageView?.hidden = true
     previewLayer?.hidden = true
     identifiedBorder?.hidden = true
+    searchBarContainer?.hidden = true
+    searchBarTextField?.text = nil
     session?.stopRunning()
-    
-    presentViewController(CreateListingView().setBook(book), animated: true, completion: nil)
+  }
+  
+  public func resetUI() {
+    searchBarTextField?.text = nil
+    focusImageView?.tintColor = .juicyOrange()
+    focusImageView?.hidden = false
+    searchBarContainer?.hidden = false
+    focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen) - 64)
   }
   
   private func setupScanner() {
     
-    var captureDevice: AVCaptureDevice? = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-    var inputDevice: AVCaptureDeviceInput? = try? AVCaptureDeviceInput(device: captureDevice)
-    captureDevice = nil
-    
-    session = AVCaptureSession()
-    session?.addInput(inputDevice)
-    inputDevice = nil
-    
-    setupPreviewLayer()
-    
-    identifiedBorder = DiscoveredBarCodeView(frame: view.bounds)
-    identifiedBorder?.backgroundColor = UIColor.clearColor()
-    identifiedBorder?.hidden = true
-    
-    view.addSubview(identifiedBorder!)
-    
-    /* Check for metadata */
-    var output: AVCaptureMetadataOutput? = AVCaptureMetadataOutput()
-    session?.addOutput(output)
-    output?.metadataObjectTypes = output?.availableMetadataObjectTypes
-    output?.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
-    output = nil
-    
-    session?.startRunning()
+    if let view = rootView?.view {
+      
+      session = AVCaptureSession()
+      session?.addInput(try? AVCaptureDeviceInput(device: AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)))
+      
+      setupPreviewLayer()
+      
+      identifiedBorder = DiscoveredBarCodeView(frame: view.bounds)
+      identifiedBorder?.backgroundColor = UIColor.clearColor()
+      identifiedBorder?.hidden = true
+      
+      view.addSubview(identifiedBorder!)
+      
+      /* Check for metadata */
+      var output: AVCaptureMetadataOutput? = AVCaptureMetadataOutput()
+      session?.addOutput(output)
+      output?.metadataObjectTypes = [AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeEAN13Code]
+      output?.setMetadataObjectsDelegate(self, queue: dispatch_get_main_queue())
+      output = nil
+      
+      session?.startRunning()
+    }
   }
   
   /* Add the preview layer here */
@@ -254,8 +257,7 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     previewLayer?.position = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds))
     previewLayer?.zPosition = -1
     
-    guard let previewLayer = previewLayer else { return }
-    view.layer.addSublayer(previewLayer)
+    rootView?.view.layer.addSublayer(previewLayer!)
   }
   
   public func resetTimer() {
@@ -267,7 +269,9 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
   }
   
   public func translatePoints(points : [AnyObject], fromView : UIView, toView: UIView) -> [CGPoint]? {
+    
     var translatedPoints : [CGPoint] = []
+    
     for point in points {
       
       guard let dict = point as? NSDictionary,
@@ -283,31 +287,23 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     return translatedPoints
   }
   
-  private var x: UIView?
-  
   public func captureOutput(captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [AnyObject]!, fromConnection connection: AVCaptureConnection!) {
     for data in metadataObjects {
       
-      guard let metaData = data as? AVMetadataObject,
-        let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject,
-        let identifiedBorder = identifiedBorder,
-        let view = view,
-        let identifiedCorners = self.translatePoints(transformed.corners, fromView: view, toView: identifiedBorder)
-        else { return }
-      
-      UIView.animate { [weak self, weak transformed] in
-        guard let transformed = transformed else { return }
-        self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
+      if  let metaData = data as? AVMetadataObject,
+          let transformed = previewLayer?.transformedMetadataObjectForMetadataObject(metaData) as? AVMetadataMachineReadableCodeObject
+//          let identifiedBorder = identifiedBorder
+      {
+        
+        UIView.animate { [weak self, weak transformed] in
+          guard let transformed = transformed else { return }
+          self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
+        }
+        
+        if let isbn: String? = metadataObjects.first?.stringValue {
+          controller.getBookFromServer(isbn)
+        }
       }
-      
-      // The scanner is capable of capturing multiple 2-dimensional barcodes in one scan.
-      var isbn: String? = (metadataObjects.filter { $0.type == AVMetadataObjectTypeEAN8Code || $0.type == AVMetadataObjectTypeEAN13Code }).first?.stringValue
-      
-      // pass the acquired isbn to the controller
-      controller.getBookFromServer(isbn)
-      
-      // deinit the isbn string
-      isbn = nil
     }
   }
   
@@ -315,12 +311,121 @@ public class ScannerView: UIViewController, AVCaptureMetadataOutputObjectsDelega
     return true
   }
   
-  public func hideHeaderView() {
-    topView?.hidden = true
+  public func viewTapped() {
+    resignFirstResponder()
   }
   
-  public func showTopView() {
-    topView?.hidden = false
+  private func setupTableView() {
+    tableView = DLTableView()
+    tableView?.delegate = self
+    tableView?.dataSource = self
+    tableView?.showsVerticalScrollIndicator = true
+    tableView?.backgroundColor = .whiteColor()
+    tableView?.layer.cornerRadius = 5.0
+    tableView?.alpha = 0.0
+    rootView?.view.addSubview(tableView!)
+  }
+  
+  // MARK: Functions
+  
+  public override func resignFirstResponder() -> Bool {
+    super.resignFirstResponder()
+    
+    searchBarTextField?.resignFirstResponder()
+    searchBarTextField?.text = nil
+    model.lastSearchString = nil
+    
+    return true
+  }
+  
+  public func cancel() {
+    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  public func search() {
+    controller.searchBook()
+  }
+  
+  // MARK: TextField Delegates
+  
+  public func textFieldDidBeginEditing(textField: UITextField) {
+    if textField.text?.characters.count > 0 {
+      UIView.animate(duration: 0.2) { [weak self] in
+        self?.tableView?.alpha = 1.0
+      }
+    }
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        model.searchString = NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1))
+        // else, user has inputted some new strings
+      } else { model.searchString = text + string }
+    }
+    return true
+  }
+  
+  public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    resignFirstResponder()
+    return false
+  }
+  
+  // MARK: TableView Delegates
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 166
+  }
+  
+  public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return model.books.count
+  }
+  
+  public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    
+    if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
+      cell.bookView?.canShowBookProfile = false
+      cell.setBook(model.books[indexPath.row])
+      cell._cellPressed.removeAllListeners()
+      cell._cellPressed.listen(self) { [weak self] bool in
+        if bool == true {
+          self?.model.book = self?.model.books[indexPath.row]
+        }
+      }
+      
+      return cell
+    }
+    return DLTableViewCell()
+  }
+  
+  public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    model.book = model.books[indexPath.row]
+  }
+  
+  // MARK: Keyboard observers
+  func keyboardWillShow(notification: NSNotification) {
+    
+    focusImageView?.hidden = true
+    
+    if let keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue() {
+      lastKeyboardFrame = keyboardFrame
+    }
+  }
+  
+  func keyboardDidShow(notification: NSNotification) {
+    keyboardActive = true
+  }
+  
+  func keyboardWillHide(notification: NSNotification) {
+    
+    keyboardActive = false
+    
+    focusImageView?.hidden = false
+    
+    UIView.animate(duration: 0.2) { [weak self] in
+      self?.tableView?.alpha = 0.0
+    }
   }
 }
 

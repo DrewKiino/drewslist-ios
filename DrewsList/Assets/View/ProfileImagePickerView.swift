@@ -18,8 +18,8 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
 
   private var scrollView: UIScrollView?
   private var tableView: DLTableView?
-  private var profileImgURLs: [String]?
-  private var profileImgNames: [String]?
+  private var profileImgURLs: [String] = []
+  private var profileImgNames: [String] = []
   
   // Navigation Header Views
   private var headerView: UIView?
@@ -49,14 +49,9 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   }
   
   public override func viewWillAppear(animated: Bool) {
-    
-    controller.readRealmUser()
   }
   
   public override func viewWillDisappear(animated: Bool) {
-    controller.writeRealmUser()
-    controller.updateUserInServer()
-    
   }
   
   public override func viewWillLayoutSubviews() {
@@ -82,12 +77,6 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
     cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
-    
-    //    chooseButton = UIButton()
-    //    chooseButton?.setTitle("Choose", forState: .Normal)
-    //    chooseButton?.titleLabel?.font = UIFont.asapRegular(16)
-    //    chooseButton?.addTarget(self, action: "choose", forControlEvents: .TouchUpInside)
-    //    headerView?.addSubview(chooseButton!)
   }
   
   public func cancel() {
@@ -131,16 +120,10 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     // setup view's databinding
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
-      self?.tableView!.reloadData()
-    }
-    model._fbProfileImageURL.removeAllListeners()
-    model._fbProfileImageURL.listen(self) { [weak self] fbProfileImageURL in
+      self?.model.fbProfileImageURL = user?.facebook_image
       self?.setupProfileImages()
       self?.tableView!.reloadData()
     }
-    
-    // setup controller's databinding
-    controller.setupDataBinding()
   }
   
   public func setUser(user: User?) {
@@ -155,25 +138,26 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if let profileImgURLs = profileImgURLs {
-      return profileImgURLs.count
-    } else { return 1 }
+    return profileImgURLs.count
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BigImageCell", forIndexPath: indexPath) as? BigImageCell {
-      if let profileImgURLs = profileImgURLs, profileImgNames = profileImgNames {
-        cell.imageUrl = profileImgURLs[indexPath.row]
-        cell.label?.text = profileImgNames[indexPath.row]
-        cell._didSelectCell.listen(self) { [weak self] list in
-          self?.model.user?.imageUrl = profileImgURLs[indexPath.row]
-//          self?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
-//          self?.dismissViewControllerAnimated(true, completion: nil)
-//          self?.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-//          TabView.currentView()?.dismissViewControllerAnimated(true, completion: nil)
-//          TabView.currentView()?.navigationController?.dismissViewControllerAnimated(true, completion: nil)
-          self?.dismissViewControllerAnimated(true, completion: nil)
+      cell.imageUrl = profileImgURLs[indexPath.row]
+      cell.label?.text = profileImgNames[indexPath.row]
+      cell._didSelectCell.removeAllListeners()
+      cell._didSelectCell.listen(self) { [weak self] list in
+        self?.model.user?.imageUrl = self?.profileImgURLs[indexPath.row]
+        UserController.updateUserToServer({ (user) -> User? in
+          user?.imageUrl = self?.model.user?.imageUrl
+          return user
+        }) { [weak self] user in
+          self?.dismissViewControllerAnimated(true) { bool in
+            if let editProfileView = TabView.currentView()?.visibleViewController as? EditProfileView {
+              editProfileView.setUser(user)
+            }
+          }
         }
       }
       cell.label?.textAlignment = .Center

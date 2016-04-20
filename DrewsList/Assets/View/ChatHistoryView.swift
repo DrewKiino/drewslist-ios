@@ -54,7 +54,8 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     rootView?.view.addSubview(tableView!)
   }
   
-  private func setupDataBinding() {
+  public override func setupDataBinding() {
+    super.setupDataBinding()
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
     }
@@ -104,8 +105,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
       cell.showSeparatorLine()
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] chatModel in
-        self?.controller.readRealmUser()
-        self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
+        self?.pushViewController(ChatView().setUsers(UserModel.sharedUser().user, friend: chatModel?.friend), animated: true)
       }
       
       cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date().isRecent() ?? false) ? .paradiseGray() : .whiteColor()
@@ -149,10 +149,10 @@ public class ChatHistoryCell: DLTableViewCell {
     
     leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
     title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 8, width: screen.width - 100, height: 16)
-    arrow?.anchorAndFillEdge(.Right, xPad: 8, yPad: 20, otherSize: 12)
+    arrow?.anchorAndFillEdge(.Right, xPad: 1, yPad: 20, otherSize: 12)
 //    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
     timestamp?.anchorInCorner(.TopRight, xPad: 12, yPad: 12, width: 48, height: 16)
-    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 24)
+    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 18)
     
     set(chatModel: chatModel)
   }

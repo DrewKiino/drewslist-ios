@@ -36,7 +36,7 @@ public class Sockets {
   
   public let _session_id = Signal<String?>()
   public var session_id: String? = nil { didSet { _session_id => session_id } }
-  public let socket = Sockets.new()
+  public let socket = Sockets.generateNewSocket()
   public var isCurrentlyInChat: Bool = false
   
   public var connectExecutionArray: [String: () -> Void]?
@@ -119,8 +119,7 @@ public class Sockets {
     socket.connect()
   }
   
-  public class func new() -> SocketIOClient {
-    
+  public class func generateNewSocket() -> SocketIOClient {
     let socket = SocketIOClient(
       socketURL: NSURL(string: ServerUrl.Default.getValue()) ?? NSURL(),
       options: [
@@ -135,7 +134,8 @@ public class Sockets {
             NSHTTPCookieSecure: true,
             NSHTTPCookieExpires: NSDate(timeIntervalSinceNow: 60)
           ])!]
-        )
+        ),
+        .Secure(ServerUrl.Default.getValue() == ServerUrl.Production.getValue()),
       ]
     )
     return socket
@@ -143,7 +143,7 @@ public class Sockets {
   
   public class func request(event: String, parameters: AnyObject...) -> Promise<JSON> {
     return Promise { fulfill, reject in
-      let tempSocket = Sockets.new()
+      let tempSocket = Sockets.generateNewSocket()
       tempSocket.on(event + ".response") { data, socket in
         if let jsonArray = JSON(data).array, let json = jsonArray.first {
           fulfill(json)
@@ -201,15 +201,15 @@ public class Sockets {
     }
   }
   
-  public func emit(event: String, _ object: [String: AnyObject], forceConnection: Bool = false) {
+  public func emit(event: String, objects: [String: AnyObject], forceConnection: Bool = false) {
     if isConnected() {
-      socket.emit(event, object)
+      socket.emit(event, objects)
     } else if forceConnection {
-      connect() { [unowned self] in self.socket.emit(event, object) }
+      connect() { [unowned self] in self.socket.emit(event, objects) }
     }
   }
   
-  public func emit(event: String, _ object: String, forceConnection: Bool = false) {
+  public func emit(event: String, object: String, forceConnection: Bool = false) {
     if isConnected() {
       socket.emit(event, object)
     } else if forceConnection {

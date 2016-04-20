@@ -12,6 +12,7 @@ import Neon
 import SDWebImage
 import Signals
 import Async
+import MIBadgeButton_Swift
 
 public class UserProfileViewContainer: DLNavigationController {
   
@@ -45,6 +46,8 @@ public class UserProfileViewContainer: DLNavigationController {
     //rootView = userProfileView
     setViewControllers([rootView!], animated: false)
     setRootViewTitle("Profile")
+    userProfileView?.setUser(UserModel.sharedUser().user)
+    userProfileView?.getUserFromServer()
   }
   
   public func setList_id(list_id: String?) -> Self {
@@ -85,7 +88,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public var saleListView: UICollectionView?
   public var wishListView: UICollectionView?
   public var arrow: UIImageView?
-  public var isOtherUser: Bool?
+  public var isOtherUser: Bool = false
   public var callButton: UIButton?
   public var chatButton: UIButton?
   
@@ -106,7 +109,6 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     super.viewDidLoad()
     
     setupSelf()
-    setupDataBinding()
     setupScrollView()
     setupBGView()
     setupProfileImg()
@@ -114,10 +116,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     setupBookshelf()
     setupUsernameLabel()
     setupButtons()
+    setupDataBinding()
     
     // MARK: Neon Layouts
     
     scrollView?.fillSuperview()
+    scrollView?.hidden = true
     
     bgView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 300)
     bgView?.groupAndFill(group: .Vertical, views: [bgViewTop!, bgViewBot!], padding: 0)
@@ -137,6 +141,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // record the background view's original height
     originalBGViewFrame = bgViewTop?.frame
+    
+    callButton?.align(.ToTheLeftMatchingBottom, relativeTo: profileImg!, padding: 8, width: 36, height: 36)
+    chatButton?.align(.ToTheRightMatchingBottom, relativeTo: profileImg!, padding: 8, width: 36, height: 36)
     
     // MARK: UI methods
     view.showActivityView(-64, width: nil, height: nil)
@@ -162,34 +169,39 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   public override func viewWillLayoutSubviews() {
     super.viewWillLayoutSubviews()
     
-    descriptionTextView?.sizeToFit()
     descriptionTextView?.alignAndFillWidth(
       align: .UnderCentered,
       relativeTo: bgView!,
-      padding: 0,
-      height: 50
-      //      height: descriptionTextView!.frame.size.height < 200 ? descriptionTextView!.frame.size.height : 200
+      padding: 4,
+      height: descriptionTextView!.frame.size.height < 36 ? descriptionTextView!.frame.size.height : 36
     )
-    descriptionTextView?.backgroundColor = .whiteColor()
     
-    
-    bookShelf?.alignAndFillWidth(align: .UnderCentered, relativeTo: descriptionTextView!, padding: 0, height: 600)
+    bookShelf?.align(.UnderCentered, relativeTo: descriptionTextView!, padding: 8, width: screen.width, height: 600)
     
     scrollView?.contentSize = CGSizeMake(screen.width,
-      425
-      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 300 : 0)
-      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 225 : 0)
+      900
+//      + ((model.user?.listings.filter { $0.listType == "selling" })?.first != nil ? 260: 48)
+//      + ((model.user?.listings.filter { $0.listType == "buying" })?.first != nil ? 260 : 48)
     )
+    
+    callButton?.hidden = model.user?.privatePhoneNumber == true ? true : isOtherUser == true ? false : true
+    callButton?.hidden = isOtherUser == true ? false : true
   }
   
   // MARK: Data Binding
   
+  public func getUserFromServer() {
+    controller.getUserFromServer(true)
+  }
+  
   private func setupDataBinding() {
+    
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
       if self?.isOtherUser == true { self?.title = "User Profile" }
       else { self?.title = "Profile" }
     }
+    
     controller.isLoadingUserDataFromServer.removeAllListeners()
     controller.isLoadingUserDataFromServer.listen(self) { [weak self] isLoading in
       DLNavigationController.showActivityAnimation(self, leftHandSide: true)
@@ -199,30 +211,50 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       
       DLNavigationController.hideActivityAnimation(self, leftHandSide: true)
       
+      self?.scrollView?.hidden = false
+      
       self?.view.dismissActivityView()
       
       if didLoad {
         self?.bookShelf?.reloadData()
       }
       
-      // MARK: Images
-      self?.profileImg?.dl_setImageFromUrl(self?.model.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
-      self?.bgViewTop?.dl_setImageFromUrl(self?.model.user?.bgImage, placeholder: UIImage(named: "background_books_1"))
-      
-      self?.callButton?.hidden = false
-      self?.chatButton?.hidden = false
-      
-      // MARK: Texts
-      self?.profileUsername?.text = self?.model.user?.getName()
-      self?.descriptionTextView?.text = self?.model.user?.description
+      self?.reloadUI()
+    }
+  }
+  
+  public func reloadUI() {
+    
+    // MARK: Images
+    profileImg?.dl_setImageFromUrl(model.user?.imageUrl, placeholder: UIImage(named: "profile-placeholder"), maskWithEllipse: true)
+    bgViewTop?.dl_setImageFromUrl(model.user?.bgImage, placeholder: UIImage(named: "background_books_1"))
+    
+    callButton?.hidden = false
+    chatButton?.hidden = false
+    
+    // MARK: Texts
+    profileUsername?.text = model.user?.getName()
+    descriptionTextView?.text = model.user?.school
+    
+    if let bgView = bgView, let descriptionTextView = descriptionTextView {
+      descriptionTextView.text = "\(model.user?.school != nil ? "Student at \(model.user?.school ?? "")" : "")"
+      descriptionTextView.sizeToFit()
+      descriptionTextView.alignAndFillWidth(
+        align: .UnderCentered,
+        relativeTo: bgView,
+        padding: 4,
+        //      height: isOtherUser == true ? 50 : 0
+        //      height: 50
+        height: descriptionTextView.frame.size.height < 36 ? descriptionTextView.frame.size.height : 36
+      )
     }
   }
   
   // MARK: UI Setup
   
   public func setupSelf() {
+    view.backgroundColor = .whiteColor()
     controller.changeOtherUserBoolean(isOtherUser)
-    controller.getUserFromServer()
   }
   
   public func setupScrollView() {
@@ -266,6 +298,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     descriptionTextView?.editable = false
     descriptionTextView?.showsVerticalScrollIndicator = false
     descriptionTextView?.font = .asapRegular(12)
+    descriptionTextView?.backgroundColor = .whiteColor()
+    descriptionTextView?.textColor = .coolBlack()
     scrollView?.addSubview(descriptionTextView!)
   }
   
@@ -280,48 +314,41 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   private func setupButtons() {
-    if let isOtherUser = self.isOtherUser {
-      if (!isOtherUser){
-        let myImage = UIImage(named: "Icon-SettingsGear")
-        let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
-        
-        let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
-        
-        //settingsButton.action
-        // TODO: check if user is self
-        self.navigationItem.rightBarButtonItem = settingsButton
-      }
-      if (isOtherUser) {
-        let iconWidth = screen.width / 12
-        
-        var myImage = UIImage(named: "Call Icon-2")
-        var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
-        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
-        
-        callButton = UIButton()
-        callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
-        callButton?.setImage(resizedImage, forState: .Normal)
-        callButton?.frame = CGRectMake(screen.width * (1 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
-        callButton?.alpha = !isOtherUser ? 0.0 : model.user?.phone != nil ? model.user?.privatePhoneNumber == false ? 1.0 : 0.0 : 0.0
-        callButton?.hidden = true
-       
-        myImage = UIImage(named: "Message Icon-1")
-        resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
-        resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
-        
-        chatButton = UIButton()
-        chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
-        chatButton?.setImage(resizedImage, forState: .Normal)
-        chatButton?.frame = CGRectMake(screen.width * (2 / 3) - iconWidth / 2, 0, iconWidth, iconWidth)
-        chatButton?.hidden = true
-        
-        descriptionTextView?.addSubview(callButton!)
-        descriptionTextView?.addSubview(chatButton!)
-        
-        
-        myImage = nil
-        resizedImage = nil
-      }
+    if isOtherUser == false {
+      let myImage = UIImage(named: "Icon-SettingsGear")
+      let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
+      
+      let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+      
+      //settingsButton.action
+      // TODO: check if user is self
+      self.navigationItem.rightBarButtonItem = settingsButton
+      
+    } else {
+      
+      let iconWidth = screen.width / 12
+      
+      var myImage = UIImage(named: "Call Icon-2")
+      var resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+      resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+      
+      callButton = UIButton()
+      callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+      callButton?.setImage(resizedImage, forState: .Normal)
+     
+      myImage = UIImage(named: "Message Icon-1")
+      resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: iconWidth, height: iconWidth))
+      resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
+      
+      chatButton = UIButton()
+      chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
+      chatButton?.setImage(resizedImage, forState: .Normal)
+      
+      bgView?.addSubview(callButton!)
+      bgView?.addSubview(chatButton!)
+      
+      myImage = nil
+      resizedImage = nil
     }
   }
   
@@ -335,23 +362,22 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   public func setIsOtherUser(isOtherUser: Bool?) -> Self {
-    self.isOtherUser = isOtherUser
+    if let isOtherUser = isOtherUser {
+      self.isOtherUser = isOtherUser
+    }
     return self
   }
   
   public func setUser(user: User?) -> Self {
     // fixture
     guard let user = user else { return self}
-    // read the user currently logged in
-    controller.readRealmUser()
-    isOtherUser = user._id != model.user?._id
+    isOtherUser = user._id != UserModel.sharedUser().user?._id
     // Check if incoming set user is the current user or is another user
-    if isOtherUser == true {
-      //self.isOtherUser = is
-      model.user = user
-    }
+    model.user = user
     
     controller.changeOtherUserBoolean(isOtherUser)
+    
+    getUserFromServer()
     
     return self
   }
@@ -381,19 +407,23 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     switch indexPath.row {
     case 0:
       if (model.user?.listings.filter { $0.listType == "selling" })?.first == nil {
-        return 0
+        return 48
+      } else {
+        return 220
       }
       break
     case 1:
       if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
-        return 0
+        return 48
+      } else {
+        return 230
       }
       break
     default: break
     }
-    return 235
+    return 220
   }
-  
+
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
     guard let cell = tableView.dequeueReusableCellWithIdentifier("UserProfileListView", forIndexPath: indexPath) as? UserProfileListView else { return DLTableViewCell() }
@@ -402,33 +432,40 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     case 0:
       
       cell.tag = 0
+      cell.label?.text =  "I'm Selling"
+      cell.label?.font = .asapBold(16)
+      cell.isOtherUser = isOtherUser
+      
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "selling" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label.text =  "I'm Selling"
         
         // set data
         cell.controller.model.bookList = listings
-        cell.label.font = UIFont.asapBold(13)
+      }
         
-      } else {
-        
-        cell.label.text =  nil
+      cell.onBadgeButtonPress = { [weak self] in
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("selling"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
       
       break
     case 1:
+      
       cell.tag = 1
-
+      cell.label?.text = "I'm Buying"
+      cell.label?.font = .asapBold(16)
+      cell.isOtherUser = isOtherUser
+      
       if let user = model.user, let listings = (model.user?.listings.filter { $0.listType == "buying" }) where user._id != nil && listings.first?.book?._id != nil {
-        
-        cell.label.text = "I'm Buying"
-        cell.label.font = UIFont.asapBold(13)
         
         // set data
         cell.controller.model.bookList = listings
-        
-      } else {
-        cell.label.text = nil
+      }
+      
+      cell.onBadgeButtonPress = { [weak self] in
+        self?.presentViewController(SearchBookView().setOnDismiss() { [weak self] in
+          self?.presentViewController(CreateListingView().setBook(SearchBookModel.sharedInstance().book).setListType("buying"), animated: true, completion: nil)
+        }, animated: true, completion: nil)
       }
 
       break
@@ -437,13 +474,13 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
     
     // add databinding to cells
     cell._didSelectListing.removeAllListeners()
-    cell._didSelectListing.listen(self) { [weak navigationController] list_id in
-      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(), animated: true)
+    cell._didSelectListing.listen(self) { [weak self, weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(self?.model.user?._id == UserModel.sharedUser().user?._id), animated: true)
     }
     
     cell._didSelectMatch.removeAllListeners()
-    cell._didSelectMatch.listen(self) { [weak navigationController] list_id in
-      navigationController?.pushViewController(ListViewContainer().setList_id(list_id), animated: true)
+    cell._didSelectMatch.listen(self) { [weak self, weak navigationController] list_id in
+      navigationController?.pushViewController(ListViewContainer().setList_id(list_id).isUserListing(self?.model.user?._id == UserModel.sharedUser().user?._id), animated: true)
     }
     
     return cell
@@ -495,7 +532,9 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
 
 public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
   
-  public let label = UILabel()
+  public var label: UILabel?
+  public var badgeButton: MIBadgeButton?
+  
   public var collectionViewLayout: UICollectionViewFlowLayout?
   public var collectionView: UICollectionView?
   
@@ -508,18 +547,55 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
   public let _didSelectListing = Signal<String?>()
   public let _didSelectMatch = Signal<String?>()
   
+  public var onBadgeButtonPress: (() -> Void)?
+  
+  public var isOtherUser: Bool = false
+  
   public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setupDataBinding()
     setupCollectionView()
-    setupLabel()
+    setupAttributes()
   }
   
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
+  public override func prepareForReuse() {
+    super.prepareForReuse()
+    
+    setupDataBinding()
+    setupCollectionView()
+    setupAttributes()
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    if model.bookList.isEmpty {
+      label?.anchorToEdge(.Left, padding: 8, width: 76, height: 36)
+    } else {
+      label?.anchorInCorner(.TopLeft, xPad: 8, yPad: 8, width: 76, height: 36)
+    }
+    
+    badgeButton?.align(.ToTheRightCentered, relativeTo: label!, padding: 0, width: 48, height: 48)
+    badgeButton?.badgeEdgeInsets = UIEdgeInsetsMake(20, -12, 0, 0)
+    badgeButton?.badgeString = ((label?.text == "I'm Selling") ? "\(UserModel.sharedUser().user?.freeListings ?? 0)" : nil)
+    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    
+    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label!, padding: 0)
+    collectionViewFrame = collectionView!.frame
+    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
+    
+    
+    if isOtherUser == true {
+      badgeButton?.hidden = true
+    }
+  }
+  
   private func setupDataBinding() {
+    model._bookList.removeAllListeners()
     model._bookList.listen(self) { [weak self] list in
       self?.collectionView?.reloadData()
     }
@@ -538,24 +614,21 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     collectionView?.backgroundColor = UIColor.whiteColor()
     collectionView?.showsHorizontalScrollIndicator = false
     collectionView?.multipleTouchEnabled = true
+    
     addSubview(collectionView!)
   }
   
-  private func setupLabel() {
-    label.font = UIFont.systemFontOfSize(16)
-    label.textColor = UIColor.sexyGray()
-    addSubview(label)
-  }
-  
-  public override func layoutSubviews() {
-    super.layoutSubviews()
+  private func setupAttributes() {
+    label?.removeFromSuperview()
+    label = UILabel()
+    label?.font = UIFont.systemFontOfSize(16)
+    label?.textColor = UIColor.coolBlack()
+    addSubview(label!)
     
-    setupCollectionView()
-    
-    label.anchorAndFillEdge(.Top, xPad: 8, yPad: 0, otherSize: 25)
-    collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label, padding: 0)
-    collectionViewFrame = collectionView!.frame
-    collectionViewLayout?.itemSize = CGSizeMake(100, collectionViewFrame.height)
+    badgeButton?.removeFromSuperview()
+    badgeButton = MIBadgeButton(type: .ContactAdd)
+    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    addSubview(badgeButton!)
   }
   
   public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets{
@@ -588,6 +661,10 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     }
     
     return UICollectionViewCell()
+  }
+  
+  public func badgeButtonPressed() {
+    onBadgeButtonPress?()
   }
 }
 
@@ -626,19 +703,34 @@ public class ListCell: UICollectionViewCell {
     super.init(coder: aDecoder)
   }
   
+  public override func prepareForReuse() {
+    super.prepareForReuse()
+    
+    setupContainerView()
+    setupBookImageView()
+    setupBookPriceLabel()
+    setupMatchInfoView()
+    setupMatchUserImageView()
+    setupMatchPriceLabel()
+    setupMatchUserNameLabel()
+  }
+  
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)
+//    if listing?.highestLister != nil && listing?.highestLister?.user?._id != listing?.user?._id {
+//    } else {
+//    }
+//    containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)
+    containerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
     
     bookImageView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 150)
     bookPriceLabel?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookImageView!, padding: 4, height: 12)
     matchInfoView?.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: 32)
-//    matchInfoView?.alignAndFillWidth(align: .UnderCentered, relativeTo: bookPriceLabel!, padding: 0, height: 36)
     matchUserImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 24, height: 24)
     matchPriceLabel?.alignAndFill(align: .ToTheRightCentered, relativeTo: matchUserImageView!, padding: 4)
     
-    // load the UI for the listing once the frame's have been set
+    
     loadListingIntoView()
   }
   
@@ -647,6 +739,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupContainerView() {
+    containerView?.removeFromSuperview()
     containerView = UIView()
     containerView?.backgroundColor = .whiteColor()
     containerView?.layer.shadowColor = UIColor.darkGrayColor().CGColor
@@ -659,6 +752,8 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupBookImageView() {
+    bookImageView?.removeFromSuperview()
+    bookImageView?.removeFromSuperview()
     bookImageView = UIImageView()
     bookImageView?.userInteractionEnabled = true
     bookImageView?.backgroundColor = .whiteColor()
@@ -668,6 +763,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupBookPriceLabel() {
+    bookPriceLabel?.removeFromSuperview()
     bookPriceLabel = UILabel()
     bookPriceLabel?.textColor = UIColor.moneyGreen()
     bookPriceLabel?.font = UIFont.asapBold(12)
@@ -678,6 +774,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupMatchInfoView() {
+    matchInfoView?.removeFromSuperview()
     matchInfoView = UIView()
     matchInfoView?.userInteractionEnabled = true
     matchInfoView?.backgroundColor = .whiteColor()
@@ -688,11 +785,13 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupMatchUserImageView() {
+    matchUserImageView?.removeFromSuperview()
     matchUserImageView = UIImageView()
     matchInfoView?.addSubview(matchUserImageView!)
   }
   
   private func setupMatchPriceLabel() {
+    matchPriceLabel?.removeFromSuperview()
     matchPriceLabel = UILabel()
     matchPriceLabel?.textColor = .whiteColor()
     matchPriceLabel?.font = .asapBold(12)
@@ -702,6 +801,7 @@ public class ListCell: UICollectionViewCell {
   }
   
   private func setupMatchUserNameLabel() {
+    matchUserNameLabel?.removeFromSuperview()
     matchUserNameLabel = UILabel()
     matchUserNameLabel?.textColor = .coolBlack()
     matchUserNameLabel?.font = .asapRegular(12)
@@ -719,7 +819,6 @@ public class ListCell: UICollectionViewCell {
   }
   
   public func setListing(listing: Listing?) {
-    
     self.listing = listing
   }
   
@@ -763,14 +862,13 @@ public class ListCell: UICollectionViewCell {
       matchPriceLabel?.text = "Best \(listing?.highestLister?.getListTypeText2() ?? "") \(listing?.highestLister?.getPriceText() ?? "")"
       // resize the container view
       containerView?.removeConstraints(containerView!.constraints)
-      containerView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 5)
       containerView?.layer.shadowPath = UIBezierPath(roundedRect: containerView!.bounds, cornerRadius: 0).CGPath
+      
     } else {
       // hide the match info view
       matchInfoView?.hidden = true
       // resize the container view
       containerView?.removeConstraints(containerView!.constraints)
-      containerView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 175)
       containerView?.layer.shadowPath = UIBezierPath(roundedRect: containerView!.bounds, cornerRadius: 0).CGPath
     }
   }

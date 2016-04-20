@@ -77,6 +77,9 @@ public class User: Mappable {
   public let _facebook_update_time = Signal<String?>()
   public var facebook_update_time: String? { didSet { _facebook_update_time => facebook_update_time } }
   
+  public let _facebook_image = Signal<String?>()
+  public var facebook_image: String? { didSet { _facebook_image => facebook_image } }
+  
   public let _timezone = Signal<String?>()
   public var timezone: String? { didSet { _timezone => timezone } }
  
@@ -104,6 +107,15 @@ public class User: Mappable {
   
   public let _hasSeenOnboardingView = Signal<Bool>()
   public var hasSeenOnboardingView: Bool = false { didSet { _hasSeenOnboardingView => hasSeenOnboardingView } }
+  
+  // MARK: User Listings
+  public let _freeListings = Signal<Int?>()
+  public var freeListings: Int? { didSet { _freeListings => freeListings } }
+  
+  // MARK: Referral System
+  public var referralCode: String?
+  public var hasSeenReferralView: Bool = false
+  public var hasSeenInitialFreeListingView: Bool = false
  
   public init() {}
   
@@ -116,22 +128,32 @@ public class User: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
-    _id                     <- map["_id"]
-    email                   <- map["email"]
-    phone                   <- map["phone"]
-    firstName               <- map["firstName"]
-    lastName                <- map["lastName"]
-    username                <- map["username"]
-    school                  <- map["school"]
-    imageUrl                <- map["image"]
-    bgImage                 <- map["bgImage"]
-    description             <- map["description"]
-    deviceToken             <- map["deviceToken"]
-    listings                <- map["listings"]
-    privatePhoneNumber      <- map["privatePhoneNumber"]
-    hasSeenTermsAndPrivacy  <- map["hasSeenTermsAndPrivacy"]
-    hasSeenOnboardingView   <- map["hasSeenOnboardingView"]
+    _id                           <- map["_id"]
+    email                         <- map["email"]
+    phone                         <- map["phone"]
+    firstName                     <- map["firstName"]
+    lastName                      <- map["lastName"]
+    username                      <- map["username"]
+    school                        <- map["school"]
+    imageUrl                      <- map["image"]
+    bgImage                       <- map["bgImage"]
+    description                   <- map["description"]
+    deviceToken                   <- map["deviceToken"]
+    listings                      <- map["listings"]
     
+    // facebookk
+    facebook_image                <- map["facebook_image"]
+    
+    // user settings
+    privatePhoneNumber            <- map["privatePhoneNumber"]
+    hasSeenTermsAndPrivacy        <- map["hasSeenTermsAndPrivacy"]
+    hasSeenOnboardingView         <- map["hasSeenOnboardingView"]
+    
+    // user listings
+    freeListings                  <- map["freeListings"]
+    referralCode                  <- map["referralCode"]
+    hasSeenReferralView           <- map["hasSeenReferralView"]
+    hasSeenInitialFreeListingView <- map["hasSeenInitialFreeListingView"]
   }
   
   public func getName() -> String? {
@@ -177,34 +199,42 @@ public class UserModel {
   // all other controllers to access
   private struct Singleton {
     private static let _user = Signal<User?>()
-    private static var user: User? { didSet { Singleton._user => Singleton.user } }
+    private static var user: User? {
+      didSet {
+        if let user = Singleton.user {
+          do {
+            let realm = try Realm()
+            try realm.write() {
+              realm.deleteAll()
+              realm.add(RealmUser().setRealmUser(user), update: true)
+            }
+          } catch {
+            log.warning("unable to perform Realm operations")
+          }
+        } else {
+          try! Realm().write { try! Realm().deleteAll() }
+        }
+        Singleton._user => Singleton.user
+      }
+    }
+    private static func currentUser() -> User? {
+      if let user = Singleton.user { return user }
+      else if let realmUser = try! Realm().objects(RealmUser.self).first { return realmUser.getUser() }
+      else { return nil }
+    }
   }
-  public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return (Singleton._user, Singleton.user) }
-  public class func setSharedUser(user: User?) { if let user = user { Singleton.user = user } }
+  public class func sharedUser() -> (_user: Signal<User?>, user: User?) { return (Singleton._user, Singleton.currentUser())}
+  public class func unsetSharedUser() { try! Realm().write { try! Realm().deleteAll() } }
+  public class func setSharedUser(user: User?) { Singleton.user = user }
   
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
+  
+  public static var deviceToken: String?
+  public static var hasSeenOnboarding: Bool = false
+  public static var hasSeenTermsAndPrivacy: Bool = false
 }
 
-
-public class UserDefaults: Object {
-  
-  dynamic var _id: String?
-  
-  // onboarding
-  dynamic var didShowOnboarding: Bool = false
-  
-  // school selection
-  dynamic var school: String?
-  dynamic var state: String?
-  
-  // device token
-  dynamic var deviceToken: String?
-  
-  public override static func primaryKey() -> String? {
-    return "_id"
-  }
-}
 
 public class RealmUser: Object {
   

@@ -26,6 +26,14 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     super.viewDidAppear(animated)
   }
   
+  
+  public override func viewDidDisappear(animated: Bool) {
+    if let userProfileView = TabView.currentView()?.visibleViewController as? UserProfileView {
+      log.debug("mark")
+      userProfileView.setUser(UserModel.sharedUser().user)
+    }
+  }
+  
   private func setupSelf() {
     view.backgroundColor = .whiteColor()
     title = "Settings"
@@ -88,6 +96,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.hideArrowIcon()
+        cell.showSeparatorLine()
         cell.titleButton?.setTitle("Log Out", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
@@ -95,12 +104,13 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
           alertController.addAction(UIAlertAction(title: "Yes, I'm sure.", style: .Default) { [weak self] action in
             LoginController.logOut()
             self?.navigationController?.popToRootViewControllerAnimated(true)
+            UserModel.hasSeenOnboarding = true
+            UserModel.hasSeenOnboarding = true
           })
           alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
           })
           TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
         }
-        cell.showBottomBorder()
         return cell
       }
       break

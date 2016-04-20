@@ -64,12 +64,6 @@ public class Book: Mappable {
   public let _edition = Signal<String?>()
   public var edition: String? { didSet { _edition => edition } }
   
-  public let _listPrice = Signal<String?>()
-  public var listPrice: String? { didSet { _listPrice => listPrice } }
-  
-  public let _retailPrice = Signal<String?>()
-  public var retailPrice: String? { didSet { _retailPrice => retailPrice } }
-  
   public let _smallImage = Signal<String?>()
   public var smallImage: String? { didSet { _smallImage => smallImage } }
   
@@ -93,6 +87,11 @@ public class Book: Mappable {
   public let _bestSellerListing = Signal<String?>()
   public var bestSellerListing: String? { didSet { _bestSellerListing => bestSellerListing } }
   
+  // prices
+  
+  public var awsListPrice: AWSListPrice?
+  public var googleListPrice: GoogleListPrice?
+  public var googleRetailPrice: GoogleListPrice?
   
   public init() {}
   
@@ -107,28 +106,31 @@ public class Book: Mappable {
   public required init?(_ map: Map) {}
   
   public func mapping(map: Map) {
-    _id             <- map["_id"]
-    google_id       <- map["google_id"]
-    title           <- map["title"]
-    subtitle        <- map["subtitle"]
-    authors         <- map["authors"]
-    publisher       <- map["publisher"]
-    publishedDate   <- map["publishedDate"]
-    description     <- map["description"]
-    edition         <- map["edition"]
-    ISBN10          <- map["ISBN_10"]
-    ISBN13          <- map["ISBN_13"]
-    binding         <- map["binding"]
-    pageCount       <- map["pageCount"]
-    categories      <- map["categories"]
-    averageRating   <- map["averageRating"]
-    maturityRating  <- map["maturityRating"]
-    language        <- map["language"]
-    listPrice       <- map["listPrice.amount"]
-    retailPrice     <- map["retailPrice.amount"]
-    smallImage      <- map["smallImage"]
-    mediumImage     <- map["mediumImage"]
-    largeImage      <- map["largeImage"]
+    _id               <- map["_id"]
+    google_id         <- map["google_id"]
+    title             <- map["title"]
+    subtitle          <- map["subtitle"]
+    authors           <- map["authors"]
+    publisher         <- map["publisher"]
+    publishedDate     <- map["publishedDate"]
+    description       <- map["description"]
+    edition           <- map["edition"]
+    ISBN10            <- map["ISBN_10"]
+    ISBN13            <- map["ISBN_13"]
+    binding           <- map["binding"]
+    pageCount         <- map["pageCount"]
+    categories        <- map["categories"]
+    averageRating     <- map["averageRating"]
+    maturityRating    <- map["maturityRating"]
+    language          <- map["language"]
+    smallImage        <- map["smallImage"]
+    mediumImage       <- map["mediumImage"]
+    largeImage        <- map["largeImage"]
+    
+    // Prices
+    awsListPrice      <- map["listPriceAWS"]
+    googleListPrice   <- map["listPriceGoogle"]
+    googleRetailPrice <- map["retailPriceGoogle"]
   }
   
   public func hasImageUrl() -> Bool {
@@ -137,6 +139,13 @@ public class Book: Mappable {
   
   public func getImageUrl() -> String? {
     return largeImage ?? mediumImage ?? smallImage ?? nil
+  }
+  
+  public func getListPrice() -> Double {
+    let price1 = (Double(awsListPrice?.amount ?? "0.0") ?? 0.0) / 1.00
+    let price2 = (googleListPrice?.amount ?? 0.0) / 1.00
+    let maxPrice = max(price1, price2)
+    return maxPrice
   }
 }
 
@@ -171,4 +180,45 @@ public class BookModel {
   public let _book = Signal<Book?>()
   public var book: Book? { didSet { _book => book } }
   
+}
+
+public class AWSListPrice: Mappable {
+  
+  public var amount: String?
+  public var currencyCode: String?
+  public var formattedPrice: String?
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    amount          <- map["amount"]
+    currencyCode    <- map["currencyCode"]
+    formattedPrice  <- map["formattedPrice"]
+  }
+  
+  
+  public func getListPriceText() -> String? {
+    return formattedPrice
+  }
+}
+
+public class GoogleListPrice: Mappable {
+  
+  public var amount: Double?
+  public var currencyCode: String?
+  
+  public required init?(_ map: Map) {}
+  
+  public func mapping(map: Map) {
+    amount          <- map["amount"]
+    currencyCode    <- map["currencyCode"]
+  }
+  
+  
+  public func getListPriceText() -> String? {
+    if let amount = amount {
+      return "$\(amount)"
+    }
+    return nil
+  }
 }

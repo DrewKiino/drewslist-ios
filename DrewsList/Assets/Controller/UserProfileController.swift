@@ -16,9 +16,9 @@ import RealmSwift
 public class UserProfileController {
   
   private let model = UserProfileModel()
-  private var refrainTimer: NSTimer?
   private var view: UserProfileView?
   private var isOtherUser: Bool?
+  private var refrainTimer: NSTimer?
   
   public let isLoadingUserDataFromServer = Signal<Bool>()
   public let didLoadUserDataFromServer = Signal<Bool>()
@@ -31,7 +31,6 @@ public class UserProfileController {
   
   public func viewDidAppear() {
     if isOtherUser == false { model.user = UserModel.sharedUser().user }
-    getUserFromServer()
   }
   
   public class func updateUserToServer(parameters: [String: AnyObject], callback: (User -> Void)? = nil) {
@@ -46,7 +45,12 @@ public class UserProfileController {
     }
   }
   
-  public func getUserFromServer() {
+  public func getUserFromServer(override: Bool = false) {
+    if override {
+      refrainTimer?.invalidate()
+      refrainTimer = nil
+      model.shouldRefrainFromCallingServer = false
+    }
     // make sure the user_id exists
     guard let user_id = model.user?._id where model.shouldRefrainFromCallingServer == false else { return }
     isLoadingUserDataFromServer => true

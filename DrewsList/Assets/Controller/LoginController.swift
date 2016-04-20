@@ -25,8 +25,10 @@ public class LoginController {
   private let userController = UserController()
   private let fbsdkController = FBSDKController()
   
-  public let shouldDismissView = Signal<Bool>()
   public let shouldPresentPhoneInputView = Signal<Bool>()
+  public let shouldPresentSchoolInputView = Signal<()>()
+  public var shouldPresentReferralInputView: (() -> Void)?
+  public var shouldDismissView: ((title: String?, message: String?) -> Void)?
   
   private var refrainTimer: NSTimer?
   
@@ -59,6 +61,8 @@ public class LoginController {
   public func checkIfUserIsLoggedIn() -> Bool {
     // check if user is already logged in
     if let user = try! Realm().objects(RealmUser.self).first?.getUser() where user._id != nil {
+      
+      log.debug("user is logged in\(user.getName() != nil ? ": \(user.getName()!)" : "")")
     
       // set the user's model
       model.user = user
@@ -66,11 +70,12 @@ public class LoginController {
       getUserFromServer()
       
       // dismiss the view
-      shouldDismissView.fire(true)
+      shouldDismissView?(title: nil, message: nil)
       
     // check if user is logged into facebook
     } else if fbsdkController.userIsLoggedIntoFacebook() {
       
+      log.debug("user is logged in facebook")
       
       fbsdkController.getUserAttributesFromFacebook()
       
@@ -78,6 +83,7 @@ public class LoginController {
     // if not show login view
     } else if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView {
       
+      log.debug("user is not logged in")
       
       tabView.presentViewController(LoginView(), animated: false) { bool in
         // else, log use out of facebook
@@ -107,12 +113,10 @@ public class LoginController {
         // create and  user object
         self?.model.user = User(json: json)
         // set the shared user instance
-        UserController.setSharedUser(self?.model.user)
-        // write user object to realm
-        self?.writeRealmUser()
-        
+        UserModel.setSharedUser(self?.model.user)
         // dismiss the view
-        self?.shouldDismissView.fire(true)
+        self?.shouldDismissView?(title: nil, message: nil)
+
         
       // user does not exist in database
       } else {
@@ -120,7 +124,6 @@ public class LoginController {
         // nullify the model and
         // delete the deprecated user
         self?.model.user = nil
-        self?.deleteRealmUser()
         // then log user out
         self?.model.shouldLogout = true
       }
@@ -167,18 +170,20 @@ public class LoginController {
         
         // set the shared user instance
         UserController.setSharedUser(self?.model.user)
-        // write user object to realm
-        self?.writeRealmUser()
-        
-        let user = try! Realm().objects(RealmUser.self).first?.getUser()
         
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         
         if self?.model.user?.phone == nil {
           self?.shouldPresentPhoneInputView.fire(true)
+        } else if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
+          self?.shouldPresentSchoolInputView.fire()
+        } else if let title = json["_title"].string, message = json["_message"].string {
+          self?.shouldDismissView?(title: title, message: message)
+        } else if self?.model.user?.hasSeenInitialFreeListingView == false {
+          self?.shouldPresentReferralInputView?()
         } else {
-          self?.shouldDismissView.fire(true)
+          self?.shouldDismissView?(title: nil, message: nil)
         }
       }
       
@@ -191,12 +196,15 @@ public class LoginController {
     
     let password: String = model.password ?? ""
     let phone: String = model.phone ?? ""
+    let school: String = model.user?.school ?? ""
+    let state: String = model.user?.state ?? ""
     // NOTE: password is not given by facebook
     // facebook attributes
     let facebook_id: String = model.user?.facebook_id ?? ""
     let facebook_link: String = model.user?.facebook_link ?? ""
     let facebook_update_time: String = model.user?.facebook_update_time ?? ""
     let facebook_verified: String = model.user?.facebook_verified ?? ""
+    let facebook_image: String = model.user?.imageUrl ?? ""
     let gender: String = model.user?.gender ?? ""
     let age_min: String = model.user?.age_min ?? ""
     let age_max: String = model.user?.age_max ?? ""
@@ -206,7 +214,12 @@ public class LoginController {
     let timezone: String = model.user?.timezone ?? ""
     let firstName: String = model.user?.firstName ?? ""
     let lastName: String = model.user?.lastName ?? ""
-    let deviceToken: String = userController.readUserDefaults()?.deviceToken ?? ""
+    
+    // user settings
+    let deviceToken: String = UserModel.deviceToken ?? ""
+    let hasSeenTermsAndPrivacy: Bool = UserModel.hasSeenTermsAndPrivacy ?? false
+    let hasSeenOnboardingView: Bool = UserModel.hasSeenOnboarding ?? false
+    let currentUUID: String = NSUUID().UUIDString
     
     var friends = [[String: AnyObject]]()
     for friend in model.friends {
@@ -220,16 +233,23 @@ public class LoginController {
       ] as [String: AnyObject ])
     }
     
-    Sockets.sharedInstance().emit("authenticateUser", [
+    // referral system
+    let referralCode: String = model.referralCode ?? ""
+    let shouldAskForReferral: Bool = model.shouldAskForReferral
+    
+    Sockets.sharedInstance().emit("authenticateUser", objects: [
       "email": email,
       "password": password,
       "phone" : phone,
+      "school": school,
+      "state": state,
       // NOTE: password is not given by facebook
       // facebook attributes
       "facebook_id": facebook_id,
       "facebook_link": facebook_link,
       "facebook_update_time": facebook_update_time,
       "facebook_verified": facebook_verified,
+      "facebook_image": facebook_image,
       "gender": gender,
       "age_min": age_min,
       "age_max": age_max,
@@ -239,10 +259,17 @@ public class LoginController {
       "timezone": timezone,
       "firstName": firstName,
       "lastName": lastName,
-      "deviceToken": deviceToken,
       "friends": friends,
-      "localAuth": localAuth
-    ] as [String: AnyObject])
+      "localAuth": localAuth,
+      // user setings
+      "deviceToken": deviceToken,
+      "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+      "hasSeenOnboardingView": hasSeenOnboardingView,
+      "currentUUID": currentUUID,
+      // referral system
+      "referralCode": referralCode,
+      "shouldAskForReferral": shouldAskForReferral
+    ] as [String: AnyObject], forceConnection: true)
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds
@@ -257,16 +284,11 @@ public class LoginController {
     fbsdkController.getUserAttributesFromFacebook()
   }
   
-  // MARK: Realm Functions
-  public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
-  public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }
-  // this one deletes all prior users
-  // we should only have one user in database, and that should be the current user
-  public func deleteRealmUser(){ try! Realm().write { try! Realm().deleteAll() } }
-  
   public class func logOut() {
+    // remove all shared models
+    SearchSchoolController.clearCache()
     // deletes the current user, then will log user out.
-    LoginController.sharedInstance().deleteRealmUser()
+    UserModel.unsetSharedUser()
     // log out of facebook if they are logged in
     FBSDKController.logout()
     // since the current user does not exist anymore

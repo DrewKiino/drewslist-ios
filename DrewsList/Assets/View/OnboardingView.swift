@@ -47,12 +47,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   private func setupOnboardingView() {
     
-    // persist app state and say that the onboarding view has been seen
-    //    NSUserDefaults.standardUserDefaults().setBool(true, forKey: "OnboardingSeen")
-    
-    //skipButton = UIButton(frame: CGRectMake((view.frame.width / 2) - 50, view.frame.height - 60, 100, 48))
-    //skipButton?.addTarget(self, action: "skipOnboarding", forControlEvents: .TouchUpInside)
-    
     let firstPageBG = UIImageView(image: Toucan(image: UIImage(named: "OnBoardingScreen-1")!).resize(firstPage.view.frame.size, fitMode: .Clip).image)
     firstPageBG.frame = firstPage.view.frame
     firstPage.view.addSubview(firstPageBG)
@@ -139,10 +133,8 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     
     // add needed subviews
     switch currentView.title! {
-    case "PermissionsForPushScreen":
-      setupPushPermissions(currentView.view)
-      break
     case "CloseTheDealScreen":
+      PushController().showPermissions()
       setupGetStartedButton(currentView.view)
       break
     //default: currentView.view.addSubview(skipButton!)
@@ -163,10 +155,8 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     
     // add needed subviews
     switch currentView.title! {
-    case "PermissionsForPushScreen":
-      setupPushPermissions(currentView.view)
-      break
     case "CloseTheDealScreen":
+      PushController().showPermissions()
       setupGetStartedButton(currentView.view)
       break
     //default: currentView.view.addSubview(skipButton!)
@@ -187,7 +177,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
       if view == pushPermissionsLaterButton { view.removeFromSuperview() }
       else if view == pushPermissionsAcceptButton { view.removeFromSuperview() }
       else if view == getStartedButton { view.removeFromSuperview() }
-//      else if view == skipButton { view.removeFromSuperview() }
     }
   }
   
@@ -201,11 +190,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   
   public func setOnboardingAsBeenSeen() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write {
-        userDefaults.didShowOnboarding = true
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
+    UserModel.hasSeenOnboarding = true
   }
 }

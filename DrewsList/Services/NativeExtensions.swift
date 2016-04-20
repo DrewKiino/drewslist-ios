@@ -97,9 +97,9 @@ extension Int {
   public func toFormattedPhoneNumberText() -> NSMutableString {
     let string: NSMutableString = NSMutableString(string: String(self))
     if string.length == 11 {
-      string.insertString("-", atIndex: 0)
-      string.insertString("-", atIndex: 4)
-      string.insertString("-", atIndex: 8)
+      string.insertString("-", atIndex: 1)
+      string.insertString("-", atIndex: 5)
+      string.insertString("-", atIndex: 9)
     } else if string.length == 10 {
       string.insertString("-", atIndex: 3)
       string.insertString("-", atIndex: 7)
@@ -222,6 +222,10 @@ extension String {
     mutstring = nil
     return paddingHeight == true ? rect.height * 1.25 + screen.height * 0.25 : rect.height * 1.4
   }
+  
+  public func substringWithRange(start: Int, length: Int) -> String {
+    return NSString(string: self).substringWithRange(NSRange(location: start, length: length))
+  }
 }
 
 extension NSMutableAttributedString {
@@ -235,6 +239,75 @@ extension NSMutableAttributedString {
       appendAttributedString(attributedString)
     }
     return self
+  }
+  
+  func setColor(color: UIColor) -> Self {
+    addAttribute(NSForegroundColorAttributeName, value: color, range: NSMakeRange(0, string.characters.count - 1))
+    return self
+  }
+}
+
+extension UIViewController {
+  
+  public enum UIType {
+    case LeftBarButton
+    case RightBarButton
+  }
+  
+  public func showAlert(title: String?, message: String?, completionBlock: (() -> Void)? = nil) {
+    var alertController: UIAlertController! = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+      completionBlock?()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func showActivity(uiType: UIType) {
+    var activityIndicator: UIActivityIndicatorView! = UIActivityIndicatorView()
+    activityIndicator.startAnimating()
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    }
+    activityIndicator = nil
+  }
+  
+  public func hideActivity(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
+      break
+    }
+  }
+  
+  public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: target, action: "cancel")
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
+      break
+    }
+  }
+  
+  public func hideButton(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
+      break
+    }
   }
 }
 
@@ -259,9 +332,9 @@ extension UIView {
     activityView = nil
   }
   
-  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil) {
+  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil, style: UIActivityIndicatorViewStyle = .Gray) {
     dismissActivityView()
-    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: style)
     activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
     activityView.tag = 1337
     activityView.startAnimating()
@@ -463,10 +536,11 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
+    
     Async.background { [weak self] in
       
-      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: .Crop)
+      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: fitMode)
       
       if maskWithEllipse == true { toucan?.maskWithEllipse() }
       

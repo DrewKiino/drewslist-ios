@@ -110,7 +110,7 @@ public class ChatController {
     
     isSendingMessage => true
     
-    socket.emit("broadcast", json)
+    socket.emit("broadcast", objects: json)
     
     // set the listing to nil to indicate that the user has already sent which listing he has
     // viewed to the other user
@@ -151,7 +151,7 @@ public class ChatController {
       
       self?.isSendingMessage.fire(true)
       
-      self?.socket.emit("broadcast", json)
+      self?.socket.emit("broadcast", objects: json)
     }
   }
   
@@ -166,7 +166,7 @@ public class ChatController {
     
     socket.emit(
       "chat.subscribe",
-      [
+      objects: [
         "room_id": room_id,
         "user_id": user_id
       ]
@@ -178,7 +178,7 @@ public class ChatController {
     
     socket.emit(
       "chat.unsubscribe",
-      [
+      objects: [
         "room_id": room_id,
         "user_id": user_id
       ]
@@ -288,7 +288,7 @@ public class ChatController {
       }
     }
     
-    socket.emit("chat.getChatHistory", [
+    socket.emit("chat.getChatHistory", objects: [
       "user_id": model.friend?._id ?? "",
       "room_id": model.room_id ?? "",
       "skip": skip,

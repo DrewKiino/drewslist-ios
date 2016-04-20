@@ -42,6 +42,8 @@ public class ChatView: JSQMessagesViewController {
     super.viewDidAppear(animated)
     
     controller.viewDidAppear()
+    
+    collectionView?.hidden = false
   }
   
   public override func viewWillDisappear(animated: Bool) {
@@ -269,6 +271,17 @@ public class ChatView: JSQMessagesViewController {
   }
   
   public override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+    Async.background { [weak self] in
+      if let cells = self?.collectionView?.visibleCells() {
+        for cell in cells {
+          if let collectionViewCell = cell as? JSQMessagesCollectionViewCell {
+            Async.main { [weak collectionViewCell] in
+              collectionViewCell?.textView?.textColor = .whiteColor()
+            }
+          }
+        }
+      }
+    }
     // NOTE: returning nil here causes a crash
     // therefore, it is better to return an empty JSQMessage object
     return model.messages.isEmpty ? JSQMessage(senderId: "", displayName: "", text: "") : model.messages[indexPath.row]
@@ -318,6 +331,10 @@ public class ChatView: JSQMessagesViewController {
       : indexPath.row > 0 ? model.messages[indexPath.row - 1].date().weekday == model.messages[indexPath.row].date().weekday ? model.messages[indexPath.row].date().toLocalDateRegion()?.isToday() == true ?
         20 : 0 : 20 : 20
     //    return indexPath.row == 0 ? 0 : indexPath.row > 0 ? model.messages[indexPath.row - 1].senderId == model.messages[indexPath.row].senderId ? 0 : 20 : 20
+  }
+  
+  public override func collectionView(collectionView: JSQMessagesCollectionView!, didTapAvatarImageView avatarImageView: UIImageView!, atIndexPath indexPath: NSIndexPath!) {
+    navigationController?.pushViewController(UserProfileView().setUser(User().set(_id: model.messages[indexPath.row].senderId())), animated: true)
   }
   
   private func getJSQMessageAvatarImageDataSource(index: Int) -> JSQMessageAvatarImageDataSource {
