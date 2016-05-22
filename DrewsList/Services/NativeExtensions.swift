@@ -291,7 +291,7 @@ extension UIViewController {
   public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {
     switch uiType {
     case .LeftBarButton:
-      navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: target, action: "cancel")
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
       break
     case .RightBarButton:
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)

@@ -96,6 +96,8 @@ public class FBSDKController {
           return callback(true)
         }
         
+        log.warning("unable to populate basic user info from facebook")
+        
         return callback(false)
       }
     }
@@ -126,15 +128,18 @@ public class FBSDKController {
           return callback(true)
         }
         
+        log.warning("unable to populate list of friends from facebook")
+        
         return callback(false)
       }
     }
   }
   
-  public func getUserAttributesFromFacebook() {
+  public func getUserAttributesFromFacebook(completionHandler: (User? -> Void)? = nil) {
     populateBasicFBUserInfo() { [weak self] bool in
       self?.populateListOfFBFriends() { [weak self] bool in
         self?.didFinishGettingUserAttributesFromFacebook.fire((self?.model.user, self?.model.friends))
+        completionHandler?(self?.model.user)
       }
     }
   }
@@ -147,7 +152,7 @@ public class FBSDKController {
     if let friends = friends {
       return friends
     } else {
-      print("Problem retrieving friends")
+      log.warning("Problem retrieving friends")
       return nil
     }
   }

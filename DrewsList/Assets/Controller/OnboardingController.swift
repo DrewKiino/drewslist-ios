@@ -13,9 +13,9 @@ public class OnboardingController {
   
   private let model = OnboardingModel()
   
-  private let pushController = PushController()
+  private let fbsdkController = FBSDKController()
   
-  public func showPermissions() {
-    pushController.showPermissions()
+  public func loginThroughFBSDK(completionHandler: (User? -> Void)) {
+    fbsdkController.getUserAttributesFromFacebook(completionHandler)
   }
 }

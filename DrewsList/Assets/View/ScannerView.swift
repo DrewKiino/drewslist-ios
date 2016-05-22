@@ -160,7 +160,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
         self?.tableView?.hidden = true
         self?.showAlert("Sorry!", message: "We did not find any matches!")
         
-      } else if self?.keyboardActive == true {
+      } else if self?.keyboardActive == true || self?.lastKeyboardFrame == nil {
         
         self?.tableView?.hidden = false
         

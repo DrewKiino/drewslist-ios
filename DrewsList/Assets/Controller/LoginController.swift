@@ -40,7 +40,7 @@ public class LoginController {
     model._shouldLogout.removeAllListeners()
     model._shouldLogout.listen(self) { [weak self] shouldLogout in
       if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView where shouldLogout {
-        tabView.presentViewController(LoginView(), animated: false, completion: nil)
+        tabView.presentViewController(OnboardingView(), animated: false, completion: nil)
       }
     }
     fbsdkController.didFinishGettingUserAttributesFromFacebook.removeAllListeners()
@@ -85,7 +85,7 @@ public class LoginController {
       
       log.debug("user is not logged in")
       
-      tabView.presentViewController(LoginView(), animated: false) { bool in
+      tabView.presentViewController(OnboardingView(), animated: false) { bool in
         // else, log use out of facebook
         FBSDKLoginManager().logOut()
       }
@@ -174,9 +174,9 @@ public class LoginController {
         // set user online status to true
         Sockets.sharedInstance().setOnlineStatus(true)
         
-        if self?.model.user?.phone == nil {
-          self?.shouldPresentPhoneInputView.fire(true)
-        } else if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
+//        if self?.model.user?.phone == nil {
+//          self?.shouldPresentPhoneInputView.fire(true)
+        if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
           self?.shouldPresentSchoolInputView.fire()
         } else if let title = json["_title"].string, message = json["_message"].string {
           self?.shouldDismissView?(title: title, message: message)

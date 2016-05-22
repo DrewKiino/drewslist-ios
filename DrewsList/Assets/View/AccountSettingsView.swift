@@ -166,7 +166,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         cell.titleLabel?.text = "Allow push notifications"
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          self?.pushController.showPermissions()
+          self?.pushController.showPermissions(true)
         }
         
         pushController._didUpdateAuthorizationStatus.removeListener(self)
