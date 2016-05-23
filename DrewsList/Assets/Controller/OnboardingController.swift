@@ -11,11 +11,5 @@ import PermissionScope
 
 public class OnboardingController {
   
-  private let model = OnboardingModel()
-  
-  private let pushController = PushController()
-  
-  public func showPermissions() {
-    pushController.showPermissions()
-  }
+  public let model = OnboardingModel()
 }

@@ -30,9 +30,9 @@ public enum ServerUrl {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
     case .Production: return "https://drewslist-production.herokuapp.com"
-//    case .Default: return "http://localhost:1337"
+    case .Default: return "http://localhost:1337"
 //    case .Default: return "https://drewslist-staging.herokuapp.com"
-    case .Default: return "https://drewslist-production.herokuapp.com"
+//    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
 }
@@ -176,7 +176,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var tabView: TabView? = TabView.sharedInstance()
 //    var tabView: ListFeedNavigationView? = ListFeedNavigationView()
     
-//    var tabView: CreateListingView? = CreateListingView()
+//    var tabView: OnboardingView? = OnboardingView()
 //    var tabView: SignUpView? = SignUpView()
     
     /*

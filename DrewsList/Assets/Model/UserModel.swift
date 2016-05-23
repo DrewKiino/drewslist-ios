@@ -116,6 +116,10 @@ public class User: Mappable {
   public var referralCode: String?
   public var hasSeenReferralView: Bool = false
   public var hasSeenInitialFreeListingView: Bool = false
+  public var hasAgreedToUserAgreement: Bool = false
+  
+  // MARK: Facebook Friends
+  public var friends: [User] = []
  
   public init() {}
   
@@ -148,6 +152,7 @@ public class User: Mappable {
     privatePhoneNumber            <- map["privatePhoneNumber"]
     hasSeenTermsAndPrivacy        <- map["hasSeenTermsAndPrivacy"]
     hasSeenOnboardingView         <- map["hasSeenOnboardingView"]
+    hasAgreedToUserAgreement      <- map["hasAgreedToUserAgreement"]
     
     // user listings
     freeListings                  <- map["freeListings"]

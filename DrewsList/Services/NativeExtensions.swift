@@ -291,7 +291,7 @@ extension UIViewController {
   public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {
     switch uiType {
     case .LeftBarButton:
-      navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: target, action: "cancel")
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
       break
     case .RightBarButton:
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
@@ -415,20 +415,20 @@ extension UIView {
   public func hideLoadingScreen() {
     subviews.forEach {
       if let view: UIView? = $0 where $0.tag == 1337 {
-        UIView.animateWithDuration(0.5, delay: 0.7, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.2, delay: 0.1, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
         })
       } else if let view = $0 as? NVActivityIndicatorView {
-        UIView.animateWithDuration(1.0, delay: 0, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
         })
       }
       else if let view = $0 as? LTMorphingLabel {
-        UIView.animateWithDuration(1.0, delay: 0.2, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.3, delay: 0.2, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
