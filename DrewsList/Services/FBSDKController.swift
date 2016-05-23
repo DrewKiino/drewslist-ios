@@ -172,24 +172,25 @@ public class FBSDKController {
     FBSDKAppEvents.logEvent(name, parameters: parameters)
   }
   
-  public class func getUser(completionHandler: (User? -> Void)) {
+  public class func getUser(completionHandler: (User? -> Void)? = nil) {
     if FBSDKAccessToken.currentAccessToken() != nil {
       populateBasicUserInfo() { user in
         if let user = user {
           populateFriends() { friends in
             if let friends = friends {
               user.friends = friends
-              return completionHandler(user)
+              UserModel.setSharedUser(user)
+              completionHandler?(user)
             } else {
-              return completionHandler(nil)
+              completionHandler?(nil)
             }
           }
         } else {
-          return completionHandler(nil)
+          completionHandler?(nil)
         }
       }
     } else {
-      return completionHandler(nil)
+      completionHandler?(nil)
     }
   }
   

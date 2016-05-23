@@ -77,7 +77,7 @@ public class LoginController {
       
       log.debug("user is logged in facebook")
       
-      fbsdkController.getUserAttributesFromFacebook()
+      FBSDKController.getUser()
       
     // if we already have a user, attempt to call the server to update the current user
     // if not show login view

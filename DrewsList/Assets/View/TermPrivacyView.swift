@@ -12,7 +12,7 @@ import Neon
 import TextFieldEffects
 import KMPlaceholderTextView
 import SwiftyButton
-
+import WebKit
 
 
 //UnderConstruction!
@@ -33,7 +33,7 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
     super.viewDidLoad()
     
     setUpSelf()
-    setupTableView()
+//    setupTableView()
     
 //    HeaderView?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: 60)
 //    HeaderTitle?.anchorToEdge(.Bottom, padding: 12, width: 150, height: 24)
@@ -52,10 +52,17 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
     
     tableView?.fillSuperview(left: 0, right: 0, top: 0, bottom: 116)
     
-    FBSDKController.createCustomEventForName("UserTermPrivacy")
+    FBSDKController.createCustomEventForName("User Agreement")
+    
+    if let url = NSURL(string: "http://totemv.com/drewslist/useragreement") {
+      let webView = WKWebView()
+      webView.loadRequest(NSURLRequest(URL: url))
+      view.addSubview(webView)
+      webView.fillSuperview()
+    }
   }
   
-  // MARK: DLTableView delegates  
+  // MARK: DLTableView delegates
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     return TERMS_AND_PRIVACY.height(screen.width)
@@ -77,7 +84,7 @@ public class TermPrivacyView: UIViewController, UITableViewDataSource, UITableVi
   
   private func setUpSelf() {
     view.backgroundColor = .whiteColor()
-    title = "Terms & Privacy"
+    title = "User Agreement"
   }
   
   private func setupTableView() {
