@@ -104,7 +104,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     // MARK: Setup
   
   private func setupSelf() {
-    title = "Drew's List"
+    title = "Scan"
     rootView?.view.backgroundColor = .whiteColor()
   }
   
