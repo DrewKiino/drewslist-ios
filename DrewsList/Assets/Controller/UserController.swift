@@ -34,8 +34,9 @@ public class UserController {
   func writeRealmUser(user: User?) -> User? { if let user = user { try! Realm().write { try! Realm().add(RealmUser().setRealmUser(user), update: true) }; return user } else { return nil } }
   
   // MARK: User Functions
-  public class func updateUserToServer(updateBlock: (user: User?) -> User?, completionBlock: UserControllerServerResponseBlock? = nil) {
-    if let user = updateBlock(user: UserModel.sharedUser().user), let user_id = user._id {
+  public class func updateUserToServer(updateBlock: ((user: User?) -> User?)? = nil, completionBlock: UserControllerServerResponseBlock? = nil) {
+    
+    if let user = updateBlock != nil ? updateBlock!(user: UserModel.sharedUser().user) : UserModel.sharedUser().user, let user_id = user._id {
       
       let email: String = user.email ?? ""
       let school: String = user.school ?? ""

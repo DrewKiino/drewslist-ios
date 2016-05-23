@@ -30,12 +30,13 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   public override func viewWillAppear(animated: Bool) {
-    controller.readRealmUser()
-  }
+    model.user = UserModel.sharedUser().user
+    }
   
   public override func viewWillDisappear(animated: Bool) {
-    controller.writeRealmUser()
     super.viewWillDisappear(animated)
+    
+    controller.saveEdit()
   }
   
   // MARK: setup view functions
