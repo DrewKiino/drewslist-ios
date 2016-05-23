@@ -37,7 +37,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupSelf()
     setupDataBinding()
     setupTableView()
-  
+    
     FBSDKController.createCustomEventForName("UserAccountSettings")
   }
   
@@ -92,14 +92,14 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     switch indexPath.row {
-    case 0, 7, 11, 13: return 24
-    case 15: return 100
+    case 0, 6, 10, 12: return 24
+    case 14: return 100
     default: return 36
     }
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 15
+    return 16
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -109,7 +109,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
         cell.paddingLabel?.text = "Account Info"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -123,47 +122,39 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
-        cell.titleLabel?.text = "UserName:"
-        cell.titleTextLabel?.text = model.user?.username
-        return cell
-      }
-      break
-    case 3:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "First Name:"
         cell.titleTextLabel?.text = model.user?.firstName
         return cell
       }
       break
-    case 4:
+    case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Last Name:"
         cell.titleTextLabel?.text = model.user?.lastName
         return cell
       }
       break
-    case 5:
+    case 4:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "Phone Number:"
         cell.titleTextLabel?.text = model.user?.getPhoneNumberText()
         return cell
       }
       break
-    case 6:
+    case 5:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
         cell.titleLabel?.text = "School:"
         cell.titleTextLabel?.text = model.user?.school
         return cell
       }
       break
-    case 7:
+    case 6:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Permissions"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
-    case 8:
+    case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as? SwitchCell {
         cell.titleLabel?.text = "Allow push notifications"
         cell._didSelectCell.removeAllListeners()
@@ -188,7 +179,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 9:
+    case 8:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as? SwitchCell {
         cell.titleLabel?.text = "Allow in-app location services"
         cell._didSelectCell.removeAllListeners()
@@ -212,7 +203,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 10:
+    case 9:
       if let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as? SwitchCell {
         cell.titleLabel?.text = "Allow other users to call you"
         cell._didSelectCell.removeAllListeners()
@@ -232,14 +223,13 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 11:
+    case 10:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Main Options"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
-    case 12:
+    case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         cell.titleButton?.setTitle("Manage Listings", forState: .Normal)
         cell.onClick = { [weak self] in
@@ -248,14 +238,13 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
         return cell
       }
       break
-    case 13:
+    case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Other Options"
-        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
-    case 14:
+    case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell", forIndexPath: indexPath) as? FullTitleCell {
         
         cell.titleButton?.setTitle("Delete Account", forState: .Normal)

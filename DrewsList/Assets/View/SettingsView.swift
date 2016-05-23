@@ -29,7 +29,6 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
   
   public override func viewDidDisappear(animated: Bool) {
     if let userProfileView = TabView.currentView()?.visibleViewController as? UserProfileView {
-      log.debug("mark")
       userProfileView.setUser(UserModel.sharedUser().user)
     }
   }
@@ -85,7 +84,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showSeparatorLine()
-        cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
+        cell.titleButton?.setTitle("User Agreement", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
           self?.navigationController?.pushViewController(TermPrivacyView(), animated: true)

@@ -151,7 +151,6 @@ public class SignUpController {
         if let error = error {
           log.error(error)
         } else if let data = data, json: JSON! = JSON(data: data), title = json["_title"].string, message = json["_message"].string  {
-          log.debug("mark")
           self?.shouldDismissView?(title: title, message: message)
         }
       }

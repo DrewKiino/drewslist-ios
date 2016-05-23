@@ -77,7 +77,7 @@ public class LoginController {
       
       log.debug("user is logged in facebook")
       
-      fbsdkController.getUserAttributesFromFacebook()
+      FBSDKController.getUser()
       
     // if we already have a user, attempt to call the server to update the current user
     // if not show login view
@@ -148,132 +148,133 @@ public class LoginController {
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    Sockets.sharedInstance().on("authenticateUser.response") { [weak self] json in
-      
-      if json["errmsg"].string != nil || json["error"].string != nil {
-        
-        // update the UI if the authentication session was done through local auth
-        if localAuth {
-          if json["error"].string?.containsString("email") == true {
-            self?.model._isValidEmail.fire(false)
-          } else if json["error"].string?.containsString("password") == true {
-            self?.model._isValidPassword.fire(false)
-          } else {
-            self?.model._serverError.fire(true)
-          }
-        }
-        
-        // if theres an error, log the user out
-        FBSDKLoginManager().logOut()
-        
-      } else {
-        
-        // create and  user object
-        self?.model.user = User(json: json)
-        
-        // set the shared user instance
-        UserController.setSharedUser(self?.model.user)
-        
-        // set user online status to true
-        Sockets.sharedInstance().setOnlineStatus(true)
-        
-//        if self?.model.user?.phone == nil {
-//          self?.shouldPresentPhoneInputView.fire(true)
-        if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
-          self?.shouldPresentSchoolInputView.fire()
-        } else if let title = json["_title"].string, message = json["_message"].string {
-          self?.shouldDismissView?(title: title, message: message)
-        } else if self?.model.user?.hasSeenInitialFreeListingView == false {
-          self?.shouldPresentReferralInputView?()
-        } else {
-          self?.shouldDismissView?(title: nil, message: nil)
-        }
-      }
-      
-      // create a throttler
-      // this will disable this controllers server calls for 10 seconds
-      self?.refrainTimer?.invalidate()
-      self?.refrainTimer = nil
-      self?.model.shouldRefrainFromCallingServer = false
-    }
     
-    let email: String = model.email ?? ""
-    let password: String = model.password ?? ""
-    let phone: String = model.phone ?? ""
-    let school: String = model.user?.school ?? ""
-    let state: String = model.user?.state ?? ""
-    // NOTE: password is not given by facebook
-    // facebook attributes
-    let facebook_id: String = model.user?.facebook_id ?? ""
-    let facebook_link: String = model.user?.facebook_link ?? ""
-    let facebook_update_time: String = model.user?.facebook_update_time ?? ""
-    let facebook_verified: String = model.user?.facebook_verified ?? ""
-    let facebook_image: String = model.user?.imageUrl ?? ""
-    let gender: String = model.user?.gender ?? ""
-    let age_min: String = model.user?.age_min ?? ""
-    let age_max: String = model.user?.age_max ?? ""
-    let locale: String = model.user?.locale ?? ""
-    let image: String = model.user?.imageUrl ?? ""
-    let bgImage: String = model.user?.bgImage ?? ""
-    let timezone: String = model.user?.timezone ?? ""
-    let firstName: String = model.user?.firstName ?? ""
-    let lastName: String = model.user?.lastName ?? ""
-    
-    // user settings
-    let deviceToken: String = UserModel.deviceToken ?? ""
-    let hasSeenTermsAndPrivacy: Bool = UserModel.hasSeenTermsAndPrivacy ?? false
-    let hasSeenOnboardingView: Bool = UserModel.hasSeenOnboarding ?? false
-    let currentUUID: String = NSUUID().UUIDString
-    
-    var friends = [[String: AnyObject]]()
-    for friend in model.friends {
-      let friend_facebook_id: String = friend.facebook_id ?? ""
-      let friend_firstName: String = friend.firstName ?? ""
-      let friend_lastName: String = friend.lastName ?? ""
-      friends.append([
-        "facebook_id": friend_facebook_id,
-        "firstName": friend_firstName,
-        "lastName": friend_lastName
-      ] as [String: AnyObject ])
-    }
-    
-    // referral system
-    let referralCode: String = model.referralCode ?? ""
-    let shouldAskForReferral: Bool = model.shouldAskForReferral
-    
-    Sockets.sharedInstance().emit("authenticateUser", objects: [
-      "email": email,
-      "password": password,
-      "phone" : phone,
-      "school": school,
-      "state": state,
-      // NOTE: password is not given by facebook
-      // facebook attributes
-      "facebook_id": facebook_id,
-      "facebook_link": facebook_link,
-      "facebook_update_time": facebook_update_time,
-      "facebook_verified": facebook_verified,
-      "facebook_image": facebook_image,
-      "gender": gender,
-      "age_min": age_min,
-      "age_max": age_max,
-      "locale": locale,
-      "image": image,
-      "bgImage": bgImage,
-      "timezone": timezone,
-      "firstName": firstName,
-      "lastName": lastName,
-      "friends": friends,
-      "localAuth": localAuth,
-      // user setings
-      "deviceToken": deviceToken,
-      "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
-      "hasSeenOnboardingView": hasSeenOnboardingView,
-      "currentUUID": currentUUID,
-      // referral system
-      "referralCode": referralCode,
-      "shouldAskForReferral": shouldAskForReferral
-    ] as [String: AnyObject], forceConnection: true)
+//    Sockets.sharedInstance().on("authenticateUser.response") { [weak self] json in
+//      
+//      if json["errmsg"].string != nil || json["error"].string != nil {
+//        
+//        // update the UI if the authentication session was done through local auth
+//        if localAuth {
+//          if json["error"].string?.containsString("email") == true {
+//            self?.model._isValidEmail.fire(false)
+//          } else if json["error"].string?.containsString("password") == true {
+//            self?.model._isValidPassword.fire(false)
+//          } else {
+//            self?.model._serverError.fire(true)
+//          }
+//        }
+//        
+//        // if theres an error, log the user out
+//        FBSDKLoginManager().logOut()
+//        
+//      } else {
+//        
+//        // create and  user object
+//        self?.model.user = User(json: json)
+//        
+//        // set the shared user instance
+//        UserController.setSharedUser(self?.model.user)
+//        
+//        // set user online status to true
+//        Sockets.sharedInstance().setOnlineStatus(true)
+//        
+////        if self?.model.user?.phone == nil {
+////          self?.shouldPresentPhoneInputView.fire(true)
+//        if self?.model.user?.school == nil || self?.model.user?.school?.isEmpty == true {
+//          self?.shouldPresentSchoolInputView.fire()
+//        } else if let title = json["_title"].string, message = json["_message"].string {
+//          self?.shouldDismissView?(title: title, message: message)
+//        } else if self?.model.user?.hasSeenInitialFreeListingView == false {
+//          self?.shouldPresentReferralInputView?()
+//        } else {
+//          self?.shouldDismissView?(title: nil, message: nil)
+//        }
+//      }
+//      
+//      // create a throttler
+//      // this will disable this controllers server calls for 10 seconds
+//      self?.refrainTimer?.invalidate()
+//      self?.refrainTimer = nil
+//      self?.model.shouldRefrainFromCallingServer = false
+//    }
+//    
+//    let email: String = model.email ?? ""
+//    let password: String = model.password ?? ""
+//    let phone: String = model.phone ?? ""
+//    let school: String = model.user?.school ?? ""
+//    let state: String = model.user?.state ?? ""
+//    // NOTE: password is not given by facebook
+//    // facebook attributes
+//    let facebook_id: String = model.user?.facebook_id ?? ""
+//    let facebook_link: String = model.user?.facebook_link ?? ""
+//    let facebook_update_time: String = model.user?.facebook_update_time ?? ""
+//    let facebook_verified: String = model.user?.facebook_verified ?? ""
+//    let facebook_image: String = model.user?.imageUrl ?? ""
+//    let gender: String = model.user?.gender ?? ""
+//    let age_min: String = model.user?.age_min ?? ""
+//    let age_max: String = model.user?.age_max ?? ""
+//    let locale: String = model.user?.locale ?? ""
+//    let image: String = model.user?.imageUrl ?? ""
+//    let bgImage: String = model.user?.bgImage ?? ""
+//    let timezone: String = model.user?.timezone ?? ""
+//    let firstName: String = model.user?.firstName ?? ""
+//    let lastName: String = model.user?.lastName ?? ""
+//    
+//    // user settings
+//    let deviceToken: String = UserModel.deviceToken ?? ""
+//    let hasSeenTermsAndPrivacy: Bool = UserModel.hasSeenTermsAndPrivacy ?? false
+//    let hasSeenOnboardingView: Bool = UserModel.hasSeenOnboarding ?? false
+//    let currentUUID: String = NSUUID().UUIDString
+//    
+//    var friends = [[String: AnyObject]]()
+//    for friend in model.friends {
+//      let friend_facebook_id: String = friend.facebook_id ?? ""
+//      let friend_firstName: String = friend.firstName ?? ""
+//      let friend_lastName: String = friend.lastName ?? ""
+//      friends.append([
+//        "facebook_id": friend_facebook_id,
+//        "firstName": friend_firstName,
+//        "lastName": friend_lastName
+//      ] as [String: AnyObject ])
+//    }
+//    
+//    // referral system
+//    let referralCode: String = model.referralCode ?? ""
+//    let shouldAskForReferral: Bool = model.shouldAskForReferral
+//    
+//    Sockets.sharedInstance().emit("authenticateUser", objects: [
+//      "email": email,
+//      "password": password,
+//      "phone" : phone,
+//      "school": school,
+//      "state": state,
+//      // NOTE: password is not given by facebook
+//      // facebook attributes
+//      "facebook_id": facebook_id,
+//      "facebook_link": facebook_link,
+//      "facebook_update_time": facebook_update_time,
+//      "facebook_verified": facebook_verified,
+//      "facebook_image": facebook_image,
+//      "gender": gender,
+//      "age_min": age_min,
+//      "age_max": age_max,
+//      "locale": locale,
+//      "image": image,
+//      "bgImage": bgImage,
+//      "timezone": timezone,
+//      "firstName": firstName,
+//      "lastName": lastName,
+//      "friends": friends,
+//      "localAuth": localAuth,
+//      // user setings
+//      "deviceToken": deviceToken,
+//      "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+//      "hasSeenOnboardingView": hasSeenOnboardingView,
+//      "currentUUID": currentUUID,
+//      // referral system
+//      "referralCode": referralCode,
+//      "shouldAskForReferral": shouldAskForReferral
+//    ] as [String: AnyObject], forceConnection: true)
     
     // create a throttler
     // this will disable this controllers server calls for 10 seconds
@@ -304,6 +305,96 @@ public class LoginController {
   public class func authenticateUserToServer(user: User?, completionHandler: (User? -> Void)? = nil) {
     if let user = user {
       
+      log.debug("authenticating user...")
+      
+      let email: String = user.email ?? ""
+      let school: String = user.school ?? ""
+      let state: String = user.state ?? ""
+      
+      // NOTE: password is not given by facebook
+      // facebook attributes
+      let facebook_id: String = user.facebook_id ?? ""
+      let facebook_link: String = user.facebook_link ?? ""
+      let facebook_update_time: String = user.facebook_update_time ?? ""
+      let facebook_verified: String = user.facebook_verified ?? ""
+      let facebook_image: String = user.imageUrl ?? ""
+      let gender: String = user.gender ?? ""
+      let age_min: String = user.age_min ?? ""
+      let age_max: String = user.age_max ?? ""
+      let locale: String = user.locale ?? ""
+      let image: String = user.imageUrl ?? ""
+      let bgImage: String = user.bgImage ?? ""
+      let timezone: String = user.timezone ?? ""
+      let firstName: String = user.firstName ?? ""
+      let lastName: String = user.lastName ?? ""
+      
+      // user settings
+      let deviceToken: String = user.deviceToken ?? ""
+      let hasSeenTermsAndPrivacy: Bool = user.hasSeenTermsAndPrivacy ?? false
+      let hasSeenOnboardingView: Bool = user.hasSeenOnboardingView ?? false
+      let currentUUID: String = NSUUID().UUIDString
+      
+      var friends = [[String: AnyObject]]()
+      
+      for friend in user.friends {
+        let friend_facebook_id: String = friend.facebook_id ?? ""
+        let friend_firstName: String = friend.firstName ?? ""
+        let friend_lastName: String = friend.lastName ?? ""
+        friends.append([
+          "facebook_id": friend_facebook_id,
+          "firstName": friend_firstName,
+          "lastName": friend_lastName
+          ] as [String: AnyObject ])
+      }
+      
+      // referral system
+      let referralCode: String = user.referralCode ?? ""
+      
+      DLHTTP.POST("/user/authenticateUser", parameters: [
+        "email": email,
+        "school": school,
+        "state": state,
+        // NOTE: password is not given by facebook
+        // facebook attributes
+        "facebook_id": facebook_id,
+        "facebook_link": facebook_link,
+        "facebook_update_time": facebook_update_time,
+        "facebook_verified": facebook_verified,
+        "facebook_image": facebook_image,
+        "gender": gender,
+        "age_min": age_min,
+        "age_max": age_max,
+        "locale": locale,
+        "image": image,
+        "bgImage": bgImage,
+        "timezone": timezone,
+        "firstName": firstName,
+        "lastName": lastName,
+        "friends": friends,
+        "localAuth": false,
+        // user setings
+        "deviceToken": deviceToken,
+        "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+        "hasSeenOnboardingView": hasSeenOnboardingView,
+        "currentUUID": currentUUID,
+        // referral system
+        "referralCode": referralCode,
+      ]) { (json, error) in
+        if let json = json {
+          log.debug("user authenticated.")
+          UserController.setSharedUser(User(json: json))
+          Sockets.sharedInstance().setOnlineStatus(true)
+          completionHandler?(User(json: json))
+        } else {
+          completionHandler?(nil)
+        }
+      }
+    } else {
+      completionHandler?(nil)
+    }
+
+    
+      /*
       Sockets.sharedInstance().on("authenticateUser.response") { json in
         
         if json["errmsg"].string != nil || json["error"].string != nil {
@@ -395,7 +486,7 @@ public class LoginController {
         // referral system
         "referralCode": referralCode,
       ] as [String: AnyObject], forceConnection: true)
-    }
+    */
   }
 }
 
