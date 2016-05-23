@@ -116,6 +116,7 @@ public class FBSDKController {
         } else if let result = result, let jsonArray = JSON(result)["friends"]["data"].array {
           
           self?.model.friends.removeAll(keepCapacity: false)
+          self?.model.user?.friends.removeAll(keepCapacity: false)
           
           for json in jsonArray {
             let user = User()
@@ -123,6 +124,7 @@ public class FBSDKController {
             user.firstName = json["name"].string?.componentsSeparatedByString(" ").first
             user.lastName = json["name"].string?.componentsSeparatedByString(" ").last
             self?.model.friends.append(user)
+            self?.model.user?.friends.append(user)
           }
           
           return callback(true)
@@ -168,5 +170,100 @@ public class FBSDKController {
   
   public class func createCustomEventForName(name: String, with parameters: [NSObject: AnyObject]) {
     FBSDKAppEvents.logEvent(name, parameters: parameters)
+  }
+  
+  public class func getUser(completionHandler: (User? -> Void)) {
+    if FBSDKAccessToken.currentAccessToken() != nil {
+      populateBasicUserInfo() { user in
+        if let user = user {
+          populateFriends() { friends in
+            if let friends = friends {
+              user.friends = friends
+              return completionHandler(user)
+            } else {
+              return completionHandler(nil)
+            }
+          }
+        } else {
+          return completionHandler(nil)
+        }
+      }
+    } else {
+      return completionHandler(nil)
+    }
+  }
+  
+  public class func populateBasicUserInfo(completionHandler: (User? -> Void)) {
+    FBSDKGraphRequest.init(graphPath: "me?fields=id,email,first_name,last_name,gender,age_range,link,locale,picture.type(large),cover,timezone,updated_time,verified", parameters: nil)
+    .startWithCompletionHandler() { (connection, result, error) in
+        
+      if let error = error {
+        
+        log.error(error)
+        
+        return completionHandler(nil)
+        
+      } else if let result = result, let json: JSON! = JSON(result) {
+        
+        // create a user
+        let user = User()
+        
+        // add the attributes received from facebook
+        user.facebook_id = json["id"].string
+        user.facebook_link = json["link"].string
+        user.facebook_update_time = json["updated_time"].string
+        user.facebook_verified = json["verified"].string
+        user.email = json["email"].string
+        user.firstName = json["first_name"].string
+        user.lastName = json["last_name"].string
+        user.gender = json["gender"].string
+        user.age_min = json["age_range"]["min"].description
+        user.age_max = json["age_range"]["max"].description
+        user.locale = json["locale"].string
+        user.imageUrl = json["picture"]["data"]["url"].string
+        user.bgImage = json["cover"]["source"].string
+        user.timezone = json["timezone"].string
+        
+        // number validation
+        user.age_min = user.age_min == "null" ? nil : user.age_min
+        user.age_max = user.age_max == "null" ? nil : user.age_max
+        
+        return completionHandler(user)
+      }
+      
+      log.warning("unable to populate basic user info from facebook")
+      
+      return completionHandler(nil)
+    }
+  }
+  
+  public class func populateFriends(completionHandler: ([User]? -> Void)) {
+    FBSDKGraphRequest.init(graphPath: "me?fields=friends", parameters: nil)
+    .startWithCompletionHandler() { (connection, result, error: NSError!) in
+      if let error = error {
+        
+        log.error(error)
+        
+        return completionHandler(nil)
+        
+      } else if let result = result, let jsonArray = JSON(result)["friends"]["data"].array {
+        
+        var friends: [User] = []
+        
+        for json in jsonArray {
+          let user = User()
+          user.facebook_id = json["id"].string
+          user.firstName = json["name"].string?.componentsSeparatedByString(" ").first
+          user.lastName = json["name"].string?.componentsSeparatedByString(" ").last
+          friends.append(user)
+        }
+        
+        return completionHandler(friends)
+      }
+      
+      log.warning("unable to populate list of friends from facebook")
+      
+      return completionHandler(nil)
+    }
   }
 }

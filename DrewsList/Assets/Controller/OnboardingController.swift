@@ -11,11 +11,5 @@ import PermissionScope
 
 public class OnboardingController {
   
-  private let model = OnboardingModel()
-  
-  private let fbsdkController = FBSDKController()
-  
-  public func loginThroughFBSDK(completionHandler: (User? -> Void)) {
-    fbsdkController.getUserAttributesFromFacebook(completionHandler)
-  }
+  public let model = OnboardingModel()
 }

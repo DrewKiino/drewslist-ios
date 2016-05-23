@@ -307,7 +307,7 @@ public class LoginView2: DLNavigationController, UITextFieldDelegate, FBSDKLogin
 
   public func loginButtonPressed() {
     dismissKeyboard()
-    controller.authenticateUserToServer(false)
+    controller.authenticateUserToServer(localAuth: false)
     FBSDKController.createCustomEventForName("Login_LoginButtonPressed")
   }
   
@@ -453,7 +453,7 @@ public class LoginView2: DLNavigationController, UITextFieldDelegate, FBSDKLogin
     alertController.addAction(UIAlertAction(title: "Done", style: .Default) { [weak self, weak alertController] action in
       if let phoneNumber = alertController?.textFields?.first?.text where phoneNumber.isValidPhoneNumber() == true {
         self?.model.phone = phoneNumber
-        self?.controller.authenticateUserToServer(false)
+        self?.controller.authenticateUserToServer(localAuth: false)
       } else {
         self?.logUserOutOfFacebook()
         self?.dismissKeyboard()
@@ -479,7 +479,7 @@ public class LoginView2: DLNavigationController, UITextFieldDelegate, FBSDKLogin
           self?.model.user?.school = school.name
           self?.model.user?.state = school.state
           self?.model.shouldAskForReferral = true
-          self?.controller.authenticateUserToServer(false)
+          self?.controller.authenticateUserToServer(localAuth: false)
         } else {
           self?.logUserOutOfFacebook()
           self?.dismissKeyboard()
@@ -508,7 +508,7 @@ public class LoginView2: DLNavigationController, UITextFieldDelegate, FBSDKLogin
     alertController.addAction(UIAlertAction(title: "Validate", style: .Default) { [weak self, weak alertController] action in
       self?.model.shouldAskForReferral = true
       self?.model.referralCode = alertController?.textFields?.first?.text
-      self?.controller.authenticateUserToServer(false)
+      self?.controller.authenticateUserToServer(localAuth: false)
     })
     alertController.addAction(UIAlertAction(title: "Skip", style: .Cancel) { [weak self] action in
       UserController.updateUserToServer({ [weak self] (user) -> User? in

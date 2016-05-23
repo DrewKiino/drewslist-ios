@@ -36,9 +36,81 @@ public class UserController {
   // MARK: User Functions
   public class func updateUserToServer(updateBlock: (user: User?) -> User?, completionBlock: UserControllerServerResponseBlock? = nil) {
     if let user = updateBlock(user: UserModel.sharedUser().user), let user_id = user._id {
-      Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/\(user_id)", parameters: [
-        "deviceToken": user.deviceToken ?? "",
-        "image": user.imageUrl ?? ""
+      
+      let email: String = user.email ?? ""
+      let school: String = user.school ?? ""
+      let state: String = user.state ?? ""
+      
+      // NOTE: password is not given by facebook
+      // facebook attributes
+      let facebook_id: String = user.facebook_id ?? ""
+      let facebook_link: String = user.facebook_link ?? ""
+      let facebook_update_time: String = user.facebook_update_time ?? ""
+      let facebook_verified: String = user.facebook_verified ?? ""
+      let facebook_image: String = user.imageUrl ?? ""
+      let gender: String = user.gender ?? ""
+      let age_min: String = user.age_min ?? ""
+      let age_max: String = user.age_max ?? ""
+      let locale: String = user.locale ?? ""
+      let image: String = user.imageUrl ?? ""
+      let bgImage: String = user.bgImage ?? ""
+      let timezone: String = user.timezone ?? ""
+      let firstName: String = user.firstName ?? ""
+      let lastName: String = user.lastName ?? ""
+      
+      // user settings
+      let deviceToken: String = user.deviceToken ?? ""
+      let hasSeenTermsAndPrivacy: Bool = user.hasSeenTermsAndPrivacy ?? false
+      let hasSeenOnboardingView: Bool = user.hasSeenOnboardingView ?? false
+      let hasAgreedToUserAgreement: Bool = user.hasAgreedToUserAgreement ?? false
+      let currentUUID: String = NSUUID().UUIDString
+      
+      var friends = [[String: AnyObject]]()
+      
+      for friend in user.friends {
+        let friend_facebook_id: String = friend.facebook_id ?? ""
+        let friend_firstName: String = friend.firstName ?? ""
+        let friend_lastName: String = friend.lastName ?? ""
+        friends.append([
+          "facebook_id": friend_facebook_id,
+          "firstName": friend_firstName,
+          "lastName": friend_lastName
+        ] as [String: AnyObject ])
+      }
+      
+      // referral system
+      let referralCode: String = user.referralCode ?? ""
+      
+      Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/update?_id=\(user_id)", parameters: [
+        "email": email,
+        "school": school,
+        "state": state,
+        // NOTE: password is not given by facebook
+        // facebook attributes
+        "facebook_id": facebook_id,
+        "facebook_link": facebook_link,
+        "facebook_update_time": facebook_update_time,
+        "facebook_verified": facebook_verified,
+        "facebook_image": facebook_image,
+        "gender": gender,
+        "age_min": age_min,
+        "age_max": age_max,
+        "locale": locale,
+        "image": image,
+        "bgImage": bgImage,
+        "timezone": timezone,
+        "firstName": firstName,
+        "lastName": lastName,
+        "friends": friends,
+        "localAuth": false,
+        // user setings
+        "deviceToken": deviceToken,
+        "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+        "hasSeenOnboardingView": hasSeenOnboardingView,
+        "hasAgreedToUserAgreement": hasAgreedToUserAgreement,
+        "currentUUID": currentUUID,
+        // referral system
+        "referralCode": referralCode,
       ] as [String: AnyObject], encoding: .JSON)
       .response { req, res, data, error in
         if let error = error {

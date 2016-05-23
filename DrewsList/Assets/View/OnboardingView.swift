@@ -18,7 +18,6 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
   
   private let pushController = PushController.sharedInstance()
   
-  private let controller = OnboardingController()
   private var myViewControllers = Array(count: 2, repeatedValue:UIViewController())
   //private var skipButton: UIButton?
   private var pushPermissionsLaterButton: SwiftyButton?
@@ -41,6 +40,9 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     FBSDKController.createCustomEventForName("UserOnboarding")
     
     view.showLoadingScreen(0, bgOffset: -64)
+    
+    // log use out whenever onboarding is seen
+    logout()
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -206,19 +208,29 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
       
       log.info("User is logged in")
       
-      controller.loginThroughFBSDK() { [weak self] user in
-        
-        if let user = user, url = NSURL(string: "http://totemv.com/drewslist/useragreement"), let view = self?.viewControllers?.first, let browserView = self?.browserView {
-          
-          view.presentViewController(browserView, animated: true) { [weak self] bool in
-            let webView = WKWebView()
-            webView.loadRequest(NSURLRequest(URL: url))
-            browserView.rootView?.view.addSubview(webView)
-            webView.fillSuperview()
-            browserView.rootView?.setButton(.LeftBarButton, title: "Done", target: self, selector: "dismissBrowser")
+      FBSDKController.getUser() { [weak self] user in
+        if let user = user {
+          log.debug("user returned from Facebook SDK")
+          LoginController.authenticateUserToServer(user) { [weak self] updatedUser in
+            if let user = updatedUser {
+              log.debug("user authentcated in server")
+              if let url = NSURL(string: "http://totemv.com/drewslist/useragreement"), let view = self?.viewControllers?.first, let browserView = self?.browserView where !user.hasAgreedToUserAgreement {
+                view.presentViewController(browserView, animated: true) { [weak self] bool in
+                  let webView = WKWebView()
+                  webView.loadRequest(NSURLRequest(URL: url))
+                  browserView.rootView?.view.addSubview(webView)
+                  webView.fillSuperview()
+                  browserView.rootView?.setButton(.LeftBarButton, title: "Done", target: self, selector: "dismissBrowser")
+                }
+              } else {
+                self?.skipOnboarding()
+              }
+            } else {
+              self?.logout()
+            }
           }
         } else {
-          FBSDKLoginManager().logOut()
+          self?.logout()
         }
       }
     }
@@ -228,16 +240,32 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
     log.info("User Logged Out")
   }
   
+  public func logout() {
+    log.info("user has logged out")
+    FBSDKLoginManager().logOut()
+  }
+  
   public func dismissBrowser() {
     browserView.dismissViewControllerAnimated(true) { [weak self] bool in
       if let view = self?.viewControllers?.first {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         alertController.addAction(UIAlertAction(title: "I agree with Drew's List User Agreement", style: .Default) { action in
-          self?.skipOnboarding()
-        })
+          UserController.updateUserToServer({ (user) -> User? in
+            log.debug("updating user...")
+            user?.hasAgreedToUserAgreement = true
+            return user
+            }, completionBlock: { (user) -> Void in
+              if let user = user {
+                log.debug("user updated.")
+                self?.skipOnboarding()
+              } else {
+                self?.logout()
+              }
+          })
+          })
         alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
-          FBSDKLoginManager().logOut()
-        })
+          self?.logout()
+          })
         view.presentViewController(alertController, animated: true, completion: nil)
       }
     }

@@ -11,4 +11,6 @@ import RealmSwift
 
 public class OnboardingModel {
   
+  
+  public var user: User?
 }

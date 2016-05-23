@@ -54,7 +54,7 @@ public class LoginController {
       self?.model.friends = friends ?? []
 
       // authenticate user
-      self?.authenticateUserToServer(false)
+      self?.authenticateUserToServer(localAuth: false)
     }
   }
   
@@ -138,8 +138,11 @@ public class LoginController {
     }
   }
   
-  public func authenticateUserToServer(localAuth: Bool = true) {
-    guard let email = model.email else { return }
+  public func authenticateUserToServer(user: User? = nil, localAuth: Bool = true) {
+    
+    if let user = user {
+      model.user = user
+    }
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
@@ -194,6 +197,7 @@ public class LoginController {
       self?.model.shouldRefrainFromCallingServer = false
     }
     
+    let email: String = model.email ?? ""
     let password: String = model.password ?? ""
     let phone: String = model.phone ?? ""
     let school: String = model.user?.school ?? ""
@@ -295,6 +299,103 @@ public class LoginController {
     // we ask the tab view to check any current user, since we have no current user
     // it will present the login screen
     LoginController.sharedInstance().checkIfUserIsLoggedIn()
+  }
+  
+  public class func authenticateUserToServer(user: User?, completionHandler: (User? -> Void)? = nil) {
+    if let user = user {
+      
+      Sockets.sharedInstance().on("authenticateUser.response") { json in
+        
+        if json["errmsg"].string != nil || json["error"].string != nil {
+          
+          completionHandler?(nil)
+          
+        } else {
+          
+          // set the shared user instance
+          UserController.setSharedUser(User(json: json))
+          
+          // set user online status to true
+          Sockets.sharedInstance().setOnlineStatus(true)
+          
+          completionHandler?(User(json: json))
+        }
+      }
+      
+      let email: String = user.email ?? ""
+      let school: String = user.school ?? ""
+      let state: String = user.state ?? ""
+      
+      // NOTE: password is not given by facebook
+      // facebook attributes
+      let facebook_id: String = user.facebook_id ?? ""
+      let facebook_link: String = user.facebook_link ?? ""
+      let facebook_update_time: String = user.facebook_update_time ?? ""
+      let facebook_verified: String = user.facebook_verified ?? ""
+      let facebook_image: String = user.imageUrl ?? ""
+      let gender: String = user.gender ?? ""
+      let age_min: String = user.age_min ?? ""
+      let age_max: String = user.age_max ?? ""
+      let locale: String = user.locale ?? ""
+      let image: String = user.imageUrl ?? ""
+      let bgImage: String = user.bgImage ?? ""
+      let timezone: String = user.timezone ?? ""
+      let firstName: String = user.firstName ?? ""
+      let lastName: String = user.lastName ?? ""
+      
+      // user settings
+      let deviceToken: String = user.deviceToken ?? ""
+      let hasSeenTermsAndPrivacy: Bool = user.hasSeenTermsAndPrivacy ?? false
+      let hasSeenOnboardingView: Bool = user.hasSeenOnboardingView ?? false
+      let currentUUID: String = NSUUID().UUIDString
+      
+      var friends = [[String: AnyObject]]()
+      
+      for friend in user.friends {
+        let friend_facebook_id: String = friend.facebook_id ?? ""
+        let friend_firstName: String = friend.firstName ?? ""
+        let friend_lastName: String = friend.lastName ?? ""
+        friends.append([
+          "facebook_id": friend_facebook_id,
+          "firstName": friend_firstName,
+          "lastName": friend_lastName
+          ] as [String: AnyObject ])
+      }
+      
+      // referral system
+      let referralCode: String = user.referralCode ?? ""
+      
+      Sockets.sharedInstance().emit("authenticateUser", objects: [
+        "email": email,
+        "school": school,
+        "state": state,
+        // NOTE: password is not given by facebook
+        // facebook attributes
+        "facebook_id": facebook_id,
+        "facebook_link": facebook_link,
+        "facebook_update_time": facebook_update_time,
+        "facebook_verified": facebook_verified,
+        "facebook_image": facebook_image,
+        "gender": gender,
+        "age_min": age_min,
+        "age_max": age_max,
+        "locale": locale,
+        "image": image,
+        "bgImage": bgImage,
+        "timezone": timezone,
+        "firstName": firstName,
+        "lastName": lastName,
+        "friends": friends,
+        "localAuth": false,
+        // user setings
+        "deviceToken": deviceToken,
+        "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+        "hasSeenOnboardingView": hasSeenOnboardingView,
+        "currentUUID": currentUUID,
+        // referral system
+        "referralCode": referralCode,
+      ] as [String: AnyObject], forceConnection: true)
+    }
   }
 }
 
