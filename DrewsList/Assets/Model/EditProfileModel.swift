@@ -16,6 +16,8 @@ public class EditProfileModel {
   
   public let _profileImage = Signal<UIImage?>()
   public var profileImage: UIImage? { didSet { _profileImage => profileImage } }
+    
+  
   
 }
 

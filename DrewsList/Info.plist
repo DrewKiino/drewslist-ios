@@ -115,15 +115,15 @@
 				<string>TLS.1.2</string>
 			</dict>
 			<key>localhost</key>
-      <dict>
-        <key>NSIncludesSubdomains</key>
-        <true/>
-        <key>NSExceptionAllowsInsecureHTTPLoads</key>
-        <true/>
-        <key>NSExceptionMinimumTLSVersion</key>
-        <string>TLSv1.1</string>
-      </dict>
-      <key>lorempixel.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.1</string>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>lorempixel.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>
