@@ -13,6 +13,9 @@ import Alamofire
 import SwiftyJSON
 import FBSDKCoreKit
 import FBSDKLoginKit
+import Signals
+import CoreLocation
+import Stripe
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds
@@ -20,63 +23,89 @@ public let screen = UIScreen.mainScreen().bounds
 public enum ServerUrl {
   case Local
   case Staging
+  case Production
   case Default
   public func getValue() -> String {
     switch self {
     case .Local: return "http://localhost:1337"
     case .Staging: return "https://drewslist-staging.herokuapp.com"
+    case .Production: return "https://drewslist-production.herokuapp.com"
 //    case .Default: return "http://localhost:1337"
-    case .Default: return "https://drewslist-staging.herokuapp.com"
+//    case .Default: return "https://drewslist-staging.herokuapp.com"
+    case .Default: return "https://drewslist-production.herokuapp.com"
     }
   }
 }
 
-private var _fbLoginManager: FBSDKLoginManager?
+public let _didRegisterForRemoteNotificationsWithDeviceToken = Signal<Bool>()
 
-var fbLoginManager: FBSDKLoginManager {
-get {
-  if _fbLoginManager == nil {
-    _fbLoginManager = FBSDKLoginManager()
-  }
-  return _fbLoginManager!
-}
-}
+public let _applicationWillEnterForeground = Signal<Bool>()
+public let _applicationDidEnterBackground = Signal<Bool>()
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
-  private let userController = UserController()
-
+  private let iapController = IAPController.sharedInstance()
+  
   var window: UIWindow?
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
-    
-    // figure out if user defaults already exist 
-    // if it doesn't, create one and persist it.
-    if userController.readUserDefaults() == nil { userController.writeNewUserDefaults() }
-    
-    // configure Atlantis Logger
-    Atlantis.Configuration.hasColoredLogs = true
-    
-    setupRootView()
-    
-    // on foreground, reset the badge number
-    UIApplication.sharedApplication().applicationIconBadgeNumber = 0
-    
-    // remove the back button
-    UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
-    
+    /**************************************************************
+    *                                                             *
+    *                  Server Connection                          *
+    *                                                             *
+    **************************************************************/
     // connect to server
     Sockets.sharedInstance().connect()
-  
-    // MARK: remote notification register fixtures
-    UIApplication.sharedApplication().registerForRemoteNotifications()
-    
-    // Add Facebook
+    /**************************************************************
+    *                                                             *
+    *                  Software Logs                              *
+    *                                                             *
+    **************************************************************/
+    // configure Atlantis Logger
+    Atlantis.Configuration.hasColoredLogs = true
+    /**************************************************************
+    *                                                             *
+    *                  GOOGLE ANALYITCS                           *
+    *                                                             *
+    **************************************************************/
+    var configureError: NSError?
+    GGLContext.sharedInstance().configureWithError(&configureError)
+    assert(configureError == nil, "Error configuring Google services: \(configureError)")
+    let gai = GAI.sharedInstance()
+    gai.trackUncaughtExceptions = true  // report uncaught exceptions
+    // if the url does not point to the production URL, then allow logging
+    gai.logger.logLevel = GAILogLevel.None // remove before app release
+    if ServerUrl.Default.getValue() == ServerUrl.Production.getValue() {
+//      Atlantis.Configuration.logLevel = .None
+    }
+    /**************************************************************
+    *                                                             *
+    *                  Stripe Payment Processing                  *
+    *                                                             *
+    **************************************************************/
+    Stripe.setDefaultPublishableKey("pk_test_EPGtZbQoVk1FPadfaADCN25o")
+    /**************************************************************
+    *                                                             *
+    *                  Priority UI Setup                          *
+    *                                                             *
+    **************************************************************/
+    // root view setup
+    setupRootView()
+    // on foreground, reset the badge number
+    UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+    // remove the back button
+    UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffsetMake(0, -60), forBarMetrics: .Default)
+    /**************************************************************
+    *                                                             *
+    *                  Concluding Setup                           *
+    *                                                             *
+    **************************************************************/
+    // user auth checkup
+    LoginController.sharedInstance().checkIfUserIsLoggedIn()
+    // Facebook Integration
     return FBSDKApplicationDelegate.sharedInstance().application(application, didFinishLaunchingWithOptions: launchOptions)
-    
-    //return true
   }
     
   func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
@@ -95,6 +124,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // disconnect from server when app backgrounds
     Sockets.sharedInstance().disconnect()
+    
+    _applicationDidEnterBackground => true
   }
 
   func applicationWillEnterForeground(application: UIApplication) {
@@ -105,8 +136,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // connect to server when app enters foreground
     Sockets.sharedInstance().connect()
+    
+    _applicationWillEnterForeground => true
   }
-
+  
   func applicationDidBecomeActive(application: UIApplication) {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     FBSDKAppEvents.activateApp()
@@ -125,30 +158,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let deviceTokenString = (deviceToken.description as NSString).stringByTrimmingCharactersInSet(NSCharacterSet( charactersInString: "<>")) as String
     
-    // set the device token as the default device token in the user defaults
-    userController.updateUserDefaults { defaults in
-      defaults.deviceToken = deviceTokenString
-    }
-    
     // get the device token string, then read the current realm user, and update it with the new device token
-    userController.updateUserToServer { user in
-      user?.deviceToken = deviceTokenString
-      return user
-    }
+    UserModel.deviceToken = deviceTokenString
+    
+    _didRegisterForRemoteNotificationsWithDeviceToken.fire(true)
   }
   
   func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
     
-    log.debug(userInfo)
+    
+    
   }
   
   private func setupRootView() {
     
     // init the root view
-    var tabView: TabView? = TabView()
+    var tabView: TabView? = TabView.sharedInstance()
+//    var tabView: ListFeedNavigationView? = ListFeedNavigationView()
     
-//    var tabView: ActivityFeedView? = ActivityFeedView()
-//    var tabView: UserProfileView? = UserProfileView()
+//    var tabView: OnboardingView? = OnboardingView()
+//    var tabView: SignUpView? = SignUpView()
     
     /*
     * Use this code to get the bounds of the screen

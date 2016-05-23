@@ -13,6 +13,9 @@ import SwiftyJSON
 
 public class SearchSchoolModel {
   
+  private struct Singleton { static let searchSchoolModel = SearchSchoolModel() }
+  public class func sharedInstance() -> SearchSchoolModel { return Singleton.searchSchoolModel }
+  
   public let _searchString = Signal<String?>()
   public var searchString: String? { didSet { _searchString => searchString } }
   

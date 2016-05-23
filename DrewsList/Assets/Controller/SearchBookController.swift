@@ -10,59 +10,51 @@ import Foundation
 import RealmSwift
 import Alamofire
 import SwiftyJSON
+import Signals
 
 public class SearchBookController {
   
   public let model = SearchBookModel.sharedInstance()
   
-  private var refrainTimer: NSTimer?
+  private var throttleTimer: NSTimer?
   
   public init() {
     model._searchString.removeAllListeners()
     model._searchString.listen(self) { [weak self ] string in
-      self?.searchSchool()
+      self?.throttleTimer?.invalidate()
+      self?.throttleTimer = NSTimer.after(1.0) { [weak self] in
+        self?.searchBook()
+      }
     }
   }
   
-  public func searchSchool() {
-    guard let queryString = createQueryString(model.searchString) where !model.shouldRefrainFromCallingServer else { return }
-    
-    // to safeguard against multiple server calls when the server has no more data
-    // to send back, we use a timer to disable this controller's server calls
-    model.shouldRefrainFromCallingServer = true
-    
-    Alamofire.request(.GET, queryString)
-    .response { [weak self] req, res, data, error in
+  public func searchBook() {
+    if let queryString = createQueryString(model.searchString) {
       
-      if let error = error {
-        log.error(error)
-      } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
-        
-        var books: [Book]? = []
-        
-        for json in jsonArray { books?.append(Book(json: json)) }
-        
-        self?.model.books.removeAll(keepCapacity: false)
-        self?.model.books = books!
-        
-        books = nil
-      }
+      log.debug("query string: \(queryString)")
       
-      // create a throttler
-      // this will disable this controllers server calls for 10 seconds
-      self?.refrainTimer?.invalidate()
-      self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(0.2) { [weak self] in
-        self?.model.shouldRefrainFromCallingServer = false
+      model.showRequestActivity => true
+      
+      Alamofire.request(.GET, queryString)
+      .response { [weak self] req, res, data, error in
+        
+        if let error = error {
+          log.error(error)
+        } else if let data = data, let jsonArray: [JSON] = JSON(data: data).array {
+          
+          log.debug("books found: \(jsonArray.count)")
+          
+          var books: [Book]? = []
+          
+          for json in jsonArray { books?.append(Book(json: json)) }
+          
+          self?.model.books = books!
+          
+          books = nil
+        }
+        
+        self?.model.showRequestActivity.fire(false)
       }
-    }
-    
-    // create a throttler
-    // this will disable this controllers server calls for 10 seconds
-    refrainTimer?.invalidate()
-    refrainTimer = nil
-    refrainTimer = NSTimer.after(60.0) { [weak self] in
-      self?.model.shouldRefrainFromCallingServer = false
     }
   }
   

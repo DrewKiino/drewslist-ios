@@ -33,6 +33,10 @@ extension UIColor {
   
   // MARK: Main App Colors
   
+  public class func coolBlack() -> UIColor {
+    return UIColor(red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
+  }
+  
   public class func sexyGray() -> UIColor {
     return UIColor(red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
   }
@@ -51,6 +55,14 @@ extension UIColor {
   
   // NOTE: Highlight Color
   
+  public class func superSexyPurple() -> UIColor {
+    return UIColor(red: 177/255, green: 107/255, blue: 245/255, alpha: 1.0)
+  }
+  
+  public class func lightJuicyOrange() -> UIColor {
+    return UIColor(red: 245/255, green: 177/255, blue: 107/255, alpha: 1.0)
+  }
+  
   public class func juicyOrange() -> UIColor {
     return UIColor(red: 240/255, green: 139/255, blue: 35/255, alpha: 1.0)
   }
@@ -66,11 +78,45 @@ extension UIColor {
   // NOTE: TableView Padding Color
   
   public class func paradiseGray() -> UIColor {
-    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 0.5)
+    return UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
   }
   
   public class func tableViewNativeSeparatorColor() -> UIColor {
     return UIColor(red: 224/255, green: 224/255, blue: 224/255, alpha: 1.0)
+  }
+  
+  // MARK: Default native colors 
+  public class func buttonBlue() -> UIColor {
+    return UIColor(red: 15/255, green: 135/255, blue: 255/255, alpha: 1.0)
+  }
+
+}
+
+extension Int {
+  
+  public func toFormattedPhoneNumberText() -> NSMutableString {
+    let string: NSMutableString = NSMutableString(string: String(self))
+    if string.length == 11 {
+      string.insertString("-", atIndex: 1)
+      string.insertString("-", atIndex: 5)
+      string.insertString("-", atIndex: 9)
+    } else if string.length == 10 {
+      string.insertString("-", atIndex: 3)
+      string.insertString("-", atIndex: 7)
+    } else if string.length == 7 {
+      string.insertString("-", atIndex: 3)
+    }
+    return string
+  }
+  
+  public func callNumber() {
+    let alertController = UIAlertController(title: self.toFormattedPhoneNumberText() as String, message: "Would you like to call this number?", preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Yes", style: .Default) { action in
+      if let url = NSURL(string: "tel://\(self)") { UIApplication.sharedApplication().openURL(url) }
+    })
+    alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+    })
+    TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
   }
 }
 
@@ -105,11 +151,34 @@ extension NSDate {
   public func dl_toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+    return 60.seconds.ago > self ? (self.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "Just Now"
+  }
+  
+  public func isRecent() -> Bool {
+    if let date = toLocalDateRegion()?.UTCDate {
+      return 60.seconds.ago < date
+    } else { return false }
+  }
+  
+  public func dl_toString(simple: Bool = false) -> String? {
+    if let date = DateInRegion(UTCDate: self, region: .LocalRegion()), let weekday = date.weekdayName, let month = date.monthName, let day = date.monthDays, let year = date.year, let hour = date.hour, let second = date.second {
+      return date.isToday() ? "\(simple ? "" : "Today at ")\(hour % 12 == 0 ? 12 : hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")" :
+        date.isYesterday() ? "Yesterday" : "\(weekday), \(month) \(day) \(year)"
+//        "\(date.isYesterday() ? "Yesterday" : weekday), \(month) \(day) \(year) at \(hour % 12 == 0 ? 12 : hour % 12):\(second > 9 ? "\(second)" : "0\(second)") \(hour > 12 ? "PM" : "AM")"
+    } else { return nil }
+//    return toString(.MediumStyle, dateStyle: .MediumStyle, timeStyle: .ShortStyle, inRegion: .LocalRegion())
+  }
+  
+  public func toLocalDateRegion() -> DateInRegion? {
+    return DateInRegion(UTCDate: self, region: .LocalRegion())
   }
 }
 
 extension String {
+  
+  public func isRecent() -> Bool {
+    return 60.seconds.ago < toDateFromISO8601()
+  }
   
   public func convertToOrdinal() -> String {
     if  let last = characters.last where Int(String(last)) != nil && self.lowercaseString.rangeOfString("edition") == nil {
@@ -129,14 +198,33 @@ extension String {
   public func toRelativeString() -> String! {
     // NOTE: DONT FORGET THESE CODES OMFG
     // converts the date strings sent from the server to local time strings
-    return 60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "just now"
+    let string = (60.seconds.ago > toDateFromISO8601() ? (toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1) ?? "") : "Just Now")
+    
+    switch string {
+    case let x where x.containsString("yrs"): return string.stringByReplacingOccurrencesOfString(" yrs", withString: "y")
+    case let x where x.containsString("yr"): return string.stringByReplacingOccurrencesOfString(" yr", withString: "y")
+    case let x where x.containsString("mos"): return string.stringByReplacingOccurrencesOfString(" mos", withString: "m")
+    case let x where x.containsString("mo"): return string.stringByReplacingOccurrencesOfString(" mo", withString: "m")
+    case let x where x.containsString("wks"): return string.stringByReplacingOccurrencesOfString(" wks", withString: "w")
+    case let x where x.containsString("wk"): return string.stringByReplacingOccurrencesOfString(" wk", withString: "w")
+    case let x where x.containsString("days"): return string.stringByReplacingOccurrencesOfString(" days", withString: "d")
+    case let x where x.containsString("day"): return string.stringByReplacingOccurrencesOfString(" day", withString: "d")
+    case let x where x.containsString("hrs"): return string.stringByReplacingOccurrencesOfString(" hrs", withString: "h")
+    case let x where x.containsString("hr"): return string.stringByReplacingOccurrencesOfString(" hr", withString: "h")
+    case let x where x.containsString("mins"): return string.stringByReplacingOccurrencesOfString(" mins", withString: "m")
+    case let x where x.containsString("min"): return string.stringByReplacingOccurrencesOfString(" min", withString: "m")
+    default: return string }
   }
   
-  func height(width: CGFloat, font: UIFont? = nil) -> CGFloat{
+  func height(width: CGFloat, font: UIFont? = nil, paddingHeight: Bool? = nil) -> CGFloat{
     var mutstring: NSMutableAttributedString! = NSMutableAttributedString(string: self, attributes: [NSFontAttributeName: font ?? UIFont.asapRegular(12)])
     let rect:CGRect = mutstring.boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil )
     mutstring = nil
-    return rect.height
+    return paddingHeight == true ? rect.height * 1.25 + screen.height * 0.25 : rect.height * 1.4
+  }
+  
+  public func substringWithRange(start: Int, length: Int) -> String {
+    return NSString(string: self).substringWithRange(NSRange(location: start, length: length))
   }
 }
 
@@ -144,6 +232,82 @@ extension NSMutableAttributedString {
   
   func height(width: CGFloat) -> CGFloat {
     return boundingRectWithSize(CGSizeMake(width, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context:nil ).height
+  }
+  
+  func append(attributedString: NSMutableAttributedString?) -> Self {
+    if let attributedString = attributedString {
+      appendAttributedString(attributedString)
+    }
+    return self
+  }
+  
+  func setColor(color: UIColor) -> Self {
+    addAttribute(NSForegroundColorAttributeName, value: color, range: NSMakeRange(0, string.characters.count - 1))
+    return self
+  }
+}
+
+extension UIViewController {
+  
+  public enum UIType {
+    case LeftBarButton
+    case RightBarButton
+  }
+  
+  public func showAlert(title: String?, message: String?, completionBlock: (() -> Void)? = nil) {
+    var alertController: UIAlertController! = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+    alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { action in
+      completionBlock?()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func showActivity(uiType: UIType) {
+    var activityIndicator: UIActivityIndicatorView! = UIActivityIndicatorView()
+    activityIndicator.startAnimating()
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
+      break
+    }
+    activityIndicator = nil
+  }
+  
+  public func hideActivity(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
+      break
+    }
+  }
+  
+  public func setButton(uiType: UIType, title: String, target: AnyObject?, selector: Selector) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: title, style: .Plain, target: target, action: selector)
+      break
+    }
+  }
+  
+  public func hideButton(uiType: UIType) {
+    switch uiType {
+    case .LeftBarButton:
+      navigationItem.leftBarButtonItem = nil
+      break
+    case .RightBarButton:
+      navigationItem.rightBarButtonItem = nil
+      break
+    }
   }
 }
 
@@ -156,6 +320,35 @@ extension UIView {
   
   public class func animate(animationBlock: () -> Void, completionBlock: ((bool: Bool) -> Void)? = nil) {
     UIView.animateWithDuration(0.7, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.10, options: .CurveEaseInOut, animations: animationBlock, completion: completionBlock)
+  }
+  
+  public func showActivityBarItem() {
+    dismissActivityView()
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView.frame = CGRectMake(screen.width - 32, 24, 24, 24)
+    activityView.tag = 1337
+    activityView.startAnimating()
+    addSubview(activityView)
+    activityView = nil
+  }
+  
+  public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil, style: UIActivityIndicatorViewStyle = .Gray) {
+    dismissActivityView()
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: style)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
+    activityView.tag = 1337
+    activityView.startAnimating()
+    addSubview(activityView)
+    activityView = nil
+  }
+  
+  public func dismissActivityView() {
+    for view in subviews {
+      if let activityView = view as? UIActivityIndicatorView where activityView.tag == 1337 {
+        activityView.stopAnimating()
+        activityView.removeFromSuperview()
+      }
+    }
   }
   
   public func showLoadingScreen(heightOffset: CGFloat? = nil, bgOffset: CGFloat? = nil, fadeIn: Bool = false, completionHandler: (() -> Void)? = nil) {
@@ -187,7 +380,7 @@ extension UIView {
     loadingLabel.text = "Loading"
     loadingLabel.textAlignment = .Center
     loadingLabel.font = UIFont.asapBold(16)
-    loadingLabel.textColor = .blackColor()
+    loadingLabel.textColor = .coolBlack()
     loadingLabel.morphingEffect = .Evaporate
     addSubview(loadingLabel)
     
@@ -222,20 +415,20 @@ extension UIView {
   public func hideLoadingScreen() {
     subviews.forEach {
       if let view: UIView? = $0 where $0.tag == 1337 {
-        UIView.animateWithDuration(0.5, delay: 0.7, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.2, delay: 0.1, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
         })
       } else if let view = $0 as? NVActivityIndicatorView {
-        UIView.animateWithDuration(1.0, delay: 0, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
         })
       }
       else if let view = $0 as? LTMorphingLabel {
-        UIView.animateWithDuration(1.0, delay: 0.2, options: .CurveEaseInOut, animations: { [weak view] in
+        UIView.animateWithDuration(0.3, delay: 0.2, options: .CurveEaseInOut, animations: { [weak view] in
           view?.alpha = 0.0
         }, completion: { [weak view] bool in
           view?.removeFromSuperview()
@@ -271,21 +464,28 @@ extension UIView {
     }
   }
   
-  public func displayLoadingNotification() {
-    guard let text: String! = "" else { return }
-      
-    var notification: CWStatusBarNotification! = CWStatusBarNotification()
-    notification.notificationAnimationInStyle = .Bottom
-    notification.notificationAnimationOutStyle = .Bottom
-    notification.notificationStyle = .StatusBarNotification
+  public func displayStatusNotification(text: String) {
+    
+//    var notification: CWStatusBarNotification! = CWStatusBarNotification()
+//    notification.notificationAnimationInStyle = .Top
+//    notification.notificationAnimationOutStyle = .Top
+//    notification.notificationStyle = .StatusBarNotification
+    
+    dismissStatusNotification(false)
     
     var loadingLabel: LTMorphingLabel! = LTMorphingLabel(frame: CGRectMake(0, 0, screen.width, 64))
     loadingLabel.text = text
     loadingLabel.textAlignment = .Center
-    loadingLabel.font = UIFont.asapBold(12)
+    loadingLabel.font = .asapBold(12)
     loadingLabel.textColor = .whiteColor()
     loadingLabel.morphingEffect = .Evaporate
-    loadingLabel.backgroundColor = .bareBlue()
+    loadingLabel.backgroundColor = .juicyOrange()
+    loadingLabel.tag = 1337
+    
+    var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    activityView.frame = CGRectMake(screen.width - 64, 0, 64, 64)
+    activityView.startAnimating()
+    loadingLabel.addSubview(activityView)
     
     NSTimer.every(0.5) { [weak loadingLabel] in
       switch loadingLabel?.text {
@@ -297,16 +497,32 @@ extension UIView {
       }
     }
     
-    notification.displayNotificationWithView(loadingLabel, forDuration: 3.0)
+    addSubview(loadingLabel)
     
-    notification = nil
     loadingLabel = nil
+    activityView = nil
   }
   
-  public func showComingSoonScreen() {
+  public func dismissStatusNotification(animated: Bool) {
+    for view in subviews {
+      if let loadingLabel = view as? LTMorphingLabel where loadingLabel.tag == 1337 {
+        if animated {
+          UIView.animateWithDuration(0.2, delay: 0.0, options: .CurveEaseInOut, animations: { [weak loadingLabel] in
+            loadingLabel?.frame.origin.y -= 64
+          }) { [weak loadingLabel] bool in
+            loadingLabel?.removeFromSuperview()
+          }
+        } else {
+          loadingLabel.removeFromSuperview()
+        }
+      }
+    }
+  }
+  
+  public func showComingSoonScreen(offset: CGFloat = 0) {
     subviews.forEach { if let view: UILabel? = $0 as? UILabel where $0.tag == 1337 { view?.removeFromSuperview() } }
     
-    let label = UILabel(frame: CGRectMake(0, 0, frame.width, frame.height))
+    let label = UILabel(frame: CGRectMake(0, offset, frame.width, frame.height))
     label.text = "Coming Soon!"
     label.textAlignment = .Center
     label.font = .asapRegular(16)
@@ -320,10 +536,11 @@ import SDWebImage
 
 extension UIImageView {
   
-  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+  public func dl_setImage(image: UIImage?, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
+    
     Async.background { [weak self] in
       
-      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: .Crop)
+      var toucan: Toucan? = Toucan(image: image).resize(self?.frame.size, fitMode: fitMode)
       
       if maskWithEllipse == true { toucan?.maskWithEllipse() }
       
@@ -348,46 +565,24 @@ extension UIImageView {
     }
   }
   
-  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, block: ((image: UIImage?) -> Void)? = nil) {
+  public func dl_setImageFromUrl(url: String?, placeholder: UIImage? = nil, size: CGSize? = nil, maskWithEllipse: Bool = false, animated: Bool = false, fitMode: Toucan.Resize.FitMode? = .Crop, block: ((image: UIImage?) -> Void)? = nil) {
     if let url = url, let nsurl = NSURL(string: url) {
+      // set the tag with the url's unique hash value
+      if tag == url.hashValue { return }
+      // else set the new tag as the new url's hash value
+      tag = url.hashValue
+      image = nil
+      // show activity
+      showActivityView(nil, width: size?.width ?? frame.width, height: size?.height ?? frame.height)
+      // begin image download
       SDWebImageManager.sharedManager().downloadImageWithURL(nsurl, options: [], progress: { (received: NSInteger, actual: NSInteger) -> Void in
       }) { [weak self] (image, error, cache, finished, nsurl) -> Void in
-        Async.background { [weak self] in
-          
-          var toucan: Toucan? = Toucan(image: image ?? placeholder).resize(size ?? self?.frame.size, fitMode: .Crop)
-          
-          if maskWithEllipse == true { toucan?.maskWithEllipse() }
-          
-          Async.main { [weak self] in
-            
-            if animated == true { self?.alpha = 0.0 }
-            
-            if let block = block {
-              block(image: toucan?.image)
-            } else {
-              self?.image = toucan?.image
-            }
-            
-            if animated == true {
-              UIView.animateWithDuration(0.7) { [weak self] in
-                self?.alpha = 1.0
-              }
-            }
-            
-            toucan = nil
-          }
-        }
+        self?.dl_setImage(image, maskWithEllipse: maskWithEllipse, animated: animated, block: block)
+        self?.dismissActivityView()
       }
-    } else { dl_setImage(placeholder) }
-//    sd_setImageWithURL(nsurl, placeholderImage: nil, options: [
-//      .CacheMemoryOnly,
-//      .ContinueInBackground,
-//      .ProgressiveDownload,
-//      .AvoidAutoSetImage,
-//      .LowPriority
-//    ]) { image, error, cache, url in
-//      completionHandler?(image, error, cache, url)
-//    }
+    } else {
+      dl_setImage(placeholder)
+    }
   }
   
   public class func dl_setImageFromUrl(url: String?, size: CGSize? = nil, maskWithEllipse: Bool = false, block: (image: UIImage?) -> Void) {

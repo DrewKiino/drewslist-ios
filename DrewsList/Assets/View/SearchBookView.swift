@@ -32,6 +32,8 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   private var originalTableViewFrame: CGRect?
   private var lastKeyboardFrame: CGRect?
   
+  public var onDismissBlock: (() -> Void)?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -55,11 +57,17 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     originalTableViewFrame = tableView!.frame
     
     searchBarImageView?.image = Toucan(image: UIImage(named: "Icon-Search-1")).resize(searchBarImageView!.frame.size).image
+    
+    FBSDKController.createCustomEventForName("UserSearchBook")
   }
   
   public override func viewWillAppear(animated: Bool) {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    
+    searchBarTextField?.text = nil
+    model.lastSearchString = nil
+    model.books.removeAll(keepCapacity: false)
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -100,12 +108,10 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     model._shouldRefrainFromCallingServer.listen(self) { [weak self] bool in
       if bool == true {
         self?.searchButton?.userInteractionEnabled = false
-        self?.searchButton?.setTitle("", forState: .Normal)
-        self?.searchActivityView?.startAnimating()
+        self?.showActivity(.RightBarButton)
       } else {
-        self?.searchActivityView?.stopAnimating()
-        self?.searchButton?.setTitle("Search", forState: .Normal)
         self?.searchButton?.userInteractionEnabled = true
+        self?.hideActivity(.RightBarButton)
       }
     }
   }
@@ -127,15 +133,6 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
     cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
-    
-    searchButton = UIButton()
-    searchButton?.setTitle("Search", forState: .Normal)
-    searchButton?.titleLabel?.font = UIFont.asapRegular(16)
-    searchButton?.addTarget(self, action: "search", forControlEvents: .TouchUpInside)
-    headerView?.addSubview(searchButton!)
-    
-    searchActivityView = UIActivityIndicatorView()
-    searchButton?.addSubview(searchActivityView!)
   }
   
   private func setupSearchBar() {
@@ -152,7 +149,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     searchBarTextField?.autocapitalizationType = .Words
     searchBarTextField?.spellCheckingType = .No
 //    searchBarTextField?.autocorrectionType = .No
-    searchBarTextField?.clearButtonMode = .WhileEditing
+    searchBarTextField?.clearButtonMode = .Always
     searchBarContainer?.addSubview(searchBarTextField!)
     
     searchBarImageView = UIImageView()
@@ -181,7 +178,12 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   public func search() {
-    controller.searchSchool()
+    controller.searchBook()
+  }
+  
+  public func setOnDismiss(block: () -> Void) -> Self {
+    onDismissBlock = block
+    return self
   }
   
   // MARK: TextField Delegates
@@ -197,7 +199,7 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   public func textFieldShouldReturn(textField: UITextField) -> Bool {
-    controller.searchSchool()
+    controller.searchBook()
     resignFirstResponder()
     return false
   }
@@ -216,10 +218,17 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     
     if let cell = tableView.dequeueReusableCellWithIdentifier("BookViewCell", forIndexPath: indexPath) as? BookViewCell {
       cell.setBook(model.books[indexPath.row])
-      
+      cell.bookView?.canShowBookProfile = false
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] bool in
-        if bool == true { self?.model.book = self?.model.books[indexPath.row] }
+        if bool == true {
+          
+          self?.model.book = self?.model.books[indexPath.row]
+          
+          self?.dismissViewControllerAnimated(true, completion: nil)
+          
+          self?.onDismissBlock?()
+        }
       }
       
       return cell

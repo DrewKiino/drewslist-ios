@@ -28,4 +28,7 @@ public class CreateListingModel {
   
   public let _serverCallbackFromUploadListing = Signal<Bool>()
   public var serverCallbackFromUploadlIsting: Bool = false { didSet { _serverCallbackFromUploadListing => serverCallbackFromUploadlIsting } }
+  
+  public var listType: String?
+  public var listingFee: Double = 0.99
 }

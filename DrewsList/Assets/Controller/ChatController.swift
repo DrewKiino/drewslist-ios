@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import Signals
 import JSQMessagesViewController
 import SwiftyJSON
@@ -27,31 +27,41 @@ public class ChatController {
   
   public let socket = Sockets.sharedInstance()
   
-  // pub/sub
+  public let locationController = LocationController.sharedInstance()
+  
+  // MARK : PUB/SUB
+  
+  // subscription
+  public let willRequestSubscription = Signal<Bool>()
+  public let didReceiveSubscriptionResponse = Signal<Bool>()
+  
+  // message
   public let didSendMessage = Signal<Bool>()
   public let didReceiveMessage = Signal<Bool>()
   public let isSendingMessage = Signal<Bool>()
+  
+  // message history
+  public let didRequestLoadingMessagesFromServer = Signal<Bool>()
+  public let didLoadMessagesFromServer = Signal<Bool>()
+  public var didPullToRefresh: Bool = false
   
   // variables
   private var unsubscribeBlock: (() -> Void)?
   
   public func viewDidLoad() {
-    loadChatHistory()
   }
   
   public func viewDidAppear() {
     connectToServer()
-    socket.isCurrentlyInChat = true
   }
   
   public func viewWillDisappear() {
-    saveChatHistory()
     disconnectFromServer()
-    socket.isCurrentlyInChat = false
   }
   
   public init() {
     setupSelf()
+    setupSockets()
     setupDataBinding()
   }
   
@@ -87,94 +97,28 @@ public class ChatController {
   }
   
   private func setupSockets() {
-    
-    // subscribe to the server chat framework's connect callback
-    socket.on("subscribe.response") { json in
-      
-      if let response = json["response"].string {
-        log.info("joined room: \(response)")
-      } else if let error = json["error"].string {
-        log.debug(error)
-      }
-    }
-    
-    socket.on("unsubscribe.response") { [weak self] json in
-      
-      if let response = json["response"].string {
-        log.info("left room: \(response)")
-      } else if let error = json["error"].string {
-        log.debug(error)
-      }
-      
-      self?.unsubscribeBlock?()
-      self?.unsubscribeBlock = nil
-    }
-    
-    // subscribe to the server chat framework's messages callback
-    socket.on("checkForMessages.response") { json in
-      if let messages = json["response"].array {
-        for message in messages {
-          guard let newMessage = IncomingMessage(json: message).toJSQMessage()
-            else { return }
-          self.model.messages.append(newMessage)
-          // broadcast to all listeners that a message was received
-          self.didReceiveMessage => true
-          log.verbose(newMessage.text)
-        }
-      } else if let error = json["error"].string {
-        log.debug(error)
-      }
-    }
-    
-    // subscribe to the server chat framework's broadcast callback
-    socket.on("broadcast.response") { [unowned self] json in
-      // broadcast to listenres that the message sent was unsuccessful
-      if let error = json["error"].string {
-        self.didSendMessage => false
-        log.error(error)
-      // broadcast to listeners that the message sent was successful
-      } else if let response = json["response"].string {
-        if !self.model.pendingMessages.isEmpty {
-          self.model.pendingMessages.removeLast()
-          self.didSendMessage => true
-          log.info(response)
-        }
-      }
-    }
-    
-    // subscribe to broadcasts done by the server
-    socket._message.removeListener(self)
-    socket._message.listen(self) { [weak self] json in
-      guard let newMessage = IncomingMessage(json: json["message"]).toJSQMessage() where json["identifier"].string == self?.model.room_id else { return }
-      // append the broadcast to the model's messages array
-      self?.model.messages.append(newMessage)
-      // broadcast to all listeners that a message was received
-      self?.didReceiveMessage.fire(true)
+    socket.onConnect("ChatController") { [weak self] in
+      self?.connectToServer()
     }
   }
   
   public func didPressSendButton(text: String) {
     guard let message = createOutgoingMessage(text),
-          let jsqMessage = message.toJSQMessage(),
           let json = message.toJSON()
           where !text.isEmpty && socket.isConnected() == true
           else { return }
     
-    model.pendingMessages.append(jsqMessage)
+    isSendingMessage => true
     
-    socket.emit("broadcast", json)
+    socket.emit("broadcast", objects: json)
+    
+    // set the listing to nil to indicate that the user has already sent which listing he has
+    // viewed to the other user
+    model.listing = nil
   }
-
+  
   private func createOutgoingMessage(text: String) -> OutgoingMessage? {
     
-//    log.debug(model.user)
-//    log.debug(model.user?._id)
-//    log.debug(model.user?.getName())
-//    log.debug(model.friend)
-//    log.debug(model.friend?._id)
-//    log.debug(model.friend?.getName())
-//    log.debug(model.session_id)
-//    log.debug(model.room_id)
     
     guard let user = model.user,
           let _id = user._id,
@@ -196,14 +140,33 @@ public class ChatController {
       session_id: session_id,
       room_id: room_id
     )
+    .set(listing: model.listing)
+  }
+  
+  public func didPressSendLocation() {
+    locationController.getCurrentLocation() { [weak self] location in
+      guard   let message = self?.createOutgoingLocationMessage(location),
+              let json = message.toJSON()
+      else { return }
+      
+      self?.isSendingMessage.fire(true)
+      
+      self?.socket.emit("broadcast", objects: json)
+    }
+  }
+  
+  private func createOutgoingLocationMessage(location: CLLocation?) -> OutgoingMessage? {
+    return createOutgoingMessage("USER_LOCATION")?.set(location)
   }
   
   public func subscribe() {
     guard let room_id = model.room_id, let user_id = model.user?._id else { return }
     
+    willRequestSubscription => true
+    
     socket.emit(
-      "subscribe",
-      [
+      "chat.subscribe",
+      objects: [
         "room_id": room_id,
         "user_id": user_id
       ]
@@ -214,8 +177,8 @@ public class ChatController {
     guard let room_id = model.room_id, let user_id = model.user?._id else { return }
     
     socket.emit(
-      "unsubscribe",
-      [
+      "chat.unsubscribe",
+      objects: [
         "room_id": room_id,
         "user_id": user_id
       ]
@@ -224,50 +187,116 @@ public class ChatController {
     unsubscribeBlock = completionHandler
   }
   
-  public func setOnlineStatus(user_id: String, online: Bool) {
-    socket.emit(
-      "setOnlineStatus",
-      [
-        "online": online,
-        "user_id": user_id
-      ]
-    )
-  }
-  
   public func connectToServer() {
-//    socket.connect { [weak self] in
-//      self?.setupSockets()
-//      self?.subscribe()
-//    }
-    // setup sockets
-    setupSockets()
+    
+    // subscribe to the server chat framework's connect callback
+    socket.on("chat.subscribe.response") { [weak self] json in
+      
+      if let response = json["response"].string {
+        log.info("joined room: \(response)")
+      } else if let error = json["error"].string {
+        log.debug(error)
+      }
+      
+      self?.didReceiveSubscriptionResponse.fire(true)
+    }
+    
+    socket.on("chat.unsubscribe.response") { [weak self] json in
+      if let response = json["response"].string {
+        log.info("left room: \(response)")
+      } else if let error = json["error"].string {
+        log.debug(error)
+      }
+      
+      self?.unsubscribeBlock?()
+      self?.unsubscribeBlock = nil
+    }
+    
+    // subscribe to the server chat framework's broadcast callback
+    socket.on("chat.broadcast.response") { [unowned self] json in
+      // broadcast to listenres that the message sent was unsuccessful
+      if let error = json["error"].string {
+        self.didSendMessage => false
+        log.error(error)
+        
+      // print any warnings
+      } else if let warning = json["warning"].string {
+        log.warning(warning)
+        
+        self.didSendMessage => true
+        
+        // broadcast to listeners that the message sent was successful
+      } else if let response = json["response"].string {
+        self.didSendMessage => true
+      }
+    }
+    
+    // subscribe to broadcasts done by the server
+    socket._message.removeListener(self)
+    socket._message.listen(self) { [weak self] json in
+      guard let newMessage = IncomingMessage(json: json["message"]).toJSQMessage() where json["identifier"].string == self?.model.room_id else { return }
+      // append the broadcast to the model's messages array
+      self?.model.messages.append(newMessage)
+      // broadcast to all listeners that a message was received
+      self?.didReceiveMessage.fire(true)
+    }
+    
     // subscribe user to chat room
     subscribe()
+    // get message history
+    getChatHistoryFromServer(model.messages.count, paging: 10)
+    // publish to all subscribers that the user is in chat view
+    socket.isCurrentlyInChat = true
   }
   
-  public func disconnectFromServer() {
-    
+  public func disconnectFromServer(execute: (() -> Void)? = nil) {
+    // unsubsribe user from chat room
     unsubscribe { [weak self] in
-//      self?.socket.disconnect()
-      // set flag
+      execute?()
     }
+    // publish to all subscribers that the user is no longer in chat view
+    socket.isCurrentlyInChat = false
   }
   
-  private func loadChatHistory() {
-    if let room_id = model.room_id {
-      let chatHistory = try! Realm().objectForPrimaryKey(RealmChatHistory.self, key: room_id)
-      model.messages = chatHistory?.getMessages() ?? model.messages
-      model.pendingMessages = chatHistory?.getPendingMessages() ?? model.pendingMessages
-      log.info("loaded \(model.messages.count) messages from Realm")
-      log.info("loaded \(model.pendingMessages.count) messages from Realm")
-      didReceiveMessage => true
+  public func getChatHistoryFromServer(skip: Int = 0, paging: Int = 10) {
+    
+    didRequestLoadingMessagesFromServer => true
+    
+//    model.messages.removeAll(keepCapacity: false)
+    
+    // subscribe to the server chat framework's messages callback
+    socket.on("chat.getChatHistory.response") { [weak self] json in
+      
+      if let error = json["error"].string {
+        self?.didLoadMessagesFromServer.fire(false)
+        return log.error(error)
+        
+      } else if json["messages"].array?.isEmpty == true {
+        self?.didLoadMessagesFromServer.fire(false)
+        return
+        
+      } else {
+        
+        json["messages"].array?.forEach { [weak self] json in
+          if let message = IncomingMessage(json: json).toJSQMessage() { self?.model.messages.insert(message, atIndex: 0) }
+        }
+        
+        // get teh time stamp of the most recent message
+        self?.model.mostRecentTimestamp = json["messages"].array?.first?["createdAt"].string
+        
+        self?.didLoadMessagesFromServer.fire(true)
+      }
     }
+    
+    socket.emit("chat.getChatHistory", objects: [
+      "user_id": model.friend?._id ?? "",
+      "room_id": model.room_id ?? "",
+      "skip": skip,
+      "paging": paging
+    ])
   }
   
-  private func saveChatHistory() {
-    let realm = try! Realm()
-    realm.beginWrite()
-    realm.add(RealmChatHistory(messages: model.messages, pendingMessages: model.pendingMessages, room_id: model.room_id, user: model.user, friend: model.friend), update: true)
-    try! realm.commitWrite()
+  public func routeToLocation(location: CLLocation?, host: String? = nil, callback: () -> Void) {
+    locationController.routeToLocation(location, host: host) { callback() }
   }
 }

@@ -50,6 +50,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     selectPage(.Middle)
     
     view.backgroundColor = .whiteColor()
+    
+    FBSDKController.createCustomEventForName("UserCommunityFeed")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -74,8 +76,8 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePage?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: leftPage!, padding: 0, width: screen.width)
     rightPage?.alignAndFillHeight(align: .ToTheRightCentered, relativeTo: middlePage!, padding: 0, width: screen.width)
     
-    leftPage?.showComingSoonScreen()
-    rightPage?.showComingSoonScreen()
+    leftPage?.showComingSoonScreen(-25.5)
+    rightPage?.showComingSoonScreen(-25.5)
   }
   
   private func setupSelf() {
@@ -98,7 +100,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupLeftPageTitleButton() {
     leftPageTitleButton = UIButton()
     leftPageTitleButton?.setTitle("Classrooms", forState: .Normal)
-    leftPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    leftPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     leftPageTitleButton?.titleLabel?.font = .asapBold(12)
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
@@ -110,7 +112,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupMiddlePageTitleButton() {
     middlePageTitleButton = UIButton()
     middlePageTitleButton?.setTitle("Listings", forState: .Normal)
-    middlePageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    middlePageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     middlePageTitleButton?.titleLabel?.font = .asapBold(12)
     middlePageTitleButton?.titleLabel?.textAlignment = .Center
     middlePageTitleButton?.titleLabel?.layer.masksToBounds = true
@@ -122,7 +124,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
   private func setupRightPageTitleButton() {
     rightPageTitleButton = UIButton()
     rightPageTitleButton?.setTitle("Professors", forState: .Normal)
-    rightPageTitleButton?.setTitleColor(.blackColor(), forState: .Normal)
+    rightPageTitleButton?.setTitleColor(.coolBlack(), forState: .Normal)
     rightPageTitleButton?.titleLabel?.font = .asapBold(12)
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true
@@ -145,10 +147,16 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     scrollView?.addSubview(leftPage!)
     
     middlePage = ListFeedViewContainer()
+    middlePage?._callButtonPressed.removeAllListeners()
+    middlePage?._callButtonPressed.listen(self) { [weak self] listing in
+      listing?.user?.phone?.callNumber()
+      FBSDKController.createCustomEventForName("Community_CallButtonPressed")
+    }
     middlePage?._chatButtonPressed.removeAllListeners()
     middlePage?._chatButtonPressed.listen(self) { [weak self] listing in
       self?.controller.readRealmUser()
-      self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user), animated: true)
+      self?.pushViewController(ChatView().setUsers(self?.model.user, friend: listing?.user).setListing(listing), animated: true)
+      FBSDKController.createCustomEventForName("Community_ChatButtonPressed")
     }
     middlePage?._bookProfilePressed.removeAllListeners()
     middlePage?._bookProfilePressed.listen(self) { [weak self] book in
@@ -156,7 +164,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     }
     middlePage?._userImagePressed.removeAllListeners()
     middlePage?._userImagePressed.listen(self) { [weak self] user in
-      self?.pushViewController(UserProfileView().setUser(user, isOtherUser: true), animated: true)
+      self?.pushViewController(UserProfileView().setUser(user), animated: true)
 
     }
     scrollView?.addSubview(middlePage!)

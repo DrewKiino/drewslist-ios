@@ -16,17 +16,23 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   // MVC
   private let controller = ChatHistoryController()
-  private unowned var model: ChatHistoryModel { get { return controller.model } }
+  private var model: ChatHistoryModel { get { return controller.model } }
 
   private var tableView: DLTableView?
+  
+  private var refreshControl: UIRefreshControl?
   
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupSelf()
     setupDataBinding()
     setupTableView()
+    setupRefreshControl()
     
     tableView?.fillSuperview()
+    
+    view.showActivityView()
+    FBSDKController.createCustomEventForName("UserChatHistory")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -43,17 +49,50 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
     tableView = DLTableView()
     tableView?.delegate = self
     tableView?.dataSource = self
+    tableView?.backgroundColor = .whiteColor()
+    tableView?.showsVerticalScrollIndicator = true
     rootView?.view.addSubview(tableView!)
   }
   
-  private func setupDataBinding() {
+  public override func setupDataBinding() {
+    super.setupDataBinding()
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
     }
-    model._chatModels.removeAllListeners()
-    model._chatModels.listen(self) { [weak self] models in
-      self?.tableView?.reloadData()
+    model._shouldRefreshViews.removeAllListeners()
+    model._shouldRefreshViews.listen(self) { [weak self] bool in
+      
+      if bool {
+        UIView.animateWithDuration(0.2) { [weak self] in
+          self?.tableView?.reloadData()
+        }
+      }
+    
+      self?.view.dismissActivityView()
+      
+      NSTimer.after(1.0) { [weak self] in
+        self?.refreshControl?.endRefreshing()
+      }
     }
+  }
+  
+  private func setupRefreshControl() {
+    refreshControl = UIRefreshControl()
+    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    tableView?.addSubview(refreshControl!)
+  }
+  
+  // MARK: UIRefreshControl methods
+  
+  public func refresh(sender: UIRefreshControl) {
+    controller.readRealmUser()
+    controller.loadChatHistoryFromServer()
+  }
+  
+  // MARK: UITableView delegate methods
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 58
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -66,12 +105,18 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
       cell.showSeparatorLine()
       cell._cellPressed.removeAllListeners()
       cell._cellPressed.listen(self) { [weak self] chatModel in
-        self?.controller.readRealmUser()
-        self?.pushViewController(ChatView().setUsers(self?.model.user, friend: chatModel?.friend), animated: true)
+        self?.pushViewController(ChatView().setUsers(UserModel.sharedUser().user, friend: chatModel?.friend), animated: true)
       }
+      
+      cell.backgroundColor = (model.chatModels[indexPath.row].messages.last?.date().isRecent() ?? false) ? .paradiseGray() : .whiteColor()
+      
       return cell
     }
     return DLTableViewCell()
+  }
+  
+  public func loadChatHistory() {
+    controller.loadChatHistoryFromServer()
   }
 }
 
@@ -102,11 +147,12 @@ public class ChatHistoryCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     
-    leftImageView?.anchorInCorner(.TopLeft, xPad: 4, yPad: 4, width: 36, height: 36)
-    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 4, width: screen.width - 100, height: 16)
-    arrow?.anchorInCorner(.TopRight, xPad: 4, yPad: 6, width: 12, height: 12)
-    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 4, width: 48, height: 16)
-    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 4, height: 24)
+    leftImageView?.anchorToEdge(.Left, padding: 8, width: 36, height: 36)
+    title?.align(.ToTheRightMatchingTop, relativeTo: leftImageView!, padding: 8, width: screen.width - 100, height: 16)
+    arrow?.anchorAndFillEdge(.Right, xPad: 1, yPad: 20, otherSize: 12)
+//    timestamp?.align(.ToTheLeftCentered, relativeTo: arrow!, padding: 8, width: 48, height: 16)
+    timestamp?.anchorInCorner(.TopRight, xPad: 12, yPad: 12, width: 48, height: 16)
+    message?.alignAndFillWidth(align: .ToTheRightMatchingBottom, relativeTo: leftImageView!, padding: 8, height: 18)
     
     set(chatModel: chatModel)
   }
@@ -118,14 +164,16 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupTitle() {
     title = UILabel()
-    title?.font = UIFont.asapRegular(12)
+    title?.textColor = .coolBlack()
+    title?.font = UIFont.asapRegular(14)
     title?.numberOfLines = 1
     addSubview(title!)
   }
   
   private func setupTimestamp() {
     timestamp = UILabel()
-    timestamp?.font = UIFont.asapRegular(10)
+    timestamp?.textColor = .coolBlack()
+    timestamp?.font = UIFont.asapRegular(12)
     timestamp?.textColor = .sexyGray()
     timestamp?.numberOfLines = 1
     addSubview(timestamp!)
@@ -138,7 +186,8 @@ public class ChatHistoryCell: DLTableViewCell {
   
   private func setupMessage() {
     message = UILabel()
-    message?.font = UIFont.asapRegular(10)
+    message?.textColor = .coolBlack()
+    message?.font = UIFont.asapRegular(12)
     message?.textColor = .sexyGray()
     message?.numberOfLines = 2
     addSubview(message!)
@@ -157,9 +206,11 @@ public class ChatHistoryCell: DLTableViewCell {
     
     title?.text = chatModel.friend?.getName()
     
-    timestamp?.text = chatModel.messages.last?.date.dl_toRelativeString()
+    timestamp?.text = chatModel.messages.last?.date().dl_toRelativeString()
     
-    message?.text = chatModel.messages.last?.text
+    message?.text = chatModel.messages.last?.isMediaMessage() == true ?
+      chatModel.messages.last?.senderId() == UserController.sharedUser().user?._id ? "you have sent them your location" : "has sent you their location."
+      : chatModel.messages.last?.text?()
   }
 }
 

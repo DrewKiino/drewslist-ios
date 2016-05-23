@@ -23,18 +23,8 @@ public class ConfirmTransferController {
   //Mark: Initil
   public init() {
     readRealmUser()
-    setDefaultListing()
     // fixtures
     //    getBookFromServer("9780547539638")
-  }
-  
-  public func setDefaultListing() {
-    // create default listing in case user has not changed any inputs
-    model.listing?.listType = "buying"
-    model.listing?.cover = "hardcover"
-    model.listing?.condition = "2"
-    model.listing?.price = "1.00"
-    model.listing?.notes = ""
   }
   
   // MARK: Getters
@@ -86,7 +76,6 @@ public class ConfirmTransferController {
           self?.model.serverCallbackFromUploadlIsting = false
           
         } else if let data = data, let json: JSON! = JSON(data: data) {
-          log.debug(json)
           // using ObjectMapper we quickly convert the json data into an actual object we can use
           // then we set the model's book with the new book
           self?.model.serverCallbackFromUploadlIsting = true
@@ -109,7 +98,7 @@ public class ConfirmTransferController {
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
-    Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=\(isbn)")
+    Alamofire.request(.GET, ServerUrl.Default.getValue()+"/book/search?query=\(isbn)")
       // then using the builder pattern, chain a 'response' call after
       .response { [weak self] req, res, data, error in
         // unwrap error and check if it exists

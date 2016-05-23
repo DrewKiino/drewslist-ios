@@ -8,7 +8,6 @@
 
 import Foundation
 import RealmSwift
-import FBSDKLoginKit
 
 public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
@@ -19,10 +18,20 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     
     setupSelf()
     setupTableView()
+    
+    FBSDKController.createCustomEventForName("UserSettings")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+  }
+  
+  
+  public override func viewDidDisappear(animated: Bool) {
+    if let userProfileView = TabView.currentView()?.visibleViewController as? UserProfileView {
+      log.debug("mark")
+      userProfileView.setUser(UserModel.sharedUser().user)
+    }
   }
   
   private func setupSelf() {
@@ -32,6 +41,7 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
   
   private func setupTableView() {
     tableView = DLTableView()
+    tableView?.scrollEnabled = false
     tableView?.delegate = self
     tableView?.dataSource = self
     view.addSubview(tableView!)
@@ -40,20 +50,19 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 7
+    return 4
+  }
+  
+  public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    return 48
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     switch indexPath.row {
-//    case 0:
-//      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
-//        cell.hideTopBorder()
-//        return cell
-//      }
-//      break
     case 0:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showTopBorder()
+        cell.showSeparatorLine()
         cell.titleButton?.setTitle("Edit Profile", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
@@ -76,54 +85,32 @@ public class SettingsView: UIViewController, UITableViewDelegate, UITableViewDat
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
         cell.showSeparatorLine()
-        cell.titleButton?.setTitle("Help Center", forState: .Normal)
+        cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          log.debug("TODO: show help center view")
+          self?.navigationController?.pushViewController(TermPrivacyView(), animated: true)
         }
         return cell
       }
       break
     case 3:
       if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-        cell.showSeparatorLine()
-        cell.titleButton?.setTitle("Terms & Privacy", forState: .Normal)
-        cell._didSelectCell.removeAllListeners()
-        cell._didSelectCell.listen(self) { [weak self] bool in
-          log.debug("TODO: show terms and privacy view")
-        }
-        return cell
-      }
-      break
-    case 4:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("FullTitleCell") as? FullTitleCell {
-        cell.showSeparatorLine()
         cell.hideArrowIcon()
+        cell.showSeparatorLine()
         cell.titleButton?.setTitle("Log Out", forState: .Normal)
         cell._didSelectCell.removeAllListeners()
         cell._didSelectCell.listen(self) { [weak self] bool in
-          NSTimer.after(0.5) { [weak self] in
-            // deletes the current user, then will log user out.
-            self?.deleteRealmUser()
-            // log out of facebook if they are logged in
-            if let token = FBSDKAccessToken.currentAccessToken() {
-              print("User \(token) will be logged out")
-              FBSDKAccessToken.setCurrentAccessToken(nil)
-            }
-            // since the current user does not exist anymore
-            // we ask the tab view to check any current user, since we have no current user
-            // it will present the login screen
+          let alertController = UIAlertController(title: "Log Out", message: "Are you sure you want to log out?", preferredStyle: .Alert)
+          alertController.addAction(UIAlertAction(title: "Yes, I'm sure.", style: .Default) { [weak self] action in
+            LoginController.logOut()
             self?.navigationController?.popToRootViewControllerAnimated(true)
-            if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.checkIfUserIsLoggedIn() }
-          }
+            UserModel.hasSeenOnboarding = true
+            UserModel.hasSeenOnboarding = true
+          })
+          alertController.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { action in
+          })
+          TabView.currentView()?.presentViewController(alertController, animated: true, completion: nil)
         }
-        cell.showBottomBorder()
-        return cell
-      }
-      break
-    case 7:
-      if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell") as? PaddingCell {
-        cell.hideBottomBorder()
         return cell
       }
       break

@@ -14,8 +14,6 @@ import Signals
 
 public class BookView: UIView {
   
-  public let _cellPressed = Signal<Bool>()
-  
   private let controller = BookController()
   
   public var attributesContainer: UIView?
@@ -30,6 +28,12 @@ public class BookView: UIView {
   public var isbn: UILabel?
   public var desc: UILabel?
   private var activityView: UIActivityIndicatorView?
+  
+  public var book: Book?
+  
+  public var canShowBookProfile: Bool = true
+  
+  public let _bookViewPressed = Signal<Bool>()
   
   public init() {
     super.init(frame: CGRectZero)
@@ -63,19 +67,21 @@ public class BookView: UIView {
     
     activityView?.anchorInCenter(width: 24, height: 24)
     
-    title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  48)
+    title?.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize:  30)
     author?.alignAndFillWidth(align: .UnderCentered, relativeTo: title!, padding: 0, height: 24)
     edition?.alignAndFillWidth(align: .UnderCentered, relativeTo: author!, padding: 0, height: 12)
     isbn?.alignAndFillWidth(align: .UnderCentered, relativeTo: edition!, padding: 0, height: 12)
     desc?.alignAndFillWidth(align: .UnderCentered, relativeTo: isbn!, padding: 0, height: 48)
 
     layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0).CGPath
+    
+    updateViews()
   }
   
   private func setupSelf() {
     layer.shadowColor = UIColor.darkGrayColor().CGColor
     layer.shadowOffset = CGSize(width: 2.0, height: 2.0)
-    layer.shadowOpacity = 1.0
+    layer.shadowOpacity = 0.5
     layer.shadowRadius = 2
     layer.masksToBounds = true
     clipsToBounds = false
@@ -84,7 +90,8 @@ public class BookView: UIView {
   }
   
   public func pressed() {
-    _cellPressed => true
+    if canShowBookProfile { TabView.currentView()?.pushViewController(BookProfileView().setBook(book), animated: true) }
+    _bookViewPressed => true
   }
   
   private func setupImageView() {
@@ -103,6 +110,7 @@ public class BookView: UIView {
   private func setupTitleLabel() {
     
     title = UILabel()
+    title?.textColor = .coolBlack()
     title?.font = UIFont.asapBold(16)
     title?.adjustsFontSizeToFitWidth = true
     title?.minimumScaleFactor = 0.5
@@ -113,6 +121,7 @@ public class BookView: UIView {
   
   private func setupAuthorLabel() {
     author = UILabel()
+    author?.textColor = .coolBlack()
     author?.font = UIFont.asapRegular(12)
     author?.numberOfLines = 2
     
@@ -121,6 +130,7 @@ public class BookView: UIView {
   
   private func setupEditionLabel() {
     edition = UILabel()
+    edition?.textColor = .coolBlack()
     edition?.font = UIFont.asapRegular(12)
     edition?.textColor = UIColor.sexyGray()
     
@@ -130,6 +140,7 @@ public class BookView: UIView {
   private func setupIsbnLabel() {
     
     isbn = UILabel()
+    isbn?.textColor = .coolBlack()
     isbn?.font = UIFont.asapRegular(12)
     isbn?.textColor = UIColor.sexyGray()
     
@@ -139,6 +150,7 @@ public class BookView: UIView {
   private func setupDescriptionLabel() {
     
     desc = UILabel()
+    desc?.textColor = .coolBlack()
     desc?.font = UIFont.asapRegular(12)
     desc?.numberOfLines = 4
     
@@ -156,30 +168,19 @@ public class BookView: UIView {
   
   private func setupDataBinding() {
     controller.get_Book().listen(self) { [weak self] book in
-      self?._setBook(book)
+      self?.book = book
+      self?.updateViews()
     }
   }
   
-  private func _setBook(book: Book?) {
+  private func updateViews() {
     
-    // reset image view if image url url is different
-    // and set alpha to 0 for fade in animation
-    if imageViewUrl != book?.getImageUrl() {
-      imageView?.alpha = 0.0
-      imageView?.image = nil
-    }
-    
-    if book?.getImageUrl() != nil && imageViewUrl != book?.getImageUrl() {
-      
-      imageViewUrl = book?.getImageUrl()
-      
-      imageView?.dl_setImageFromUrl(book?.getImageUrl(), animated: true)
-    }
+    imageView?.dl_setImageFromUrl(book?.getImageUrl())
     
     Async.background { [weak self] in
     
       // MARK: Attributes
-      guard let book = book else { return }
+      guard let book = self?.book else { return }
       let title = book.title
       let authors = (book.authors.map { $0.name != nil ? ($0.name!.componentsSeparatedByString(",") as NSArray).componentsJoinedByString(", ") : "" } as NSArray).componentsJoinedByString(", ")
       let edition = book.edition != nil ? book.edition?.lowercaseString.rangeOfString("edition") == nil ? "Edition:\t\(book.edition!.convertToOrdinal())" : book.edition!.convertToOrdinal() : ""

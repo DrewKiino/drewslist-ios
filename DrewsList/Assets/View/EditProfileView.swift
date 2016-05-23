@@ -17,8 +17,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private let screenSize = UIScreen.mainScreen().bounds
   private var tableView: DLTableView?
   
-  
-  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -26,19 +24,19 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     setupDataBinding()
     setUpTableView()
     
+    tableView?.fillSuperview()
+    
+    FBSDKController.createCustomEventForName("UserEditProfile")
   }
   
   public override func viewWillAppear(animated: Bool) {
-    controller.readRealmUser()
-  }
+    model.user = UserModel.sharedUser().user
+    }
   
   public override func viewWillDisappear(animated: Bool) {
-    controller.writeRealmUser()
-  }
-  
-  public override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
-    tableView?.fillSuperview()
+    super.viewWillDisappear(animated)
+    
+    controller.saveEdit()
   }
   
   // MARK: setup view functions
@@ -68,21 +66,25 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   private func presentImagePicker() {
-    let picker = UIImagePickerController()
-    picker.delegate = self
-    picker.sourceType = .PhotoLibrary
-    picker.allowsEditing = false
-    presentViewController(picker, animated: true, completion: nil)
+//    navigationController?.pushViewController(ProfileImagePickerView(), animated: true)
+    presentViewController(ProfileImagePickerView(), animated: true, completion: nil)
   }
+  
+  private func presentSchoolPicker() {
+    presentViewController(SearchSchoolView(), animated: true, completion: nil)
+  }
+    
+
   
   private func setupSelf() {
     title = "Edit Profile"
+    view.backgroundColor = .whiteColor()
   }
   
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 5
+    return 7
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -90,93 +92,117 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     let cell : UITableViewCell = UITableViewCell()
     
     switch (indexPath.row) {
+      
       case 0:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+          cell.paddingLabel?.text = "Profile Image"
+          cell.paddingLabel?.textAlignment = .Left
+          cell.backgroundColor = .paradiseGray()
+          return cell
+        }
+        break
+      case 1:
         if let cell = tableView.dequeueReusableCellWithIdentifier("ChangeImageCell", forIndexPath: indexPath) as? ChangeImageCell {
           cell.label?.text = "Change Picture"
-          cell.label?.textColor = UIColor.lightGrayColor()
-          cell.label?.font = UIFont.asapRegular(14)
-       
-          cell.setupUser(model.user)
+          cell.label?.textColor = UIColor.sexyGray()
+          cell.label?.font = .asapRegular(16)
           
+          cell.setupUser(model.user)
+          cell._didSelectCell.removeAllListeners()
           cell._didSelectCell.listen( self ) { [weak self] bool in
             self?.presentImagePicker()
           }
           return cell
         }
-        break;
-      case 1:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-          cell.inputTextField?.text = model.user?.firstName
-          cell.inputTextField?.textColor = UIColor.lightGrayColor()
-          cell.inputTextField?.font = UIFont.asapRegular(14)
-          cell._inputTextFieldString.listen(self) { [weak self] string in
-            self?.controller.setFirstName(string)
-          }
-          return cell
-        }
-        break;
-   
-      case 2:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-          cell.inputTextField?.text = model.user?.lastName
-          cell.inputTextField?.textColor = UIColor.lightGrayColor()
-          cell.inputTextField?.font = UIFont.asapRegular(14)
-          cell._inputTextFieldString.listen(self) { [weak self] string in
-            self?.controller.setLastName(string)
-          }
-          return cell
-        }
-        break;
-      case 3:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-          cell.inputTextField?.text = model.user?.username
-          cell.inputTextField?.textColor = UIColor.lightGrayColor()
-          cell.inputTextField?.font = UIFont.asapRegular(14)
-          
-          cell._inputTextFieldString.listen(self) { [weak self] string in
-            self?.controller.setUsername(string)
-          }
-          return cell
-        }
-        break;
+        break
+//      case 2:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+//          cell.paddingLabel?.text = "Profile Bio"
+//          cell.paddingLabel?.textAlignment = .Left
+//          cell.backgroundColor = .paradiseGray()
+//          return cell
+//        }
+//        break
+//      case 3:
+//        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+//          
+//          let label = UILabel()
+//          cell.addSubview(label)
+//          label.text = "UserName"
+//          label.textColor = .sexyGray()
+//          label.font = .asapRegular(16)
+//          let xPad = screen.width / 30
+//          label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
+//          
+//          cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
+//          cell.inputTextField?.text = UserModel.sharedUser().user?.username
+//          cell.inputTextField?.font = .asapRegular(16)
+//          
+//          cell._inputTextFieldString.listen(self) { [weak self] string in
+//            self?.controller.setUsername(string)
+//          }
+//          return cell
+//        }
+//        break
       case 4:
         if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-          cell.backgroundColor = UIColor.whiteColor()
+            cell.paddingLabel?.text =  "School & PhoneNumber"
+            cell.paddingLabel?.textAlignment = .Left
+            cell.backgroundColor = .paradiseGray()
           cell.hideBothTopAndBottomBorders()
-          cell.selectionStyle = .None
           return cell
         }
-        break;
+      break
+      case 5:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
+          cell.label?.text = "Change School"
+          cell.label?.textColor = .sexyGray()
+          cell.label?.font = UIFont.asapRegular(16)
+          
+          //cell.setupUser(model.user)
+          cell._didSelectCell.removeAllListeners()
+          cell._didSelectCell.listen( self ) { [weak self] bool in
+            self?.presentSchoolPicker()
+          }
+          return cell
+        }
+        break
+    case 6:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+            
+            let label = UILabel()
+            cell.addSubview(label)
+            label.text = "Phone"
+            label.textColor = .sexyGray()
+            label.font = .asapRegular(16)
+            let xPad = screen.width / 30
+            label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
+            
+            
+            cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
+            cell.inputTextField?.text = UserModel.sharedUser().user?.username
+            cell.inputTextField?.font = .asapRegular(16)
+            
+            cell._inputTextFieldString.listen(self) { [weak self] string in
+                self?.controller.setPhone(string)
+            }
+            return cell
+            
+        }
+        break
       default:
-        break;
+        break
     }
-    
-    cell.textLabel?.textColor = UIColor.lightGrayColor()
-    cell.textLabel?.font = UIFont.asapRegular(14)
     return cell
   }
   
-  public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
-  {
-    if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      model.profileImage = pickedImage
-    }
-   // TODO: change image from image picker to server URL
-    dismissViewControllerAnimated(true, completion: nil)
-  }
-  
-  public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    dismissViewControllerAnimated(true, completion: nil)
-  }
   
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    if (indexPath.row == 4){
-      return screen.height
-    } else {
-      return screen.height / 15
+    switch indexPath.row {
+    case 0: return 24
+    default: break
     }
+    return 48
   }
-  
-  
 }
 

@@ -20,12 +20,21 @@ public class CreateListingController {
   
   private var refrainTimer: NSTimer?
   
-  // MARK: Initializers
   public init() {
-    readRealmUser()
+    
+    model.user = UserModel.sharedUser().user
+    
     setDefaultListing()
     // fixtures
-//    getBookFromServer("9780547539638")
+    //    getBookFromServer("9780547539638")
+    setupDataBinding()
+  }
+  
+  private func setupDataBinding() {
+    UserModel.sharedUser()._user.removeListener(self)
+    UserModel.sharedUser()._user.listen(self) { [weak self] user in
+      self?.model.user = user
+    }
   }
   
   public func setDefaultListing() {
@@ -33,7 +42,7 @@ public class CreateListingController {
     model.listing?.listType = "buying"
     model.listing?.cover = "hardcover"
     model.listing?.condition = "2"
-    model.listing?.price = "1.00"
+    model.listing?.price = 1.00
     model.listing?.notes = ""
   }
   
@@ -52,15 +61,18 @@ public class CreateListingController {
     guard let user_id = model.user?._id,
           let book_id = model.book?._id,
           let price = model.listing?.price,
-          let listType = model.listing?.listType,
+          let listType = model.listType ?? model.listing?.listType,
           let condition = model.listing?.condition,
           let cover = model.listing?.cover,
           let notes = model.listing?.notes
           where model.shouldRefrainFromCallingServer == false else
     { return }
+    
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
+    
+
     Alamofire.request(
       .POST,
       "\(ServerUrl.Default.getValue())/user/listBook",
@@ -71,7 +83,8 @@ public class CreateListingController {
         "listType": listType,
         "condition": Int(condition) ?? 2,
         "cover": cover,
-        "notes": notes
+        "notes": notes,
+        "listingFee": model.listingFee
       ] as [String: AnyObject],
       encoding: .JSON
     )
@@ -86,7 +99,11 @@ public class CreateListingController {
         self?.model.serverCallbackFromUploadlIsting = false
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
-        log.debug(json)
+        if json["error"].string == nil {
+          UserModel.setSharedUser(User(json: json))
+        } else {
+          log.error(json["error"].string)
+        }
         // using ObjectMapper we quickly convert the json data into an actual object we can use
         // then we set the model's book with the new book
         self?.model.serverCallbackFromUploadlIsting = true
@@ -109,7 +126,7 @@ public class CreateListingController {
     // set to true to refrain from doing a server call since we are going to do one right now
     model.shouldRefrainFromCallingServer = true
     // make the request following the server's route pattern
-    Alamofire.request(.GET, "http://drewslist-staging.herokuapp.com/book/search?query=\(isbn)")
+    Alamofire.request(.GET, ServerUrl.Default.getValue()+"/book/search?query=\(isbn)")
     // then using the builder pattern, chain a 'response' call after
     .response { [weak self] req, res, data, error in
       // unwrap error and check if it exists

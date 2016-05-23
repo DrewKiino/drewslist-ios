@@ -18,15 +18,24 @@ public class SignUpController {
   public let userController = UserController()
   public let model =  SignUpModel()
   private var refrainTimer: NSTimer?
-
+  
+  public let shouldShowErrorMessage = Signal<Bool>()
+  
+  public var shouldDismissView: ((title: String?, message: String?) -> Void)?
   
   public init() {}
+  
+  public func viewDidAppear() {
+    model.school = SearchSchoolController.currentSelection()?.name
+    model.state = SearchSchoolController.currentSelection()?.state
+  }
   
   public func validateInputs() {
     
     let validFirstName = model.firstName?.isValidName()
     let validLastName = model.lastName?.isValidName()
     let validEmail = model.email?.isValidEmail()
+    let validPhone = model.phone?.isValidPhoneNumber()
     let validPassword = model.password?.isValidPassword()
     let validRepassword = model.password != nil && model.repassword != nil && model.password! == model.repassword && model.repassword?.isValidPassword() == true
     let validSchool = model.school != nil && !model.school!.isEmpty && model.state != nil && !model.state!.isEmpty
@@ -34,6 +43,7 @@ public class SignUpController {
     model._isValidFirstName.fire(validFirstName)
     model._isValidLastName.fire(validLastName)
     model._isValidEmail.fire(validEmail)
+    model._isValidPhone.fire(validPhone)
     model._isValidPassword.fire(validPassword)
     model._isValidRepassword.fire(validRepassword)
     model._isValidSchool.fire(validSchool)
@@ -42,67 +52,49 @@ public class SignUpController {
       validFirstName == true &&
       validLastName == true &&
       validEmail == true &&
+      validPhone == true &&
       validPassword == true &&
       validRepassword == true &&
       validSchool == true
     )
   }
   
-  public func resetSchoolInput() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write { [weak self] in
-        userDefaults.school = nil
-        self?.model.school = nil
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
-  }
-  
-  public func setSchool() {
-    if let userDefaults = try! Realm().objects(UserDefaults.self).first {
-      try! Realm().write { [weak self] in
-        self?.model.school = userDefaults.school
-        self?.model.state = userDefaults.state
-        try! Realm().add(userDefaults, update: true)
-      }
-    }
-  }
-  
   public func createNewUserInServer() {
-    guard let firstName = model.firstName,
-          let lastName = model.lastName,
-          let email = model.email,
-          let password = model.password,
-          let school = model.school,
-          let state = model.state else
-    { return }
     
     // to safeguard against multiple server calls when the server has no more data
     // to send back, we use a timer to disable this controller's server calls
     model.shouldRefrainFromCallingServer = true
     
-    /*
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-    image,
-    bgImage,
-    description,
-    */
+    let phone: String = model.phone ?? ""
+    let school: String = model.school ?? ""
+    let state: String = model.state ?? ""
+    let firstName: String = model.firstName ?? ""
+    let lastName: String = model.lastName ?? ""
+    let email: String = model.email ?? ""
+    let password: String = model.password ?? ""
+    
+    // user settings
+    let deviceToken: String = UserModel.deviceToken ?? ""
+    let hasSeenTermsAndPrivacy: Bool = UserModel.hasSeenTermsAndPrivacy ?? false
+    let hasSeenOnboardingView: Bool = UserModel.hasSeenOnboarding ?? false
+    let currentUUID: String = NSUUID().UUIDString
     
     Alamofire.request(
       .POST,
-      ServerUrl.Default.getValue() + "/user",
+      ServerUrl.Default.getValue() + "/user/authenticateUser",
       parameters: [
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
+        "phone": phone,
         "password": password,
         "school": school,
         "state": state,
-        "deviceToken": userController.readUserDefaults()?.deviceToken ?? ""
+        // user settings
+        "deviceToken": deviceToken,
+        "hasSeenTermsAndPrivacy": hasSeenTermsAndPrivacy,
+        "hasSeenOnboardingView": hasSeenOnboardingView,
+        "currentUUID": currentUUID
       ] as [String: AnyObject],
       encoding: .JSON
     )
@@ -111,22 +103,24 @@ public class SignUpController {
       if let error = error {
         
         log.error(error)
-        self?.model._serverError.fire(true)
+        
+        self?.shouldShowErrorMessage.fire(true)
         
       } else if let data = data, let json: JSON! = JSON(data: data) {
         
         if json["errmsg"].string != nil || json["error"].string != nil {
           
-          log.error(json)
-          
-//          self?.model._serverError.fire(true)
+//          log.error(json)
+          self?.shouldShowErrorMessage.fire(true)
           
         } else {
+         
           
           // create and  user object
           self?.model.user = User(json: json)
-          // write user object to realm
-          self?.overwriteRealmUser()
+          
+          // Set UserModel user
+          UserController.setSharedUser(self?.model.user)
         }
       }
       
@@ -143,6 +137,24 @@ public class SignUpController {
     refrainTimer = nil
     refrainTimer = NSTimer.after(60.0) { [weak self] in
       self?.model.shouldRefrainFromCallingServer = false
+    }
+  }
+  
+  public func validateReferralCode(user_id: String?, referralCode: String?) {
+    if let user_id = user_id, referralCode = referralCode {
+      Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/validateReferralCode", parameters: [
+        "user_id": user_id,
+        "referralCode": referralCode
+      ])
+      .response() { [weak self] req, res, data, error in
+        log.debug(JSON(data: data!))
+        if let error = error {
+          log.error(error)
+        } else if let data = data, json: JSON! = JSON(data: data), title = json["_title"].string, message = json["_message"].string  {
+          log.debug("mark")
+          self?.shouldDismissView?(title: title, message: message)
+        }
+      }
     }
   }
   

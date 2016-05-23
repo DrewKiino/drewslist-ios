@@ -8,42 +8,43 @@
 
 import Foundation
 import RealmSwift
+import Alamofire
+import SwiftyJSON
 
 public class EditProfileController {
 
   public let model = EditProfileModel()
   
   public func setUp() {
-  
-    let user = User()
-    user.imageUrl = "https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwinxvapkezJAhUMKyYKHR3CAskQjRwIBw&url=http%3A%2F%2Fengineering.unl.edu%2Fkayla-person%2F&psig=AFQjCNFJgRTV0bIR5OTWTumjJpDKdjFU5w&ust=1450759200227606"
-    user.firstName = "Kevin"
-    user.lastName = "Mowers"
-    user.username = "KasperSeas"
-    model.user = user
   }
   
   public func setupDataBinding() {
-    model._profileImage.listen(self) { [weak self] image in
-     self?.updateUserInServer()
-    }
-  }
-  
-  private func updateUserInServer() {
-    
   }
   
   public func setFirstName(string: String?) {
-    model.user?.firstName = string
+    UserModel.sharedUser().user?.firstName = string
   }
   
   public func setLastName(string: String?) {
-    model.user?.lastName = string
+     UserModel.sharedUser().user?.lastName = string
   }
   
   public func setUsername(string: String?) {
-    model.user?.username = string
+     UserModel.sharedUser().user?.username = string
   }
+    
+    public func setPhone(string: String?) {
+        if let string = string where string.isValidPhoneNumber() {
+            UserModel.sharedUser().user?.phone = Int(string)
+        }
+    }
+
+    public func saveEdit() {
+        UserController.updateUserToServer() { [weak self] user in
+            self?.model.user = user
+        }
+    }
+
   
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }
   public func writeRealmUser(){ try! Realm().write { try! Realm().add(RealmUser().setRealmUser(self.model.user), update: true) } }

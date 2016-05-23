@@ -31,6 +31,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   private var firstNameField: HoshiTextField?
   private var lastNameField: HoshiTextField?
   private var emailField:      HoshiTextField?
+  private var phoneField:      HoshiTextField?
   private var passwordField:   HoshiTextField?
   private var rePasswordField: HoshiTextField?
   private var schoolTextField: HoshiTextField?
@@ -54,11 +55,11 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     setupDrewslistLogo()
     setupNameFields()
     setupEmailLabel()
+    setupPhoneLabel()
     setupPasswordLabel()
     setupSchoolTextField()
     setupSignupButton()
     setupOptions()
-    resetSchoolInput()
     
     activityView?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 24, height: 24)
     
@@ -76,7 +77,8 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     firstNameField?.alignAndFillWidth(align: .UnderCentered, relativeTo: drewslistLogo!, padding: 0, height: 48)
     lastNameField?.alignAndFillWidth(align: .UnderCentered, relativeTo: firstNameField!, padding: 0, height: 48)
     emailField?.alignAndFillWidth(align: .UnderCentered, relativeTo: lastNameField!, padding: 0, height: 48)
-    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    phoneField?.alignAndFillWidth(align: .UnderCentered, relativeTo: emailField!, padding: 0, height: 48)
+    passwordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: phoneField!, padding: 0, height: 48)
     rePasswordField?.alignAndFillWidth(align: .UnderCentered, relativeTo: passwordField!, padding: 0, height: 48)
     schoolTextField?.alignAndFillWidth(align: .UnderCentered, relativeTo: rePasswordField!, padding: 0, height: 48)
     
@@ -86,13 +88,16 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     
     optionsContrainer?.alignAndFillWidth(align: .UnderCentered, relativeTo: signupButton!, padding: 0, height: 48)
     loginOption?.fillSuperview()
+    
+    FBSDKController.createCustomEventForName("UserSignup")
   }
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     
     resignFirstResponder()
-    setSchool()
+    
+    controller.viewDidAppear()
     
     if drewslistLogo?.image == nil {
       Async.background { [weak self] in
@@ -123,6 +128,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   private func setupDataBinding() {
+    controller.shouldShowErrorMessage.removeAllListeners()
+    controller.shouldShowErrorMessage.listen(self) { [weak self] bool in
+      if bool {
+        let alertController = UIAlertController(title: "Were sorry!", message: "We were unable to sign you up :(", preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .Cancel) { [weak self] action in
+        })
+        self?.presentViewController(alertController, animated: true, completion: nil)
+      }
+    }
     model._isValidFirstName.removeAllListeners()
     model._isValidFirstName.listen(self) { [weak self] bool in
       if bool != true { self?.firstNameField?.placeholder = "First name can only contain letters or -" }
@@ -141,6 +155,11 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     model._isValidEmail.listen(self) { [weak self] bool in
       if bool != true { self?.emailField?.placeholder = "Must be a valid email" }
       else { self?.emailField?.placeholder = "Email" }
+    }
+    model._isValidPhone.removeAllListeners()
+    model._isValidPhone.listen(self) { [weak self] bool in
+      if bool != true { self?.phoneField?.placeholder = "Must be a valid phone number" }
+      else { self?.phoneField?.placeholder = "Phone" }
     }
     model._isValidPassword.removeAllListeners()
     model._isValidPassword.listen(self) { [weak self] bool in
@@ -173,8 +192,18 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     }
     
     model._user.removeAllListeners()
-    model._user.listen(self) { user in
-      if let tabView = UIApplication.sharedApplication().keyWindow?.rootViewController as? TabView { tabView.dismissViewControllerAnimated(true, completion: nil) }
+    model._user.listen(self) { [weak self] user in
+      self?.presentReferralInputView()
+    }
+    
+    controller.shouldDismissView = { [weak self] (title, message) in
+      if let title = title, message = message {
+        self?.showAlert(title, message: message) { [weak self] in
+          self?.presentReferralInputView()
+        }
+      } else {
+        self?.dismissView()
+      }
     }
   }
   
@@ -186,7 +215,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   private func setupScrollView() {
     scrollView = UIScrollView()
     scrollView?.showsVerticalScrollIndicator = false
-    scrollView?.scrollEnabled = false
+//    scrollView?.scrollEnabled = false
     view.addSubview(scrollView!)
   }
   
@@ -240,6 +269,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     firstNameField?.resignFirstResponder()
     lastNameField?.resignFirstResponder()
     emailField?.resignFirstResponder()
+    phoneField?.resignFirstResponder()
     passwordField?.resignFirstResponder()
     rePasswordField?.resignFirstResponder()
     schoolTextField?.resignFirstResponder()
@@ -264,6 +294,26 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     containerView?.addSubview(emailField!)
   }
   
+  public func setupPhoneLabel() {
+    phoneField = HoshiTextField()
+    phoneField?.borderInactiveColor = .bareBlue()
+    phoneField?.borderActiveColor = .juicyOrange()
+    phoneField?.placeholderColor = .whiteColor()
+    phoneField?.placeholderLabel.font = .asapRegular(12)
+    phoneField?.placeholder = "Phone"
+    phoneField?.delegate = self
+    phoneField?.font = .asapRegular(16)
+    phoneField?.textColor = .whiteColor()
+    phoneField?.spellCheckingType = .No
+    phoneField?.autocorrectionType = .No
+    phoneField?.autocapitalizationType = .None
+    phoneField?.clearButtonMode = .WhileEditing
+    phoneField?.keyboardType = .PhonePad
+    phoneField?.tag = 5
+    
+    containerView?.addSubview(phoneField!)
+  }
+  
   public func setupPasswordLabel() {
     passwordField = HoshiTextField()
     passwordField?.borderInactiveColor = .bareBlue()
@@ -278,7 +328,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     passwordField?.autocorrectionType = .No
     passwordField?.textColor = .whiteColor()
     passwordField?.clearButtonMode = .WhileEditing
-    passwordField?.tag = 5
+    passwordField?.tag = 6
     
     containerView?.addSubview(passwordField!)
     
@@ -294,7 +344,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     rePasswordField?.spellCheckingType = .No
     rePasswordField?.autocorrectionType = .No
     rePasswordField?.textColor = .whiteColor()
-    rePasswordField?.tag = 6
+    rePasswordField?.tag = 7
     rePasswordField?.clearButtonMode = .WhileEditing
     
     containerView?.addSubview(rePasswordField!)
@@ -312,7 +362,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     schoolTextField?.spellCheckingType = .No
     schoolTextField?.autocorrectionType = .No
     schoolTextField?.textColor = .whiteColor()
-    schoolTextField?.tag = 7
+    schoolTextField?.tag = 8
     schoolTextField?.clearButtonMode = .WhileEditing
     containerView?.addSubview(schoolTextField!)
   }
@@ -386,14 +436,6 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     return true
   }
   
-  public func resetSchoolInput() {
-    controller.resetSchoolInput()
-  }
-  
-  public func setSchool() {
-    controller.setSchool()
-  }
-  
   public func hideUI() {
     containerView?.hidden = true
     containerView?.alpha = 0.0
@@ -416,10 +458,10 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   
   public func textFieldDidBeginEditing(textField: UITextField) {
     switch textField.tag {
-    case 4...6:
+    case 4...7:
       scrollView?.setContentOffset(CGPointMake(0, 110), animated: true)
       break
-    case 7:
+    case 8:
       textField.resignFirstResponder()
       searchSchools()
       break
@@ -450,11 +492,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
         case 4:
           model.email = _string
           break
-          // password
+          //phone
         case 5:
+          model.phone = _string
+          break
+          // password
+        case 6:
           model.password = _string
           // repassword
-        case 6:
+        case 7:
           model.repassword = _string
         default: break
         }
@@ -475,11 +521,15 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
         case 4:
           model.email = _string
           break
-          // password
+          // phone
         case 5:
+          model.phone = _string
+          break
+          // password
+        case 6:
           model.password = _string
           // repassword
-        case 6:
+        case 7:
           model.repassword = _string
         default: break
         }
@@ -501,16 +551,46 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
       break
       // email
     case 4:
-      passwordField?.becomeFirstResponder()
+      phoneField?.becomeFirstResponder()
       break
-      // password
+      // phone
     case 5:
+      passwordField?.becomeFirstResponder()
+      // password
+    case 6:
       rePasswordField?.becomeFirstResponder()
       // repassword
-    case 6:
+    case 7:
       schoolTextField?.becomeFirstResponder()
     default: break
     }
     return false
+  }
+  
+  // KAB7X1N
+  
+  public func presentReferralInputView() {
+    var alertController: UIAlertController! = UIAlertController(title: "Referral Code?", message: "Add your friend's referral code below and get an additional free Listing for you and your friend! (Recommended)", preferredStyle: .Alert)
+    alertController.addTextFieldWithConfigurationHandler() { textField in
+      textField.font = .asapRegular(16)
+      textField.textColor = .coolBlack()
+      textField.spellCheckingType = .No
+      textField.autocorrectionType = .No
+      textField.autocapitalizationType = .None
+      textField.clearButtonMode = .Always
+    }
+    alertController.addAction(UIAlertAction(title: "Validate", style: .Default) { [weak self, weak alertController] action in
+      self?.controller.validateReferralCode(self?.model.user?._id, referralCode: alertController?.textFields?.first?.text)
+    })
+    alertController.addAction(UIAlertAction(title: "Skip", style: .Cancel) { [weak self] action in
+      self?.dismissView()
+    })
+    presentViewController(alertController, animated: true, completion: nil)
+    alertController = nil
+  }
+  
+  public func dismissView() {
+    TabView.sharedInstance().selectedIndex = 2
+    TabView.sharedInstance().dismissViewControllerAnimated(true, completion: nil)
   }
 }

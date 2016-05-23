@@ -29,6 +29,8 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   //  School List
   private var tableView: UITableView?
   
+  public var onDismiss: ((school: School?) -> Void)?
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -48,6 +50,8 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     searchBarImageView?.alignAndFill(align: .ToTheRightCentered, relativeTo: searchBarTextField!, padding: 8)
     
     tableView?.alignAndFill(align: .UnderCentered, relativeTo: searchBarContainer!, padding: 0)
+    
+    FBSDKController.createCustomEventForName("UserSearchSchool")
   }
   
   public override func viewDidAppear(animated: Bool) {
@@ -116,7 +120,7 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
     searchBarTextField?.autocapitalizationType = .Words
     searchBarTextField?.spellCheckingType = .No
     searchBarTextField?.autocorrectionType = .No
-    searchBarTextField?.clearButtonMode = .WhileEditing
+    searchBarTextField?.clearButtonMode = .Always
     searchBarContainer?.addSubview(searchBarTextField!)
     
     searchBarImageView = UIImageView()
@@ -136,13 +140,18 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   // MARK: Functions
   public func cancel() {
     searchBarTextField?.resignFirstResponder()
-    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    presentingViewController?.dismissViewControllerAnimated(true) { [weak self] in
+      self?.onDismiss?(school: self?.model.school)
+      self?.onDismiss = nil
+    }
   }
   
   public func choose() {
     searchBarTextField?.resignFirstResponder()
-    controller.saveData()
-    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    presentingViewController?.dismissViewControllerAnimated(true) { [weak self] in
+      self?.onDismiss?(school: self?.model.school)
+      self?.onDismiss = nil
+    }
   }
   
   // MARK: TextField Delegates
@@ -179,6 +188,11 @@ public class SearchSchoolView: UIViewController, UITextFieldDelegate, UITableVie
   
   public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     model.school = model.schools[indexPath.row]
+  }
+  
+  public func setOnDismiss(completionBlock: (school: School?) -> Void) -> Self {
+    onDismiss = completionBlock
+    return self
   }
 }
 

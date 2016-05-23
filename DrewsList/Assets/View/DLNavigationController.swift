@@ -13,13 +13,43 @@ public class DLNavigationController: UINavigationController {
   
   public var rootView: UIViewController?
   
+  
   public override func viewDidLoad() {
     super.viewDidLoad()
     setupRootView()
     setupSelf()
+    setupDataBinding()
+  }
+  
+  public func setupDataBinding() {
+    
+  }
+  
+  public class func showActivityAnimation(view: UIViewController?, leftHandSide: Bool = false) {
+    if let view = view {
+      var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: .White)
+      if leftHandSide == true {
+        view.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: activityView)
+      } else {
+        view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityView)
+      }
+      activityView.startAnimating()
+      activityView = nil
+    }
+  }
+  
+  public class func hideActivityAnimation(view: UIViewController?, leftHandSide: Bool = false) {
+    if let view = view {
+      if leftHandSide == true {
+        view.navigationItem.leftBarButtonItem = nil
+      } else {
+        view.navigationItem.rightBarButtonItem = nil
+      }
+    }
   }
   
   private func setupSelf() {
+    
     navigationBar.barTintColor = UIColor.soothingBlue()
     navigationBar.tintColor = UIColor.whiteColor()
     
@@ -29,6 +59,8 @@ public class DLNavigationController: UINavigationController {
     ]
     
     navigationBar.translucent = false
+    
+    view.backgroundColor = .whiteColor()
   }
   
   public func setupRootView() {
@@ -43,5 +75,11 @@ public class DLNavigationController: UINavigationController {
 
   public func setRootViewTitle(title: String?) {
     rootView?.title = title
+  }
+  
+  public class func setRightBarButton(view: UIViewController?, customView: UIView?) {
+    if let view = view, let customView = customView {
+        view.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: customView)
+    }
   }
 }

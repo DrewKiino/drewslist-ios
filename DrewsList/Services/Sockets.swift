@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Socket_IO_Client_Swift
+import SocketIOClientSwift
 import Signals
 import PromiseKit
 import SwiftyJSON
@@ -36,8 +36,11 @@ public class Sockets {
   
   public let _session_id = Signal<String?>()
   public var session_id: String? = nil { didSet { _session_id => session_id } }
-  public let socket = Sockets.new()
+  public let socket = Sockets.generateNewSocket()
   public var isCurrentlyInChat: Bool = false
+  
+  public var connectExecutionArray: [String: () -> Void]?
+  public var reconnectExecutionArray: [String: () -> Void]?
   
   public let _message = Signal<JSON>()
   
@@ -50,13 +53,26 @@ public class Sockets {
     socket.on("error") { data, socket in
       log.error(data)
     }
-    socket.on("connect") { data, socket in
+    socket.on("connect") { [weak self] data, socket in
       log.info("connection established.")
+      
       execute?()
+      
+      if let executions = self?.connectExecutionArray?.values {
+        for execute in executions {
+          execute()
+        }
+      }
     }
     socket.on("reconnect") { data, socket in
     }
-    socket.on("reconnectAttempt") { data, socket in
+    socket.on("reconnectAttempt") { [weak self] data, socket in
+      log.info("attempting to reconnect.")
+      if let executions = self?.reconnectExecutionArray?.values {
+        for execute in executions {
+          execute()
+        }
+      }
     }
     socket.on("disconnect") { [weak self] data, socket in
       log.info("disconnected from server.")
@@ -84,7 +100,6 @@ public class Sockets {
       }
     }
     socket.on("dataReady") { data, socket in
-      log.debug(data)
     }
     socket.on("setOnlineStatus.response") { [weak self] data, socket in
       guard let jsonArray = JSON(data).array else { return }
@@ -104,9 +119,9 @@ public class Sockets {
     socket.connect()
   }
   
-  public class func new() -> SocketIOClient {
+  public class func generateNewSocket() -> SocketIOClient {
     let socket = SocketIOClient(
-      socketURL: ServerUrl.Default.getValue(),
+      socketURL: NSURL(string: ServerUrl.Default.getValue()) ?? NSURL(),
       options: [
         .Log(false),
         .ForcePolling(false),
@@ -118,9 +133,9 @@ public class Sockets {
             NSHTTPCookieValue: UIDevice.currentDevice().identifierForVendor!.UUIDString,
             NSHTTPCookieSecure: true,
             NSHTTPCookieExpires: NSDate(timeIntervalSinceNow: 60)
-            ])!
-          ]
-        )
+          ])!]
+        ),
+        .Secure(ServerUrl.Default.getValue() == ServerUrl.Production.getValue()),
       ]
     )
     return socket
@@ -128,7 +143,7 @@ public class Sockets {
   
   public class func request(event: String, parameters: AnyObject...) -> Promise<JSON> {
     return Promise { fulfill, reject in
-      let tempSocket = Sockets.new()
+      let tempSocket = Sockets.generateNewSocket()
       tempSocket.on(event + ".response") { data, socket in
         if let jsonArray = JSON(data).array, let json = jsonArray.first {
           fulfill(json)
@@ -155,9 +170,19 @@ public class Sockets {
     socket.disconnect()
   }
   
-  public func onConnect(execute: () -> Void) {
-    socket.on("connect") { data, socket in
-      execute()
+  public func onConnect(host: String, execute: () -> Void) {
+    if connectExecutionArray != nil {
+      connectExecutionArray?.updateValue(execute, forKey: host)
+    } else {
+      connectExecutionArray = [host: execute]
+    }
+  }
+  
+  public func onReconnectAttempt(host: String, execute: () -> Void) {
+    if reconnectExecutionArray != nil {
+      reconnectExecutionArray?.updateValue(execute, forKey: host)
+    } else {
+      reconnectExecutionArray = [host: execute]
     }
   }
   
@@ -176,15 +201,15 @@ public class Sockets {
     }
   }
   
-  public func emit(event: String, _ object: [String: AnyObject], forceConnection: Bool = false) {
+  public func emit(event: String, objects: [String: AnyObject], forceConnection: Bool = false) {
     if isConnected() {
-      socket.emit(event, object)
+      socket.emit(event, objects)
     } else if forceConnection {
-      connect() { [unowned self] in self.socket.emit(event, object) }
+      connect() { [unowned self] in self.socket.emit(event, objects) }
     }
   }
   
-  public func emit(event: String, _ object: String, forceConnection: Bool = false) {
+  public func emit(event: String, object: String, forceConnection: Bool = false) {
     if isConnected() {
       socket.emit(event, object)
     } else if forceConnection {

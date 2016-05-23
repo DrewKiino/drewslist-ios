@@ -11,9 +11,6 @@ import Signals
 
 public class TabModel {
   
-  public let _shouldLogout = Signal<Bool>()
-  public var shouldLogout: Bool = false { didSet { _shouldLogout => shouldLogout } }
-  
   public let _user = Signal<User?>()
   public var user: User? { didSet { _user => user } }
   
