@@ -39,6 +39,8 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupTableView()
     
     FBSDKController.createCustomEventForName("UserAccountSettings")
+    
+    model.user = UserModel.sharedUser().user
   }
   
   public override func viewWillLayoutSubviews() {
@@ -53,14 +55,10 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   
   public override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    
-    controller.viewDidAppear()
   }
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    
-    controller.viewWillDisappear()
   }
   
   
@@ -76,7 +74,6 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     }
     _applicationWillEnterForeground.removeListener(self)
     _applicationWillEnterForeground.listen(self) { [weak self] bool in
-      self?.controller.viewDidAppear()
     }
   }
   

@@ -170,6 +170,21 @@ public class User: Mappable {
     else { return nil }
   }
   
+  public func getSchoolAbbv() -> String? {
+    if let school = school {
+      let string = (school.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: " -")).reduce("") { (total, item) in
+        if let character = item.characters.first {
+          return total + String(character)
+        } else {
+          return ""
+        }
+      })
+      return string
+    } else {
+      return nil
+    }
+  }
+  
   public func set(deviceToken deviceToken: String?) -> Self {
     self.deviceToken = deviceToken
     return self

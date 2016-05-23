@@ -21,15 +21,4 @@ public class AccountSettingsController {
   private let userPrivacyController = UserPrivacyController.sharedInstance()
   
   public func getModel() -> AccountSettingsModel { return model }
-  
-  public func viewDidAppear() {
-    // init user
-    model.user = UserModel.sharedUser().user
-    // check permissions
-    pushController.isRegisteredForRemoteNotifications()
-    locationController.isRegisteredForLocationUpdates()
-  }
-  
-  public func viewWillDisappear() {
-  }
 }

@@ -39,6 +39,7 @@ public class UserController {
     if let user = updateBlock != nil ? updateBlock!(user: UserModel.sharedUser().user) : UserModel.sharedUser().user, let user_id = user._id {
       
       let email: String = user.email ?? ""
+      let phone: Int = user.phone ?? 0
       let school: String = user.school ?? ""
       let state: String = user.state ?? ""
       
@@ -85,6 +86,7 @@ public class UserController {
       Alamofire.request(.POST, ServerUrl.Default.getValue() + "/user/update?_id=\(user_id)", parameters: [
         "email": email,
         "school": school,
+        "phone": phone,
         "state": state,
         // NOTE: password is not given by facebook
         // facebook attributes

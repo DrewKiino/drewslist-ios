@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import Signals
+import Neon
 
 public class EditProfileView: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   
@@ -27,6 +28,9 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     tableView?.fillSuperview()
     
     FBSDKController.createCustomEventForName("UserEditProfile")
+    
+    setButton(.LeftBarButton, title: "Cancel", target: self, selector: "cancel")
+    setButton(.RightBarButton, title: "Save", target: self, selector: "save")
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -35,8 +39,6 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   
   public override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    
-    controller.saveEdit()
   }
   
   // MARK: setup view functions
@@ -71,7 +73,11 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   }
   
   private func presentSchoolPicker() {
-    presentViewController(SearchSchoolView(), animated: true, completion: nil)
+    presentViewController(SearchSchoolView().setOnDismiss() { [weak self] school in
+      UserModel.sharedUser().user?.school = school?.name
+      UserModel.sharedUser().user?.state = school?.state
+      self?.tableView?.reloadData()
+    }, animated: true, completion: nil)
   }
     
 
@@ -79,6 +85,15 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private func setupSelf() {
     title = "Edit Profile"
     view.backgroundColor = .whiteColor()
+  }
+  
+  public func cancel() {
+    navigationController?.popViewControllerAnimated(true)
+  }
+  
+  public func save() {
+    controller.saveEdit()
+    navigationController?.popViewControllerAnimated(true)
   }
   
   // MARK: UITableView Classes
@@ -128,6 +143,9 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           cell.label?.text = "Change School"
           cell.label?.textColor = .sexyGray()
           cell.label?.font = UIFont.asapRegular(16)
+          cell.showBottomBorder()
+          
+          cell.schoolNameLabel?.text = UserModel.sharedUser().user?.getSchoolAbbv()
           
           //cell.setupUser(model.user)
           cell._didSelectCell.removeAllListeners()
@@ -138,28 +156,13 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
         }
         break
     case 4:
-        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-            
-            let label = UILabel()
-            cell.addSubview(label)
-            label.text = "Phone"
-            label.textColor = .sexyGray()
-            label.font = .asapRegular(16)
-            let xPad = screen.width / 30
-            label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
-            
-            
-            cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
-            cell.inputTextField?.text = UserModel.sharedUser().user?.username
-            cell.inputTextField?.font = .asapRegular(16)
-            
-            cell._inputTextFieldString.listen(self) { [weak self] string in
-              self?.controller.setPhone(string)
-            }
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldWithLabelCell", forIndexPath: indexPath) as? InputTextFieldWithLabelCell {
           
-          cell.inputTextField?.text = UserModel.sharedUser().user?.getPhoneNumberText()
-          
-            return cell
+          cell.showBottomBorder()
+          cell.titleLabel?.text = "Change Phone"
+          cell.textfield?.text = UserModel.sharedUser().user?.getPhoneNumberText()
+
+          return cell
             
         }
         break
@@ -176,6 +179,52 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     default: break
     }
     return 36
+  }
+}
+
+public class InputTextFieldWithLabelCell: DLTableViewCell, UITextFieldDelegate {
+  
+  public var textfield: UITextField?
+  public var titleLabel: UILabel?
+  
+  public override func setupSelf() {
+    super.setupSelf()
+    
+    titleLabel = UILabel()
+    titleLabel?.font = .asapRegular(16)
+    titleLabel?.textColor = .sexyGray()
+    addSubview(titleLabel!)
+    
+    textfield = UITextField()
+    textfield?.font = .asapRegular(16)
+    textfield?.textColor = .coolBlack()
+    textfield?.delegate = self
+    textfield?.textAlignment = .Right
+    addSubview(textfield!)
+  }
+  
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    
+    titleLabel?.anchorToEdge(.Left, padding: 8, width: 128, height: 24)
+    textfield?.anchorToEdge(.Right, padding: 40, width: 128, height: 24)
+  }
+  
+  public func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if let text = textField.text {
+      // this means the user inputted a backspace
+      if string.characters.count == 0 {
+        var _string: String? = NSString(string: text).substringWithRange(NSRange(location: 0, length: text.characters.count - 1))
+        UserModel.sharedUser().user?.phone = Int(_string ?? "")
+        _string = nil
+        // else, user has inputted some new strings
+      } else {
+        var _string: String? = text + string
+        UserModel.sharedUser().user?.phone = Int(_string ?? "")
+        _string = nil
+      }
+    }
+    return true
   }
 }
 
