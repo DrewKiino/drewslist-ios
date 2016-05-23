@@ -40,11 +40,9 @@ public class EditProfileController {
   }
 
   public func saveEdit() {
-    log.debug("saving user...")
-    log.debug(UserModel.sharedUser().user?.phone)
+    model.user?.school = SearchSchoolModel.sharedInstance().school?.name
+    model.user?.state = SearchSchoolModel.sharedInstance().school?.state
     UserController.updateUserToServer() { [weak self] user in
-      log.debug(user?.phone)
-      log.debug("user saved.")
       self?.model.user = user
     }
   }

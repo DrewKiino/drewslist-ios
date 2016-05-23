@@ -82,6 +82,9 @@ public class DLTableView: UITableView {
     // MARK: Listings
     registerClass(SelectableTitleCell.self, forCellReuseIdentifier: "SelectableTitleCell")
     
+    // MARK: Edit Profile
+    registerClass(InputTextFieldWithLabelCell.self, forCellReuseIdentifier: "InputTextFieldWithLabelCell")
+    
     allowsSelection = false
     showsVerticalScrollIndicator = false
     backgroundColor = .whiteColor()
@@ -654,10 +657,9 @@ public class ChangeImageCell: DLTableViewCell {
   public override func layoutSubviews() {
     super.layoutSubviews()
     hideBothTopAndBottomBorders()
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
-    
-    arrowImgView?.anchorToEdge(.Right, padding: screen.width / 20, width: screen.width / 20, height: screen.width / 20)
-    profileImgView?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: screen.width / 20, width: frame.height * (4 / 5), height: frame.height * (4 / 5))
+    label?.anchorToEdge(.Left, padding: 8, width: 128, height: 24)
+    arrowImgView?.anchorToEdge(.Right, padding: 8, width: 24, height: 24)
+    profileImgView?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: 8, width: 24, height: 24)
     
   }
   
@@ -758,10 +760,10 @@ public class PickerCell: DLTableViewCell {
   
   public override func layoutSubviews() {
     super.layoutSubviews()
-    label?.fillSuperview(left: screen.width / 30, right: 0, top: 0, bottom: 0)
+    label?.anchorToEdge(.Left, padding: 8, width: 128, height: 24)
     
-    arrowImgView?.anchorToEdge(.Right, padding: screen.width / 20, width: screen.width / 20, height: screen.width / 20)
-    schoolNameLabel?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: screen.width / 20, width: frame.width * (2 / 3) - 20, height: frame.height)
+    arrowImgView?.anchorToEdge(.Right, padding: 8, width: 24, height: 24)
+    schoolNameLabel?.align(.ToTheLeftCentered, relativeTo: arrowImgView!, padding: 8, width: 128, height: 24)
     
     
     hideBothTopAndBottomBorders()
@@ -788,7 +790,6 @@ public class PickerCell: DLTableViewCell {
     arrowImgView = UIImageView()
     arrowImgView?.image = arrowImgT.image
     // FIXME: Default School name is Cal State LA
-    schoolName = "Cal State LA"
     schoolNameLabel?.text = schoolName
     schoolNameLabel?.textAlignment = .Right
     schoolNameLabel?.textColor = .coolBlack()

@@ -95,45 +95,13 @@ public class LoginController {
   }
   
   public func getUserFromServer() {
-    guard let user_id = model.user?._id else { return }
-    
-    // to safeguard against multiple server calls when the server has no more data
-    // to send back, we use a timer to disable this controller's server calls
-    model.shouldRefrainFromCallingServer = true
-    
-    Alamofire.request(.GET, ServerUrl.Default.getValue() + "/user", parameters: [ "_id": user_id ], encoding: .URL)
-    .response { [weak self] req, res, data, error in
-      
-      if let error = error {
-        
-        log.error(error)
-        
-      } else if let data = data, let json: JSON! = JSON(data: data) where !json.isEmpty && json["error"].string != "user is undefined" {
-        
-        // create and  user object
-        self?.model.user = User(json: json)
-        // set the shared user instance
-        UserModel.setSharedUser(self?.model.user)
-        // dismiss the view
-        self?.shouldDismissView?(title: nil, message: nil)
-
-        
-      // user does not exist in database
-      } else {
-        
-        // nullify the model and
-        // delete the deprecated user
-        self?.model.user = nil
-        // then log user out
-        self?.model.shouldLogout = true
-      }
-      
-      // create a throttler
-      // this will disable this controllers server calls for 10 seconds
-      self?.refrainTimer?.invalidate()
-      self?.refrainTimer = nil
-      self?.refrainTimer = NSTimer.after(3.0) { [weak self] in
-        self?.model.shouldRefrainFromCallingServer = false
+    if let user = UserModel.sharedUser().user, let user_id = user._id {
+      DLHTTP.GET("/user?_id=\(user_id)") { [weak self] (json, error) in
+        if let json = json {
+          log.info(json)
+          self?.model.user = User(json: json)
+          UserModel.setSharedUser(User(json: json))
+        }
       }
     }
   }
