@@ -22,11 +22,6 @@ public class AccountSettingsController {
   
   public func getModel() -> AccountSettingsModel { return model }
   
-  public init () {
-    setupSelf()
-    setupDataBinding()
-  }
-  
   public func viewDidAppear() {
     // init user
     model.user = UserModel.sharedUser().user
@@ -36,18 +31,5 @@ public class AccountSettingsController {
   }
   
   public func viewWillDisappear() {
-    userPrivacyController.updateUserPrivacySettingsInServer()
-  }
-  
-  private func setupSelf() {
-  }
-  
-  private func setupDataBinding() {
-    // databind to the shared user
-    UserModel.sharedUser()._user.removeListener(self)
-    UserModel.sharedUser()._user.listen(self) { [weak self] user in
-      // set the user whenever the shared user changes
-      self?.model.user = user
-    }
   }
 }

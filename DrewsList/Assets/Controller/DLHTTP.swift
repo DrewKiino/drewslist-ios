@@ -20,7 +20,6 @@ public class DLHTTP {
       if let error = error {
         responseBlock(json: nil, error: error)
       } else if let data = data, let json: JSON! = JSON(data: data) {
-        log.debug(json)
         responseBlock(json: json, error: nil)
       }
     }

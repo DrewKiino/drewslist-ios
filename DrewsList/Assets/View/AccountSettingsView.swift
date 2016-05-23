@@ -37,7 +37,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     setupSelf()
     setupDataBinding()
     setupTableView()
-  
+    
     FBSDKController.createCustomEventForName("UserAccountSettings")
   }
   
