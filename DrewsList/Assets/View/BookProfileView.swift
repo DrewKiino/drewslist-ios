@@ -99,6 +99,7 @@ public class BookProfileView: UIViewController, UITableViewDelegate, UITableView
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
         cell.paddingLabel?.text = "About This Book"
+        cell.paddingLabel?.textAlignment = .Left
         
         return cell
       }

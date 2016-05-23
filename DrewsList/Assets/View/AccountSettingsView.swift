@@ -99,7 +99,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
   }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 16
+    return 15
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -109,6 +109,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideTopBorder()
         cell.paddingLabel?.text = "Account Info"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -122,7 +123,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
       break
     case 2:
       if let cell = tableView.dequeueReusableCellWithIdentifier("TitleCell", forIndexPath: indexPath) as? TitleCell {
-        cell.titleLabel?.text = "Username:"
+        cell.titleLabel?.text = "UserName:"
         cell.titleTextLabel?.text = model.user?.username
         return cell
       }
@@ -158,6 +159,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Permissions"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -233,6 +235,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 11:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Main Options"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break
@@ -248,6 +251,7 @@ public class AccountSettingsView: UIViewController, UITableViewDelegate, UITable
     case 13:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.paddingLabel?.text = "Other Options"
+        cell.paddingLabel?.textAlignment = .Left
         return cell
       }
       break

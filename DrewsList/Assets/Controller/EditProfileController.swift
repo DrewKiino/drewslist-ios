@@ -35,10 +35,17 @@ public class EditProfileController {
   public func setUsername(string: String?) {
     UserModel.sharedUser().user?.username = string
   }
+    
+    public func setPhone(string: String?) {
+        UserModel.sharedUser().user?.phone
+    }
+    
+  
   
   public func updateUserInServer() {
-    Alamofire.request(.POST, "\(ServerUrl.Default.getValue())/user/\(UserModel.sharedUser().user?._id ?? "")", parameters: [
-      "username": UserModel.sharedUser().user?.username ?? false
+    Alamofire.request(.POST, "\(ServerUrl.Default.getValue())/user/update?_id=\(UserModel.sharedUser().user?._id ?? "")", parameters: [
+      "username": UserModel.sharedUser().user?.username ?? false,
+      "phone": UserModel.sharedUser().user?.phone ?? false
       ] as [ String: AnyObject ])
       .response { [weak self] req, res, data, error in
         if let error = error {
@@ -48,6 +55,8 @@ public class EditProfileController {
         }
     }
   }
+
+    
 
   
   public func readRealmUser() { if let realmUser =  try! Realm().objects(RealmUser.self).first { model.user = realmUser.getUser() } }

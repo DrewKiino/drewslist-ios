@@ -72,6 +72,8 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   private func presentSchoolPicker() {
     print("Present School Picker")
   }
+    
+
   
   private func setupSelf() {
     title = "Edit Profile"
@@ -81,7 +83,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
   // MARK: UITableView Classes
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 6
+    return 7
   }
   
   public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -93,7 +95,7 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
       case 0:
         if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
           cell.paddingLabel?.text = "Profile Image"
-          cell.paddingLabel?.textAlignment = .Center
+          cell.paddingLabel?.textAlignment = .Left
           cell.backgroundColor = .paradiseGray()
           return cell
         }
@@ -112,59 +114,81 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
           return cell
         }
         break
-//      case 2:
-//        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-//          cell.paddingLabel?.text = "Profile Bio"
-//          cell.paddingLabel?.textAlignment = .Center
-//          cell.backgroundColor = .paradiseGray()
-//          return cell
-//        }
-//        break
-//      case 3:
-//        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
-//          
-//          let label = UILabel()
-//          cell.addSubview(label)
-//          label.text = "Username"
-//          label.textColor = .sexyGray()
-//          label.font = .asapRegular(16)
-//          let xPad = screen.width / 30
-//          label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
-//          
-//          cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
-//          cell.inputTextField?.text = UserModel.sharedUser().user?.username
-//          cell.inputTextField?.font = .asapRegular(16)
-//          
-//          cell._inputTextFieldString.listen(self) { [weak self] string in
-//            self?.controller.setUsername(string)
-//          }
-//          return cell
-//        }
-//        break
-//      
-//      case 4:
-//        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
-//          cell.hideBothTopAndBottomBorders()
-//          return cell
-//        }
-//      break
-//      
-//      case 5:
-//        if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
-//          cell.label?.text = "Change School"
-//          cell.label?.textColor = .sexyGray()
-//          cell.label?.font = UIFont.asapRegular(16)
-//          
-//          //cell.setupUser(model.user)
-//          
-//          cell._didSelectCell.removeAllListeners()
-//          cell._didSelectCell.listen( self ) { [weak self] bool in
-//            self?.presentSchoolPicker()
-//          }
-//          
-//          return cell
-//        }
-//        break
+      case 2:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+          cell.paddingLabel?.text = "Profile Bio"
+          cell.paddingLabel?.textAlignment = .Left
+          cell.backgroundColor = .paradiseGray()
+          return cell
+        }
+        break
+      case 3:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+          
+          let label = UILabel()
+          cell.addSubview(label)
+          label.text = "UserName"
+          label.textColor = .sexyGray()
+          label.font = .asapRegular(16)
+          let xPad = screen.width / 30
+          label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
+          
+          cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
+          cell.inputTextField?.text = UserModel.sharedUser().user?.username
+          cell.inputTextField?.font = .asapRegular(16)
+          
+          cell._inputTextFieldString.listen(self) { [weak self] string in
+            self?.controller.setUsername(string)
+          }
+          return cell
+        }
+        break
+      case 4:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
+            cell.paddingLabel?.text =  "School & PhoneNumber"
+            cell.paddingLabel?.textAlignment = .Left
+            cell.backgroundColor = .paradiseGray()
+          cell.hideBothTopAndBottomBorders()
+          return cell
+        }
+      break
+      case 5:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as? PickerCell {
+          cell.label?.text = "Change School"
+          cell.label?.textColor = .sexyGray()
+          cell.label?.font = UIFont.asapRegular(16)
+          
+          //cell.setupUser(model.user)
+          cell._didSelectCell.removeAllListeners()
+          cell._didSelectCell.listen( self ) { [weak self] bool in
+            self?.presentSchoolPicker()
+          }
+          return cell
+        }
+        break
+    case 6:
+        if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+            
+            let label = UILabel()
+            cell.addSubview(label)
+            label.text = "Phone"
+            label.textColor = .sexyGray()
+            label.font = .asapRegular(16)
+            let xPad = screen.width / 30
+            label.anchorInCorner(.BottomLeft, xPad: xPad, yPad: 0, width: screen.width * (1 / 4) - xPad, height: cell.height / 2)
+            
+            
+            cell.inputTextField?.anchorAndFillEdge(.Right, xPad: xPad, yPad: 0, otherSize: screen.width * (3 / 4) - xPad)
+            cell.inputTextField?.text = UserModel.sharedUser().user?.username
+            cell.inputTextField?.font = .asapRegular(16)
+            
+            cell._inputTextFieldString.listen(self) { [weak self] string in
+                self?.controller.setPhone(string)
+            }
+            return cell
+            
+        }
+        break
       default:
         break
     }
