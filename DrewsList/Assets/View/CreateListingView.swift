@@ -136,11 +136,16 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   }
   
   private func setupDefaultValues(){
-    self.model.listing?.price = 1
-    self.model.listing?.listType = "buying"
-    self.model.listing?.cover = "hardcover"
-    self.model.listing?.condition = "2"
-    self.model.listing?.notes = ""
+    
+    let awsListPrice: Double = Double(model.book?.awsListPrice?.formattedPrice?.stringByReplacingOccurrencesOfString("$", withString: "") ?? "0") ?? 0.0
+    let googleListPrice: Double = Double(model.book?.googleListPrice?.getListPriceText() ?? "0") ?? 0.0
+    let price: Double = awsListPrice + googleListPrice
+
+    model.listing?.price = price > 0.0 ? price : 20.00
+    model.listing?.listType = "buying"
+    model.listing?.cover = "hardcover"
+    model.listing?.condition = "2"
+    model.listing?.notes = ""
   }
   
   public func dismiss() {
@@ -293,9 +298,14 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
       break
     case 8:
       if let cell = tableView.dequeueReusableCellWithIdentifier("InputTextFieldCell", forIndexPath: indexPath) as? InputTextFieldCell {
+        
+        let awsListPrice: Double = Double(model.book?.awsListPrice?.formattedPrice?.stringByReplacingOccurrencesOfString("$", withString: "") ?? "0") ?? 0.0
+        let googleListPrice: Double = Double(model.book?.googleListPrice?.getListPriceText() ?? "0") ?? 0.0
+        let price: Double = awsListPrice + googleListPrice
+       
         cell.hideBothTopAndBottomBorders()
         cell.inputTextField?.placeholder = "Price ($USD)"
-        cell.inputTextField?.text = "20.0"
+        cell.inputTextField?.text = price > 0.0 ? String(price) : "20.00"
         cell.inputTextField?.keyboardType = .DecimalPad
         cell._isFirstResponder.removeAllListeners()
         cell._isFirstResponder.listen(self) { [weak self] bool in

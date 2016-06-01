@@ -82,6 +82,9 @@ public class ConfirmTransferController {
         }
         // set refrain to false since we have finally gotten a response back
         self?.model.shouldRefrainFromCallingServer = false
+        
+        UserProfileViewRefreshContent.fire()
+        ListFeedViewRefreshContent.fire()
     }
     // regardless of receiving any responses, if we even got any since server migth be down
     // we resume server calls after 30 seconds of inactivity

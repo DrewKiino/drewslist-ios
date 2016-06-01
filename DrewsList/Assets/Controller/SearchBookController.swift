@@ -16,6 +16,8 @@ public class SearchBookController {
   
   public let model = SearchBookModel.sharedInstance()
   
+  public let searchLock = Signal<Bool>()
+  
   private var throttleTimer: NSTimer?
   
   public init() {
@@ -30,6 +32,8 @@ public class SearchBookController {
   
   public func searchBook() {
     if let queryString = createQueryString(model.searchString) {
+      
+      searchLock => true
       
       log.debug("query string: \(queryString)")
       
@@ -52,6 +56,8 @@ public class SearchBookController {
           
           books = nil
         }
+        
+        self?.searchLock.fire(false)
         
         self?.model.showRequestActivity.fire(false)
       }

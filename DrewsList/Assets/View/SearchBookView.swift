@@ -114,6 +114,16 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
         self?.hideActivity(.RightBarButton)
       }
     }
+    
+    controller.searchLock.listen(self) { [weak self] lock in
+      if lock {
+        self?.searchBarImageView?.image = nil
+        self?.searchBarImageView?.showActivityView(style: .White)
+      } else{
+        self?.searchBarImageView?.image = Toucan(image: UIImage(named: "Icon-Search-1")).resize(self?.searchBarImageView!.frame.size).image
+        self?.searchBarImageView?.dismissActivityView()
+      }
+    }
   }
   
   private func setupHeaderView() {
@@ -133,6 +143,12 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
     cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
+    
+    searchButton = UIButton()
+    searchButton?.setTitle("Search", forState: .Normal)
+    searchButton?.titleLabel?.font = UIFont.asapRegular(16)
+    searchButton?.addTarget(self, action: "search", forControlEvents: .TouchUpInside)
+    headerView?.addSubview(searchButton!)
   }
   
   private func setupSearchBar() {

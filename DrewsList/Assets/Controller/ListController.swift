@@ -59,29 +59,12 @@ public class ListController {
     // unwrap isbn and make sure it exists, then make sure there are no prior server calls executed
     guard let list_id = model.listing?._id else { return }
     
-    // set to true to refrain from doing a server call since we are going to do one right now
-    model.shouldRefrainFromCallingServer = true
-    
     // make the request following the server's route pattern
-    Alamofire.request(.DELETE, "\(ServerUrl.Default.getValue())/listing/\(list_id)")
-    // then using the builder pattern, chain a 'response' call after
-    .response { [weak self] req, res, data, error in
-      
-      // unwrap error and check if it exists
-      if let error = error {
-        log.error(error)
-        // use JSON library to jsonify the results ( NSData => JSON )
-        // since the results is an array of objects, and we are only interested in the first book,
-        // we get the first result
-        self?.serverCallbackFromDeletelIsting.fire(false)
-        
-      } else if let data = data, let json: JSON! = JSON(data: data) {
-        // using ObjectMapper we quickly convert the json data into an actual object we can use
-        // then we set the model's book with the new book
+    DLHTTP.POST("/listing/destroy", parameters: [ "_id": list_id ]) { [weak self] json, error in
+      if let json = json {
         self?.serverCallbackFromDeletelIsting.fire(true)
-        
-      } else {
-        self?.serverCallbackFromDeletelIsting.fire(false)
+        UserProfileViewRefreshContent.fire()
+        ListFeedViewRefreshContent.fire()
       }
     }
   }

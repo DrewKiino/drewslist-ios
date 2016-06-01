@@ -57,7 +57,6 @@
 		EE0C92EA1CAC411100996739 /* PaymentInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0C92E91CAC411100996739 /* PaymentInputController.swift */; };
 		EE1062921C433DE300DAA15E /* ActivityFeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1062911C433DE300DAA15E /* ActivityFeedController.swift */; };
 		EE1062941C433DEC00DAA15E /* ActivityFeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */; };
-		EE17B0A71CF23A46008CD405 /* LoginView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE17B0A61CF23A46008CD405 /* LoginView2.swift */; };
 		EE19D1F21C1EAC1000BF2738 /* Asap-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */; };
 		EE19D1F31C1EAC1000BF2738 /* Asap-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */; };
 		EE19D1F41C1EAC1000BF2738 /* Asap-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */; };
@@ -74,7 +73,6 @@
 		EE31CD851C1DFBCE0002A545 /* OnboardingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */; };
 		EE31CD871C1DFBDA0002A545 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */; };
 		EE3253AF1CAF40140005D071 /* ListingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3253AE1CAF40140005D071 /* ListingsView.swift */; };
-		EE33754D1CF242FB0093DE4C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE33754C1CF242FB0093DE4C /* LoginView.swift */; };
 		EE367DC41C69191300B88CA0 /* FBSDKModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE367DC31C69191300B88CA0 /* FBSDKModel.swift */; };
 		EE3C94961BF30F2700E228A9 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94951BF30F2700E228A9 /* ChatController.swift */; };
 		EE3C94981BF30F2E00E228A9 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3C94971BF30F2E00E228A9 /* ChatModel.swift */; };
@@ -220,7 +218,6 @@
 		EE0C92E91CAC411100996739 /* PaymentInputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInputController.swift; sourceTree = "<group>"; };
 		EE1062911C433DE300DAA15E /* ActivityFeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedController.swift; sourceTree = "<group>"; };
 		EE1062931C433DEC00DAA15E /* ActivityFeedModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityFeedModel.swift; sourceTree = "<group>"; };
-		EE17B0A61CF23A46008CD405 /* LoginView2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView2.swift; sourceTree = "<group>"; };
 		EE19D1ED1C1EAC1000BF2738 /* Asap-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Bold.otf"; sourceTree = "<group>"; };
 		EE19D1EE1C1EAC1000BF2738 /* Asap-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-BoldItalic.otf"; sourceTree = "<group>"; };
 		EE19D1EF1C1EAC1000BF2738 /* Asap-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Asap-Italic.otf"; sourceTree = "<group>"; };
@@ -237,7 +234,6 @@
 		EE31CD841C1DFBCE0002A545 /* OnboardingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingController.swift; sourceTree = "<group>"; };
 		EE31CD861C1DFBDA0002A545 /* OnboardingModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
 		EE3253AE1CAF40140005D071 /* ListingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListingsView.swift; sourceTree = "<group>"; };
-		EE33754C1CF242FB0093DE4C /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		EE367DC31C69191300B88CA0 /* FBSDKModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FBSDKModel.swift; sourceTree = "<group>"; };
 		EE3C94951BF30F2700E228A9 /* ChatController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		EE3C94971BF30F2E00E228A9 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
@@ -465,7 +461,6 @@
 		EE3C94931BF30F1700E228A9 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				EE17B0A61CF23A46008CD405 /* LoginView2.swift */,
 				4FEB00DA1C7530AA00A041F7 /* ProfileImagePickerView.swift */,
 				EEE2AA0C1C28A94B0093DB46 /* AccountSettingsView.swift */,
 				EEBAEAD51C2CE7C800FCADE0 /* ActivityFeedView.swift */,
@@ -500,7 +495,6 @@
 				EEA1C7351CAC698000692447 /* DLViewController.swift */,
 				EE3253AE1CAF40140005D071 /* ListingsView.swift */,
 				EE802DB91CB5630F00AB4D08 /* IAPView.swift */,
-				EE33754C1CF242FB0093DE4C /* LoginView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -938,8 +932,6 @@
 				EE0C92EA1CAC411100996739 /* PaymentInputController.swift in Sources */,
 				EEB24D4D1C67C36700767AEC /* LocationController.swift in Sources */,
 				EEE2AA0D1C28A94B0093DB46 /* AccountSettingsView.swift in Sources */,
-				EE33754D1CF242FB0093DE4C /* LoginView.swift in Sources */,
-				EE17B0A71CF23A46008CD405 /* LoginView2.swift in Sources */,
 				399971DC1C14D15A008C30FC /* SignUpModel.swift in Sources */,
 				EEE2AA0F1C28C3B40093DB46 /* DLTableView.swift in Sources */,
 				EED779E71C15406600D172BE /* BookFeedView.swift in Sources */,

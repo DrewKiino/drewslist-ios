@@ -335,7 +335,7 @@ extension UIView {
   public func showActivityView(heightOffset: CGFloat? = nil, width: CGFloat? = nil, height: CGFloat? = nil, style: UIActivityIndicatorViewStyle = .Gray) {
     dismissActivityView()
     var activityView: UIActivityIndicatorView! = UIActivityIndicatorView(activityIndicatorStyle: style)
-    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? screen.width, height ?? screen.height)
+    activityView.frame = CGRectMake(0, heightOffset ?? 0, width ?? frame.width, height ?? frame.height)
     activityView.tag = 1337
     activityView.startAnimating()
     addSubview(activityView)

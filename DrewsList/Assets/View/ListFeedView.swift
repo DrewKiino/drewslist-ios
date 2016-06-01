@@ -257,6 +257,8 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
   }
 }
 
+public let ListFeedViewRefreshContent = Signal<()>()
+
 public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   private let controller = ListFeedController()
@@ -317,6 +319,12 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
     UserController.sharedUser()._user.removeListener(self)
     UserController.sharedUser()._user.listen(self) { [weak self] user in
       self?.model.user = user
+      self?.tableView?.reloadData()
+    }
+    ListFeedViewRefreshContent.removeListener(self)
+    ListFeedViewRefreshContent.listen(self) { [weak self] in
+      self?.model.listings.removeAll(keepCapacity: true)
+      self?.controller.getListingsFromServer(clearListings: true)
       self?.tableView?.reloadData()
     }
   }

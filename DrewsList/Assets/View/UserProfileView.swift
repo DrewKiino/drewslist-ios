@@ -14,6 +14,8 @@ import Signals
 import Async
 import MIBadgeButton_Swift
 
+public let UserProfileViewRefreshContent = Signal<()>()
+
 public class UserProfileViewContainer: DLNavigationController {
   
   public var userProfileView: UserProfileView?
@@ -196,6 +198,11 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
   }
   
   private func setupDataBinding() {
+    
+    UserProfileViewRefreshContent.removeListener(self)
+    UserProfileViewRefreshContent.listen(self) { [weak self] in
+      self?.getUserFromServer()
+    }
     
     model._user.removeAllListeners()
     model._user.listen(self) { [weak self] user in
@@ -441,6 +448,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         
         // set data
         cell.controller.model.bookList = listings
+      } else {
+        cell.controller.model.bookList.removeAll(keepCapacity: false)
       }
         
       cell.onBadgeButtonPress = { [weak self] in
@@ -461,6 +470,8 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
         
         // set data
         cell.controller.model.bookList = listings
+      } else {
+        cell.controller.model.bookList.removeAll(keepCapacity: false)
       }
       
       cell.onBadgeButtonPress = { [weak self] in

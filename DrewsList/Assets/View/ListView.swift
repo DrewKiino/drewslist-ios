@@ -416,7 +416,7 @@ public class ListerProfileViewCell: DLTableViewCell {
       // NOTE: DONT FORGET THESE CODES OMFG
       // converts the date strings sent from the server to local time strings
       if  let dateString = listing.createdAt?.toRegion(.ISO8601, region: Region.LocalRegion())?.toShortString(true, time: false),
-          let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1)
+        let relativeString = listing.createdAt?.toDateFromISO8601()?.toRelativeString(abbreviated: true, maxUnits: 1)
       {
         let coloredString = NSMutableAttributedString(string: "Listed At \(dateString)")
         coloredString.addAttribute(NSFontAttributeName, value: UIFont.asapBold(12), range: NSRange(location: 0,length: 10))
@@ -426,9 +426,8 @@ public class ListerProfileViewCell: DLTableViewCell {
           self?.listDateLabel?.text = 60.seconds.ago > listing.createdAt?.toDateFromISO8601() ? relativeString : "just now"
         }
       }
-      
     }
-      
+    
     // not really sure, but the book view covers this view.
     // so I had to set the z position to go over the book view
     // then set the background color to clear
