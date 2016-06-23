@@ -16,6 +16,7 @@ import FBSDKLoginKit
 import Signals
 import CoreLocation
 import Stripe
+import Atlantis
 
 public let log = Atlantis.Logger()
 public let screen = UIScreen.mainScreen().bounds

@@ -2,9 +2,212 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>Alamofire.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>AsyncSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Atlantis.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Bolts.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>CWStatusBarNotification.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Cosmos.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>CreditCardValidator.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKCoreKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKLoginKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Gifu.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSQMessagesViewController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>JSQSystemSoundPlayer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>KMPlaceholderTextView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>LTMorphingLabel.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MIBadgeButton-Swift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>NVActivityIndicatorView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Neon.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ObjectMapper.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Onboard.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>OpenInGoogleMaps.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pacific.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pantry.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PermissionScope.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-DrewsList.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-DrewsListTests.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PureLayout.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Realm.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RealmSwift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SDWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Signals.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Socket.IO-Client-Swift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Storm.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Stripe.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftDate.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftyButton.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftyJSON.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SwiftyTimer.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>TextFieldEffects.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Tide.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>04EB5F4CF7BCC89DAC046B8D07F7ED66</key>
+		<key>05073FB7E99DFC3C88AB4EBEF39C0D8F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>0D1EA7D325389B63190053B76C2E1FAC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -14,17 +217,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>0F348640C11A12B517E9FB2D4C7BA740</key>
+		<key>161F4CF2CDD70A0630E7AC96CC9B961D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>190ACD3A51BC90B85EADB13E9CDD207B</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>1A9E1AA7FE790727E03C128E981151DB</key>
+		<key>1A54A167C32DFCCEA6CDB5334A0DB6AC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -39,17 +237,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>26EFE2DB84B3BC1567787518855AE0E4</key>
+		<key>29FBAE97DE1296C6B718D5D7E246D659</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2ABB15F4719DA64A53CF5CE6FC62ED25</key>
+		<key>2EA501D78DDF0C88FB39F6451996C13B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>324CE6186FDBEA46DD959B8976916466</key>
+		<key>3446007F5FE26DF5F64CF7772786DE59</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -59,17 +257,37 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4E155FBB6070C868840C7A2BB6E75E85</key>
+		<key>3C1D7828990505F6B171D2B4FAD6DF3C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>57DFDA76CCEE448DD1CF8A2465F1AA24</key>
+		<key>42C5E0AE4202FF53577172FC09708C61</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5D69761C2CD2A1E5C013537B29CAB4CF</key>
+		<key>49D58AAB89C94F66883F51B05AC635ED</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4C4013063571AAFB34A26B6E0EE3C965</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>4D90D8078421ACB3448CC17AA296A326</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>514AD73B93B8B09AB38937AC19A3F9A2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>52D82BFDD1E808D9CB257431922C1EE4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -84,22 +302,27 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>63A18C6A528BD7E47DDAF39B2AEAF1D1</key>
+		<key>63876BD3DB47EEB74653742B9DA97559</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6773BADEAC21A80E67D0738DABC6A6A8</key>
+		<key>6C26F5915F75B45F921E3C0D11C27B73</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6BF46B140096B94093F8B3170761B723</key>
+		<key>6DE07670D38FD884A24F3CC3D1411551</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6FF856E43F97CAC60B223E27DD59558E</key>
+		<key>6EDC37F3FA92533C6AC3562458AA91F1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>776A4DF0EBDFEBBCD7D56FAA9057B2D2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -109,17 +332,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>92D6520690720ACA5539895206575FC1</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>95DB89A8BFC5FF0BF98458651D0163CD</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>9BA8DC58DFE94EC1679CA039CF6142D9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -129,17 +342,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9E6720FD06DA175BE875C654DFF6BF07</key>
+		<key>A76E20869F3376A5EBF81EF1E0267444</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AC5F721FC868D3B1ACEDEC001D15C1D6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>AEA56EBE1B518C71721209FB26701898</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>BA235DB506141ED71CBF9393C507EF9F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -154,7 +367,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CFAD34511BE064B683160E5D05C695ED</key>
+		<key>D1DC35DB2C695031A72543555FB23729</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -164,12 +377,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D8855C7FBCCF23AD6B7680E7EE584D2F</key>
+		<key>DF7FA5875E66940F260EA1929E541F4D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>DED7E02507BF07382D08F87BA9BEDD44</key>
+		<key>E06DABCB5BB2D5BE151061F64A507B8E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -180,11 +393,6 @@
 			<true/>
 		</dict>
 		<key>EDA125ADA52355B7CA6DF7BA96918357</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>F5ACF367AE3BD7A7F2AF2D430901DF7B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

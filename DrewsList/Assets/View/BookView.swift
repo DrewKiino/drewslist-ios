@@ -86,7 +86,7 @@ public class BookView: UIView {
     layer.masksToBounds = true
     clipsToBounds = false
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "pressed"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(BookView.pressed)))
   }
   
   public func pressed() {

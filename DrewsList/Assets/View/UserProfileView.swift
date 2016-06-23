@@ -326,7 +326,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       let myImage = UIImage(named: "Icon-SettingsGear")
       let resizedImage = Toucan.Resize.resizeImage(myImage!, size: CGSize(width: screenSize.width/20, height: screenSize.width/20))
       
-      let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: "settingsButtonPressed")
+      let settingsButton = UIBarButtonItem(image: resizedImage, style: UIBarButtonItemStyle.Plain, target: self, action: #selector(UserProfileView.settingsButtonPressed))
       
       //settingsButton.action
       // TODO: check if user is self
@@ -341,7 +341,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
       
       callButton = UIButton()
-      callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+      callButton?.addTarget(self, action: #selector(UserProfileView.callFriend), forControlEvents: .TouchUpInside)
       callButton?.setImage(resizedImage, forState: .Normal)
      
       myImage = UIImage(named: "Message Icon-1")
@@ -349,7 +349,7 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
       
       chatButton = UIButton()
-      chatButton?.addTarget(self, action: "chatFriend", forControlEvents: .TouchUpInside)
+      chatButton?.addTarget(self, action: #selector(UserProfileView.chatFriend), forControlEvents: .TouchUpInside)
       chatButton?.setImage(resizedImage, forState: .Normal)
       
       bgView?.addSubview(callButton!)
@@ -419,14 +419,12 @@ public class UserProfileView: UIViewController,  UIScrollViewDelegate, UITableVi
       } else {
         return 220
       }
-      break
     case 1:
       if (model.user?.listings.filter { $0.listType == "buying" })?.first == nil {
         return 48
       } else {
         return 230
       }
-      break
     default: break
     }
     return 220
@@ -594,7 +592,7 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     badgeButton?.align(.ToTheRightCentered, relativeTo: label!, padding: 0, width: 48, height: 48)
     badgeButton?.badgeEdgeInsets = UIEdgeInsetsMake(20, -12, 0, 0)
     badgeButton?.badgeString = ((label?.text == "I'm Selling") ? "\(UserModel.sharedUser().user?.freeListings ?? 0)" : nil)
-    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    badgeButton?.addTarget(self, action: #selector(UserProfileListView.badgeButtonPressed), forControlEvents: .TouchUpInside)
     
     collectionView?.alignAndFill(align: .UnderCentered, relativeTo: label!, padding: 0)
     collectionViewFrame = collectionView!.frame
@@ -639,7 +637,7 @@ public class UserProfileListView: DLTableViewCell, UICollectionViewDataSource, U
     
     badgeButton?.removeFromSuperview()
     badgeButton = MIBadgeButton(type: .ContactAdd)
-    badgeButton?.addTarget(self, action: "badgeButtonPressed", forControlEvents: .TouchUpInside)
+    badgeButton?.addTarget(self, action: #selector(UserProfileListView.badgeButtonPressed), forControlEvents: .TouchUpInside)
     addSubview(badgeButton!)
   }
   
@@ -769,7 +767,7 @@ public class ListCell: UICollectionViewCell {
     bookImageView = UIImageView()
     bookImageView?.userInteractionEnabled = true
     bookImageView?.backgroundColor = .whiteColor()
-    bookImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selectedListing"))
+    bookImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ListCell.selectedListing)))
     
     containerView?.addSubview(bookImageView!)
   }
@@ -792,7 +790,7 @@ public class ListCell: UICollectionViewCell {
     matchInfoView?.backgroundColor = .whiteColor()
     containerView?.addSubview(matchInfoView!)
     
-    matchTapGesture = UITapGestureRecognizer(target: self, action: "selectedMatch")
+    matchTapGesture = UITapGestureRecognizer(target: self, action: #selector(ListCell.selectedMatch))
     matchInfoView?.addGestureRecognizer(matchTapGesture!)
   }
   

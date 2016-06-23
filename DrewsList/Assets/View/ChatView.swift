@@ -81,7 +81,7 @@ public class ChatView: JSQMessagesViewController {
     resizedImage?.imageWithRenderingMode(.AlwaysOriginal)
     
     callButton = UIButton()
-    callButton?.addTarget(self, action: "callFriend", forControlEvents: .TouchUpInside)
+    callButton?.addTarget(self, action: #selector(ChatView.callFriend), forControlEvents: .TouchUpInside)
     callButton?.setImage(resizedImage, forState: .Normal)
     callButton?.frame = CGRectMake(0, 0, 30, 30)
     callButton?.layer.cornerRadius = (callButton?.frame.width)! / 2
@@ -209,7 +209,7 @@ public class ChatView: JSQMessagesViewController {
   
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
-    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refreshControl?.addTarget(self, action: #selector(ChatView.refresh(_:)), forControlEvents: .ValueChanged)
     collectionView?.addSubview(refreshControl!)
   }
   

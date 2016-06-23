@@ -61,7 +61,7 @@ public class ListController {
     
     // make the request following the server's route pattern
     DLHTTP.POST("/listing/destroy", parameters: [ "_id": list_id ]) { [weak self] json, error in
-      if let json = json {
+      if json != nil {
         self?.serverCallbackFromDeletelIsting.fire(true)
         UserProfileViewRefreshContent.fire()
         ListFeedViewRefreshContent.fire()

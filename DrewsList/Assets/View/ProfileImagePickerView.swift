@@ -75,7 +75,7 @@ public class ProfileImagePickerView: UIViewController, UITableViewDelegate, UITa
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
-    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton?.addTarget(self, action: #selector(ProfileImagePickerView.cancel), forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
   }
   

@@ -31,7 +31,7 @@ public class ListFeedNavigationView: DLNavigationController {
       image: Toucan(image: UIImage(named: "Icon-Search-1")).resize(CGSize(width: 24, height: 24)).image,
       style: UIBarButtonItemStyle.Done,
       target: self,
-      action: "selectedSearchButton"
+      action: #selector(ListFeedNavigationView.selectedSearchButton)
     )
   }
   
@@ -136,7 +136,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
     leftPageTitleButton?.backgroundColor = .clearColor()
-    leftPageTitleButton?.addTarget(self, action: "selectLeftPage", forControlEvents: .TouchUpInside)
+    leftPageTitleButton?.addTarget(self, action: #selector(ListFeedViewContainer.selectLeftPage), forControlEvents: .TouchUpInside)
     pageTitleContainer?.addSubview(leftPageTitleButton!)
   }
   
@@ -148,7 +148,7 @@ public class ListFeedViewContainer: UIView, UIScrollViewDelegate {
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true
     rightPageTitleButton?.backgroundColor = .clearColor()
-    rightPageTitleButton?.addTarget(self, action: "selectRightPage", forControlEvents: .TouchUpInside)
+    rightPageTitleButton?.addTarget(self, action: #selector(ListFeedViewContainer.selectRightPage), forControlEvents: .TouchUpInside)
     pageTitleContainer?.addSubview(rightPageTitleButton!)
   }
   
@@ -339,7 +339,7 @@ public class ListFeedView: UIView, UITableViewDelegate, UITableViewDataSource {
   
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
-    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refreshControl?.addTarget(self, action: #selector(ListFeedView.refresh(_:)), forControlEvents: .ValueChanged)
     tableView?.addSubview(refreshControl!)
   }
   
@@ -433,7 +433,7 @@ public class ListFeedCell: DLTableViewCell {
     
     setupListView()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ListFeedCell.cellPressed)))
   }
   
   public override func layoutSubviews() {

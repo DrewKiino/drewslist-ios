@@ -77,7 +77,7 @@ public class ListViewContainer: UIViewController {
   
   public func showEditButton() {
     hideEditButton()
-    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editButtonPressed")
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: #selector(ListViewContainer.editButtonPressed))
   }
   
   public func hideEditButton() {
@@ -361,7 +361,7 @@ public class ListerProfileViewCell: DLTableViewCell {
   
   private func setupUserImage() {
     userImageView = UIImageView()
-    userImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "userImageViewPressed"))
+    userImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ListerProfileViewCell.userImageViewPressed)))
     userImageView?.userInteractionEnabled = true
     addSubview(userImageView!)
   }
@@ -502,13 +502,13 @@ public class ListerAttributesViewCell: DLTableViewCell {
   
   private func setupChatButton() {
     chatButton = UIButton()
-    chatButton?.addTarget(self, action: "chatButtonPressed", forControlEvents: .TouchUpInside)
+    chatButton?.addTarget(self, action: #selector(ListerAttributesViewCell.chatButtonPressed), forControlEvents: .TouchUpInside)
     addSubview(chatButton!)
   }
   
   private func setupCallButton() {
     callButton = UIButton()
-    callButton?.addTarget(self, action: "callButtonPressed", forControlEvents: .TouchUpInside)
+    callButton?.addTarget(self, action: #selector(ListerAttributesViewCell.callButtonPressed), forControlEvents: .TouchUpInside)
     addSubview(callButton!)
   }
   

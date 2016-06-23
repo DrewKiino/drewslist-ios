@@ -95,13 +95,13 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
-    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton?.addTarget(self, action: #selector(EditListingView.cancel), forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
     saveButton = UIButton()
     saveButton?.setTitle("", forState: .Normal)
     saveButton?.titleLabel?.font = UIFont.asapRegular(16)
-    saveButton?.addTarget(self, action: "upload", forControlEvents: .TouchUpInside)
+    saveButton?.addTarget(self, action: #selector(EditListingView.upload), forControlEvents: .TouchUpInside)
     headerView?.addSubview(saveButton!)
   }
   
@@ -303,7 +303,6 @@ public class EditListingView: UIViewController, UITableViewDataSource, UITableVi
 //          self?.controller.deleteListingFromServer() }
 //        return cell
 //      }
-      break
     case 12:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.showTopBorder()
@@ -433,7 +432,7 @@ private var leftToggleButton: UIButton?
     toggleSelector?.layer.cornerRadius = 8.0
     toggleContainer?.addSubview(toggleSelector!)
     
-    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    let press = UILongPressGestureRecognizer(target: self, action: #selector(toggleCell.dragSelector(_:)))
     press.minimumPressDuration = 0.01
     
     toggleContainer?.addGestureRecognizer(press)
@@ -578,7 +577,7 @@ public class tripleToggleCell: DLTableViewCell {
     toggleSelector?.layer.cornerRadius = 8.0
     toggleContainer?.addSubview(toggleSelector!)
     
-    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    let press = UILongPressGestureRecognizer(target: self, action: #selector(toggleCell.dragSelector(_:)))
     press.minimumPressDuration = 0.01
     
     toggleContainer?.addGestureRecognizer(press)
@@ -720,7 +719,7 @@ public class sliderCell: DLTableViewCell {
     slider!.maximumValue = 2
     slider!.maximumTrackTintColor = UIColor.juicyOrange()
     slider!.setValue(1.0, animated: false)
-    slider!.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+    slider!.addTarget(self, action: #selector(sliderCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
     container!.addSubview(slider!)
   }
   
@@ -938,7 +937,7 @@ public class bigButtonCell: DLTableViewCell {
     button?.shadowHeight        = 0
     button?.cornerRadius        = 8
     button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
-    button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+    button?.addTarget(self, action: #selector(bigButtonCell.pressed), forControlEvents: .TouchUpInside)
     
     indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
     button?.customContentView.addSubview(indicator!)

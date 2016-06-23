@@ -62,8 +62,8 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
   }
   
   public override func viewWillAppear(animated: Bool) {
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SearchBookView.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SearchBookView.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     
     searchBarTextField?.text = nil
     model.lastSearchString = nil
@@ -141,13 +141,13 @@ public class SearchBookView: UIViewController, UITableViewDataSource, UITableVie
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
-    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton?.addTarget(self, action: #selector(SearchBookView.cancel), forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
     searchButton = UIButton()
     searchButton?.setTitle("Search", forState: .Normal)
     searchButton?.titleLabel?.font = UIFont.asapRegular(16)
-    searchButton?.addTarget(self, action: "search", forControlEvents: .TouchUpInside)
+    searchButton?.addTarget(self, action: #selector(SearchBookView.search), forControlEvents: .TouchUpInside)
     headerView?.addSubview(searchButton!)
   }
   

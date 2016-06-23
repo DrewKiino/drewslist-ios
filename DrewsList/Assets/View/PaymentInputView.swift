@@ -88,7 +88,7 @@ public class PaymentInputView: DLViewController, UITableViewDelegate, UITableVie
   }
   
   private func setupButtons() {
-    setButton(.RightBarButton, title: "Save", target: self, selector: "save")
+    setButton(.RightBarButton, title: "Save", target: self, selector: #selector(PaymentInputView.save))
   }
   
   public func save() {
@@ -110,7 +110,7 @@ public class PaymentInputView: DLViewController, UITableViewDelegate, UITableVie
           
           self?.controller.saveTokenToServer(token, cardParams: self?.cardParams) { [weak self] (json, error) in
             
-            self?.setButton(.RightBarButton, title: "Save", target: self, selector: "save")
+            self?.setButton(.RightBarButton, title: "Save", target: self, selector: #selector(PaymentInputView.save))
             
             if json["error"].string == nil {
               self?.navigationController?.popViewControllerAnimated(true)

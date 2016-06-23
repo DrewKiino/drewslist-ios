@@ -55,7 +55,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
   private func setupSelf() {
     rootView?.view.backgroundColor = .whiteColor()
     
-    rootView?.setButton(.LeftBarButton, title: "Cancel", target: self, selector: "dismiss")
+    rootView?.setButton(.LeftBarButton, title: "Cancel", target: self, selector: #selector(CreateListingView.dismiss))
     
     iapController.requestProducts()
     iapController.transactionInProgressBlock = { [weak self] inProgress in
@@ -118,7 +118,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
-    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton?.addTarget(self, action: #selector(CreateListingView.cancel), forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
 //    saveButton = UIButton()
@@ -318,7 +318,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
           if let text = text { self?.model.listing?.price = Double(text) }
         }
         cell.didBeginEditingBlock = { [weak self] in
-          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: "dismissKeyboard")
+          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: #selector(UIInputViewController.dismissKeyboard))
         }
         cell.didEndEditingBlock = { [weak self] in
           self?.rootView?.hideButton(.RightBarButton)
@@ -341,7 +341,7 @@ public class CreateListingView: DLNavigationController, UITableViewDelegate, UIT
           self?.model.listing?.notes = text
         }
         cell.didBeginEditingBlock = { [weak self] in
-          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: "dismissKeyboard")
+          self?.rootView?.setButton(.RightBarButton, title: "End Edit", target: cell, selector: #selector(UIInputViewController.dismissKeyboard))
         }
         cell.didEndEditingBlock = { [weak self] in
           self?.rootView?.hideButton(.RightBarButton)

@@ -193,7 +193,7 @@ public class RAMAnimatedTabBarController: UITabBarController {
         view.addSubview(viewContainer)
 
         // add gesture
-        let tapGesture = UITapGestureRecognizer(target: self, action: "tapHandler:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(RAMAnimatedTabBarController.tapHandler(_:)))
         tapGesture.numberOfTouchesRequired = 1
         viewContainer.addGestureRecognizer(tapGesture)
 

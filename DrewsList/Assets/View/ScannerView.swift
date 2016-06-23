@@ -53,7 +53,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     setupSearchBar()
     setupTableView()
     
-    rootView?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewTapped"))
+    rootView?.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ScannerView.viewTapped)))
     
     FBSDKController.createCustomEventForName("UserScanner")
   }
@@ -66,9 +66,9 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   public override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ScannerView.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ScannerView.keyboardDidShow(_:)), name: UIKeyboardDidShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ScannerView.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
     
     session?.startRunning()
   }
@@ -92,7 +92,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     searchBarContainer?.anchorAndFillEdge(.Top, xPad: 8, yPad: 8, otherSize: 36)
     searchBarTextField?.anchorAndFillEdge(.Left, xPad: 8, yPad: 8, otherSize: screen.width - 32)
     
-    if let previewLayer = previewLayer {
+    if previewLayer != nil {
       focusImageView?.frame = CGRectMake(0, 0, screen.width * 0.75, 100)
       focusImageView?.center = CGPointMake(CGRectGetMidX(screen), CGRectGetMidY(screen) - 64)
 
@@ -295,7 +295,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
 //          let identifiedBorder = identifiedBorder
       {
         
-        UIView.animate { [weak self, weak transformed] in
+        UIView.animateWithDuration(0.7) { [weak self, weak transformed] in
           guard let transformed = transformed else { return }
           self?.focusImageView?.center = CGPointMake(CGRectGetMidX(transformed.bounds), CGRectGetMidY(transformed.bounds))
         }
@@ -350,7 +350,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
   
   public func textFieldDidBeginEditing(textField: UITextField) {
     if textField.text?.characters.count > 0 {
-      UIView.animate(duration: 0.2) { [weak self] in
+      UIView.animateWithDuration(0.2) { [weak self] in
         self?.tableView?.alpha = 1.0
       }
     }
@@ -423,7 +423,7 @@ public class ScannerView: DLNavigationController, AVCaptureMetadataOutputObjects
     
     focusImageView?.hidden = false
     
-    UIView.animate(duration: 0.2) { [weak self] in
+    UIView.animateWithDuration(0.2) { [weak self] in
       self?.tableView?.alpha = 0.0
     }
   }

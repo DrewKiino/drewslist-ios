@@ -220,7 +220,7 @@ public class OnboardingView : UIPageViewController, UIPageViewControllerDataSour
                   webView.loadRequest(NSURLRequest(URL: url))
                   browserView.rootView?.view.addSubview(webView)
                   webView.fillSuperview()
-                  browserView.rootView?.setButton(.LeftBarButton, title: "Done", target: self, selector: "dismissBrowser")
+                  browserView.rootView?.setButton(.LeftBarButton, title: "Done", target: self, selector: #selector(OnboardingView.dismissBrowser))
                 }
               } else {
                 self?.skipOnboarding()

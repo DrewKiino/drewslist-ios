@@ -91,7 +91,7 @@ public class ActivityFeedView: DLNavigationController, UITableViewDataSource, UI
   private func setupRefreshControl() {
     refreshControl?.removeFromSuperview()
     refreshControl = UIRefreshControl()
-    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refreshControl?.addTarget(self, action: #selector(ActivityFeedView.refresh(_:)), forControlEvents: .ValueChanged)
     tableView?.addSubview(refreshControl!)
   }
   
@@ -176,7 +176,7 @@ public class ActivityCell: DLTableViewCell {
     activityLabel?.font = UIFont.asapRegular(12)
     activityLabel?.numberOfLines = 3
     activityLabel?.userInteractionEnabled = true
-    activityLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "containerPressed"))
+    activityLabel?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ActivityCell.containerPressed)))
     addSubview(activityLabel!)
   }
   

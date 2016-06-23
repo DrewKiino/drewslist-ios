@@ -43,7 +43,7 @@ public class ListingsView: DLViewController, UITableViewDataSource, UITableViewD
     tableView?.dataSource = self
     tableView?.backgroundColor = .whiteColor()
     
-    tableView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
+    tableView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ListingsView.dismissKeyboard)))
     
     view.addSubview(tableView!)
   }
@@ -181,7 +181,7 @@ public class SelectableTitleCell: DLTableViewCell {
     super.setupSelf()
     backgroundColor = .whiteColor()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "onTap"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SelectableTitleCell.onTap)))
   }
   
   private func setupTitleLabel() {

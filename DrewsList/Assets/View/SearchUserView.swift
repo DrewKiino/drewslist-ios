@@ -95,7 +95,7 @@ public class SearchUserView: UIViewController, UITableViewDataSource, UITableVie
     cancelButton = UIButton()
     cancelButton?.setTitle("Cancel", forState: .Normal)
     cancelButton?.titleLabel?.font = UIFont.asapRegular(16)
-    cancelButton?.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton?.addTarget(self, action: #selector(SearchUserView.cancel), forControlEvents: .TouchUpInside)
     headerView?.addSubview(cancelButton!)
     
     //    chooseButton = UIButton()

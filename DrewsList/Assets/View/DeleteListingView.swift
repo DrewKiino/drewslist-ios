@@ -132,7 +132,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
         
         return cell
       }
-      break;
 //    case 2:
 //      if let Cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as? ImageCell {
 //        
@@ -149,7 +148,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
 //        
 //      return cell
 //      }
-      break;
         case 4:
       if let cell = tableView.dequeueReusableCellWithIdentifier("PaddingCell", forIndexPath: indexPath) as? PaddingCell {
         cell.hideBothTopAndBottomBorders()
@@ -180,7 +178,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
 //        cell.hideBothTopAndBottomBorders()
 //        return cell
 //      }
-      break;
     case 7:
       if let cell = tableView.dequeueReusableCellWithIdentifier("BigButtonCell", forIndexPath: indexPath) as? BigButtonCell {
           cell.backgroundColor = .whiteColor()
@@ -271,7 +268,6 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
     
     public required init?(coder aDecoder: NSCoder) {
       super.init(coder: aDecoder)
-      
     }
     
     
@@ -299,7 +295,7 @@ public class DeleteListingView: UIViewController, UITableViewDelegate, UITableVi
       button?.shadowHeight        = 0
       button?.cornerRadius        = 8
       button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
-      button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+      button?.addTarget(self, action: Selector("pressed"), forControlEvents: .TouchUpInside)
       
       
       indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)

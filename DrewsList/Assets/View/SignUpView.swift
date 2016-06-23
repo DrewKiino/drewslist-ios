@@ -120,7 +120,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
   }
   
   private func setupSelf() {
-    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "dismissKeyboard"))
+    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SignUpView.dismissKeyboard)))
     
     activityView = UIActivityIndicatorView(activityIndicatorStyle: .White)
     activityView?.layer.zPosition = 3
@@ -378,7 +378,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     signupButton?.shadowHeight        = 0.0
     signupButton?.cornerRadius        = 0.0
     signupButton?.buttonPressDepth    = 0.0 // In percentage of shadowHeight
-    signupButton?.addTarget(self, action: "signupButtonPressed", forControlEvents: .TouchUpInside)
+    signupButton?.addTarget(self, action: #selector(SignUpView.signupButtonPressed), forControlEvents: .TouchUpInside)
     
     signupButtonIndicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
     signupButton?.addSubview(signupButtonIndicator!)
@@ -402,7 +402,7 @@ public class SignUpView: UIViewController, UITextFieldDelegate {
     loginOption?.setTitleColor(.whiteColor(), forState: .Normal)
     loginOption?.setTitle("Login", forState: .Normal)
     loginOption?.contentHorizontalAlignment = .Center
-    loginOption?.addTarget(self, action: "loginButtonPressed", forControlEvents: .TouchUpInside)
+    loginOption?.addTarget(self, action: #selector(SignUpView.loginButtonPressed), forControlEvents: .TouchUpInside)
     optionsContrainer?.addSubview(loginOption!)
   }
   

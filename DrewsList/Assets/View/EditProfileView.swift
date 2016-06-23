@@ -29,8 +29,8 @@ public class EditProfileView: UIViewController, UITableViewDelegate, UITableView
     
     FBSDKController.createCustomEventForName("UserEditProfile")
     
-    setButton(.LeftBarButton, title: "Cancel", target: self, selector: "cancel")
-    setButton(.RightBarButton, title: "Save", target: self, selector: "save")
+    setButton(.LeftBarButton, title: "Cancel", target: self, selector: #selector(EditProfileView.cancel))
+    setButton(.RightBarButton, title: "Save", target: self, selector: #selector(EditProfileView.save))
   }
   
   public override func viewWillAppear(animated: Bool) {

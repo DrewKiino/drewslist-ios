@@ -90,7 +90,7 @@ public class DLTableView: UITableView {
     backgroundColor = .whiteColor()
     separatorColor = .clearColor()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "resignFirstResponder"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(UIResponder.resignFirstResponder)))
   }
   
   public override func resignFirstResponder() -> Bool {
@@ -372,7 +372,7 @@ public class FullTitleCell: DLTableViewCell {
     
     backgroundColor = .whiteColor()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellTapped"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FullTitleCell.cellTapped)))
   }
   
   private func setupTitleLabel() {
@@ -382,16 +382,16 @@ public class FullTitleCell: DLTableViewCell {
     titleButton?.titleLabel?.font = .asapRegular(12)
     titleButton?.titleLabel?.adjustsFontSizeToFitWidth = true
     titleButton?.titleLabel?.minimumScaleFactor = 0.8
-    titleButton?.addTarget(self, action: "cellPressed:", forControlEvents: .TouchDown)
-    titleButton?.addTarget(self, action: "cellPressReleased:", forControlEvents: .TouchUpOutside)
-    titleButton?.addTarget(self, action: "cellSelected:", forControlEvents: .TouchUpInside)
+    titleButton?.addTarget(self, action: #selector(FullTitleCell.cellPressed(_:)), forControlEvents: .TouchDown)
+    titleButton?.addTarget(self, action: #selector(FullTitleCell.cellPressReleased(_:)), forControlEvents: .TouchUpOutside)
+    titleButton?.addTarget(self, action: #selector(FullTitleCell.cellSelected(_:)), forControlEvents: .TouchUpInside)
     addSubview(titleButton!)
   }
   
   public func setupRightImageView() {
     rightImageView = UIImageView()
     rightImageView?.tintColor = .sexyGray()
-    rightImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellTapped"))
+    rightImageView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(FullTitleCell.cellTapped)))
     rightImageView?.userInteractionEnabled = true
     addSubview(rightImageView!)
   }
@@ -401,13 +401,13 @@ public class FullTitleCell: DLTableViewCell {
   }
   
   public func cellPressReleased(sender: UIButton) {
-    UIView.animate { [weak self] in
+    UIView.animateWithDuration(0.7) { [weak self] in
       self?.backgroundColor = .whiteColor()
     }
   }
   
   public func cellSelected(sender: UIButton) {
-    UIView.animate { [weak self] in
+    UIView.animateWithDuration(0.7) { [weak self] in
       self?.backgroundColor = .whiteColor()
     }
     cellTapped()
@@ -472,7 +472,7 @@ public class SwitchCell: DLTableViewCell {
     backgroundColor = .whiteColor()
     multipleTouchEnabled = true
     
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
+    let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SwitchCell.pressed(_:)))
     pressGesture.minimumPressDuration = 0.01
     addGestureRecognizer(pressGesture)
   }
@@ -587,7 +587,7 @@ public class BookViewCell: DLTableViewCell {
     }
     addSubview(bookView!)
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(BookViewCell.cellPressed)))
   }
   
   
@@ -666,7 +666,7 @@ public class ChangeImageCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
+    let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SwitchCell.pressed(_:)))
     pressGesture.minimumPressDuration = 0.01
     addGestureRecognizer(pressGesture)
   }
@@ -772,7 +772,7 @@ public class PickerCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
-    let pressGesture = UILongPressGestureRecognizer(target: self, action: "pressed:")
+    let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SwitchCell.pressed(_:)))
     pressGesture.minimumPressDuration = 0.01
     addGestureRecognizer(pressGesture)
   }
@@ -848,7 +848,7 @@ public class BigImageCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     backgroundColor = .whiteColor()
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "pressed:"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SwitchCell.pressed(_:))))
   }
   
   private func setupLabel() {
@@ -940,7 +940,7 @@ public class ToggleCell: DLTableViewCell {
     toggleSelector?.layer.cornerRadius = 8.0
     toggleContainer?.addSubview(toggleSelector!)
     
-    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    let press = UILongPressGestureRecognizer(target: self, action: #selector(ToggleCell.dragSelector(_:)))
     press.minimumPressDuration = 0.01
     
     toggleContainer?.addGestureRecognizer(press)
@@ -1085,7 +1085,7 @@ public class TripleToggleCell: DLTableViewCell {
     toggleSelector?.layer.cornerRadius = 8.0
     toggleContainer?.addSubview(toggleSelector!)
     
-    let press = UILongPressGestureRecognizer(target: self, action: "dragSelector:")
+    let press = UILongPressGestureRecognizer(target: self, action: #selector(ToggleCell.dragSelector(_:)))
     press.minimumPressDuration = 0.01
     
     toggleContainer?.addGestureRecognizer(press)
@@ -1234,7 +1234,7 @@ public class SliderCell: DLTableViewCell {
     slider!.maximumValue = 2
     slider!.maximumTrackTintColor = .juicyOrange()
     slider!.setValue(1.0, animated: false)
-    slider!.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+    slider!.addTarget(self, action: #selector(SliderCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
     container!.addSubview(slider!)
   }
   
@@ -1480,7 +1480,7 @@ public class BigButtonCell: DLTableViewCell {
     button?.shadowHeight        = 0
     button?.cornerRadius        = 8
     button?.buttonPressDepth    = 0.5 // In percentage of shadowHeight
-    button?.addTarget(self, action: "pressed", forControlEvents: .TouchUpInside)
+    button?.addTarget(self, action: #selector(BigButtonCell.pressed), forControlEvents: .TouchUpInside)
     
     indicator = UIActivityIndicatorView(activityIndicatorStyle: .White)
     button?.customContentView.addSubview(indicator!)

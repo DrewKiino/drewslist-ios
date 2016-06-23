@@ -78,7 +78,7 @@ public class ChatHistoryView: DLNavigationController, UITableViewDelegate, UITab
   
   private func setupRefreshControl() {
     refreshControl = UIRefreshControl()
-    refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+    refreshControl?.addTarget(self, action: #selector(ChatHistoryView.refresh(_:)), forControlEvents: .ValueChanged)
     tableView?.addSubview(refreshControl!)
   }
   
@@ -135,7 +135,7 @@ public class ChatHistoryCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cellPressed"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ChatHistoryCell.cellPressed)))
     
     setupLeftImageView()
     setupTitle()

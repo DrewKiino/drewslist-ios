@@ -7,6 +7,13 @@ use_frameworks!
 
 #####################################
 
+target 'DrewsList' do
+
+# bootstrap
+pod 'Atlantis', :path => '/Users/drewkiino/Desktop/Github/Atlantis'
+pod 'Pacific', :path => '/Users/drewkiino/Pacific'
+pod 'Tide', :path => '/Users/drewkiino/Tide'
+
 # map routing libs
 pod 'OpenInGoogleMaps', '0.1.0'
 
@@ -43,7 +50,7 @@ pod 'MIBadgeButton-Swift'
 pod 'Signals', '2.3.0'
 
 # event handling
-pod 'PromiseKit', '3.0.3'
+#pod 'PromiseKit', '3.0.3'
 pod 'AsyncSwift', '1.7.2'
 
 # image libs
@@ -71,6 +78,7 @@ pod 'Google/Analytics'
 pod 'Stripe'
 pod 'CreditCardValidator'
 
+end
 
 #####################################
 # unit testing

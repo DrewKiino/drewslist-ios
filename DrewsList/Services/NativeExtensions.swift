@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import PromiseKit
 import Async
 import SwiftDate
 
@@ -620,31 +619,6 @@ extension NSAttributedString {
     let boundingBox = self.boundingRectWithSize(constraintRect, options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
     
     return ceil(boundingBox.width)
-  }
-}
-
-extension Array {
-  
-  public func mapAsync<T>(execute: (item: Array.Generator.Element) throws -> T) -> Promise<[T]> {
-    return when(map { item -> Promise<T> in
-      return Promise { fulfill, reject in
-        Async.background {
-          do {
-            var output: T! = try execute(item: item)
-            Async.main {
-              fulfill(output)
-              output = nil
-            }
-          } catch let _error as NSError {
-            var error: NSError! = _error
-            Async.main {
-              reject(error)
-              error = nil
-            }
-          }
-        }
-      }
-    })
   }
 }
 

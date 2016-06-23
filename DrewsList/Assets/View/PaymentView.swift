@@ -171,7 +171,7 @@ public class CardInfoCell: DLTableViewCell {
   public override func setupSelf() {
     super.setupSelf()
     
-    addGestureRecognizer(UITapGestureRecognizer(target: self, action: "selected"))
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(CardInfoCell.selected)))
     
     setupContainerView()
     setupCardView()

@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import DrewsList
 
 class DrewsListTests: XCTestCase {
     

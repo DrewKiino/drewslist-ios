@@ -9,7 +9,6 @@
 import Foundation
 import SocketIOClientSwift
 import Signals
-import PromiseKit
 import SwiftyJSON
 import Alamofire
 import RealmSwift
@@ -18,8 +17,8 @@ public class Sockets {
   
   private struct Singleton {
     static let socket = Sockets()
-    static var _sessionCount = 0
-    static var sessionCount: Int { get { return _sessionCount++ } }
+    static var _sessionCount: Int = 0
+    static var sessionCount: Int { get { _sessionCount += 1; return _sessionCount } }
   }
   
   public class func sharedInstance() -> Sockets { return Singleton.socket }
@@ -141,29 +140,6 @@ public class Sockets {
     return socket
   }
   
-  public class func request(event: String, parameters: AnyObject...) -> Promise<JSON> {
-    return Promise { fulfill, reject in
-      let tempSocket = Sockets.generateNewSocket()
-      tempSocket.on(event + ".response") { data, socket in
-        if let jsonArray = JSON(data).array, let json = jsonArray.first {
-          fulfill(json)
-        }
-        tempSocket.disconnect()
-      }
-      tempSocket.on("connect") { data, socket in
-        tempSocket.emit(event, parameters)
-      }
-      tempSocket.on(event + ".error") { data, socket in
-        if let jsonArray = JSON(data).array, let error = jsonArray.first?["error"].string {
-          reject(NSError(domain: error, code: 404, userInfo: nil))
-        }
-        log.error(data)
-        tempSocket.disconnect()
-      }
-      tempSocket.connect()
-    }
-  }
-
   public func disconnect(execute: (() -> Void)? = nil) {
     disconnectHandler = execute
     socket.removeAllHandlers()

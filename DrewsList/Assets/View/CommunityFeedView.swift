@@ -105,7 +105,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     leftPageTitleButton?.titleLabel?.textAlignment = .Center
     leftPageTitleButton?.layer.masksToBounds = true
     leftPageTitleButton?.backgroundColor = .clearColor()
-    leftPageTitleButton?.addTarget(self, action: "selectLeftPage", forControlEvents: .TouchUpInside)
+    leftPageTitleButton?.addTarget(self, action: #selector(CommunityFeedView.selectLeftPage), forControlEvents: .TouchUpInside)
     pageTitleContainer?.addSubview(leftPageTitleButton!)
   }
   
@@ -117,7 +117,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     middlePageTitleButton?.titleLabel?.textAlignment = .Center
     middlePageTitleButton?.titleLabel?.layer.masksToBounds = true
     middlePageTitleButton?.backgroundColor = .clearColor()
-    middlePageTitleButton?.addTarget(self, action: "selectMiddlePage", forControlEvents: .TouchUpInside)
+    middlePageTitleButton?.addTarget(self, action: #selector(CommunityFeedView.selectMiddlePage), forControlEvents: .TouchUpInside)
     pageTitleContainer?.addSubview(middlePageTitleButton!)
   }
   
@@ -129,7 +129,7 @@ public class CommunityFeedView: DLNavigationController, UIScrollViewDelegate {
     rightPageTitleButton?.titleLabel?.textAlignment = .Center
     rightPageTitleButton?.titleLabel?.layer.masksToBounds = true
     rightPageTitleButton?.backgroundColor = .clearColor()
-    rightPageTitleButton?.addTarget(self, action: "selectRightPage", forControlEvents: .TouchUpInside)
+    rightPageTitleButton?.addTarget(self, action: #selector(CommunityFeedView.selectRightPage), forControlEvents: .TouchUpInside)
     pageTitleContainer?.addSubview(rightPageTitleButton!)
   }
   
