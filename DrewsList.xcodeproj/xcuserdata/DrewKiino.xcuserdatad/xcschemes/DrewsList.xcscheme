@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0710"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EE07FE241BE11D1E00A10F05"
+               BlueprintIdentifier = "EE2493761D3358BF00B68AE0"
                BuildableName = "DrewsList.app"
                BlueprintName = "DrewsList"
                ReferencedContainer = "container:DrewsList.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EE07FE381BE11D1E00A10F05"
+               BlueprintIdentifier = "EE24938A1D3358BF00B68AE0"
                BuildableName = "DrewsListTests.xctest"
                BlueprintName = "DrewsListTests"
                ReferencedContainer = "container:DrewsList.xcodeproj">
@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EE07FE431BE11D1E00A10F05"
+               BlueprintIdentifier = "EE2493951D3358BF00B68AE0"
                BuildableName = "DrewsListUITests.xctest"
                BlueprintName = "DrewsListUITests"
                ReferencedContainer = "container:DrewsList.xcodeproj">
@@ -52,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EE07FE241BE11D1E00A10F05"
+            BlueprintIdentifier = "EE2493761D3358BF00B68AE0"
             BuildableName = "DrewsList.app"
             BlueprintName = "DrewsList"
             ReferencedContainer = "container:DrewsList.xcodeproj">
@@ -62,7 +62,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EE07FE241BE11D1E00A10F05"
+            BlueprintIdentifier = "EE2493761D3358BF00B68AE0"
             BuildableName = "DrewsList.app"
             BlueprintName = "DrewsList"
             ReferencedContainer = "container:DrewsList.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EE07FE241BE11D1E00A10F05"
+            BlueprintIdentifier = "EE2493761D3358BF00B68AE0"
             BuildableName = "DrewsList.app"
             BlueprintName = "DrewsList"
             ReferencedContainer = "container:DrewsList.xcodeproj">
