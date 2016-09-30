@@ -2,11 +2,12 @@
 //  DrewsListTests.swift
 //  DrewsListTests
 //
-//  Created by Andrew Aquino on 10/28/15.
-//  Copyright © 2015 Totem. All rights reserved.
+//  Created by Andrew Aquino on 9/29/16.
+//  Copyright © 2016 Andrew Aquino. All rights reserved.
 //
 
 import XCTest
+@testable import DrewsList
 
 class DrewsListTests: XCTestCase {
     
