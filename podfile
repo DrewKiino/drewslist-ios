@@ -1,17 +1,56 @@
+
+source 'https://github.com/CocoaPods/Specs.git'
+
 use_frameworks!
 
 target 'DrewsList' do
+
+  # Firebase
+  pod 'Firebase', '3.9.0'
+  # pod 'GeoFire', :git => 'https://github.com/firebase/geofire-objc'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
+  pod 'Firebase/Storage’
+  pod 'Firebase/Core’
+
+  # Http
+  pod 'Alamofire', '3.5.0'
   
-  pod 'Atlantis', :git => 'https://github.com/DrewKiino/Atlantis.git', :branch => 'swift2.3'
-  pod 'SwiftyTimer', '1.4.1'
-  pod 'Signals'
+  # Analytics
+  # pod 'Mixpanel', '3.0.4'
+
+  # Utility
+  # pod 'FastttCamera', '0.3.4'
+  # pod 'PhoneNumberKit', '0.8.5'
+  # pod 'libPhoneNumber-iOS', '0.8.16'
   pod 'AsyncSwift', '1.7.3'
+
+  # Logging
+  pod 'Atlantis', '1.1.2'
+
+  # Timers
+  pod 'SwiftyTimer', '1.4.1'
+
+  # Signals
+  pod 'Signals', '3.0.0'
+
+  # JSON
   pod 'ObjectMapper', '1.4.0'
   pod 'SwiftyJSON', '2.3.2'
-  pod 'Pantry', '0.2.1'
+
+  # Persistent Data
+  pod 'Pantry', '0.2.2'
+  
+  # Image Processing
   pod 'Tide', '1.2.7'
+  
+  # Date Processing
   pod 'SwiftDate', '3.0.8'
+  
+  # Layouts
   pod 'Neon', '0.2.0'
+  
+  # UI
   pod 'UIColor_Hex_Swift', '2.1'
   
 end
