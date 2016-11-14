@@ -52,7 +52,7 @@ public class ChatView: UIViewController {
     inputContainer?.sendButtonOnPressBlock = { [weak self] button, text in
       if let timestamp = NSDate().toString(.ISO8601), index = self?.model.messages.count {
         let message = ChatView.Models.Message(text: text, username: "Andrew", userImageUrl: "https://scontent.xx.fbcdn.net/v/t1.0-9/14591735_1511814525502034_3185729889037997947_n.jpg?oh=3e3514bc903aaa9b21d7e181dcba20b9&oe=58CE5893", timestamp: timestamp, message_id: index.description)
-        ChatManager.appendMessage(index: index, message: message.toDictionary())
+        self?.sendMessage(message)
       }
     }
     
@@ -236,7 +236,7 @@ public class ChatView: UIViewController {
 extension ChatView: UITableViewDelegate, UITableViewDataSource {
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     if !model.messages.isEmpty {
-      let height: CGFloat = model.messages[indexPath.row].text?.height(view.frame.width - 128) ?? 0
+      let height: CGFloat = model.messages[indexPath.row].text?.height(view.frame.width - 128, font: ChatView.Config.font) ?? 0
       if isConsecutiveMessage(indexPath) {
         return max(height, 36)
       } else {
@@ -289,6 +289,9 @@ extension ChatView {
   public func sendMessage(message: ChatView.Models.Message) {
     model.pendingMessages.append(message)
     model.messages.append(message)
+    ChatManager.appendMessage(message: message.toDictionary()) { [weak self] in
+      self?.simulateReceivedMessage()
+    }
   }
   public func getMessages(skip: Int, invertScroll: Bool = false, completionHandler: (() -> Void)? = nil) {
     ChatManager.fetch(skip: model.messages.count, invertSort: true) { [weak self] messages in

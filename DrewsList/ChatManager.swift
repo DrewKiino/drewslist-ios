@@ -72,7 +72,7 @@ public class ChatManager {
     }
   }
   
-  public class func appendMessage(user_id: String? = nil, index: Int, message: [String: AnyObject]) {
+  public class func appendMessage(user_id: String? = nil, message: [String: AnyObject], completionHandler: (() -> Void)? = nil) {
     if let user_id = user_id ?? AuthenticationManager.currentUser?.uid {
       let dbRef = ChatManager.dbRef.child("users").child(user_id).child("messages")
       dbRef.observeSingleEventOfType(.Value, withBlock: { [weak dbRef] snapshot in
@@ -80,8 +80,18 @@ public class ChatManager {
         var dictionary = message
         dictionary["message_id"] = messageCount.description
         dbRef?.child(messageCount.description).updateChildValues(dictionary) { error, reference in
+          completionHandler?()
         }
       })
+    }
+  }
+  
+  public class func clearAllMessages(user_id: String? = nil, completionHandler: (() -> Void)? = nil) {
+    if let user_id = user_id ?? AuthenticationManager.currentUser?.uid {
+      let dictionary: [[String: AnyObject]] = [
+        ["message": "no messages"]
+      ]
+      ChatManager.dbRef.child("users").child(user_id).updateChildValues(["messages": dictionary])
     }
   }
 }
