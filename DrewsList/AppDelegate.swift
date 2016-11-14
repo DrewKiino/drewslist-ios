@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import Atlantis
 
+public let screen = UIScreen.mainScreen().bounds
 public let log = Atlantis.Logger()
 
 @UIApplicationMain
@@ -18,13 +19,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
 
   let firebaseManager = FireBaseManager.sharedInstance()
+  let keyboardManager = KeyboardManager.sharedInstance()
+  let chatManager = ChatManager.sharedInstance()
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
-    
     // configure firebase
     FIRApp.configure()
-    
+    // DEBUG: sign in anonymously so we can read and write
+    AuthenticationManager.signInAnonymously()
+
     return true
   }
 

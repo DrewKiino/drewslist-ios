@@ -73,7 +73,12 @@ public class BasicCell: UITableViewCell {
   }
 }
 
+
 extension String {
+  
+  public func toInt() -> Int? {
+    return Int(self)
+  }
   
   public func isValidPhone() -> Bool {
     let phoneRegex = "^\\d{3}-\\d{3}-\\d{4}$"
@@ -101,11 +106,23 @@ extension String {
   
   public func height(width: CGFloat, font: UIFont? = UIFont.systemFontOfSize(12)) -> CGFloat {
     let label:UILabel = UILabel(frame: CGRectMake(0, 0, width, CGFloat.max))
+    label.adjustsFontSizeToFitWidth = false
     label.numberOfLines = 0
     label.lineBreakMode = .ByWordWrapping
     label.text = self
     label.font = font
     label.sizeToFit()
     return label.frame.height
+  }
+  
+  public func width(height: CGFloat, font: UIFont = UIFont.systemFontOfSize(12)) -> CGFloat {
+    let label:UILabel = UILabel(frame: CGRectMake(0, 0, CGFloat.max, height))
+    label.adjustsFontSizeToFitWidth = false
+    label.numberOfLines = 0
+    label.lineBreakMode = .ByWordWrapping
+    label.text = self
+    label.font = font
+    label.sizeToFit()
+    return label.frame.width
   }
 }

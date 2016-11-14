@@ -29,10 +29,10 @@ public class AuthenticationManager {
     }
   }
 
-  public class func signInAnonymously(completion: FIRAuthResultCallback) {
+  public class func signInAnonymously(completion: FIRAuthResultCallback? = nil) {
     auth?.signInAnonymouslyWithCompletion() { user, error in
       AuthenticationManager.currentUser = user
-      completion(user, error)
+      completion?(user, error)
     }
   }
 }
