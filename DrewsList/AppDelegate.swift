@@ -26,9 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Override point for customization after application launch.
     // configure firebase
     FIRApp.configure()
-    // DEBUG: sign in anonymously so we can read and write
-    AuthenticationManager.signInAnonymously()
-
+    
     return true
   }
 

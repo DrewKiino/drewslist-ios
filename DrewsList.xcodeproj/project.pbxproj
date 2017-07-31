@@ -24,7 +24,6 @@
 		EE8A31561DD92385004731B1 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A31551DD92385004731B1 /* MasterViewController.swift */; };
 		EE8A31581DD924C6004731B1 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A31571DD924C6004731B1 /* FirebaseManager.swift */; };
 		EE8A315A1DD92755004731B1 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A31591DD92755004731B1 /* AuthenticationManager.swift */; };
-		EE8CE4E61DD93B3300A6BC14 /* ChatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8CE4E51DD93B3300A6BC14 /* ChatModel.swift */; };
 		EE8CE4E81DD96B5000A6BC14 /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8CE4E71DD96B5000A6BC14 /* ChatManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -73,7 +72,6 @@
 		EE8A31551DD92385004731B1 /* MasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
 		EE8A31571DD924C6004731B1 /* FirebaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		EE8A31591DD92755004731B1 /* AuthenticationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
-		EE8CE4E51DD93B3300A6BC14 /* ChatModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatModel.swift; sourceTree = "<group>"; };
 		EE8CE4E71DD96B5000A6BC14 /* ChatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -186,7 +184,6 @@
 			children = (
 				EE8A31471DD91BB1004731B1 /* Whirlpool.swift */,
 				EE8A31491DD91BCB004731B1 /* ChatView.swift */,
-				EE8CE4E51DD93B3300A6BC14 /* ChatModel.swift */,
 			);
 			name = ChatView;
 			sourceTree = "<group>";
@@ -455,7 +452,6 @@
 				EE8A31541DD9225A004731B1 /* KeyboardManager.swift in Sources */,
 				EE8A315A1DD92755004731B1 /* AuthenticationManager.swift in Sources */,
 				EE3FF0E51D9E45E100940902 /* ViewController.swift in Sources */,
-				EE8CE4E61DD93B3300A6BC14 /* ChatModel.swift in Sources */,
 				EE8A31581DD924C6004731B1 /* FirebaseManager.swift in Sources */,
 				EE8A31481DD91BB1004731B1 /* Whirlpool.swift in Sources */,
 				EE8A31561DD92385004731B1 /* MasterViewController.swift in Sources */,

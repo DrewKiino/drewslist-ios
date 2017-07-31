@@ -50,22 +50,37 @@ public class ChatView: UIViewController {
     inputContainer?.textFieldDidEndEditingBlock = {
     }
     inputContainer?.sendButtonOnPressBlock = { [weak self] button, text in
-      if let timestamp = NSDate().toString(.ISO8601), index = self?.model.messages.count {
-        let message = ChatView.Models.Message(text: text, username: "Andrew", userImageUrl: "https://scontent.xx.fbcdn.net/v/t1.0-9/14591735_1511814525502034_3185729889037997947_n.jpg?oh=3e3514bc903aaa9b21d7e181dcba20b9&oe=58CE5893", timestamp: timestamp, message_id: index.description)
+      if let timestamp = NSDate().toString(.ISO8601Format(.Full)), index = self?.model.messages.count {
+//        let message = ChatView.Models.Message(text: text, username: "Andrew", userImageUrl: "https://scontent.xx.fbcdn.net/v/t1.0-9/14591735_1511814525502034_3185729889037997947_n.jpg?oh=3e3514bc903aaa9b21d7e181dcba20b9&oe=58CE5893", timestamp: timestamp, message_id: index.description)
+        let message = ChatView.Models.Message(text: text, username: "Betty", userImageUrl: "http://previews.123rf.com/images/racorn/racorn1308/racorn130805649/21341221-Profile-portrait-of-a-charming-young-business-woman-being-happy-and-smiling-in-an-office-setting--Stock-Photo.jpg", timestamp: timestamp, message_id: index.description)
         self?.sendMessage(message)
       }
     }
     
     view.addSubview(inputContainer!)
     
+    ChatManager.listen(model.room_id) { [weak self] in
+      self?.getMessages()
+    }
+    
     fetchData()
   }
   
   public func fetchData() {
-    ChatManager.fetch() { [weak self] messages in
+    ChatManager.fetch(model.room_id) { [weak self] messages in
       self?.model.messages = messages
       self?.tableView.reloadData()
+      let contentOffset = self?.tableView.contentOffset.y ?? 0.0
+      let contentHeight = self?.tableView.contentSize.height ?? 0.0
+      let frameHeight = self?.tableView.frame.height ?? 0.0
+      // only simulate a received message if the user is already scrolled to the bottom
+      if contentOffset >= contentHeight - frameHeight { self?.simulateReceivedMessage() }
     }
+  }
+  
+  public convenience init(model: ChatView.Model) {
+    self.init()
+    self.model = model
   }
   
   public override func viewWillAppear(animated: Bool) {
@@ -229,9 +244,11 @@ public class ChatView: UIViewController {
   }
   
   public func refresh(sender: UIRefreshControl) {
-    getMessages(model.messages.count, invertScroll: true)
+    getMessages(true)
   }
 }
+
+// MARK: TABLE VIEW
 
 extension ChatView: UITableViewDelegate, UITableViewDataSource {
   public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -289,12 +306,12 @@ extension ChatView {
   public func sendMessage(message: ChatView.Models.Message) {
     model.pendingMessages.append(message)
     model.messages.append(message)
-    ChatManager.appendMessage(message: message.toDictionary()) { [weak self] in
+    ChatManager.appendMessage(model.room_id, message: message.toDictionary()) { [weak self] in
       self?.simulateReceivedMessage()
     }
   }
-  public func getMessages(skip: Int, invertScroll: Bool = false, completionHandler: (() -> Void)? = nil) {
-    ChatManager.fetch(skip: model.messages.count, invertSort: true) { [weak self] messages in
+  public func getMessages(invertScroll: Bool = false, completionHandler: (() -> Void)? = nil) {
+    ChatManager.fetch(model.room_id, skip: model.messages.count, invertSort: true) { [weak self] messages in
       messages.forEach { [weak self] in
         self?.model.messages.insert($0, atIndex: 0)
       }
@@ -322,6 +339,8 @@ extension ChatView {
     
     public var users: [ChatView.Models.User] = []
     
+    public var room_id: String!
+    
     private var username: String?
     private var userImageUrl: String?
     
@@ -330,6 +349,12 @@ extension ChatView {
     
     private var messages: [ChatView.Models.Message] = []
     private var pendingMessages: [ChatView.Models.Message] = []
+    
+    public init() {}
+    
+    public init(messages: [ChatView.Models.Message]) {
+      self.messages = messages
+    }
   }
   
   public struct Models {
@@ -531,8 +556,13 @@ extension ChatView {
         sendSubviewToBack(containerView!)
       }
       
+      public override func prepareForReuse() {
+        super.prepareForReuse()
+      }
+      
       public override func layoutSubviews() {
         super.layoutSubviews()
+        
         
         timestampLabel?.anchorInCorner(.TopRight, xPad: 8, yPad: 8, width: 48, height: 48)
         timestampLabel?.frame.origin.y -= 17
@@ -565,7 +595,14 @@ extension ChatView {
           usernameLabel?.align(.ToTheRightCentered, relativeTo: userImageView, padding: 4, width: usernameLabelWidth, height: 24)
           
           containerView?.anchorAndFillEdge(.Left, xPad: 8, yPad: 4, otherSize: max(userImageViewWidth + usernameLabelWidth, textViewWidth))
-          
+        }
+        
+        updateImages()
+      }
+      
+      private func updateImages() {
+        // only update the images if the image view's frame is non-zero
+        if min(userImageView.frame.width, userImageView.frame.height) - 0.0 > 1.0 {
           userImageView?.imageFromSource(userImageUrl, placeholder: UIImage(named: "placeholder-image.png"), fitMode: .Crop, mask: .Rounded)
         }
       }
