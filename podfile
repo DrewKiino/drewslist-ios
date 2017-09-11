@@ -3,57 +3,49 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 use_frameworks!
 
-target 'DrewsList' do
+target 'drewslist' do
 
   # Firebase
-  pod 'Firebase', '3.9.0'
-  # pod 'GeoFire', :git => 'https://github.com/firebase/geofire-objc'
+  pod 'Firebase'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage’
   pod 'Firebase/Core’
 
   # Http
-  pod 'Alamofire', '3.5.0'
+  pod 'Alamofire', '~> 4.4.0'
   
   # Analytics
-  # pod 'Mixpanel', '3.0.4'
-
-  # Utility
-  # pod 'FastttCamera', '0.3.4'
-  # pod 'PhoneNumberKit', '0.8.5'
-  # pod 'libPhoneNumber-iOS', '0.8.16'
-  pod 'AsyncSwift', '1.7.3'
+  # pod 'Mixpanel'
 
   # Logging
-  pod 'Atlantis', '1.1.2'
+  pod 'Atlantis'
 
   # Timers
-  pod 'SwiftyTimer', '1.4.1'
+  pod 'SwiftyTimer'
 
   # Signals
-  pod 'Signals', '3.0.0'
+  pod 'Signals'
+
+  pod 'SDWebImage'
 
   # JSON
-  pod 'ObjectMapper', '1.4.0'
-  pod 'SwiftyJSON', '2.3.2'
+  pod 'ObjectMapper'
 
   # Persistent Data
-  pod 'Pantry', '0.2.2'
+  pod 'Pantry'
   
-  # Image Processing
-  pod 'Tide', '1.2.7'
-  
-  # Date Processing
-  pod 'SwiftDate', '3.0.8'
-  
-  # Layouts
-  pod 'Neon', '0.2.0'
-  
-  # UI
-  pod 'UIColor_Hex_Swift', '2.1'
-  
-end
+  # Autolayout
+  pod ‘Cartography’
 
-target 'DrewsListTests' do
+  pod 'SwiftLocation'
+
+  # Utility
+  pod 'ImagePicker'
+  pod 'BarcodeScanner'
+
+  pod 'Fakery'
+
+  pod 'PromiseKit'
+
 end

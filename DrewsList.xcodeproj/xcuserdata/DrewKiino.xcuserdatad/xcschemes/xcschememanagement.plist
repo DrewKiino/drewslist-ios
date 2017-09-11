@@ -7,7 +7,7 @@
 		<key>DrewsList.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>22</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -23,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>EE3FF0FD1D9E45E100940902</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EE9649FD1F538844009604D9</key>
 		<dict>
 			<key>primary</key>
 			<true/>
