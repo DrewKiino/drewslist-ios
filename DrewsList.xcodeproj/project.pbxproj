@@ -292,9 +292,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EE9649FD1F538844009604D9 /* Drews List */ = {
+		EE9649FD1F538844009604D9 /* DrewsList */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EE964A101F538844009604D9 /* Build configuration list for PBXNativeTarget "Drews List" */;
+			buildConfigurationList = EE964A101F538844009604D9 /* Build configuration list for PBXNativeTarget "DrewsList" */;
 			buildPhases = (
 				63EEFD39E83F96B146E78A4D /* [CP] Check Pods Manifest.lock */,
 				EE9649FA1F538844009604D9 /* Sources */,
@@ -307,7 +307,7 @@
 			);
 			dependencies = (
 			);
-			name = "Drews List";
+			name = DrewsList;
 			productName = drewslist;
 			productReference = EE9649FE1F538844009604D9 /* Drews List.app */;
 			productType = "com.apple.product-type.application";
@@ -342,7 +342,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EE9649FD1F538844009604D9 /* Drews List */,
+				EE9649FD1F538844009604D9 /* DrewsList */,
 			);
 		};
 /* End PBXProject section */
@@ -634,7 +634,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EE964A101F538844009604D9 /* Build configuration list for PBXNativeTarget "Drews List" */ = {
+		EE964A101F538844009604D9 /* Build configuration list for PBXNativeTarget "DrewsList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EE964A111F538844009604D9 /* Debug */,
