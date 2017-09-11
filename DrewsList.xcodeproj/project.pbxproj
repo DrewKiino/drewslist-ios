@@ -55,7 +55,7 @@
 		EE57639B1F53BFF400A38273 /* Basics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Basics.swift; sourceTree = "<group>"; };
 		EE7ED9CE1F5391CE00874D96 /* RootController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootController.swift; sourceTree = "<group>"; };
 		EE7ED9D01F53933700874D96 /* RootNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
-		EE9649FE1F538844009604D9 /* Drews List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Drews List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE9649FE1F538844009604D9 /* DrewsList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrewsList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE964A011F538844009604D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EE964A0B1F538844009604D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EE964A0D1F538844009604D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -182,7 +182,7 @@
 		EE9649FF1F538844009604D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EE9649FE1F538844009604D9 /* Drews List.app */,
+				EE9649FE1F538844009604D9 /* DrewsList.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 			);
 			name = DrewsList;
 			productName = drewslist;
-			productReference = EE9649FE1F538844009604D9 /* Drews List.app */;
+			productReference = EE9649FE1F538844009604D9 /* DrewsList.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
