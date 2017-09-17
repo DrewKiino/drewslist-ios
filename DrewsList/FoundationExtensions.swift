@@ -15,6 +15,23 @@ extension String {
   var doubleValue: Double? {
     return Double(self)
   }
+  var urlValue: URL? {
+    return URL(string: self)
+  }
+}
+
+extension UIFont {
+  class func printNames() {
+    let fontFamilyNames = UIFont.familyNames
+    for familyName in fontFamilyNames {
+      let names = UIFont.fontNames(forFamilyName: familyName)
+      print(familyName)
+      print(names)
+    }
+  }
+}
+
+extension UILabel {
 }
 
 

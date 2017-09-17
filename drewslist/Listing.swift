@@ -9,9 +9,11 @@
 import Foundation
 import ObjectMapper
 import PromiseKit
+import Signals
 
 class Listing: Model, Mappable {
   static var identifier: String! = "listings"
+  class shared {}
   // model vars
   var userID: String? = User.localID
   var book: Book? = Book()
@@ -20,6 +22,8 @@ class Listing: Model, Mappable {
   var zipcode: String?
   var longitude: Double?
   var latitude: Double?
+  // conv vars
+  var distance: Double?
   func mapping(map: Map) {
     self.userID <- map["userID"]
     self.book <- map["book"]
@@ -50,14 +54,21 @@ class Listing: Model, Mappable {
       log.debug(dict)
     })
   }
+  @discardableResult
   class func fetch() -> Promise<[Listing]> {
     return Promise { fulfill, reject in
       DataStore(model: Listing.identifier)?.get({ (dict) in
         let listings = dict.flatMap({ Listing(JSON: $0) })
+        Listing.shared.listings = listings
         fulfill(listings)
       })
-//      let listings = FileManager.jsonArray("listings")?.flatMap({ Listing(JSON: $0) })
-//      fulfill(listings ?? [])
     }
   }
+}
+
+extension Listing.shared {
+  static var listings: [Listing] = [] {
+    didSet { Listing.shared.listingsSignal => listings }
+  }
+  static let listingsSignal = Signal<[Listing]>()
 }

@@ -108,12 +108,11 @@ class Media: Model, Mappable {
     datastore?.storageReference?
       .child(reference)
       .putData(data, metadata: smd) { [weak self] (metadata, error) in
-//        let imageURL = metadata?.downloadURL()?.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? reference
-        let imageURL = reference
+        let imageURL = metadata?.downloadURL()?.absoluteString ?? reference
         if let error = error {
           log.error(error)
         } else {
-          log.debug("image uploaded")
+          log.debug("image uploaded", imageURL)
         }
         self?.isCurrentlyUploading = false
         completionHandler?(imageURL)

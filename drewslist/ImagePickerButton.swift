@@ -16,8 +16,9 @@ class ImagePickerButton: BasicView {
   let spinner = UIActivityIndicatorView(activityIndicatorStyle: .white)
   var didFinishWithImageHandler: ((UIImage?) -> ())?
   override func setup() {
-    layer.borderColor = UIColor.black.cgColor
-    layer.borderWidth = 0.5
+    clipsToBounds = true
+    layer.borderColor = UIColor.dlBlue.cgColor
+    layer.borderWidth = 1.0
     layer.cornerRadius = 8.0
     // init self
     self.tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tapped))
@@ -48,13 +49,13 @@ class ImagePickerButton: BasicView {
     if imageView.image == nil { tapped()
     } else { deselect() }
   }
-  fileprivate func select(image: UIImage?) {
+  func select(image: UIImage?) {
     actionButton.show()
     imageView.image = image ?? imageView.image
     actionButton.setImage(self.imageView.image == nil ? #imageLiteral(resourceName: "camera") : #imageLiteral(resourceName: "cancel-light"), for: .normal)
     didFinishWithImageHandler?(self.imageView.image)
   }
-  @objc fileprivate func deselect() {
+  @objc func deselect() {
     imageView.image = nil
     didFinishWithImageHandler?(self.imageView.image)
     actionButton.hide() { [weak self] in

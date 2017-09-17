@@ -19,7 +19,9 @@
 	<key>CFBundleShortVersionString</key>
 	<string>3.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>3.0.0.00</string>
+	<string>3.0.0.01</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

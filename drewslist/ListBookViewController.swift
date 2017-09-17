@@ -1,5 +1,5 @@
 //
-//  ListingViewController.swift
+//  ListBookViewController.swift
 //  drewslist
 //
 //  Created by Andrew Aquino on 8/31/17.
@@ -10,13 +10,15 @@ import Foundation
 import UIKit
 import PromiseKit
 
-class ListingViewController: BasicViewController {
+class ListBookViewController: DLViewController {
   
-  static let shared = ListingViewController()
+  static let shared = ListBookViewController()
   
   let tableView = UITableView(frame: .zero, style: .plain)
   
   var listing: Listing? = Listing()
+  var textFields: [Int: BasicTextField] = [:]
+  var imagePickers: [Int: ImagePickerButton] = [:]
   
   deinit {
     log.debug("deinit")
@@ -25,34 +27,39 @@ class ListingViewController: BasicViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    headerView.setLeftButtonText("Cancel")
-    headerView.setRightButtonText("Clear")
-    headerView.leftButtonTappedHandler = {
-    }
-    headerView.rightButtonTappedHandler = {
-    }
-    
     tableView.delegate = self
     tableView.dataSource = self
     tableView.separatorColor = .clear
+    tableView.backgroundColor = .clear
     tableView.allowsSelection = false
     tableView.register(ListImagesCell.self, forCellReuseIdentifier: "ListImagesCell")
     tableView.register(ListTextFieldCell.self, forCellReuseIdentifier: "ListTextFieldCell")
     tableView.register(ListButtonCell.self, forCellReuseIdentifier: "ListButtonCell")
     view.addSubview(tableView)
     tableView.fillSuperview(left: 0, right: 0, top: 44, bottom: 0)
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    resignFirstResponder()
     
-    Listing.fetch()
-    .then { listings in
-      log.debug(listings)
+    headerView.leftButtonTappedHandler = {
+      RootController.shared.presentBookListVC()
     }
-    .catch { log.error($0) }
-    
-    log.debug(screen.width)
+    headerView.rightButtonTappedHandler = { [weak self] in
+      self?.clearMetaData()
+    }
+    headerView.setLeftButtonText("Back")
+    headerView.setRightButtonText("Clear")
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    resignFirstResponder()
   }
 }
 
-extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
+extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     switch indexPath.row {
     case 0:
@@ -115,39 +122,54 @@ extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
           }
           .catch { log.error($0) }
         }
+        self.imagePickers[0] = cell.imagePickerButton1
+        self.imagePickers[1] = cell.imagePickerButton2
+        self.imagePickers[2] = cell.imagePickerButton3
         return cell
       }
       break
     case 1:
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
-        cell.iconImageView.image = #imageLiteral(resourceName: "author")
-        cell.textField.placeholder = "Author"
+        cell.iconImageView.image = #imageLiteral(resourceName: "title")
+        cell.textField.placeholderString = "Title"
         cell.textField.didChangeTextHandler = { [weak self] text in
-          self?.listing?.book?.author = text
+          self?.listing?.book?.title = text
         }
+        cell.textField.shouldReturnHandler = { [weak self] in
+          self?.selectNextResponder()
+          return true
+        }
+        self.textFields[2] = cell.textField
         return cell
       }
       break
     case 2:
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
-        cell.iconImageView.image = #imageLiteral(resourceName: "title")
-        cell.textField.placeholder = "Title"
+        cell.iconImageView.image = #imageLiteral(resourceName: "author")
+        cell.textField.placeholderString = "Author"
         cell.textField.didChangeTextHandler = { [weak self] text in
-          self?.listing?.book?.title = text
+          self?.listing?.book?.author = text
         }
+        cell.textField.shouldReturnHandler = { [weak self] in
+          self?.selectNextResponder()
+          return true
+        }
+        self.textFields[1] = cell.textField
         return cell
       }
       break
     case 3:
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
         cell.iconImageView.image = #imageLiteral(resourceName: "isbn")
-        cell.textField.placeholder = "ISBN"
-        cell.textField.shouldBeginEditing = { callback in
+        cell.textField.placeholderString = "ISBN"
+        cell.textField.shouldBeginEditing = { [weak cell] callback in
           let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
           alert.addAction(UIAlertAction(title: "Scan ISBN", style: .default) { _ in
-            cell.textField.alternateTextSelectionHandler = { [weak self] callback in
+            cell?.textField.alternateTextSelectionHandler = { [weak self] callback in
+              cell?.activityView.startAnimating()
               HeaderView.shared.hide()
               ISBNManager.presented(with: self) { isbn in
+                cell?.activityView.stopAnimating()
                 HeaderView.shared.show()
                 callback?(isbn)
               }
@@ -164,22 +186,33 @@ extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textField.didChangeTextHandler = { [weak self] text in
           self?.listing?.book?.isbn = text
         }
+        cell.textField.shouldReturnHandler = { [weak self] in
+          self?.selectNextResponder()
+          return true
+        }
+        self.textFields[3] = cell.textField
         return cell
       }
       break
     case 4:
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
         cell.iconImageView.image = #imageLiteral(resourceName: "zipcode")
-        cell.textField.placeholder = "Zip Code"
-        cell.textField.shouldBeginEditing = { callback in
+        cell.textField.placeholderString = "Zip Code"
+        cell.textField.keyboardType = .numberPad
+        cell.textField.shouldBeginEditing = { [weak cell] callback in
           let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
           alert.addAction(UIAlertAction(title: "User Current Location", style: .default) { _ in
-            cell.textField.alternateTextSelectionHandler = { callback in
+            cell?.activityView.startAnimating()
+            cell?.textField.alternateTextSelectionHandler = { callback in
               LocationManager.shared.zipcode()
               .then { zipcode -> () in
+                cell?.activityView.stopAnimating()
                 callback?(zipcode)
               }
-              .catch { log.error($0) }
+              .catch {
+                cell?.activityView.stopAnimating()
+                log.error($0)
+              }
             }
             callback?(false)
           })
@@ -192,23 +225,34 @@ extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
         }
         cell.textField.didChangeTextHandler = { [weak self] text in
           LocationManager.shared.location(from: text)
-          .then { [weak self] location -> ()in
+          .then { [weak self] location -> () in
             self?.listing?.longitude = location?.coordinate.longitude.description.doubleValue
             self?.listing?.latitude = location?.coordinate.latitude.description.doubleValue
             self?.listing?.zipcode = text
           }
           .catch { log.error($0) }
         }
+        cell.textField.shouldReturnHandler = { [weak self] in
+          self?.selectNextResponder()
+          return true
+        }
+        self.textFields[4] = cell.textField
         return cell
       }
       break
     case 5:
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
         cell.iconImageView.image = #imageLiteral(resourceName: "call")
-        cell.textField.placeholder = "Contact Number"
+        cell.textField.placeholderString = "Contact Number"
+        cell.textField.keyboardType = .numberPad
         cell.textField.didChangeTextHandler = { [weak self] text in
           self?.listing?.contactNumber = text
         }
+        cell.textField.shouldReturnHandler = { [weak self] in
+          self?.selectNextResponder()
+          return true
+        }
+        self.textFields[5] = cell.textField
         return cell
       }
       break
@@ -217,8 +261,7 @@ extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
         cell.listButton.setTitle("List Book!", for: .normal)
         cell.listButton.didTapHandler = { [weak self, weak cell] in
           cell?.set(state: .listing)
-          log.debug(self?.listing?.toJSON())
-          self?.listing?.list() { success in
+          self?.listBook() { success in
             cell?.set(state: success ? .success : .failed)
           }
         }
@@ -230,6 +273,87 @@ extension ListingViewController: UITableViewDataSource, UITableViewDelegate {
     }
     return .empty
   }
+  func listBook(completionHandler: @escaping ((Bool) -> ())) {
+    if (listing?.media.first(where: { $0.imageURL != nil })) == nil {
+      presentAlert(message: "Please upload at least one image of your book!")
+      completionHandler(false)
+    } else if (listing?.book?.title ?? "").isEmpty {
+      presentAlert(message: "Please input your book's title!")
+      completionHandler(false)
+    } else if (listing?.book?.author ?? "").isEmpty {
+      presentAlert(message: "Please input your book's author!")
+      completionHandler(false)
+    } else if (listing?.book?.isbn ?? "").isEmpty {
+      presentAlert(message: "Please input your ISBN number!")
+      completionHandler(false)
+    } else if (listing?.zipcode ?? "").isEmpty {
+      presentAlert(message: "Please input your zip code!")
+      completionHandler(false)
+    } else if (listing?.contactNumber ?? "").isEmpty {
+      presentAlert(message: "Please input your contact number!")
+      completionHandler(false)
+    } else {
+      listing?.list(completionHandler: { [weak self] (success) in
+        self?.clearMetaData()
+        self?.presentListSuccessAlert()
+        completionHandler(success)
+      })
+    }
+  }
+  func clearMetaData() {
+    resignFirstResponder()
+    for (_, textfield) in self.textFields {
+      textfield.text = nil
+    }
+    for (_, imagePicker) in self.imagePickers {
+      imagePicker.deselect()
+    }
+  }
+  func presentListSuccessAlert() {
+    let alertView = UIAlertController(title: "Successful Listing!", message: "Thank you for using Drew's List.\n\nPlease help share this app since more users means more buyers and sellers!\n\nGood luck with your listing.", preferredStyle: .alert)
+    alertView.addAction(UIAlertAction(title: "Share App", style: .default, handler: { [weak self] (_) in
+      HeaderView.shared.hide()
+      self?.shareApp() {
+        HeaderView.shared.show()
+      }
+    }))
+    alertView.addAction(UIAlertAction(title: "Close", style: .cancel, handler: { (_) in
+    }))
+    present(alertView, animated: true, completion: nil)
+  }
+  func presentAlert(message: String) {
+    let alertView = UIAlertController(title: "Missing Metadata", message: message, preferredStyle: .alert)
+    present(alertView, animated: true, completion: nil)
+    Timer.after(3.0) { [weak alertView] in
+      alertView?.dismiss(animated: true, completion: nil)
+    }
+  }
+  func selectNextResponder() {
+    self.textFields
+    .sorted(by: { lhs, rhs in lhs.key < rhs.key })
+    .first(where: { (index, textField) -> Bool in
+      return (textField.text ?? "").isEmpty
+    })?.value.becomeFirstResponder()
+  }
+  func shareApp(completionHandler: @escaping (() -> ())) {
+    if let url = URL(string: "https://itunes.apple.com/us/app/drews-list/id1090805496") {
+      let activityVC = UIActivityViewController(activityItems: [
+        "Drew's List - buying and selling books done right!\n\n",
+        url
+      ], applicationActivities: nil)
+      activityVC.excludedActivityTypes = [
+        .airDrop,
+        .addToReadingList,
+        .assignToContact,
+        .openInIBooks,
+        .print
+      ]
+      activityVC.completionWithItemsHandler = { _ in
+        completionHandler()
+      }
+      present(activityVC, animated: true, completion: nil)
+    }
+  }
 }
 
 class ListImagesCell: BasicTableViewCell {
@@ -239,52 +363,60 @@ class ListImagesCell: BasicTableViewCell {
   let imagePickerButton3 = ImagePickerButton()
   
   override func setup() {
-    addSubview(imagePickerButton1)
-    imagePickerButton1.center().size(width: screen.width / 4, height: screen.width / 4)
+    super.setup()
+    
     addSubview(imagePickerButton2)
-    imagePickerButton2.anchor(.left, of: imagePickerButton1, padding: 10, matching: .width, .height)
+    imagePickerButton2.center().size(width: screen.width / 4, height: screen.width / 4)
+    addSubview(imagePickerButton1)
+    imagePickerButton1.anchor(.left, of: imagePickerButton2, padding: 10, matching: .width, .height)
     addSubview(imagePickerButton3)
-    imagePickerButton3.anchor(.right, of: imagePickerButton1, padding: 10, matching: .width, .height)
+    imagePickerButton3.anchor(.right, of: imagePickerButton2, padding: 10, matching: .width, .height)
   }
 }
 
 class ListTextFieldCell: BasicTableViewCell {
   let textField = BasicTextField()
   let iconImageView = BasicImageView()
+  let activityView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
   override func setup() {
+    super.setup()
+    addSubview(activityView)
+    activityView.anchor(.top, .right, .bottom, padding: 10)
     addSubview(iconImageView)
     iconImageView.anchor(.top, .left, padding: 10).size(width: 36, height: 36)
+    textField.font = UIFont(name: "AvenirNextCondensed-Light", size: 11)
     addSubview(textField)
-    textField.anchor(.right, of: iconImageView, padding: 10, matching: .height)
+    textField.anchor(.right, of: iconImageView, padding: 10, matching: .height, fill: true)
   }
 }
 
 class ListButtonCell: BasicTableViewCell {
-  let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-  let listButton = BasicButton()
-  let topBorder = UIView()
-  let bottomBorder = UIView()
   enum State {
     case listing
     case failed
     case success
     case normal
   }
+  let spinner = UIActivityIndicatorView(activityIndicatorStyle: .white)
+  let listButton = BasicButton()
+  let bgView = UIView()
+  let topCover = UIView()
   override func setup() {
-    // top border
-    topBorder.backgroundColor = .black
-    addSubview(topBorder)
-    topBorder.anchor(.top, .left, .right, padding: 10).height(0.5)
-    // bottom border
-    bottomBorder.backgroundColor = .black
-    addSubview(bottomBorder)
-    bottomBorder.anchor(.bottom, .left, .right, padding: 10).height(0.5)
+    super.setup()
+    backgroundColor = .clear
+    topCover.backgroundColor = .white
+    addSubview(topCover)
+    topCover.anchor(.top, .left, .right).height(10)
+    // bg view
+    addSubview(bgView)
+    bgView.fillSuperview(left: 0, right: 0, top: 10, bottom: 10)
+    bgView.backgroundColor = .dlBlue
     // activity indicator
     addSubview(spinner)
     spinner.center(.x, offsetBy: -88).center(.y)
     // list button
-    listButton.setTitleColor(.black, for: .normal)
-    listButton.titleLabel?.font = .boldSystemFont(ofSize: 30)
+    listButton.setTitleColor(.white, for: .normal)
+    listButton.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Bold", size: 24)
     listButton.contentHorizontalAlignment = .center
     addSubview(listButton)
     listButton.fillSuperview(left: 10, right: 10, top: 10, bottom: 10)
@@ -293,25 +425,40 @@ class ListButtonCell: BasicTableViewCell {
     switch state {
     case .listing:
       spinner.startAnimating()
-      listButton.setTitle("Listing...", for: .normal)
+      listButton.hide() { [weak self] in
+        self?.listButton.setTitle("Listing...", for: .normal)
+        self?.listButton.show()
+      }
       break
     case .failed:
-      listButton.setTitle("Failed.", for: .normal)
+      listButton.hide() { [weak self] in
+        self?.listButton.setTitle("Failed.", for: .normal)
+        self?.listButton.show()
+      }
       Timer.after(3.0) { [weak self] in
         self?.set(state: .normal)
       }
       break
     case .success:
-      listButton.setTitle("Success!", for: .normal)
+      listButton.hide() { [weak self] in
+        self?.listButton.setTitle("Success!", for: .normal)
+        self?.listButton.show()
+      }
       Timer.after(3.0) { [weak self] in
         self?.set(state: .normal)
       }
       break
     case .normal:
-      listButton.setTitle("List Book!", for: .normal)
+      listButton.hide() { [weak self] in
+        self?.listButton.setTitle("List Book!", for: .normal)
+        self?.listButton.show()
+      }
       spinner.stopAnimating()
       break
     }
+  }
+  override func layoutSubviews() {
+    super.layoutSubviews()
   }
 }
 

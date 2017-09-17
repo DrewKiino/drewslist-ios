@@ -75,7 +75,6 @@ class BasicView: UIView {
 class BasicViewController: UIViewController {
   let headerView = HeaderView.shared
   var viewTappedHandler: (() -> ())?
-  fileprivate static let resignFirstResponderSignal = Signal<()>()
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .white
@@ -83,9 +82,13 @@ class BasicViewController: UIViewController {
   }
   
   func viewTapped() {
-    resignFirstResponder()
-    BasicViewController.resignFirstResponderSignal => ()
+    self.resignFirstResponder()
     viewTappedHandler?()
+  }
+  @discardableResult
+  override func resignFirstResponder() -> Bool {
+    BasicTextField.resignFirstResponderSignal => ()
+    return super.resignFirstResponder()
   }
 }
 
@@ -97,7 +100,9 @@ class BasicTableViewCell: UITableViewCell {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
-  func setup() {}
+  func setup() {
+    backgroundColor = .white
+  }
 }
 
 extension UITableViewCell {
@@ -110,9 +115,11 @@ class BasicTextField: UITextField {
   var alternateTextSelectionHandler: ((((String?) -> ())?) -> ())?
   var shouldBeginEditing: ((((Bool) -> ())?) -> ())?
   var didChangeTextHandler: ((String?) -> ())?
+  var shouldReturnHandler: (() -> (Bool))?
   fileprivate var bypassFirstResponderCheck = false
+  fileprivate static let resignFirstResponderSignal = Signal<()>()
   deinit {
-    BasicViewController.resignFirstResponderSignal.cancelSubscription(for: self)
+    BasicTextField.resignFirstResponderSignal.cancelSubscription(for: self)
   }
   init() {
     super.init(frame: .zero)
@@ -125,12 +132,28 @@ class BasicTextField: UITextField {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
+  var placeholderString: String? {
+    get {
+      return self.attributedPlaceholder?.string
+    } set(new) {
+      guard let new = new else { return }
+      self.attributedPlaceholder = NSAttributedString(string: new, attributes: [
+        NSFontAttributeName: self.font ?? UIFont.systemFont(ofSize: 11),
+        NSForegroundColorAttributeName: UIColor.black.withAlphaComponent(0.4)
+      ])
+    }
+  }
   func setup() {
+    autocorrectionType = .no
     autocapitalizationType = .words
     delegate = self
-    BasicViewController.resignFirstResponderSignal.subscribe(on: self) { [weak self] in
+    BasicTextField.resignFirstResponderSignal.subscribe(on: self) { [weak self] in
       self?.resignFirstResponder()
     }
+  }
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    if shouldReturnHandler == nil { resignFirstResponder() }
+    return shouldReturnHandler?() ?? true
   }
 }
 extension BasicTextField: UITextFieldDelegate {
@@ -162,8 +185,80 @@ extension BasicTextField: UITextFieldDelegate {
   }
 }
 
+class BasicLabel: UILabel {
+  var heightConstraint: NSLayoutConstraint?
+  var widthConstraint: NSLayoutConstraint?
+  override var text: String? {
+    didSet {
+      DispatchQueue.main.async { [weak self] in
+        if let width = self?.textWidth() {
+          self?.widthConstraint?.constant = width
+        }
+        if let height = self?.textHeight() {
+          self?.heightConstraint?.constant = height
+        }
+      }
+    }
+  }
+  init() {
+    super.init(frame: .zero)
+    setup()
+  }
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    setup()
+  }
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  override var font: UIFont! {
+    didSet {
+      
+    }
+  }
+  func setup() {
+  }
+  func textWidth() -> CGFloat {
+    let label: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: .greatestFiniteMagnitude, height: self.frame.height))
+    label.numberOfLines = 0
+    label.lineBreakMode = .byWordWrapping
+    label.font = self.font
+    label.text = self.text
+    label.sizeToFit()
+    return label.frame.width
+  }
+  func textHeight() -> CGFloat {
+    let label: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: .greatestFiniteMagnitude))
+    label.numberOfLines = 0
+    label.lineBreakMode = .byWordWrapping
+    label.font = self.font
+    label.text = self.text
+    label.sizeToFit()
+    return label.frame.height
+  }
+  @discardableResult
+  func autoresize(width: CGFloat) -> Self {
+    return self.width(width) { [weak self] (constraint) in
+      self?.widthConstraint = constraint
+      self?.text = self?.text
+    }
+  }
+  @discardableResult
+  func autoresize(height: CGFloat) -> Self {
+    return self.height (height) { [weak self] (constraint) in
+      self?.heightConstraint = constraint
+      self?.text = self?.text
+    }
+  }
+}
+
 class BasicButton: UIButton {
   var didTapHandler: (() -> ())?
+  var widthConstraint: NSLayoutConstraint?
+  override func setTitle(_ title: String?, for state: UIControlState) {
+    super.setTitle(title, for: state)
+    self.widthConstraint?.constant = textWidth()
+  }
   init() {
     super.init(frame: .zero)
     setup()
@@ -177,11 +272,29 @@ class BasicButton: UIButton {
   }
   func setup() {
     addTarget(self, action: #selector(self.didTap), for: .touchUpInside)
+    titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
   }
   func didTap() {
     didTapHandler?()
   }
+  func textWidth() -> CGFloat {
+    let label: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: .greatestFiniteMagnitude, height: self.frame.height))
+    label.numberOfLines = 0
+    label.lineBreakMode = .byWordWrapping
+    label.font = self.titleLabel?.font
+    label.text = self.titleLabel?.text
+    label.sizeToFit()
+    return label.frame.width
+  }
+  @discardableResult
+  func autoresize(width: CGFloat) -> Self {
+    return self.width(width) { [weak self] (constraint) in
+      self?.widthConstraint = constraint
+      self?.setTitle(self?.titleLabel?.text, for: .normal)
+    }
+  }
 }
+
 
 class BasicImageView: UIImageView {
   init() {

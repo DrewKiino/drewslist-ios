@@ -104,6 +104,8 @@ extension UIView {
         case .height:
           view.height == superview.height
           break
+        case .none:
+          break
         }
       }
     }
@@ -111,29 +113,29 @@ extension UIView {
   }
   @discardableResult
   public func width(_ width: CGFloat, constraintBlock: ((NSLayoutConstraint) -> ())? = nil) -> Self {
-    return size(width: width, height: 0, constraintBlock: constraintBlock)
-  }
-  @discardableResult
-  public func height(_ height: CGFloat, constraintBlock: ((NSLayoutConstraint) -> ())? = nil) -> Self {
-    return size(width: 0, height: height, constraintBlock: constraintBlock)
-  }
-  @discardableResult
-  public func size(width: CGFloat, height: CGFloat, constraintBlock: ((NSLayoutConstraint) -> ())? = nil) -> Self {
     constrain(self) { view in
-      if width > 0 {
-        let constraint = view.width == width
-        constraintBlock?(constraint)
-      }
-      if height > 0 {
-        let constraint = view.height == height
-        constraintBlock?(constraint)
-      }
+      let constraint = view.width == width
+      constraintBlock?(constraint)
     }
     return self
   }
+  @discardableResult
+  public func height(_ height: CGFloat, constraintBlock: ((NSLayoutConstraint) -> ())? = nil) -> Self {
+    constrain(self) { view in
+      let constraint = view.height == height
+      constraintBlock?(constraint)
+    }
+    return self
+  }
+  @discardableResult
+  public func size(width: CGFloat, height: CGFloat) -> Self {
+    return self.width(width).height(height)
+  }
+  
   public enum Dimension {
     case width
     case height
+    case none
   }
   public enum Position{
     case left
@@ -145,8 +147,11 @@ extension UIView {
     case bottomLeft
     case bottomRight
   }
+  public func anchor(_ position: UIView.Position, of anchorView: UIView, padding: CGFloat = 0) -> Self {
+    return self.anchor(position, of: anchorView, padding: padding, matching: .none)
+  }
   @discardableResult
-  public func anchor(_ position: UIView.Position, of anchorView: UIView, padding: CGFloat = 0, matching dimensions: UIView.Dimension...) -> Self {
+  public func anchor(_ position: UIView.Position, of anchorView: UIView, padding: CGFloat = 0, matching dimensions: UIView.Dimension..., fill: Bool = false) -> Self {
     guard let superview = self.superview else { return self }
     constrain(self, anchorView, superview) { view, anchorView, superview in
       for dimension in dimensions {
@@ -155,30 +160,33 @@ extension UIView {
           break
         case .height: view.height == anchorView.height
           break
+        case .none:
+          break
         }
       }
+      if dimensions.contains(.none) { return }
       switch position {
       case .left:
         view.centerY == anchorView.centerY
-        if !dimensions.contains(.width) {
+        if !dimensions.contains(.width) && fill {
           view.left == superview.left + padding
         }
         break
       case .right: 
         view.centerY == anchorView.centerY
-        if !dimensions.contains(.width) {
+        if !dimensions.contains(.width) && fill {
           view.right == superview.right - padding
         }
         break
       case .top:
         view.centerX == anchorView.centerX
-        if !dimensions.contains(.height) {
+        if !dimensions.contains(.height) && fill {
           view.top == superview.top + padding
         }
         break
       case .bottom:
         view.centerX == anchorView.centerX
-        if !dimensions.contains(.height) {
+        if !dimensions.contains(.height) && fill {
           view.bottom == superview.bottom - padding
         }
         break
