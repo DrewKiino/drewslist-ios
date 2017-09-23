@@ -20,12 +20,15 @@ class DLLabel: BasicLabel {
       switch style {
       case .title:
         font = UIFont(name: "AvenirNextCondensed-Bold", size: 40)
+        minimumScaleFactor = 0.6
         break
       case .subtitle:
         font = UIFont(name: "AvenirNextCondensed-Medium", size: 12)
+        minimumScaleFactor = 1.0
         break
       case .body:
         font = UIFont(name: "AvenirNextCondensed-Medium", size: 24)
+        minimumScaleFactor = 0.5
         break
       }
     }
@@ -34,6 +37,7 @@ class DLLabel: BasicLabel {
     super.setup()
     textColor = .white
     numberOfLines = 0
+    adjustsFontSizeToFitWidth = true
   }
   func set(style: DLLabel.Style) -> Self {
     self.style = style

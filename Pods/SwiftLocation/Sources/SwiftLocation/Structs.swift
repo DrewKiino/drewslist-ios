@@ -52,11 +52,12 @@ public struct TrackerSettings: CustomStringConvertible, Equatable {
 	
 	/// Description of the settings
 	public var description: String {
-		var desc = "\n\t- Accuracy: '\(accuracy)'"
-		desc += "\n\t - Frequency: '\(frequency)'"
-		desc += "\n\t - Activity: '\(activity)'"
-		desc += "\n\t - Distance filter: '\(distanceFilter)'"
-		return desc
+//		var desc = "\n\t- Accuracy: '\(accuracy)'"
+//		desc += "\n\t - Frequency: '\(frequency)'"
+//		desc += "\n\t - Activity: '\(activity)'"
+//		desc += "\n\t - Distance filter: '\(distanceFilter)'"
+//		return desc
+    return ""
 	}
 	
 	/// Returns a Boolean value indicating whether two values are equal.

@@ -12,7 +12,7 @@ import SDWebImage
 import ObjectMapper
 import PromiseKit
 
-class Media: Model, Mappable {
+class Media: Model {
   static var identifier: String! = "media"
   fileprivate var isCurrentlyUploading = false
   enum type: String {
@@ -25,13 +25,18 @@ class Media: Model, Mappable {
   var imageURL: String?
   var index: Int?
   var type: String?
-  func mapping(map: Map) {
-    self.imageURL <- map["imageURL"]
+  var listingID: String?
+  override func mapping(map: Map) {
+    super.mapping(map: map)
+    self.title <- map["title"]
     self.index <- map["index"]
+    self.imageURL <- map["imageURL"]
     self.type <- map["type"]
+    self.listingID <- map["listingID"]
   }
-  init(image: UIImage?, index: Int?) {
+  init(listing: Listing?, image: UIImage?, index: Int?) {
     super.init(model: Media.identifier)
+    self.listingID = listing?.id
     self.image = image
     self.index = index
   }
@@ -83,14 +88,19 @@ class Media: Model, Mappable {
   }
   func upload() -> Promise<Media?> {
     return Promise { fulfill, reject in
-      self.upload(image: self.image, title: self.title ?? index?.description) { imageURL in
-        self.imageURL = imageURL
-        fulfill(self)
-      }
+      self.upload(completionHandler: { (imageURL) in
+        let media = Media(JSON: self.toJSON())
+        media?.imageURL = imageURL
+        fulfill(media)
+      })
     }
   }
   func upload(completionHandler: ((String?) -> ())? = nil) {
-    upload(image: self.image, title: self.title ?? index?.description, completionHandler: completionHandler)
+    upload(
+      image: self.image,
+      title: self.title ?? "\(self.listingID ?? ""):\(self.index?.description ?? "")",
+      completionHandler: completionHandler
+    )
   }
   func upload(image: UIImage?, title: String?, metadata: [String: String]? = nil, completionHandler: ((String?) -> ())? = nil) {
     guard
@@ -106,16 +116,16 @@ class Media: Model, Mappable {
     let reference = title + ".jpeg"
     log.debug("uploading image")
     datastore?.storageReference?
-      .child(reference)
-      .putData(data, metadata: smd) { [weak self] (metadata, error) in
-        let imageURL = metadata?.downloadURL()?.absoluteString ?? reference
-        if let error = error {
-          log.error(error)
-        } else {
-          log.debug("image uploaded", imageURL)
-        }
-        self?.isCurrentlyUploading = false
-        completionHandler?(imageURL)
+    .child(reference)
+    .putData(data, metadata: smd) { [weak self] (metadata, error) in
+      let imageURL = metadata?.downloadURL()?.absoluteString ?? reference
+      if let error = error {
+        log.error(error)
+      } else {
+        log.debug("image uploaded", imageURL)
+      }
+      self?.isCurrentlyUploading = false
+      completionHandler?(imageURL)
     }
   }
 }

@@ -75,10 +75,17 @@ class BasicView: UIView {
 class BasicViewController: UIViewController {
   let headerView = HeaderView.shared
   var viewTappedHandler: (() -> ())?
+  var keyboardWillShowHandler: ((CGFloat) -> ())?
+  var keyboardWillHideHandler: (() -> ())?
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .white
     view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.viewTapped)))
+    NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: .UIKeyboardWillHide, object: nil)
   }
   
   func viewTapped() {
@@ -90,9 +97,21 @@ class BasicViewController: UIViewController {
     BasicTextField.resignFirstResponderSignal => ()
     return super.resignFirstResponder()
   }
+  
+  func keyboardWillShow(notification: Notification) {
+    if let height = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.height {
+      keyboardWillShowHandler?(height)
+    }
+  }
+  func keyboardWillHide() {
+    keyboardWillHideHandler?()
+  }
 }
 
 class BasicTableViewCell: UITableViewCell {
+  static let identifer = "BasicTableViewCell"
+  var didSelectCellHandler: ((IndexPath) -> ())?
+  var indexPath: IndexPath?
   override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     setup()
@@ -102,12 +121,34 @@ class BasicTableViewCell: UITableViewCell {
   }
   func setup() {
     backgroundColor = .white
+    addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.didSelect)))
+  }
+  func didSelect() {
+    if let indexPath = self.indexPath {
+      didSelectCellHandler?(indexPath)
+    }
   }
 }
 
 extension UITableViewCell {
   static var empty: UITableViewCell {
     return UITableViewCell()
+  }
+  class func cell(text: String?, font: UIFont? = nil, using tableView: UITableView, at indexPath: IndexPath, selectionHandler: ((IndexPath) -> ())? = nil) -> UITableViewCell {
+    if let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.identifer, for: indexPath) as? BasicTableViewCell {
+      cell.indexPath = indexPath
+      cell.textLabel?.text = text
+      cell.textLabel?.font = font ?? cell.textLabel?.font
+      cell.didSelectCellHandler = selectionHandler
+      return cell
+    }
+    return .empty
+  }
+}
+
+extension UITableView {
+  func registerBasicTableViewCell() {
+    self.register(BasicTableViewCell.self, forCellReuseIdentifier: BasicTableViewCell.identifer)
   }
 }
 
@@ -188,14 +229,16 @@ extension BasicTextField: UITextFieldDelegate {
 class BasicLabel: UILabel {
   var heightConstraint: NSLayoutConstraint?
   var widthConstraint: NSLayoutConstraint?
+  private var maxWidth: CGFloat = .greatestFiniteMagnitude
+  private var maxHeight: CGFloat = .greatestFiniteMagnitude
   override var text: String? {
     didSet {
       DispatchQueue.main.async { [weak self] in
-        if let width = self?.textWidth() {
-          self?.widthConstraint?.constant = width
+        if let width = self?.textWidth(), let maxWidth = self?.maxWidth {
+          self?.widthConstraint?.constant = min(width, maxWidth)
         }
-        if let height = self?.textHeight() {
-          self?.heightConstraint?.constant = height
+        if let height = self?.textHeight(), let maxHeight = self?.maxHeight {
+          self?.heightConstraint?.constant = min(height, maxHeight)
         }
       }
     }
@@ -222,7 +265,7 @@ class BasicLabel: UILabel {
     let label: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: .greatestFiniteMagnitude, height: self.frame.height))
     label.numberOfLines = 0
     label.lineBreakMode = .byWordWrapping
-    label.font = self.font
+    label.font = self.font.withSize(adjustedFontSize())
     label.text = self.text
     label.sizeToFit()
     return label.frame.width
@@ -231,21 +274,35 @@ class BasicLabel: UILabel {
     let label: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: .greatestFiniteMagnitude))
     label.numberOfLines = 0
     label.lineBreakMode = .byWordWrapping
-    label.font = self.font
+    label.font = self.font.withSize(adjustedFontSize())
     label.text = self.text
     label.sizeToFit()
     return label.frame.height
   }
+  func adjustedFontSize() -> CGFloat {
+    if let attributedText = self.attributedText {
+      let text = NSMutableAttributedString(attributedString: attributedText)
+      text.setAttributes([NSFontAttributeName: self.font], range: NSMakeRange(0, text.length))
+      let context: NSStringDrawingContext = NSStringDrawingContext()
+      context.minimumScaleFactor = self.minimumScaleFactor
+      text.boundingRect(with: self.frame.size, options: .usesLineFragmentOrigin, context: context)
+      let adjustedFontSize: CGFloat = self.font.pointSize * context.actualScaleFactor
+      return adjustedFontSize
+    }
+    return font.pointSize
+  }
   @discardableResult
-  func autoresize(width: CGFloat) -> Self {
+  func autoresize(width: CGFloat, max: CGFloat = .greatestFiniteMagnitude) -> Self {
     return self.width(width) { [weak self] (constraint) in
+      self?.maxWidth = max
       self?.widthConstraint = constraint
       self?.text = self?.text
     }
   }
   @discardableResult
-  func autoresize(height: CGFloat) -> Self {
+  func autoresize(height: CGFloat, max: CGFloat = .greatestFiniteMagnitude) -> Self {
     return self.height (height) { [weak self] (constraint) in
+      self?.maxHeight = max
       self?.heightConstraint = constraint
       self?.text = self?.text
     }

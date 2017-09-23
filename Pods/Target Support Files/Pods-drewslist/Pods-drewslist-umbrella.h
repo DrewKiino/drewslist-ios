@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_drewslistVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_drewslistVersionString[];
+FOUNDATION_EXPORT double Pods_DrewsListVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_DrewsListVersionString[];
 

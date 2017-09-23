@@ -907,7 +907,7 @@ public final class LocationTracker: NSObject, CLLocationManagerDelegate {
 			return
 		}
 		
-		print("Settings \(bestSettings)")
+//		print("Settings \(bestSettings)")
 		
 		// Request authorizations if needed
 		if bestSettings.accuracy.requestUserAuth == true {

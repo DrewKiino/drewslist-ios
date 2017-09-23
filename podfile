@@ -3,7 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 use_frameworks!
 
-target 'drewslist' do
+target 'DrewsList' do
 
   # Firebase
   pod 'Firebase'
@@ -43,9 +43,10 @@ target 'drewslist' do
   # Utility
   pod 'ImagePicker'
   pod 'BarcodeScanner'
-
   pod 'Fakery'
-
   pod 'PromiseKit'
+  pod 'ImageViewer'
+
+  pod 'VungleSDK-iOS'
 
 end

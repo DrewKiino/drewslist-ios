@@ -40,11 +40,18 @@ class HeaderView: BasicView {
     rightButton.titleLabel?.font = UIFont(name: "AvenirNextCondensed-Medium", size: 20)
     addSubview(rightButton)
     rightButton.anchor(.right, padding: 10).matching(.height).autoresize(width: 100)
+    
+    let bottomBorder = UIView()
+    bottomBorder.backgroundColor = .black
+    addSubview(bottomBorder)
+    bottomBorder.anchor(.bottom, .left, .right).height(0.6)
   }
   func leftButtonTapped() {
+    guard !(leftButton.titleLabel?.text ?? "").isEmpty else { return }
     leftButtonTappedHandler?()
   }
   func rightButtonTapped() {
+    guard !(rightButton.titleLabel?.text ?? "").isEmpty else { return }
     rightButtonTappedHandler?()
   }
   func setLeftButtonText(_ text: String?) {

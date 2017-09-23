@@ -19,7 +19,7 @@ class RootController: BasicViewController {
     headerView.leftButton.setTitleColor(.white, for: .normal)
     headerView.rightButton.setTitleColor(.white, for: .normal)
     RootNavigationController.shared
-    .pushViewController(BookListViewController.shared, animated: true) { [weak self] in
+    .pushViewController(BookListViewController.shared, animated: false) { [weak self] in
       self?.isPresenting = false
     }
   }

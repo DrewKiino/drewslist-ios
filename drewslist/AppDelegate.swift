@@ -22,8 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Override point for customization after application launch.
     FirebaseApp.configure()
     DataManager.setup()
+    AdManager.setup()
     RootNavigationController.presented(with: &window)
-    UIFont.printNames()
     return true
   }
 

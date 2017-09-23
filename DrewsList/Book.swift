@@ -10,13 +10,15 @@ import Foundation
 import Firebase
 import ObjectMapper
 
-class Book: Model, Mappable {
-  static var identifier: String! = "books"
+class Book: Model {
+  static var identifier: String! = "book"
+  static var pluralIdentifier: String! = "books"
   var title: String?
   var author: String?
   var imageURL: String?
   var isbn: String?
-  func mapping(map: Map) {
+  override func mapping(map: Map) {
+    super.mapping(map: map)
     self.title    <- map["title"]
     self.author   <- map["author"]
     self.imageURL <- map["imageURL"]
@@ -29,13 +31,13 @@ class Book: Model, Mappable {
     self.imageURL = imageURL
   }
   init() {
-    super.init(model: "books")
+    super.init(model: Book.pluralIdentifier)
   }
   init(id: String?) {
-    super.init(model: "books", id: id)
+    super.init(model: Book.pluralIdentifier, id: id)
   }
   required init?(map: Map) {
-    super.init(model: "books")
+    super.init(model: Book.pluralIdentifier)
   }
   func set() {
     datastore?.set(json: self.toJSON())

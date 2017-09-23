@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import CoreImage
+import MapKit 
 
 extension String {
   var intValue: Int? {
@@ -31,9 +33,27 @@ extension UIFont {
   }
 }
 
-extension UILabel {
+extension Collection where Indices.Iterator.Element == Index {
+  subscript(safe index: Index?) -> Generator.Element? {
+    if let index = index { return indices.contains(index) ? self[index] : nil }
+    return nil
+  }
 }
 
+extension Array {
+  func prune(where condition: @escaping (_ lhs: Element, _ rhs: Element) -> Bool) -> [Element] {
+    var results = [Element]()
+    forEach { element in
+      let existingElements = results.filter {
+        return condition(element, $0)
+      }
+      if existingElements.count == 0 {
+        results.append(element)
+      }
+    }
+    return results
+  }
+}
 
 extension UIImage {
   func crop(_ dimension: CGFloat) -> UIImage? {
@@ -50,6 +70,33 @@ extension UIImage {
     return nil
   }
 }
+
+extension UIImageView {
+  func blurImage() {
+    DispatchQueue.global(qos: .background).async { [weak self] in
+      if let image = self?.image {
+        let context = CIContext(options: nil)
+        let inputImage = CIImage(image: image)
+        let originalOrientation = image.imageOrientation
+        let originalScale = image.scale
+        let filter = CIFilter(name: "CIGaussianBlur")
+        filter?.setValue(inputImage, forKey: kCIInputImageKey)
+        filter?.setValue(50.0, forKey: kCIInputRadiusKey)
+        if
+          let outputImage = filter?.outputImage, let extent = inputImage?.extent,
+          let cgImage = context.createCGImage(outputImage, from: extent)
+        {
+          let image = UIImage(cgImage: cgImage, scale: originalScale, orientation: originalOrientation)
+          DispatchQueue.main.async {
+            self?.image =  image
+          }
+        }
+      }
+    }
+  }
+}
+
+
 
 
 

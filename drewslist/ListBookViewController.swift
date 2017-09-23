@@ -32,6 +32,7 @@ class ListBookViewController: DLViewController {
     tableView.separatorColor = .clear
     tableView.backgroundColor = .clear
     tableView.allowsSelection = false
+    tableView.showsVerticalScrollIndicator = false
     tableView.register(ListImagesCell.self, forCellReuseIdentifier: "ListImagesCell")
     tableView.register(ListTextFieldCell.self, forCellReuseIdentifier: "ListTextFieldCell")
     tableView.register(ListButtonCell.self, forCellReuseIdentifier: "ListButtonCell")
@@ -66,12 +67,14 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
       return (screen.width / 4) + 20
     case 6:
       return 84
+    case 7:
+      return screen.height / 2 // extra scroll space
     default:
       return 44
     }
   }
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 7
+    return 8
   }
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch indexPath.row {
@@ -80,7 +83,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
         cell.imagePickerButton1.didFinishWithImageHandler = { [weak self, weak cell] image in
           guard let image = image else { return }
           cell?.imagePickerButton1.spinner.startAnimating()
-           Media(image: image, index: 0).upload()
+          Media(listing: self?.listing, image: image, index: 0).upload()
           .then { [weak self] media -> () in
             cell?.imagePickerButton1.spinner.stopAnimating()
             if let media = media {
@@ -95,7 +98,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
         cell.imagePickerButton2.didFinishWithImageHandler = { [weak self, weak cell] image in
           guard let image = image else { return }
           cell?.imagePickerButton2.spinner.startAnimating()
-          Media(image: image, index: 1).upload()
+          Media(listing: self?.listing, image: image, index: 1).upload()
           .then { [weak self] media -> () in
             cell?.imagePickerButton2.spinner.stopAnimating()
             if let media = media {
@@ -110,7 +113,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
         cell.imagePickerButton3.didFinishWithImageHandler = { [weak self, weak cell] image in
           guard let image = image else { return }
           cell?.imagePickerButton3.spinner.startAnimating()
-          Media(image: image, index: 2).upload()
+          Media(listing: self?.listing, image: image, index: 2).upload()
           .then { [weak self] media -> () in
             cell?.imagePickerButton3.spinner.stopAnimating()
             if let media = media {
@@ -139,7 +142,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
           self?.selectNextResponder()
           return true
         }
-        self.textFields[2] = cell.textField
+        self.textFields[1] = cell.textField
         return cell
       }
       break
@@ -154,7 +157,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
           self?.selectNextResponder()
           return true
         }
-        self.textFields[1] = cell.textField
+        self.textFields[2] = cell.textField
         return cell
       }
       break
@@ -162,6 +165,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
       if let cell = tableView.dequeueReusableCell(withIdentifier: "ListTextFieldCell", for: indexPath) as? ListTextFieldCell {
         cell.iconImageView.image = #imageLiteral(resourceName: "isbn")
         cell.textField.placeholderString = "ISBN"
+        cell.textField.keyboardType = .numberPad
         cell.textField.shouldBeginEditing = { [weak cell] callback in
           let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
           alert.addAction(UIAlertAction(title: "Scan ISBN", style: .default) { _ in
@@ -203,16 +207,11 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
           let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
           alert.addAction(UIAlertAction(title: "User Current Location", style: .default) { _ in
             cell?.activityView.startAnimating()
-            cell?.textField.alternateTextSelectionHandler = { callback in
-              LocationManager.shared.zipcode()
-              .then { zipcode -> () in
-                cell?.activityView.stopAnimating()
-                callback?(zipcode)
-              }
-              .catch {
-                cell?.activityView.stopAnimating()
-                log.error($0)
-              }
+            cell?.textField.alternateTextSelectionHandler = { [weak self] callback in
+              cell?.activityView.stopAnimating()
+              let address = LocationManager.shared.currentAddress
+              self?.listing?.address = address
+              callback?(address?.zipcode)
             }
             callback?(false)
           })
@@ -224,11 +223,10 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
           self.present(alert, animated: true, completion: nil)
         }
         cell.textField.didChangeTextHandler = { [weak self] text in
-          LocationManager.shared.location(from: text)
-          .then { [weak self] location -> () in
-            self?.listing?.longitude = location?.coordinate.longitude.description.doubleValue
-            self?.listing?.latitude = location?.coordinate.latitude.description.doubleValue
-            self?.listing?.zipcode = text
+          LocationManager.shared.address(from: text)
+          .then { [weak self] address -> () in
+            log.debug(address?.toJSON())
+            self?.listing?.address = address
           }
           .catch { log.error($0) }
         }
@@ -246,7 +244,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textField.placeholderString = "Contact Number"
         cell.textField.keyboardType = .numberPad
         cell.textField.didChangeTextHandler = { [weak self] text in
-          self?.listing?.contactNumber = text
+          self?.listing?.user?.contactNumber = text
         }
         cell.textField.shouldReturnHandler = { [weak self] in
           self?.selectNextResponder()
@@ -286,10 +284,10 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
     } else if (listing?.book?.isbn ?? "").isEmpty {
       presentAlert(message: "Please input your ISBN number!")
       completionHandler(false)
-    } else if (listing?.zipcode ?? "").isEmpty {
+    } else if (listing?.address?.zipcode ?? "").isEmpty {
       presentAlert(message: "Please input your zip code!")
       completionHandler(false)
-    } else if (listing?.contactNumber ?? "").isEmpty {
+    } else if (listing?.user?.contactNumber ?? "").isEmpty {
       presentAlert(message: "Please input your contact number!")
       completionHandler(false)
     } else {
@@ -308,6 +306,7 @@ extension ListBookViewController: UITableViewDataSource, UITableViewDelegate {
     for (_, imagePicker) in self.imagePickers {
       imagePicker.deselect()
     }
+    self.listing = Listing()
   }
   func presentListSuccessAlert() {
     let alertView = UIAlertController(title: "Successful Listing!", message: "Thank you for using Drew's List.\n\nPlease help share this app since more users means more buyers and sellers!\n\nGood luck with your listing.", preferredStyle: .alert)

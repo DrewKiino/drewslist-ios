@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import ObjectMapper
 
 class DataStore {
   var databaseReference: DatabaseReference?
@@ -41,16 +42,17 @@ class DataStore {
   func get(_ completionHandler: @escaping ((_ json: [[String: Any]]) -> ())) {
     databaseReference?
     .observeSingleEvent(of: .value, with: { (snapshot) in
+      var array: [[String: Any]] = []
       if let value = snapshot.value as? [String: Any] {
-        let array = value.flatMap({ key, value -> [String: Any]? in
+        array = value.flatMap({ key, value -> [String: Any]? in
           if var dict = value as? [String: Any] {
             dict["id"] = key
             return dict
           }
           return nil
         })
-        completionHandler(array)
       }
+      completionHandler(array)
     })
   }
   // https://howtofirebase.com/collection-queries-with-firebase-b95a0193745d
@@ -60,16 +62,17 @@ class DataStore {
     .queryEqual(toValue: value)
     .queryLimited(toFirst: 10)
     .observeSingleEvent(of: .value, with: { (snapshot) in
+      var array: [[String: Any]] = []
       if let value = snapshot.value as? [String: Any] {
-        let array = value.flatMap({ key, value -> [String: Any]? in
+        array = value.flatMap({ key, value -> [String: Any]? in
           if var dict = value as? [String: Any] {
             dict["id"] = key
             return dict
           }
           return nil
         })
-        completionHandler(array)
       }
+      completionHandler(array)
     })
   }
   func get(where key: String, beginsWith value: String, _ completionHandler: @escaping ((_ json: [[String: Any]]) -> ())) {
@@ -88,11 +91,29 @@ class DataStore {
           })
           completionHandler(array)
         }
+    })
+  }
+  func get(in key: String, where subkey: String, beginsWith value: String, _ completionHandler: @escaping ((_ json: [[String: Any]]) -> ())) {
+    databaseReference?
+      .queryOrdered(byChild: key + "/" + subkey)
+      .queryStarting(atValue: value)
+      .queryLimited(toFirst: 5)
+      .observeSingleEvent(of: .value, with: { (snapshot) in
+        if let value = snapshot.value as? [String: Any] {
+          var array = value.flatMap({ key, value -> [String: Any]? in return value as? [String: Any] })
+          array.sort(by: { lhs, rhs -> Bool in
+            log.debug(rhs)
+            return true
+          })
+          completionHandler(array)
+        }
+      }, withCancel: { (error) in
+        log.error(error)
       })
   }
 }
 
-class Model: ModelProtocol {
+class Model: ModelProtocol, Mappable {
   var datastore: DataStore?
   var id: String? = User.localID
   var model: String!
@@ -100,6 +121,36 @@ class Model: ModelProtocol {
     self.model = model
     self.id = id ?? self.id
     self.datastore = DataStore(model: self.model, id: self.id)
+  }
+  required init?(map: Map) {
+  }
+  func mapping(map: Map) {
+    self.id <- map["id"]
+  }
+  func child(key: String) -> Self {
+    datastore?.databaseReference = datastore?.databaseReference?.child(key)
+    return self
+  }
+  func lowercased<T: Model>() -> T? {
+    var dict: [String: Any] = [:]
+    self.toJSON().forEach({ (key, value) in
+      dict[key] = (value as? String)?.lowercased() ?? value
+    })
+    return T(JSON: dict)
+  }
+  func alphanumeric<T: Model>() -> T? {
+    var dict: [String: Any] = [:]
+    self.toJSON().forEach({ (key, value) in
+      if var value = value as? String {
+        value = value
+          .components(separatedBy: CharacterSet.alphanumerics.inverted)
+          .flatMap({ $0.isEmpty ? nil : $0 })
+          .reduce("", { (f, i) in "\(f) \(i)" })
+        return dict[key] = value
+      } 
+      dict[key] = value
+    })
+    return T(JSON: dict)
   }
 }
 

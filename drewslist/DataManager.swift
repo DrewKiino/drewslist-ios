@@ -15,42 +15,36 @@ class DataManager {
     LocationManager.shared.currentLocationSignal.subscribe(on: self) { (location) in
     }
     Listing.shared.listingsSignal.subscribe(on: self) { (listings) in
-    }
-    fetch()
-  }
-  class func fetch() {
-    when(fulfilled: Listing.fetch(), LocationManager.shared.location())
-    .then { (listings, location) -> () in
-      Listing.shared.listings = Listing.shared.listings
+      Listing.shared.visibleListings = listings
       .flatMap({ listing -> Listing? in
         // make sure we only allow listings with images
         guard listing.media.first != nil else { return nil }
         if
-          let location = location,
-          let long = listing.longitude,
-          let lat = listing.latitude
+          let location = LocationManager.shared.currentLocation,
+          let long = listing.address?.longitude,
+          let lat = listing.address?.latitude
         {
           var distance = CLLocation(latitude: lat, longitude: long).distance(from: location)
           // meters to miles rounde to nearest hundreths
           distance = round(distance * 100 * 0.000621371) / 100
           listing.distance = distance
-        } else if
-          let currentLocation = location,
-          let zipcode = listing.zipcode
-        {
-          LocationManager.shared.location(from: zipcode)
-          .then { location -> () in
-            if var distance = location?.distance(from: currentLocation) {
-              // meters to miles rounde to nearest hundreths
-              distance = round(distance * 100 * 0.000621371) / 100
-              listing.distance = distance
-            }
-          }
-          .catch { log.error($0) }
         }
         return listing
       })
+      .sorted(by: { lhs, rhs in
+        if let lhsD = lhs.distance, let rhsD = rhs.distance {
+          return lhsD < rhsD
+        }
+        return false
+      })
     }
+    fetch()
+  }
+  class func fetch() {
+    if LocationManager.shared.currentAddress != nil { Listing.fetch() }
+    LocationManager.shared.observe()
+    .then { _ -> Promise<[Listing]> in Listing.fetch() }
+    .then { _ -> () in LocationManager.shared.setGeoFireReference() }
     .catch { log.error($0) }
   }
 }

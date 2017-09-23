@@ -142,11 +142,8 @@ extension UIView {
     case right
     case top
     case bottom
-    case topLeft
-    case topRight
-    case bottomLeft
-    case bottomRight
   }
+  @discardableResult
   public func anchor(_ position: UIView.Position, of anchorView: UIView, padding: CGFloat = 0) -> Self {
     return self.anchor(position, of: anchorView, padding: padding, matching: .none)
   }
@@ -190,8 +187,6 @@ extension UIView {
           view.bottom == superview.bottom - padding
         }
         break
-      default:
-        break
       }
     }
     return anchor(position, of: anchorView, padding: padding, constraintBlock: nil)
@@ -214,7 +209,33 @@ extension UIView {
           case .right:
             view.right == superview.right - padding
             break
-          default:
+          }
+        }
+      }
+    }
+    return self
+  }
+  @discardableResult
+  public func anchor(_ positions: UIView.Position..., padding: CGFloat = 0, constraintBlock: ((NSLayoutConstraint) -> ())?) -> Self {
+    if let superview = self.superview {
+      constrain(self, superview) { view, superview in
+        for position in positions {
+          switch position {
+          case .top:
+            let constraint = view.top == superview.top + padding
+            constraintBlock?(constraint)
+            break
+          case .bottom:
+            let constraint = view.bottom == superview.bottom - padding
+            constraintBlock?(constraint)
+            break
+          case .left:
+            let constraint = view.left == superview.left + padding
+            constraintBlock?(constraint)
+            break
+          case .right:
+            let constraint = view.right == superview.right - padding
+            constraintBlock?(constraint)
             break
           }
         }
@@ -241,22 +262,6 @@ extension UIView {
       case .bottom:
         let constraint = view.top == anchorView.bottom + padding
         constraintBlock?(constraint)
-        break
-      case .topLeft:
-        view.bottom == anchorView.top - padding
-        view.right == anchorView.left - padding
-        break
-      case .topRight:
-        view.bottom == anchorView.top - padding
-        view.left == anchorView.right + padding
-        break
-      case .bottomLeft:
-        view.top == anchorView.bottom + padding
-        view.right == anchorView.left - padding
-        break
-      case .bottomRight:
-        view.top == anchorView.bottom + padding
-        view.left == anchorView.right + padding
         break
       }
     }
